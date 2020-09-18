@@ -29,6 +29,8 @@
 
 // import runTest from './sprite image';
 
+// import runTest from './simple quad';
+
 // import runTest from './webgl batch test';
 // import runTest from './display list debug 1';
 // import runTest from './cube';
@@ -43,7 +45,9 @@
 // import runTest from './geometry test';
 // import runTest from './orbit camera';
 // import runTest from './primitives';
+
 import runTest from './primitives2';
+
 // import runTest from './materials';
 // import runTest from './json model';
 
