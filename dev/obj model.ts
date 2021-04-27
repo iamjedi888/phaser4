@@ -1,7 +1,7 @@
 import * as Materials from '../src/materials3d';
 
 import { AKey, DownKey, LeftKey, RightKey, UpKey } from '../src/input/keyboard/keys';
-import { BackgroundColor, Parent, Scenes, SetWebGL, Size } from '../src/config';
+import { BackgroundColor, Parent, Scenes, Size, WebGL } from '../src/config';
 import { Game, Scene } from '../src/';
 
 import { AddChildren3D } from '../src/display3d/AddChildren3D';
@@ -118,8 +118,8 @@ class Demo extends Scene
             loader.setPath('/examples/public/assets/3d/');
         }
 
-        loader.add(ImageFile('house', 'house.png'));
-        // loader.add(ImageFile('alienTexture1', 'AL01-2.jpg'));
+        // loader.add(ImageFile('house', 'house.png'));
+        loader.add(ImageFile('alienTexture1', 'AL01-2.jpg'));
         // loader.add(ImageFile('alienTexture2', 'AL02-2.jpg'));
         // loader.add(ImageFile('alienTexture3', 'AL03-2.jpg'));
         // loader.add(ImageFile('alienTexture4', 'AL04-2.jpg'));
@@ -129,9 +129,10 @@ class Demo extends Scene
         // loader.add(OBJFile('alien', 'alien3.obj'));
         // loader.add(OBJGeometryFile('alien', 'alien4.obj'));
         // loader.add(OBJGeometryFile('alien', 'alien3.obj'));
-        loader.add(OBJGeometryFile('house', 'house.obj'));
+        // loader.add(OBJGeometryFile('house', 'house.obj'));
         // loader.add(OBJGeometryFile('ship', 'smooth-ship.obj'));
         // loader.add(OBJGeometryFile('sphere', 'sphere.obj'));
+        loader.add(OBJGeometryFile('sphere', 'silo.obj'));
         // loader.add(OBJGeometryFile('mushroom', 'mushroom.obj'));
         // loader.add(OBJGeometryFile('buggy', 'buggy.obj'));
 
@@ -143,11 +144,14 @@ class Demo extends Scene
         const world = new World3D(this, 0, 0, 4, { x: 0.5, y: 3, z: 4 });
 
         // const obj = Cache.getEntry('Geometry', 'ship') as Geometry;
-        const obj = Cache.getEntry('Geometry', 'house') as Geometry;
+        // const obj = Cache.getEntry('Geometry', 'house') as Geometry;
+        const obj = Cache.getEntry('Geometry', 'sphere') as Geometry;
 
         const model = new Mesh(0, 0, 0, obj);
 
-        model.setTexture('house');
+        model.setTexture('alienTexture1');
+
+        // model.setTexture('house');
 
         // model.transform.scale.set(0.25, 0.25, 0.25);
         // model.transform.rotateX(-Math.PI / 2);
@@ -210,7 +214,7 @@ class Demo extends Scene
 export default function (): void
 {
     new Game(
-        SetWebGL(),
+        WebGL(),
         Size(800, 600),
         Parent('gameParent'),
         BackgroundColor(0x000000),
