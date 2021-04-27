@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const path = require('path');
 const dirTree = require('directory-tree');
 const { build } = require('esbuild');
 const { exec } = require('child_process');
@@ -13,7 +14,7 @@ const filterConfig = {
 
 const ESMInputBundle = [];
 
-dirTree('src', filterConfig, (item, path) =>
+dirTree('src', filterConfig, (item) =>
 {
     /*
     item structure:
@@ -142,6 +143,7 @@ exec('tsc --build ./tsconfig.json', (error, stdout, stderr) => {
 
     if (error) {
         console.log(`❌ error: ${error.message}`);
+        console.log(stdout);
         return;
     }
 
