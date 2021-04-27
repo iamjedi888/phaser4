@@ -1,0 +1,1 @@
+{"version":3,"file":"Mat4TranslateFromFloats.d.ts","sourceRoot":"","sources":["../../../src/math/mat4/Mat4TranslateFromFloats.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,wBAAgB,uBAAuB,CAAE,MAAM,EAAE,OAAO,EAAE,CAAC,EAAE,MAAM,EAAE,CAAC,EAAE,MAAM,EAAE,CAAC,EAAE,MAAM,EAAE,GAAG,GAAE,OAAuB,GAAG,OAAO,CAmChI"}

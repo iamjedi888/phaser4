@@ -1,7 +1,7 @@
 import { IRenderer } from '../renderer/IRenderer';
 import { IStaticCamera } from './IStaticCamera';
 import { IStaticWorld } from '../world/IStaticWorld';
-import { Matrix2D } from '../math/matrix2d/Matrix2D';
+import { Matrix2D } from '../math/mat2d/Matrix2D';
 import { Matrix4 } from '../math/mat4/Matrix4';
 import { Rectangle } from '../geom/rectangle/Rectangle';
 export declare class StaticCamera implements IStaticCamera {

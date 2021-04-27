@@ -1,7 +1,7 @@
 import { Vec2, Vec2Callback } from '../../../math/vec2';
 import { IGameObject } from '../../IGameObject';
 import { ITransformComponent } from './ITransformComponent';
-import { Matrix2D } from '../../../math/matrix2d/Matrix2D';
+import { Matrix2D } from '../../../math/mat2d/Matrix2D';
 import { Rectangle } from '../../../geom/rectangle';
 export declare class TransformComponent implements ITransformComponent {
     entity: IGameObject;

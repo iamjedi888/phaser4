@@ -1,6 +1,6 @@
 import { Vec2, Vec2Callback } from '../../../math/vec2';
 import { IGameObject } from '../../IGameObject';
-import { Matrix2D } from '../../../math/matrix2d/Matrix2D';
+import { Matrix2D } from '../../../math/mat2d/Matrix2D';
 import { Rectangle } from '../../../geom/rectangle';
 export interface ITransformComponent {
     entity: IGameObject;

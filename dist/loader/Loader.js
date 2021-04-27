@@ -39,7 +39,7 @@ export class Loader extends EventEmitter {
       } else {
         this.progress = 1;
         Emit(this, "complete");
-        resolve();
+        resolve(this);
       }
     });
   }

@@ -1,4 +1,4 @@
-import { IMatrix2D } from '../math/matrix2d/IMatrix2D';
+import { IMatrix2D } from '../math/mat2d/IMatrix2D';
 import { IRectangle } from '../geom/rectangle/IRectangle';
 import { IRenderer } from '../renderer/IRenderer';
 import { IStaticWorld } from '../world/IStaticWorld';

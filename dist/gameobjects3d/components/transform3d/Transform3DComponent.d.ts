@@ -1,6 +1,6 @@
-import { Vec3, Vec3Callback } from '../../../math/vec3';
 import { Matrix4 } from '../../../math/mat4';
 import { Quaternion } from '../../../math/quaternion';
+import { Vec3, Vec3Callback } from '../../../math/vec3';
 import { IGameObject3D } from '../../IGameObject3D';
 export declare class Transform3DComponent {
     entity: IGameObject3D;

@@ -2,7 +2,7 @@ import * as Angle from './angle';
 import * as Easing from './easing';
 import * as Fuzzy from './fuzzy';
 import * as Interpolation from './interpolation';
-import * as Matrix2D from './matrix2d';
+import * as Matrix2D from './mat2d';
 import * as Matrix4 from './mat4';
 import * as Pow2 from './pow2';
 import * as Quaternion from './quaternion';

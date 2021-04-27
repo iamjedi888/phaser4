@@ -1,7 +1,7 @@
 import { ICamera } from './ICamera';
 import { IRenderer } from '../renderer/IRenderer';
 import { IWorld } from '../world/IWorld';
-import { Matrix2D } from '../math/matrix2d/Matrix2D';
+import { Matrix2D } from '../math/mat2d/Matrix2D';
 import { Matrix4 } from '../math/mat4/Matrix4';
 import { Rectangle } from '../geom/rectangle/Rectangle';
 import { Vec2Callback } from '../math/vec2/Vec2Callback';

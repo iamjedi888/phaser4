@@ -1,9 +1,9 @@
+import { IVec4Like } from './IVec4Like';
 import { NOOP } from '../../utils/NOOP';
-import { Vec4 } from './Vec4';
 
 export type Vec4CallbackType = (vec3: Vec4Callback) => void;
 
-export class Vec4Callback extends Vec4
+export class Vec4Callback implements IVec4Like
 {
     private _x: number;
     private _y: number;
@@ -14,7 +14,10 @@ export class Vec4Callback extends Vec4
 
     constructor (onChange: Vec4CallbackType, x: number = 0, y: number = 0, z: number = 0, w: number = 0)
     {
-        super(x, y, z, w);
+        this._x = x;
+        this._y = y;
+        this._z = z;
+        this._w = w;
 
         this.onChange = onChange;
     }
@@ -105,5 +108,34 @@ export class Vec4Callback extends Vec4
         {
             this.onChange(this);
         }
+    }
+
+    toArray (dst: Float32List = [], index: number = 0): Float32List
+    {
+        const { x, y, z,w } = this;
+
+        dst[ index ] = x;
+        dst[ index + 1 ] = y;
+        dst[ index + 2 ] = z;
+        dst[ index + 3 ] = w;
+
+        return dst;
+    }
+
+    fromArray (src: Float32List, index: number = 0): this
+    {
+        return this.set(
+            src[ index ],
+            src[ index + 1 ],
+            src[ index + 2 ],
+            src[ index + 3 ]
+        );
+    }
+
+    toString (): string
+    {
+        const { x, y, z, w } = this;
+
+        return `{ x=${x}, y=${y}, z=${z}, w=${w} }`;
     }
 }

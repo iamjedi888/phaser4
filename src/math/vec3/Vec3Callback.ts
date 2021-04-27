@@ -1,9 +1,9 @@
+import { IVec3Like } from './IVec3Like';
 import { NOOP } from '../../utils/NOOP';
-import { Vec3 } from './Vec3';
 
 export type Vec3CallbackType = (vec3: Vec3Callback) => void;
 
-export class Vec3Callback extends Vec3
+export class Vec3Callback implements IVec3Like
 {
     private _x: number;
     private _y: number;
@@ -13,7 +13,9 @@ export class Vec3Callback extends Vec3
 
     constructor (onChange: Vec3CallbackType, x: number = 0, y: number = 0, z: number = 0)
     {
-        super(x, y, z);
+        this._x = x;
+        this._y = y;
+        this._z = z;
 
         this.onChange = onChange;
     }
@@ -86,5 +88,32 @@ export class Vec3Callback extends Vec3
         {
             this.onChange(this);
         }
+    }
+
+    toArray (dst: Float32List = [], index: number = 0): Float32List
+    {
+        const { x, y, z } = this;
+
+        dst[ index ] = x;
+        dst[ index + 1 ] = y;
+        dst[ index + 2 ] = z;
+
+        return dst;
+    }
+
+    fromArray (src: Float32List, index: number = 0): this
+    {
+        return this.set(
+            src[ index ],
+            src[ index + 1 ],
+            src[ index + 2 ]
+        );
+    }
+
+    toString (): string
+    {
+        const { x, y, z } = this;
+
+        return `{ x=${x}, y=${y}, z=${z} }`;
     }
 }

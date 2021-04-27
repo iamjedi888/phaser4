@@ -1,0 +1,1 @@
+{"version":3,"file":"QuatSetFromUnitVectors.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatSetFromUnitVectors.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,mBAAmB,CAAC;AAC9C,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAK1C,wBAAgB,sBAAsB,CAAE,CAAC,EAAE,UAAU,EAAE,IAAI,EAAE,SAAS,EAAE,EAAE,EAAE,SAAS,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CA0CrI"}

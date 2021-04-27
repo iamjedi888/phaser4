@@ -1,6 +1,6 @@
-import { Vec3 } from './Vec3';
+import { IVec3Like } from './IVec3Like';
 export declare type Vec3CallbackType = (vec3: Vec3Callback) => void;
-export declare class Vec3Callback extends Vec3 {
+export declare class Vec3Callback implements IVec3Like {
     private _x;
     private _y;
     private _z;
@@ -14,5 +14,8 @@ export declare class Vec3Callback extends Vec3 {
     set y(value: number);
     get z(): number;
     set z(value: number);
+    toArray(dst?: Float32List, index?: number): Float32List;
+    fromArray(src: Float32List, index?: number): this;
+    toString(): string;
 }
 //# sourceMappingURL=Vec3Callback.d.ts.map

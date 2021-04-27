@@ -82,7 +82,7 @@ export class Loader extends EventEmitter
 
                 Emit(this, 'complete');
 
-                resolve();
+                resolve(this);
                 // onComplete();
             }
         });

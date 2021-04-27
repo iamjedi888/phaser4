@@ -1,9 +1,9 @@
+import { IVec2Like } from './IVec2Like';
 import { NOOP } from '../../utils/NOOP';
-import { Vec2 } from './Vec2';
 
 export type Vec2CallbackType = (vec2: Vec2Callback) => void;
 
-export class Vec2Callback extends Vec2
+export class Vec2Callback implements IVec2Like
 {
     private _x: number;
     private _y: number;
@@ -12,7 +12,8 @@ export class Vec2Callback extends Vec2
 
     constructor (onChange: Vec2CallbackType, x: number = 0, y: number = 0)
     {
-        super(x, y);
+        this._x = x;
+        this._y = y;
 
         this.onChange = onChange;
     }
@@ -67,5 +68,30 @@ export class Vec2Callback extends Vec2
         {
             this.onChange(this);
         }
+    }
+
+    toArray (dst: Float32List = [], index: number = 0): Float32List
+    {
+        const { x, y } = this;
+
+        dst[ index ] = x;
+        dst[ index + 1 ] = y;
+
+        return dst;
+    }
+
+    fromArray (src: Float32List, index: number = 0): this
+    {
+        return this.set(
+            src[ index ],
+            src[ index + 1 ]
+        );
+    }
+
+    toString (): string
+    {
+        const { x, y } = this;
+
+        return `{ x=${x}, y=${y} }`;
     }
 }

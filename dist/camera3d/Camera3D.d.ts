@@ -1,5 +1,5 @@
-import { Vec3, Vec3Callback } from '../math/vec3';
 import { Matrix4 } from '../math/mat4';
+import { Vec3, Vec3Callback } from '../math/vec3';
 import { IRenderer } from '../renderer/IRenderer';
 export declare class Camera3D {
     type: string;

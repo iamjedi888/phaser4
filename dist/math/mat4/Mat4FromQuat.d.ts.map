@@ -1,0 +1,1 @@
+{"version":3,"file":"Mat4FromQuat.d.ts","sourceRoot":"","sources":["../../../src/math/mat4/Mat4FromQuat.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,+BAA+B,CAAC;AAChE,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAIpC,wBAAgB,YAAY,CAAE,CAAC,EAAE,eAAe,EAAE,GAAG,GAAE,OAAuB,GAAG,OAAO,CAoCvF"}
