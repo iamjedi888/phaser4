@@ -16,7 +16,7 @@
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module",
-        "tsconfigRootDir": "../",
+        "tsconfigRootDir": "./",
         "project": [ "tsconfig-umd.json" ]
     },
     "plugins": [
