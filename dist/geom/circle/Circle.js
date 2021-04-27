@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CircleContains as CircleContains2} from "./CircleContains";
+import {CircleContains} from "./CircleContains";
 export class Circle {
   constructor(x = 0, y = 0, radius = 0) {
     this.set(x, y, radius);
@@ -15,7 +15,7 @@ export class Circle {
     return this;
   }
   contains(x, y) {
-    return CircleContains2(this, x, y);
+    return CircleContains(this, x, y);
   }
   get radius() {
     return this._radius;

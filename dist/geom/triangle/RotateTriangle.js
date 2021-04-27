@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetTriangleInCenter as GetTriangleInCenter2} from "./GetTriangleInCenter";
-import {RotateTriangleAround as RotateTriangleAround2} from "./RotateTriangleAround";
+import {GetTriangleInCenter} from "./GetTriangleInCenter";
+import {RotateTriangleAround} from "./RotateTriangleAround";
 export function RotateTriangle(triangle, angle) {
-  const point = GetTriangleInCenter2(triangle);
-  return RotateTriangleAround2(triangle, point.x, point.y, angle);
+  const point = GetTriangleInCenter(triangle);
+  return RotateTriangleAround(triangle, point.x, point.y, angle);
 }

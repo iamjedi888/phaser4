@@ -1,1 +1,0 @@
-{"version":3,"file":"LookAt.d.ts","sourceRoot":"","sources":["../../../src/math/mat4/LookAt.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,mBAAmB,CAAC;AAE9C,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAKpC,wBAAgB,MAAM,CAAE,GAAG,EAAE,SAAS,EAAE,MAAM,EAAE,SAAS,EAAE,EAAE,EAAE,SAAS,EAAE,GAAG,GAAE,OAAuB,GAAG,OAAO,CA+E/G"}

@@ -1,5 +1,5 @@
-import {GameObject as GameObject2} from "../GameObject";
-export class Layer extends GameObject2 {
+import {GameObject} from "../GameObject";
+export class Layer extends GameObject {
   constructor() {
     super();
     this.type = "Layer";

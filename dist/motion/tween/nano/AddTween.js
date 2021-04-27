@@ -1,4 +1,4 @@
-import {NanoTween as NanoTween2} from "./NanoTween";
+import {NanoTween} from "./NanoTween";
 export function AddTween(target, emitter = null, autoStart = true) {
-  return new NanoTween2(target, emitter, autoStart);
+  return new NanoTween(target, emitter, autoStart);
 }

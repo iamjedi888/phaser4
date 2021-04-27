@@ -1,9 +1,9 @@
-import {GameInstance as GameInstance2} from "../GameInstance";
-import {Install as Install2} from "./Install";
+import {GameInstance} from "../GameInstance";
+import {Install} from "./Install";
 export class Scene {
   constructor(config) {
-    this.game = GameInstance2.get();
+    this.game = GameInstance.get();
     this.events = new Map();
-    Install2(this, config);
+    Install(this, config);
   }
 }

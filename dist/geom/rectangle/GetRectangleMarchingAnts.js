@@ -3,22 +3,22 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetRectanglePerimeter as GetRectanglePerimeter2} from "./GetRectanglePerimeter";
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
+import {GetRectanglePerimeter} from "./GetRectanglePerimeter";
+import {Vec2} from "../../math/vec2/Vec2";
 export function GetRectangleMarchingAnts(rect, step, quantity, out = []) {
   if (!step && !quantity) {
     return out;
   }
   if (!step) {
-    step = GetRectanglePerimeter2(rect) / quantity;
+    step = GetRectanglePerimeter(rect) / quantity;
   } else {
-    quantity = Math.round(GetRectanglePerimeter2(rect) / step);
+    quantity = Math.round(GetRectanglePerimeter(rect) / step);
   }
   let x = rect.x;
   let y = rect.y;
   let face = 0;
   for (let i = 0; i < quantity; i++) {
-    out.push(new Vec22(x, y));
+    out.push(new Vec2(x, y));
     switch (face) {
       case 0:
         x += step;

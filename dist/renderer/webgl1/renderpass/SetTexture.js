@@ -1,4 +1,4 @@
-import {Flush as Flush2} from "./Flush";
+import {Flush} from "./Flush";
 import {gl} from "../GL";
 export function SetTexture(renderPass, texture) {
   const binding = texture.binding;
@@ -11,7 +11,7 @@ export function SetTexture(renderPass, texture) {
       gl.bindTexture(gl.TEXTURE_2D, binding.texture);
       renderPass.currentActiveTexture++;
     } else {
-      Flush2(renderPass);
+      Flush(renderPass);
       renderPass.startActiveTexture++;
       binding.indexCounter = renderPass.startActiveTexture;
       binding.setIndex(1);

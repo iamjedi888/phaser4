@@ -1,7 +1,7 @@
-import {RemoveChild as RemoveChild2} from "./RemoveChild";
+import {RemoveChild} from "./RemoveChild";
 export function RemoveChildren(parent, ...children) {
   children.forEach((child) => {
-    RemoveChild2(parent, child);
+    RemoveChild(parent, child);
   });
   return children;
 }

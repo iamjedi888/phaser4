@@ -1,1 +1,0 @@
-{"version":3,"file":"SetAxisAngle.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/SetAxisAngle.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,mBAAmB,CAAC;AAC9C,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAM1C,wBAAgB,YAAY,CAAE,IAAI,EAAE,SAAS,EAAE,KAAK,EAAE,MAAM,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CAe5G"}

@@ -1,8 +1,8 @@
 import {GetMaxTextures, SetMaxTextures} from "../../../config/maxtextures/";
-import {CheckShaderMaxIfStatements as CheckShaderMaxIfStatements2} from "../shaders/CheckShaderMaxIfStatements";
+import {CheckShaderMaxIfStatements} from "../shaders/CheckShaderMaxIfStatements";
 import {gl} from "../GL";
 export function CreateTempTextures(renderPass) {
-  let maxGPUTextures = CheckShaderMaxIfStatements2(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
+  let maxGPUTextures = CheckShaderMaxIfStatements(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
   const maxConfigTextures = GetMaxTextures();
   if (maxConfigTextures === 0 || maxConfigTextures > 0 && maxConfigTextures > maxGPUTextures) {
     SetMaxTextures(maxGPUTextures);

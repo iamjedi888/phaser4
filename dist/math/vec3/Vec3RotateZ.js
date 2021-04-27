@@ -1,5 +1,5 @@
-import {Vec3 as Vec32} from "./Vec3";
-export function Vec3RotateZ(a, origin, angle, out = new Vec32()) {
+import {Vec3} from "./Vec3";
+export function Vec3RotateZ(a, origin, angle, out = new Vec3()) {
   const {x: ax, y: ay, z: az} = a;
   const {x: bx, y: by, z: bz} = origin;
   const px = ax - bx;

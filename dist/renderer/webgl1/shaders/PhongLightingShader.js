@@ -1,13 +1,13 @@
 import * as GL_CONST from "../GL_CONST";
-import {PHONG_TEXTURE_FRAG as PHONG_TEXTURE_FRAG2} from "../glsl/PHONG_TEXTURE_FRAG";
-import {PHONG_TEXTURE_VERT as PHONG_TEXTURE_VERT2} from "../glsl/PHONG_TEXTURE_VERT";
-import {Shader as Shader2} from "./Shader";
-export class PhongLightingShader extends Shader2 {
+import {PHONG_TEXTURE_FRAG} from "../glsl/PHONG_TEXTURE_FRAG";
+import {PHONG_TEXTURE_VERT} from "../glsl/PHONG_TEXTURE_VERT";
+import {Shader} from "./Shader";
+export class PhongLightingShader extends Shader {
   constructor() {
     super();
     const config = {
-      fragmentShader: PHONG_TEXTURE_FRAG2,
-      vertexShader: PHONG_TEXTURE_VERT2,
+      fragmentShader: PHONG_TEXTURE_FRAG,
+      vertexShader: PHONG_TEXTURE_VERT,
       attributes: {
         aVertexPosition: {size: 3, type: GL_CONST.FLOAT, normalized: false, offset: 0},
         aVertexNormal: {size: 3, type: GL_CONST.FLOAT, normalized: false, offset: 12},

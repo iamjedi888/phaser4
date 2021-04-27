@@ -1,9 +1,9 @@
-import {DefaultQuadAttributes as DefaultQuadAttributes2} from "./DefaultQuadAttributes";
-import {QuadShader as QuadShader2} from "./QuadShader";
-export class FXShader extends QuadShader2 {
+import {DefaultQuadAttributes} from "./DefaultQuadAttributes";
+import {QuadShader} from "./QuadShader";
+export class FXShader extends QuadShader {
   constructor(config = {}) {
     const shaderConfig = config;
-    shaderConfig.attributes = !shaderConfig.attributes ? DefaultQuadAttributes2 : shaderConfig.attributes;
+    shaderConfig.attributes = !shaderConfig.attributes ? DefaultQuadAttributes : shaderConfig.attributes;
     shaderConfig.renderToFramebuffer = true;
     super(shaderConfig);
   }

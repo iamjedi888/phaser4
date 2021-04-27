@@ -1,4 +1,4 @@
-import {GameInstance as GameInstance2} from "../GameInstance";
+import {GameInstance} from "../GameInstance";
 let willPauseOnVisibility = false;
 let willPauseOnBlur = false;
 let visibilityHandler;
@@ -19,7 +19,7 @@ function PauseOnBlur(pauseOnDocumentHidden = true, pauseOnBlur = true) {
   return () => {
     if (pauseOnDocumentHidden && document) {
       visibilityHandler = () => {
-        const game = GameInstance2.get();
+        const game = GameInstance.get();
         if (!game) {
           ClearHandlers();
         } else if (document.hidden) {
@@ -33,7 +33,7 @@ function PauseOnBlur(pauseOnDocumentHidden = true, pauseOnBlur = true) {
     }
     if (pauseOnBlur && window) {
       blurHandler = () => {
-        const game = GameInstance2.get();
+        const game = GameInstance.get();
         if (!game) {
           ClearHandlers();
         } else {
@@ -41,7 +41,7 @@ function PauseOnBlur(pauseOnDocumentHidden = true, pauseOnBlur = true) {
         }
       };
       focusHandler = () => {
-        const game = GameInstance2.get();
+        const game = GameInstance.get();
         if (!game) {
           ClearHandlers();
         } else {

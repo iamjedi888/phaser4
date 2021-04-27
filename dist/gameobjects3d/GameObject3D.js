@@ -1,8 +1,8 @@
-import {DIRTY_CONST as DIRTY_CONST2} from "../gameobjects/DIRTY_CONST";
+import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
 import {DestroyEvent} from "../gameobjects/events";
 import {Emit} from "../events";
-import {GameInstance as GameInstance2} from "../GameInstance";
-import {Transform3DComponent as Transform3DComponent2} from "./components/transform3d/Transform3DComponent";
+import {GameInstance} from "../GameInstance";
+import {Transform3DComponent} from "./components/transform3d/Transform3DComponent";
 export class GameObject3D {
   constructor(x = 0, y = 0, z = 0) {
     this.type = "GameObject3D";
@@ -17,8 +17,8 @@ export class GameObject3D {
     this.visible = true;
     this.children = [];
     this.events = new Map();
-    this.transform = new Transform3DComponent2(this, x, y, z);
-    this.dirty = DIRTY_CONST2.DEFAULT;
+    this.transform = new Transform3DComponent(this, x, y, z);
+    this.dirty = DIRTY_CONST.DEFAULT;
   }
   isRenderable() {
     return this.visible && this.willRender;
@@ -35,7 +35,7 @@ export class GameObject3D {
   setDirty(flag, flag2) {
     if (!this.isDirty(flag)) {
       this.dirty ^= flag;
-      this.dirtyFrame = GameInstance2.getFrame();
+      this.dirtyFrame = GameInstance.getFrame();
     }
     if (!this.isDirty(flag2)) {
       this.dirty ^= flag2;

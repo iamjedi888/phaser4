@@ -4,8 +4,8 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 import {MATH_CONST} from "../../math/const";
-import {Rectangle as Rectangle2} from "./Rectangle";
-export function RectangleFromPoints(points, out = new Rectangle2()) {
+import {Rectangle} from "./Rectangle";
+export function RectangleFromPoints(points, out = new Rectangle()) {
   if (points.length === 0) {
     return out;
   }

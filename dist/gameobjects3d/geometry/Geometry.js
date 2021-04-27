@@ -1,9 +1,9 @@
-import {GetBufferFromVertexSet as GetBufferFromVertexSet2} from "./GetBufferFromVertexSet";
+import {GetBufferFromVertexSet} from "./GetBufferFromVertexSet";
 export class Geometry {
   constructor(data) {
     if (data) {
       if (data.hasOwnProperty("vertices")) {
-        this.buffer = GetBufferFromVertexSet2(data);
+        this.buffer = GetBufferFromVertexSet(data);
       } else {
         this.buffer = data;
       }

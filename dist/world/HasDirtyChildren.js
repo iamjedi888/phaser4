@@ -1,12 +1,12 @@
-import {DIRTY_CONST as DIRTY_CONST2} from "../gameobjects/DIRTY_CONST";
+import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
 export function HasDirtyChildren(parent) {
-  if (parent.node.isDirty(DIRTY_CONST2.CHILD_CACHE)) {
+  if (parent.node.isDirty(DIRTY_CONST.CHILD_CACHE)) {
     return true;
   }
   const stack = [parent];
   while (stack.length > 0) {
     const entry = stack.pop();
-    if (entry.node.isDirty(DIRTY_CONST2.TRANSFORM)) {
+    if (entry.node.isDirty(DIRTY_CONST.TRANSFORM)) {
       return true;
     }
     const numChildren = entry.children.length;

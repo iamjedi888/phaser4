@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {PointToLine as PointToLine2} from "./PointToLine";
+import {PointToLine} from "./PointToLine";
 export function PointToLineSegment(point, line) {
-  if (!PointToLine2(point, line)) {
+  if (!PointToLine(point, line)) {
     return false;
   }
   const {x1, y1, x2, y2} = line;

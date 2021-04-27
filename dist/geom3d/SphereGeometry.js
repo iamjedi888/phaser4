@@ -1,11 +1,11 @@
-import {CreateVertexSet as CreateVertexSet2} from "../gameobjects3d/geometry/CreateVertexSet";
-import {Vec3 as Vec32} from "../math/vec3/Vec3";
-import {Vec3Normalize as Vec3Normalize2} from "../math/vec3/Vec3Normalize";
+import {CreateVertexSet} from "../gameobjects3d/geometry/CreateVertexSet";
+import {Vec3} from "../math/vec3/Vec3";
+import {Vec3Normalize} from "../math/vec3/Vec3Normalize";
 export function SphereGeometry(radius = 1, widthSegments = 3, heightSegments = 3, phiStart = 0, phiLength = Math.PI * 2, thetaStart = 0, thetaLength = Math.PI) {
   widthSegments = Math.max(3, Math.floor(widthSegments) || 8);
   heightSegments = Math.max(2, Math.floor(heightSegments) || 6);
   const thetaEnd = Math.min(thetaStart + thetaLength, Math.PI);
-  const data = CreateVertexSet2();
+  const data = CreateVertexSet();
   const {
     vertices,
     normals,
@@ -14,8 +14,8 @@ export function SphereGeometry(radius = 1, widthSegments = 3, heightSegments = 3
   } = data;
   let index = 0;
   const grid = [];
-  const vertex = new Vec32();
-  const normal = new Vec32();
+  const vertex = new Vec3();
+  const normal = new Vec3();
   for (let iy = 0; iy <= heightSegments; iy++) {
     const verticesRow = [];
     const v = iy / heightSegments;
@@ -31,7 +31,7 @@ export function SphereGeometry(radius = 1, widthSegments = 3, heightSegments = 3
       vertex.y = radius * Math.cos(thetaStart + v * thetaLength);
       vertex.z = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
       vertices.push(vertex.x, vertex.y, vertex.z);
-      Vec3Normalize2(vertex, normal);
+      Vec3Normalize(vertex, normal);
       normals.push(normal.x, normal.y, normal.z);
       uvs.push(u + uOffset, 1 - v);
       verticesRow.push(index++);

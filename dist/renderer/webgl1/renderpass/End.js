@@ -1,4 +1,4 @@
-import {Flush as Flush2} from "./Flush";
+import {Flush} from "./Flush";
 export function End(renderPass) {
-  Flush2(renderPass);
+  Flush(renderPass);
 }

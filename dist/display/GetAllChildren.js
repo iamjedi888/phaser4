@@ -1,6 +1,6 @@
-import {DepthFirstSearch as DepthFirstSearch2} from "./DepthFirstSearch";
+import {DepthFirstSearch} from "./DepthFirstSearch";
 export function GetAllChildren(parent, property, value) {
-  const children = DepthFirstSearch2(parent);
+  const children = DepthFirstSearch(parent);
   if (!property) {
     return children;
   }

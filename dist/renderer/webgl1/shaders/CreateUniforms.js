@@ -1,4 +1,4 @@
-import {CreateUniformSetter as CreateUniformSetter2} from "./CreateUniformSetter";
+import {CreateUniformSetter} from "./CreateUniformSetter";
 import {gl} from "../GL";
 export function CreateUniforms(program) {
   const uniforms = new Map();
@@ -16,7 +16,7 @@ export function CreateUniforms(program) {
         name = name.substr(0, name.length - 3);
         isArray = uniform.size > 1;
       }
-      uniforms.set(name, CreateUniformSetter2(uniform, location, isArray));
+      uniforms.set(name, CreateUniformSetter(uniform, location, isArray));
     }
   }
   return uniforms;

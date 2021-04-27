@@ -1,5 +1,5 @@
-import {Key as Key2} from "../Key";
-export class ZKey extends Key2 {
+import {Key} from "../Key";
+export class ZKey extends Key {
   constructor() {
     super("z");
   }

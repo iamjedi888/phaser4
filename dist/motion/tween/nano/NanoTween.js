@@ -1,17 +1,17 @@
 import {Off, On} from "../../../events";
-import {GameInstance as GameInstance2} from "../../../GameInstance";
-import {Linear as Linear2} from "../../../math/easing/Linear";
-import {TweenProperty as TweenProperty2} from "../TweenProperty";
+import {GameInstance} from "../../../GameInstance";
+import {Linear} from "../../../math/easing/Linear";
+import {TweenProperty} from "../TweenProperty";
 import {UpdateEvent} from "../../../gameobjects/events";
 export class NanoTween {
   constructor(target, emitter, autoStart = true) {
     this.state = {running: false, repeat: false, hold: false, delay: false, yoyo: false, yoyoing: false, autoStart: true, reversed: false};
     this.init = {duration: 0, repeat: 0, repeatDelay: 0, hold: 0, delay: 0};
     this.counters = {repeat: 0, delay: 0, progress: 0, elapsed: 0};
-    this.ease = Linear2;
+    this.ease = Linear;
     this.properties = [];
     if (!emitter) {
-      emitter = GameInstance2.get();
+      emitter = GameInstance.get();
     }
     this.target = target;
     this.state.autoStart = autoStart;
@@ -31,7 +31,7 @@ export class NanoTween {
     }
     const properties = this.properties;
     for (const [name, value] of Object.entries(props)) {
-      properties.push(new TweenProperty2(name, value));
+      properties.push(new TweenProperty(name, value));
     }
     init.duration = duration;
     state.reversed = reversed;

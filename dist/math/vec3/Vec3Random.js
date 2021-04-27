@@ -1,5 +1,5 @@
-import {Vec3 as Vec32} from "./Vec3";
-export function Vec3Random(a, scale = 1, out = new Vec32()) {
+import {Vec3} from "./Vec3";
+export function Vec3Random(a, scale = 1, out = new Vec3()) {
   const r = Math.random() * 2 * Math.PI;
   const z = Math.random() * 2 - 1;
   const zScale = Math.sqrt(1 - z * z) * scale;

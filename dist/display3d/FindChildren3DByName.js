@@ -1,6 +1,6 @@
-import {DepthFirstSearch3D as DepthFirstSearch3D2} from "./DepthFirstSearch3D";
+import {DepthFirstSearch3D} from "./DepthFirstSearch3D";
 export function FindChildren3DByName(parent, searchString) {
-  const children = DepthFirstSearch3D2(parent);
+  const children = DepthFirstSearch3D(parent);
   const regex = RegExp(searchString);
   const results = [];
   children.forEach((child) => {

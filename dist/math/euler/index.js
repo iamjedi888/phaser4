@@ -1,8 +1,8 @@
-import {Euler as Euler2} from "./Euler";
-import {FromQuaternion as FromQuaternion2} from "./FromQuaternion";
-import {FromRotationMatrix as FromRotationMatrix2} from "./FromRotationMatrix";
+import {Euler} from "./Euler";
+import {FromQuaternion} from "./FromQuaternion";
+import {FromRotationMatrix} from "./FromRotationMatrix";
 export {
-  Euler2 as Euler,
-  FromQuaternion2 as FromQuaternion,
-  FromRotationMatrix2 as FromRotationMatrix
+  Euler,
+  FromQuaternion,
+  FromRotationMatrix
 };

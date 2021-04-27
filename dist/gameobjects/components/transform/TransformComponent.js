@@ -1,17 +1,17 @@
 import {GetDefaultOriginX, GetDefaultOriginY} from "../../../config/defaultorigin/";
 import {Vec2, Vec2Callback} from "../../../math/vec2";
-import {DIRTY_CONST as DIRTY_CONST2} from "../../DIRTY_CONST";
-import {Matrix2D as Matrix2D2} from "../../../math/matrix2d/Matrix2D";
+import {DIRTY_CONST} from "../../DIRTY_CONST";
+import {Matrix2D} from "../../../math/mat2d/Matrix2D";
 import {Rectangle} from "../../../geom/rectangle";
-import {UpdateLocalTransform as UpdateLocalTransform2} from "./UpdateLocalTransform";
-import {UpdateWorldTransform as UpdateWorldTransform2} from "./UpdateWorldTransform";
+import {UpdateLocalTransform} from "./UpdateLocalTransform";
+import {UpdateWorldTransform} from "./UpdateWorldTransform";
 export class TransformComponent {
   constructor(entity, x = 0, y = 0) {
     this.passthru = false;
     this._rotation = 0;
     this.entity = entity;
-    this.local = new Matrix2D2();
-    this.world = new Matrix2D2();
+    this.local = new Matrix2D();
+    this.world = new Matrix2D();
     const update = () => this.update();
     const updateExtent = () => this.updateExtent();
     this.position = new Vec2Callback(update, x, y);
@@ -25,13 +25,13 @@ export class TransformComponent {
     this.updateWorld();
   }
   updateLocal() {
-    this.entity.setDirty(DIRTY_CONST2.TRANSFORM, DIRTY_CONST2.BOUNDS);
-    UpdateLocalTransform2(this);
+    this.entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+    UpdateLocalTransform(this);
   }
   updateWorld() {
     const entity = this.entity;
-    entity.setDirty(DIRTY_CONST2.TRANSFORM, DIRTY_CONST2.BOUNDS);
-    UpdateWorldTransform2(entity);
+    entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+    UpdateWorldTransform(entity);
     if (entity.numChildren) {
       this.updateChildren();
     }
@@ -58,7 +58,7 @@ export class TransformComponent {
   }
   setExtent(x, y, width, height) {
     this.extent.set(x, y, width, height);
-    this.entity.setDirty(DIRTY_CONST2.TRANSFORM, DIRTY_CONST2.BOUNDS);
+    this.entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
   }
   updateExtent(width, height) {
     const extent = this.extent;
@@ -71,7 +71,7 @@ export class TransformComponent {
     }
     extent.x = -this.origin.x * extent.width;
     extent.y = -this.origin.y * extent.height;
-    entity.setDirty(DIRTY_CONST2.TRANSFORM, DIRTY_CONST2.BOUNDS);
+    entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
   }
   set rotation(value) {
     if (value !== this._rotation) {

@@ -1,4 +1,4 @@
-import {CanPlayVideoType as CanPlayVideoType2} from "./CanPlayVideoType";
+import {CanPlayVideoType} from "./CanPlayVideoType";
 export function CanPlayOGGVideo(videoElement) {
-  return CanPlayVideoType2('video/ogg; codecs="theora"', videoElement);
+  return CanPlayVideoType('video/ogg; codecs="theora"', videoElement);
 }

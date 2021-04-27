@@ -1,6 +1,6 @@
-import {DIRTY_CONST as DIRTY_CONST2} from "../DIRTY_CONST";
-import {GameObject as GameObject2} from "../GameObject";
-export class Container extends GameObject2 {
+import {DIRTY_CONST} from "../DIRTY_CONST";
+import {GameObject} from "../GameObject";
+export class Container extends GameObject {
   constructor(x = 0, y = 0) {
     super(x, y);
     this._alpha = 1;
@@ -102,7 +102,7 @@ export class Container extends GameObject2 {
   set alpha(value) {
     if (value !== this._alpha) {
       this._alpha = value;
-      this.setDirty(DIRTY_CONST2.TRANSFORM);
+      this.setDirty(DIRTY_CONST.TRANSFORM);
     }
   }
 }

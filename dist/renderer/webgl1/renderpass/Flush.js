@@ -1,4 +1,4 @@
-import {Draw as Draw2} from "./Draw";
+import {Draw} from "./Draw";
 export function Flush(renderPass, forceCount) {
   if (forceCount) {
     renderPass.count = forceCount;
@@ -7,7 +7,7 @@ export function Flush(renderPass, forceCount) {
   if (count === 0) {
     return false;
   }
-  Draw2(renderPass);
+  Draw(renderPass);
   renderPass.prevCount = count;
   renderPass.count = 0;
   renderPass.flushTotal++;

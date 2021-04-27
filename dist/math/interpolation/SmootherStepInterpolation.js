@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {SmootherStep as SmootherStep2} from "../SmootherStep";
+import {SmootherStep} from "../SmootherStep";
 export function SmootherStepInterpolation(t, min, max) {
-  return min + (max - min) * SmootherStep2(t, 0, 1);
+  return min + (max - min) * SmootherStep(t, 0, 1);
 }

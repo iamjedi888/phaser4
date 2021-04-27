@@ -1,8 +1,8 @@
-import {GetScenes as GetScenes2} from "./GetScenes";
-import {Scenes as Scenes2} from "./Scenes";
-import {SetScenes as SetScenes2} from "./SetScenes";
+import {GetScenes} from "./GetScenes";
+import {Scenes} from "./Scenes";
+import {SetScenes} from "./SetScenes";
 export {
-  GetScenes2 as GetScenes,
-  SetScenes2 as SetScenes,
-  Scenes2 as Scenes
+  GetScenes,
+  SetScenes,
+  Scenes
 };

@@ -3,19 +3,19 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CircleContains as CircleContains2} from "../circle/CircleContains";
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
-const tmp = new Vec22();
+import {CircleContains} from "../circle/CircleContains";
+import {Vec2} from "../../math/vec2/Vec2";
+const tmp = new Vec2();
 export function LineToCircle(line, circle, nearest) {
   if (!nearest) {
     nearest = tmp;
   }
   const {x1, y1, x2, y2} = line;
-  if (CircleContains2(circle, x1, y1)) {
+  if (CircleContains(circle, x1, y1)) {
     nearest.set(x1, y1);
     return true;
   }
-  if (CircleContains2(circle, x2, y2)) {
+  if (CircleContains(circle, x2, y2)) {
     nearest.set(x2, y2);
     return true;
   }
@@ -33,5 +33,5 @@ export function LineToCircle(line, circle, nearest) {
   }
   nearest.set(x1 + px, y1 + py);
   const pLen2 = px * px + py * py;
-  return pLen2 <= dLen2 && px * dx + py * dy >= 0 && CircleContains2(circle, nearest.x, nearest.y);
+  return pLen2 <= dLen2 && px * dx + py * dy >= 0 && CircleContains(circle, nearest.x, nearest.y);
 }

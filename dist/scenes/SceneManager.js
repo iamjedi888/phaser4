@@ -1,17 +1,17 @@
 import {Emit, Once} from "../events";
-import {CreateSceneRenderData as CreateSceneRenderData2} from "./CreateSceneRenderData";
-import {GameInstance as GameInstance2} from "../GameInstance";
+import {CreateSceneRenderData} from "./CreateSceneRenderData";
+import {GameInstance} from "../GameInstance";
 import {GetScenes} from "../config/scenes";
-import {ResetSceneRenderData as ResetSceneRenderData2} from "./ResetSceneRenderData";
-import {SceneManagerInstance as SceneManagerInstance2} from "./SceneManagerInstance";
+import {ResetSceneRenderData} from "./ResetSceneRenderData";
+import {SceneManagerInstance} from "./SceneManagerInstance";
 export class SceneManager {
   constructor() {
     this.scenes = new Map();
     this.sceneIndex = 0;
     this.flush = false;
-    this.renderResult = CreateSceneRenderData2();
-    this.game = GameInstance2.get();
-    SceneManagerInstance2.set(this);
+    this.renderResult = CreateSceneRenderData();
+    this.game = GameInstance.get();
+    SceneManagerInstance.set(this);
     Once(this.game, "boot", () => this.boot());
   }
   boot() {
@@ -24,7 +24,7 @@ export class SceneManager {
   }
   render(gameFrame) {
     const results = this.renderResult;
-    ResetSceneRenderData2(results, gameFrame);
+    ResetSceneRenderData(results, gameFrame);
     for (const scene of this.scenes.values()) {
       Emit(scene, "render", results);
     }

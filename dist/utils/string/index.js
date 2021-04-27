@@ -1,4 +1,4 @@
-import {UppercaseFirst as UppercaseFirst2} from "./UppercaseFirst";
+import {UppercaseFirst} from "./UppercaseFirst";
 export {
-  UppercaseFirst2 as UppercaseFirst
+  UppercaseFirst
 };

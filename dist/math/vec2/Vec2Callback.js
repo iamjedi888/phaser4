@@ -1,12 +1,12 @@
-import {NOOP as NOOP2} from "../../utils/NOOP";
-import {Vec2 as Vec22} from "./Vec2";
-export class Vec2Callback extends Vec22 {
+import {NOOP} from "../../utils/NOOP";
+export class Vec2Callback {
   constructor(onChange, x = 0, y = 0) {
-    super(x, y);
+    this._x = x;
+    this._y = y;
     this.onChange = onChange;
   }
   destroy() {
-    this.onChange = NOOP2;
+    this.onChange = NOOP;
   }
   set(x = 0, y = 0) {
     this._x = x;
@@ -35,5 +35,18 @@ export class Vec2Callback extends Vec22 {
     if (prev !== value) {
       this.onChange(this);
     }
+  }
+  toArray(dst = [], index = 0) {
+    const {x, y} = this;
+    dst[index] = x;
+    dst[index + 1] = y;
+    return dst;
+  }
+  fromArray(src, index = 0) {
+    return this.set(src[index], src[index + 1]);
+  }
+  toString() {
+    const {x, y} = this;
+    return `{ x=${x}, y=${y} }`;
   }
 }

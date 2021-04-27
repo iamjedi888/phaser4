@@ -1,13 +1,13 @@
-import {NOOP as NOOP2} from "./NOOP";
+import {NOOP} from "./NOOP";
 export function AddTimer(clock, config) {
   const {
     duration = 0,
     repeat = 0,
     delay = -1,
-    onStart = NOOP2,
-    onUpdate = NOOP2,
-    onRepeat = NOOP2,
-    onComplete = NOOP2
+    onStart = NOOP,
+    onUpdate = NOOP,
+    onRepeat = NOOP,
+    onComplete = NOOP
   } = config;
   const timer = {
     elapsed: duration,

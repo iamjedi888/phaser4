@@ -3,12 +3,12 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {DegToRad as DegToRad2} from "../../math/DegToRad";
-import {GetRectangleCenterX as GetRectangleCenterX2} from "./GetRectangleCenterX";
-import {GetRectangleCenterY as GetRectangleCenterY2} from "./GetRectangleCenterY";
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
-export function GetRectanglePerimeterPoint(rectangle, angle, out = new Vec22()) {
-  angle = DegToRad2(angle);
+import {DegToRad} from "../../math/DegToRad";
+import {GetRectangleCenterX} from "./GetRectangleCenterX";
+import {GetRectangleCenterY} from "./GetRectangleCenterY";
+import {Vec2} from "../../math/vec2/Vec2";
+export function GetRectanglePerimeterPoint(rectangle, angle, out = new Vec2()) {
+  angle = DegToRad(angle);
   const s = Math.sin(angle);
   const c = Math.cos(angle);
   let dx = c > 0 ? rectangle.width / 2 : rectangle.width / -2;
@@ -18,5 +18,5 @@ export function GetRectanglePerimeterPoint(rectangle, angle, out = new Vec22()) 
   } else {
     dx = dy * c / s;
   }
-  return out.set(dx + GetRectangleCenterX2(rectangle), dy + GetRectangleCenterY2(rectangle));
+  return out.set(dx + GetRectangleCenterX(rectangle), dy + GetRectangleCenterY(rectangle));
 }

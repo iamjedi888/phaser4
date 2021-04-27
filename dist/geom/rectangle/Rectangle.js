@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {RectangleContains as RectangleContains2} from "./RectangleContains";
+import {RectangleContains} from "./RectangleContains";
 export class Rectangle {
   constructor(x = 0, y = 0, width = 0, height = 0) {
     this.set(x, y, width, height);
@@ -16,7 +16,7 @@ export class Rectangle {
     return this;
   }
   contains(x, y) {
-    return RectangleContains2(this, x, y);
+    return RectangleContains(this, x, y);
   }
   set right(value) {
     if (value <= this.x) {

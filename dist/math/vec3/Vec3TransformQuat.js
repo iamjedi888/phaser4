@@ -1,5 +1,5 @@
-import {Vec3 as Vec32} from "./Vec3";
-export function Vec3TransformQuat(a, q, out = new Vec32()) {
+import {Vec3} from "./Vec3";
+export function Vec3TransformQuat(a, q, out = new Vec3()) {
   const {x: qx, y: qy, z: qz, w: qw} = q;
   const {x, y, z} = a;
   let uvx = qy * z - qz * y;

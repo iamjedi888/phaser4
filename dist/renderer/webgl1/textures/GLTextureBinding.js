@@ -1,9 +1,9 @@
-import {CreateGLTexture as CreateGLTexture2} from "./CreateGLTexture";
-import {DeleteFramebuffer as DeleteFramebuffer2} from "../fbo/DeleteFramebuffer";
-import {DeleteGLTexture as DeleteGLTexture2} from "./DeleteGLTexture";
-import {IsSizePowerOfTwo as IsSizePowerOfTwo2} from "../../../math/pow2/IsSizePowerOfTwo";
-import {SetGLTextureFilterMode as SetGLTextureFilterMode2} from "./SetGLTextureFilterMode";
-import {UpdateGLTexture as UpdateGLTexture2} from "./UpdateGLTexture";
+import {CreateGLTexture} from "./CreateGLTexture";
+import {DeleteFramebuffer} from "../fbo/DeleteFramebuffer";
+import {DeleteGLTexture} from "./DeleteGLTexture";
+import {IsSizePowerOfTwo} from "../../../math/pow2/IsSizePowerOfTwo";
+import {SetGLTextureFilterMode} from "./SetGLTextureFilterMode";
+import {UpdateGLTexture} from "./UpdateGLTexture";
 import {gl} from "../GL";
 export class GLTextureBinding {
   constructor(parent, config = {}) {
@@ -15,7 +15,7 @@ export class GLTextureBinding {
     this.isPOT = false;
     this.generateMipmap = false;
     this.parent = parent;
-    this.isPOT = IsSizePowerOfTwo2(parent.width, parent.height);
+    this.isPOT = IsSizePowerOfTwo(parent.width, parent.height);
     const {
       texture = null,
       framebuffer = null,
@@ -44,27 +44,27 @@ export class GLTextureBinding {
     if (texture) {
       this.texture = texture;
     } else {
-      CreateGLTexture2(this);
+      CreateGLTexture(this);
     }
   }
   setFilter(linear) {
     if (this.texture) {
-      SetGLTextureFilterMode2(this.texture, linear);
+      SetGLTextureFilterMode(this.texture, linear);
     }
   }
   create() {
     const texture = this.texture;
     if (texture) {
-      DeleteGLTexture2(texture);
+      DeleteGLTexture(texture);
     }
-    return CreateGLTexture2(this);
+    return CreateGLTexture(this);
   }
   update() {
     const texture = this.texture;
     if (!texture) {
-      return CreateGLTexture2(this);
+      return CreateGLTexture(this);
     } else {
-      return UpdateGLTexture2(this);
+      return UpdateGLTexture(this);
     }
   }
   setIndex(index) {
@@ -72,8 +72,8 @@ export class GLTextureBinding {
     this.index = index;
   }
   destroy() {
-    DeleteGLTexture2(this.texture);
-    DeleteFramebuffer2(this.framebuffer);
+    DeleteGLTexture(this.texture);
+    DeleteFramebuffer(this.framebuffer);
     this.parent = null;
     this.texture = null;
     this.framebuffer = null;

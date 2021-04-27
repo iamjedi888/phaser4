@@ -1,4 +1,4 @@
-import {DeleteGLBuffer as DeleteGLBuffer2} from "./DeleteGLBuffer";
+import {DeleteGLBuffer} from "./DeleteGLBuffer";
 import {gl} from "../GL";
 export class VertexBuffer {
   constructor(config = {}) {
@@ -27,7 +27,7 @@ export class VertexBuffer {
     this.batchSize = batchSize;
     this.bufferByteSize = batchSize * this.entryByteSize;
     if (this.vertexBuffer) {
-      DeleteGLBuffer2(this.vertexBuffer);
+      DeleteGLBuffer(this.vertexBuffer);
     }
     this.create();
   }
@@ -61,7 +61,7 @@ export class VertexBuffer {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
   }
   destroy() {
-    DeleteGLBuffer2(this.vertexBuffer);
+    DeleteGLBuffer(this.vertexBuffer);
     this.data = null;
     this.vertexViewF32 = null;
     this.vertexViewU32 = null;

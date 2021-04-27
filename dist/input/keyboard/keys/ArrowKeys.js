@@ -1,4 +1,4 @@
-import {Key as Key2} from "../Key";
+import {Key} from "../Key";
 export class ArrowKeys {
   constructor(keyboardManager, config) {
     const {
@@ -10,23 +10,23 @@ export class ArrowKeys {
     } = config;
     const keys = keyboardManager.keys;
     if (left) {
-      this.left = new Key2("ArrowLeft");
+      this.left = new Key("ArrowLeft");
       keys.set(this.left.value, this.left);
     }
     if (right) {
-      this.right = new Key2("ArrowRight");
+      this.right = new Key("ArrowRight");
       keys.set(this.right.value, this.right);
     }
     if (up) {
-      this.up = new Key2("ArrowUp");
+      this.up = new Key("ArrowUp");
       keys.set(this.up.value, this.up);
     }
     if (down) {
-      this.down = new Key2("ArrowDown");
+      this.down = new Key("ArrowDown");
       keys.set(this.down.value, this.down);
     }
     if (space) {
-      this.space = new Key2(" ");
+      this.space = new Key(" ");
       keys.set(this.space.value, this.space);
     }
   }

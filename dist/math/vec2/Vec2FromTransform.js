@@ -1,5 +1,5 @@
-import {Vec2 as Vec22} from "./Vec2";
-export function Vec2FromTransform(x, y, positionX, positionY, rotation, scaleX, scaleY, out = new Vec22()) {
+import {Vec2} from "./Vec2";
+export function Vec2FromTransform(x, y, positionX, positionY, rotation, scaleX, scaleY, out = new Vec2()) {
   const sin = Math.sin(rotation);
   const cos = Math.cos(rotation);
   const a = cos * scaleX;

@@ -1,4 +1,4 @@
-import {PackColor as PackColor2} from "../../renderer/webgl1/colors/PackColor";
+import {PackColor} from "../../renderer/webgl1/colors/PackColor";
 export class Vertex {
   constructor(x = 0, y = 0, z = 0) {
     this.x = 0;
@@ -40,6 +40,6 @@ export class Vertex {
     return this;
   }
   packColor() {
-    this.color = PackColor2(this.tint, this.alpha);
+    this.color = PackColor(this.tint, this.alpha);
   }
 }

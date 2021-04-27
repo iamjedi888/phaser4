@@ -1,9 +1,9 @@
-import {DIRTY_CONST as DIRTY_CONST2} from "../DIRTY_CONST";
-import {DrawTexturedQuad as DrawTexturedQuad2} from "../../renderer/webgl1/draw/DrawTexturedQuad";
-import {Flush as Flush2} from "../../renderer/webgl1/renderpass/Flush";
-import {PopFramebuffer as PopFramebuffer2} from "../../renderer/webgl1/renderpass/PopFramebuffer";
-import {RenderLayer as RenderLayer2} from "../renderlayer/RenderLayer";
-export class EffectLayer extends RenderLayer2 {
+import {DIRTY_CONST} from "../DIRTY_CONST";
+import {DrawTexturedQuad} from "../../renderer/webgl1/draw/DrawTexturedQuad";
+import {Flush} from "../../renderer/webgl1/renderpass/Flush";
+import {PopFramebuffer} from "../../renderer/webgl1/renderpass/PopFramebuffer";
+import {RenderLayer} from "../renderlayer/RenderLayer";
+export class EffectLayer extends RenderLayer {
   constructor(...shaders) {
     super();
     this.shaders = [];
@@ -15,19 +15,19 @@ export class EffectLayer extends RenderLayer2 {
   postRenderGL(renderPass) {
     const shaders = this.shaders;
     const texture = this.texture;
-    Flush2(renderPass);
-    PopFramebuffer2(renderPass);
+    Flush(renderPass);
+    PopFramebuffer(renderPass);
     if (shaders.length === 0) {
-      DrawTexturedQuad2(renderPass, texture);
+      DrawTexturedQuad(renderPass, texture);
     } else {
       let prevTexture = texture;
       for (let i = 0; i < shaders.length; i++) {
         const shader = shaders[i];
-        DrawTexturedQuad2(renderPass, prevTexture, shader);
+        DrawTexturedQuad(renderPass, prevTexture, shader);
         prevTexture = shader.texture;
       }
-      DrawTexturedQuad2(renderPass, prevTexture);
+      DrawTexturedQuad(renderPass, prevTexture);
     }
-    this.clearDirty(DIRTY_CONST2.TRANSFORM);
+    this.clearDirty(DIRTY_CONST.TRANSFORM);
   }
 }

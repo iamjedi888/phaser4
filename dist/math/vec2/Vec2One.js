@@ -1,4 +1,4 @@
-import {Vec2 as Vec22} from "./Vec2";
+import {Vec2} from "./Vec2";
 export function Vec2One() {
-  return new Vec22(1, 1);
+  return new Vec2(1, 1);
 }

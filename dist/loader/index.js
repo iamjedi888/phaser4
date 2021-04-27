@@ -1,8 +1,8 @@
 import * as Files from "./files";
-import {File as File2} from "./File";
-import {Loader as Loader2} from "./Loader";
+import {File} from "./File";
+import {Loader} from "./Loader";
 export {
-  File2 as File,
+  File,
   Files,
-  Loader2 as Loader
+  Loader
 };

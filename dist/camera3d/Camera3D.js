@@ -1,31 +1,31 @@
-import {Left, UP, Up, Vec3, Vec3Add, Vec3Callback, Vec3CrossNormalize, Vec3Normalize, Vec3Subtract, Vec3TransformQuat} from "../math/vec3";
-import {LookAt, Matrix4, Perspective, TranslateFromFloats} from "../math/mat4";
-import {Quaternion, SetAxisAngle} from "../math/quaternion";
+import {Mat4LookAt, Mat4Perspective, Mat4TranslateFromFloats, Matrix4} from "../math/mat4";
+import {QuatSetAxisAngle, Quaternion} from "../math/quaternion";
+import {UP, Vec3, Vec3Add, Vec3Callback, Vec3CrossNormalize, Vec3Left, Vec3Normalize, Vec3Subtract, Vec3TransformQuat, Vec3Up} from "../math/vec3";
 import {DegToRad} from "../math";
-import {GameInstance as GameInstance2} from "../GameInstance";
+import {GameInstance} from "../GameInstance";
 export class Camera3D {
   constructor(x = 0, y = 0, z = 0, fov = 45, near = 0.1, far = 1e3) {
     this.dirtyRender = true;
     this.type = "Camera3D";
-    const game = GameInstance2.get();
+    const game = GameInstance.get();
     this.renderer = game.renderer;
     this.position = new Vec3Callback(() => this.update(), x, y, z);
     this.direction = new Vec3Callback(() => this.update(), 0, 1, 0);
     this._lookAtPosition = new Vec3();
     this._lookAtView = new Matrix4();
     this._axis = new Quaternion();
-    this.up = Up();
-    this.left = Left();
+    this.up = Vec3Up();
+    this.left = Vec3Left();
     this._fov = fov;
     this._near = near;
     this._far = far;
     this.aspectRatio = this.renderer.width / this.renderer.height;
     this.viewMatrix = new Matrix4();
-    this.projectionMatrix = Perspective(DegToRad(fov), this.aspectRatio, near, far);
+    this.projectionMatrix = Mat4Perspective(DegToRad(fov), this.aspectRatio, near, far);
     this.lookAt(new Vec3());
   }
   updateProjectionMatrix() {
-    Perspective(DegToRad(this._fov), this.aspectRatio, this._near, this._far, this.projectionMatrix);
+    Mat4Perspective(DegToRad(this._fov), this.aspectRatio, this._near, this._far, this.projectionMatrix);
     return this;
   }
   lookAt(point) {
@@ -42,7 +42,7 @@ export class Camera3D {
     const dir = this.direction;
     const left = this.left;
     const up = this.up;
-    const q = SetAxisAngle(axisVec, angle, this._axis);
+    const q = QuatSetAxisAngle(axisVec, angle, this._axis);
     Vec3TransformQuat(dir, q, dir);
     Vec3TransformQuat(left, q, left);
     Vec3TransformQuat(up, q, up);
@@ -72,8 +72,8 @@ export class Camera3D {
     const lookView = this._lookAtView;
     const pos = this.position;
     Vec3Add(pos, this.direction, lookPosition);
-    LookAt(pos, lookPosition, this.up, lookView);
-    TranslateFromFloats(lookView, -pos.x, -pos.y, -pos.z, this.viewMatrix);
+    Mat4LookAt(pos, lookPosition, this.up, lookView);
+    Mat4TranslateFromFloats(lookView, -pos.x, -pos.y, -pos.z, this.viewMatrix);
     return this;
   }
   reset() {

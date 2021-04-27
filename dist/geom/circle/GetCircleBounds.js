@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Rectangle as Rectangle2} from "../rectangle/Rectangle";
-export function GetCircleBounds(circle, out = new Rectangle2()) {
+import {Rectangle} from "../rectangle/Rectangle";
+export function GetCircleBounds(circle, out = new Rectangle()) {
   return out.set(circle.left, circle.top, circle.diameter, circle.diameter);
 }

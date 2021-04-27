@@ -1,8 +1,8 @@
-import {BatchSize as BatchSize2} from "./BatchSize";
-import {GetBatchSize as GetBatchSize2} from "./GetBatchSize";
-import {SetBatchSize as SetBatchSize2} from "./SetBatchSize";
+import {BatchSize} from "./BatchSize";
+import {GetBatchSize} from "./GetBatchSize";
+import {SetBatchSize} from "./SetBatchSize";
 export {
-  GetBatchSize2 as GetBatchSize,
-  SetBatchSize2 as SetBatchSize,
-  BatchSize2 as BatchSize
+  GetBatchSize,
+  SetBatchSize,
+  BatchSize
 };

@@ -1,1 +1,0 @@
-{"version":3,"file":"SetTranslation.d.ts","sourceRoot":"","sources":["../../../src/math/mat4/SetTranslation.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,mBAAmB,CAAC;AAC9C,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,wBAAgB,cAAc,CAAE,MAAM,EAAE,OAAO,EAAE,IAAI,EAAE,SAAS,GAAG,OAAO,CAYzE"}

@@ -1,7 +1,7 @@
 import {GetHeight, GetResolution, GetWidth} from "../../config/size/";
-import {BindingQueue as BindingQueue2} from "../BindingQueue";
-import {GetBackgroundColor as GetBackgroundColor2} from "../../config/backgroundcolor/GetBackgroundColor";
-import {GetCanvasContext as GetCanvasContext2} from "../../config/canvascontext/GetCanvasContext";
+import {BindingQueue} from "../BindingQueue";
+import {GetBackgroundColor} from "../../config/backgroundcolor/GetBackgroundColor";
+import {GetCanvasContext} from "../../config/canvascontext/GetCanvasContext";
 export class CanvasRenderer {
   constructor() {
     this.clearBeforeRender = true;
@@ -10,13 +10,13 @@ export class CanvasRenderer {
     this.width = GetWidth();
     this.height = GetHeight();
     this.resolution = GetResolution();
-    this.setBackgroundColor(GetBackgroundColor2());
+    this.setBackgroundColor(GetBackgroundColor());
     const canvas = document.createElement("canvas");
     this.canvas = canvas;
     this.initContext();
   }
   initContext() {
-    const ctx = this.canvas.getContext("2d", GetCanvasContext2());
+    const ctx = this.canvas.getContext("2d", GetCanvasContext());
     this.ctx = ctx;
     this.resize(this.width, this.height, this.resolution);
   }
@@ -47,7 +47,7 @@ export class CanvasRenderer {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
   render(renderData) {
-    BindingQueue2.clear();
+    BindingQueue.clear();
     const ctx = this.ctx;
     if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0) {
       return;

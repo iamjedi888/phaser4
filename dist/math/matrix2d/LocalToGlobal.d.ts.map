@@ -1,1 +1,0 @@
-{"version":3,"file":"LocalToGlobal.d.ts","sourceRoot":"","sources":["../../../src/math/matrix2d/LocalToGlobal.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AACxC,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AAEpC,wBAAgB,aAAa,CAAE,GAAG,EAAE,SAAS,EAAE,CAAC,EAAE,MAAM,EAAE,CAAC,EAAE,MAAM,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAQjG"}

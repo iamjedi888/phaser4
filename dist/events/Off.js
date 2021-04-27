@@ -1,10 +1,10 @@
-import {EventInstance as EventInstance2} from "./EventInstance";
+import {EventInstance} from "./EventInstance";
 export function Off(emitter, event, callback, context, once) {
   const events = emitter.events;
   const listeners = events.get(event);
   if (!callback) {
     events.delete(event);
-  } else if (callback instanceof EventInstance2) {
+  } else if (callback instanceof EventInstance) {
     listeners.delete(callback);
   } else {
     const hasContext = !context;

@@ -1,6 +1,6 @@
-import {GetVertexBufferEntry as GetVertexBufferEntry2} from "../renderpass/GetVertexBufferEntry";
+import {GetVertexBufferEntry} from "../renderpass/GetVertexBufferEntry";
 export function BatchSingleQuad(renderPass, x, y, width, height, u0, v0, u1, v1, textureIndex = 0, packedColor = 4294967295) {
-  const {F32, U32, offset} = GetVertexBufferEntry2(renderPass, 1);
+  const {F32, U32, offset} = GetVertexBufferEntry(renderPass, 1);
   F32[offset + 0] = x;
   F32[offset + 1] = y;
   F32[offset + 2] = u0;

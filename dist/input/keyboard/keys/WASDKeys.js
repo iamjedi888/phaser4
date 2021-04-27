@@ -1,4 +1,4 @@
-import {Key as Key2} from "../Key";
+import {Key} from "../Key";
 export class WASDKeys {
   constructor(keyboardManager, config) {
     const {
@@ -10,23 +10,23 @@ export class WASDKeys {
     } = config;
     const keys = keyboardManager.keys;
     if (W) {
-      this.W = new Key2("w");
+      this.W = new Key("w");
       keys.set(this.W.value, this.W);
     }
     if (A) {
-      this.A = new Key2("a");
+      this.A = new Key("a");
       keys.set(this.A.value, this.A);
     }
     if (S) {
-      this.S = new Key2("s");
+      this.S = new Key("s");
       keys.set(this.S.value, this.S);
     }
     if (D) {
-      this.D = new Key2("d");
+      this.D = new Key("d");
       keys.set(this.D.value, this.D);
     }
     if (space) {
-      this.space = new Key2(" ");
+      this.space = new Key(" ");
       keys.set(this.space.value, this.space);
     }
   }

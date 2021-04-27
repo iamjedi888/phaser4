@@ -2,12 +2,12 @@ import * as GameObjectEvents from "../gameobjects/events";
 import * as WorldEvents from "./events";
 import {Begin, Flush} from "../renderer/webgl1/renderpass";
 import {Emit, Off, On, Once} from "../events";
-import {BuildRenderList as BuildRenderList2} from "./BuildRenderList";
-import {ExactEquals as ExactEquals2} from "../math/matrix2d/ExactEquals";
+import {BuildRenderList} from "./BuildRenderList";
 import {GameObject} from "../gameobjects";
-import {MergeRenderData as MergeRenderData2} from "./MergeRenderData";
+import {Mat2dEquals} from "../math/mat2d/Mat2dEquals";
+import {MergeRenderData} from "./MergeRenderData";
 import {RemoveChildren} from "../display";
-import {ResetWorldRenderData as ResetWorldRenderData2} from "./ResetWorldRenderData";
+import {ResetWorldRenderData} from "./ResetWorldRenderData";
 export class BaseWorld extends GameObject {
   constructor(scene) {
     super();
@@ -35,19 +35,19 @@ export class BaseWorld extends GameObject {
   }
   render(sceneRenderData) {
     const renderData = this.renderData;
-    ResetWorldRenderData2(renderData, sceneRenderData.gameFrame);
+    ResetWorldRenderData(renderData, sceneRenderData.gameFrame);
     if (!this.willRender || !this.visible) {
       return;
     }
-    BuildRenderList2(this);
+    BuildRenderList(this);
     Emit(this, WorldEvents.WorldRenderEvent, renderData, this);
-    MergeRenderData2(sceneRenderData, renderData);
+    MergeRenderData(sceneRenderData, renderData);
     this.camera.dirtyRender = false;
   }
   renderGL(renderPass) {
     const currentCamera = renderPass.current2DCamera;
     const camera = this.camera;
-    if (!currentCamera || !ExactEquals2(camera.worldTransform, currentCamera.worldTransform)) {
+    if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform)) {
       Flush(renderPass);
     }
     Begin(renderPass, camera);
@@ -79,7 +79,7 @@ export class BaseWorld extends GameObject {
     Off(scene, "shutdown", this._shutdownListener);
     RemoveChildren(this);
     Emit(this, WorldEvents.WorldShutdownEvent, this);
-    ResetWorldRenderData2(this.renderData, 0);
+    ResetWorldRenderData(this.renderData, 0);
     if (this.camera) {
       this.camera.reset();
     }
@@ -87,7 +87,7 @@ export class BaseWorld extends GameObject {
   destroy(reparentChildren) {
     super.destroy(reparentChildren);
     Emit(this, GameObjectEvents.DestroyEvent, this);
-    ResetWorldRenderData2(this.renderData, 0);
+    ResetWorldRenderData(this.renderData, 0);
     if (this.camera) {
       this.camera.destroy();
     }

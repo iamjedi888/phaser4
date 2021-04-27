@@ -1,8 +1,8 @@
-import {GetWebGLContext as GetWebGLContext2} from "./GetWebGLContext";
-import {SetWebGLContext as SetWebGLContext2} from "./SetWebGLContext";
-import {WebGLContext as WebGLContext2} from "./WebGLContext";
+import {GetWebGLContext} from "./GetWebGLContext";
+import {SetWebGLContext} from "./SetWebGLContext";
+import {WebGLContext} from "./WebGLContext";
 export {
-  GetWebGLContext2 as GetWebGLContext,
-  SetWebGLContext2 as SetWebGLContext,
-  WebGLContext2 as WebGLContext
+  GetWebGLContext,
+  SetWebGLContext,
+  WebGLContext
 };

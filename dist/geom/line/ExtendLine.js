@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetLineLength as GetLineLength2} from "./GetLineLength";
+import {GetLineLength} from "./GetLineLength";
 export function ExtendLine(line, left, right = left) {
-  const length = GetLineLength2(line);
+  const length = GetLineLength(line);
   const slopX = line.x2 - line.x1;
   const slopY = line.y2 - line.y1;
   if (left) {

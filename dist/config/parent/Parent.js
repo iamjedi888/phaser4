@@ -1,6 +1,6 @@
-import {SetParent as SetParent2} from "./SetParent";
+import {SetParent} from "./SetParent";
 export function Parent(parentElement) {
   return () => {
-    SetParent2(parentElement);
+    SetParent(parentElement);
   };
 }

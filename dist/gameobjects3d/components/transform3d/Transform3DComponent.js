@@ -1,7 +1,7 @@
-import {Forward, Right, Up, Vec3Callback} from "../../../math/vec3";
-import {FromRotationTranslationScale, Invert, Matrix4, Transpose} from "../../../math/mat4";
-import {Quaternion, RotateX, RotateY, RotateZ} from "../../../math/quaternion";
-import {DIRTY_CONST as DIRTY_CONST2} from "../../../gameobjects/DIRTY_CONST";
+import {Mat4FromRotationTranslationScale, Mat4Invert, Mat4Transpose, Matrix4} from "../../../math/mat4";
+import {QuatRotateX, QuatRotateY, QuatRotateZ, Quaternion} from "../../../math/quaternion";
+import {Vec3Callback, Vec3Forward, Vec3Right, Vec3Up} from "../../../math/vec3";
+import {DIRTY_CONST} from "../../../gameobjects/DIRTY_CONST";
 export class Transform3DComponent {
   constructor(entity, x = 0, y = 0, z = 0) {
     this.passthru = false;
@@ -14,33 +14,33 @@ export class Transform3DComponent {
     this.origin = new Vec3Callback(() => this.update());
     this.rotation = new Quaternion();
     this.rotation.onChange = () => this.update();
-    this.forward = Forward();
-    this.up = Up();
-    this.right = Right();
+    this.forward = Vec3Forward();
+    this.up = Vec3Up();
+    this.right = Vec3Right();
     this.update();
   }
   rotateX(angle) {
-    RotateX(this.rotation, angle, this.rotation);
+    QuatRotateX(this.rotation, angle, this.rotation);
   }
   rotateY(angle) {
-    RotateY(this.rotation, angle, this.rotation);
+    QuatRotateY(this.rotation, angle, this.rotation);
   }
   rotateZ(angle) {
-    RotateZ(this.rotation, angle, this.rotation);
+    QuatRotateZ(this.rotation, angle, this.rotation);
   }
   update() {
     const model = this.local;
     const normal = this.normal;
-    FromRotationTranslationScale(this.rotation, this.position, this.scale, model);
-    Invert(model, normal);
-    Transpose(normal, normal);
+    Mat4FromRotationTranslationScale(this.rotation, this.position, this.scale, model);
+    Mat4Invert(model, normal);
+    Mat4Transpose(normal, normal);
   }
   updateLocal() {
-    this.entity.setDirty(DIRTY_CONST2.TRANSFORM, DIRTY_CONST2.BOUNDS);
+    this.entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
   }
   updateWorld() {
     const entity = this.entity;
-    entity.setDirty(DIRTY_CONST2.TRANSFORM, DIRTY_CONST2.BOUNDS);
+    entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
     if (entity.numChildren) {
       this.updateChildren();
     }

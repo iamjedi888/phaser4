@@ -1,25 +1,25 @@
-import {DIRTY_CONST as DIRTY_CONST2} from "../../DIRTY_CONST";
-import {GetVertices as GetVertices2} from "../transform/GetVertices";
-import {Rectangle as Rectangle2} from "../../../geom/rectangle/Rectangle";
+import {DIRTY_CONST} from "../../DIRTY_CONST";
+import {GetVertices} from "../transform/GetVertices";
+import {Rectangle} from "../../../geom/rectangle/Rectangle";
 export class BoundsComponent {
   constructor(entity) {
     this.fixed = false;
     this.includeChildren = true;
     this.visibleOnly = true;
     this.entity = entity;
-    this.area = new Rectangle2();
+    this.area = new Rectangle();
   }
   set(x, y, width, height) {
     this.area.set(x, y, width, height);
   }
   get() {
-    if (this.entity.isDirty(DIRTY_CONST2.BOUNDS) && !this.fixed) {
+    if (this.entity.isDirty(DIRTY_CONST.BOUNDS) && !this.fixed) {
       this.update();
     }
     return this.area;
   }
   updateLocal() {
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices2(this.entity.transform);
+    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(this.entity.transform);
     const x = Math.min(x0, x1, x2, x3);
     const y = Math.min(y0, y1, y2, y3);
     const right = Math.max(x0, x1, x2, x3);
@@ -28,7 +28,7 @@ export class BoundsComponent {
   }
   update() {
     const bounds = this.updateLocal();
-    this.entity.clearDirty(DIRTY_CONST2.BOUNDS);
+    this.entity.clearDirty(DIRTY_CONST.BOUNDS);
     if (!this.includeChildren || !this.entity.numChildren) {
       return bounds;
     }

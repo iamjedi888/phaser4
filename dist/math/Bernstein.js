@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Factorial as Factorial2} from "./Factorial";
+import {Factorial} from "./Factorial";
 export function Bernstein(n, i) {
-  return Factorial2(n) / Factorial2(i) / Factorial2(n - i);
+  return Factorial(n) / Factorial(i) / Factorial(n - i);
 }

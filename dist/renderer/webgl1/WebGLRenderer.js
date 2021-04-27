@@ -1,13 +1,13 @@
 import {GetHeight, GetResolution, GetWidth} from "../../config/size/";
-import {End as End2} from "./renderpass/End";
-import {GL as GL2} from "./GL";
-import {GetBackgroundColor as GetBackgroundColor2} from "../../config/backgroundcolor/GetBackgroundColor";
-import {GetRGBArray as GetRGBArray2} from "./colors/GetRGBArray";
-import {GetWebGLContext as GetWebGLContext2} from "../../config/webglcontext/GetWebGLContext";
-import {ProcessBindingQueue as ProcessBindingQueue2} from "./renderpass/ProcessBindingQueue";
-import {RenderPass as RenderPass2} from "./renderpass/RenderPass";
+import {End} from "./renderpass/End";
+import {GL} from "./GL";
+import {GetBackgroundColor} from "../../config/backgroundcolor/GetBackgroundColor";
+import {GetRGBArray} from "./colors/GetRGBArray";
+import {GetWebGLContext} from "../../config/webglcontext/GetWebGLContext";
+import {ProcessBindingQueue} from "./renderpass/ProcessBindingQueue";
+import {RenderPass} from "./renderpass/RenderPass";
 import {Start} from "./renderpass";
-import {WebGLRendererInstance as WebGLRendererInstance2} from "./WebGLRendererInstance";
+import {WebGLRendererInstance} from "./WebGLRendererInstance";
 export class WebGLRenderer {
   constructor() {
     this.clearColor = [0, 0, 0, 1];
@@ -18,19 +18,19 @@ export class WebGLRenderer {
     this.width = GetWidth();
     this.height = GetHeight();
     this.resolution = GetResolution();
-    this.setBackgroundColor(GetBackgroundColor2());
+    this.setBackgroundColor(GetBackgroundColor());
     const canvas = document.createElement("canvas");
     canvas.addEventListener("webglcontextlost", (event) => this.onContextLost(event), false);
     canvas.addEventListener("webglcontextrestored", () => this.onContextRestored(), false);
     this.canvas = canvas;
     this.initContext();
-    WebGLRendererInstance2.set(this);
-    this.renderPass = new RenderPass2(this);
+    WebGLRendererInstance.set(this);
+    this.renderPass = new RenderPass(this);
     this.resize(this.width, this.height, this.resolution);
   }
   initContext() {
-    const gl = this.canvas.getContext("webgl", GetWebGLContext2());
-    GL2.set(gl);
+    const gl = this.canvas.getContext("webgl", GetWebGLContext());
+    GL.set(gl);
     this.gl = gl;
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
@@ -59,7 +59,7 @@ export class WebGLRenderer {
     this.initContext();
   }
   setBackgroundColor(color) {
-    GetRGBArray2(color, this.clearColor);
+    GetRGBArray(color, this.clearColor);
     return this;
   }
   reset() {
@@ -70,7 +70,7 @@ export class WebGLRenderer {
     }
     const gl = this.gl;
     const renderPass = this.renderPass;
-    ProcessBindingQueue2();
+    ProcessBindingQueue();
     if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0) {
       return;
     }
@@ -86,9 +86,9 @@ export class WebGLRenderer {
       world.renderGL(renderPass);
       world.postRenderGL(renderPass);
     }
-    End2(renderPass);
+    End(renderPass);
   }
   destroy() {
-    WebGLRendererInstance2.set(void 0);
+    WebGLRendererInstance.set(void 0);
   }
 }

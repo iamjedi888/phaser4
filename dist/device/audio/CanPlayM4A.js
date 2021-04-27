@@ -1,4 +1,4 @@
-import {CanPlayAudioType as CanPlayAudioType2} from "./CanPlayAudioType";
+import {CanPlayAudioType} from "./CanPlayAudioType";
 export function CanPlayM4A(audioElement) {
-  return CanPlayAudioType2("audio/x-m4a", audioElement) || CanPlayAudioType2("audio/aac", audioElement);
+  return CanPlayAudioType("audio/x-m4a", audioElement) || CanPlayAudioType("audio/aac", audioElement);
 }

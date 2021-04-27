@@ -1,6 +1,6 @@
-import {SetScenes as SetScenes2} from "./SetScenes";
+import {SetScenes} from "./SetScenes";
 export function Scenes(scenes) {
   return () => {
-    SetScenes2(scenes);
+    SetScenes(scenes);
   };
 }

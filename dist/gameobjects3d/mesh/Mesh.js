@@ -1,11 +1,11 @@
 import {FlushBuffer} from "../../renderer/webgl1/renderpass";
-import {GameObject3D as GameObject3D2} from "../GameObject3D";
-import {Material as Material2} from "../material/Material";
+import {GameObject3D} from "../GameObject3D";
+import {Material} from "../material/Material";
 import {SetTexture as RequestTexture} from "../../renderer/webgl1/renderpass/SetTexture";
-import {SetFrame as SetFrame2} from "./SetFrame";
-import {SetTexture as SetTexture3} from "./SetTexture";
-export class Mesh extends GameObject3D2 {
-  constructor(x = 0, y = 0, z = 0, geometry, material = new Material2()) {
+import {SetFrame} from "./SetFrame";
+import {SetTexture} from "./SetTexture";
+export class Mesh extends GameObject3D {
+  constructor(x = 0, y = 0, z = 0, geometry, material = new Material()) {
     super(x, y, z);
     this.hasTexture = false;
     this.cullFaces = true;
@@ -14,11 +14,11 @@ export class Mesh extends GameObject3D2 {
     this.setTexture("__WHITE");
   }
   setTexture(key, frame) {
-    SetTexture3(key, frame, this);
+    SetTexture(key, frame, this);
     return this;
   }
   setFrame(key) {
-    SetFrame2(this.texture, key, this);
+    SetFrame(this.texture, key, this);
     return this;
   }
   setMaterial(material) {

@@ -1,12 +1,12 @@
-import {BoundsComponent as BoundsComponent2} from "./components/bounds/BoundsComponent";
-import {DIRTY_CONST as DIRTY_CONST2} from "./DIRTY_CONST";
-import {DestroyChildren as DestroyChildren2} from "../display/DestroyChildren";
-import {DestroyEvent as DestroyEvent2} from "./events/DestroyEvent";
+import {BoundsComponent} from "./components/bounds/BoundsComponent";
+import {DIRTY_CONST} from "./DIRTY_CONST";
+import {DestroyChildren} from "../display/DestroyChildren";
+import {DestroyEvent} from "./events/DestroyEvent";
 import {Emit} from "../events";
-import {GameInstance as GameInstance2} from "../GameInstance";
-import {InputComponent as InputComponent2} from "./components/input/InputComponent";
-import {ReparentChildren as ReparentChildren2} from "../display/ReparentChildren";
-import {TransformComponent as TransformComponent2} from "./components/transform/TransformComponent";
+import {GameInstance} from "../GameInstance";
+import {InputComponent} from "./components/input/InputComponent";
+import {ReparentChildren} from "../display/ReparentChildren";
+import {TransformComponent} from "./components/transform/TransformComponent";
 export class GameObject {
   constructor(x = 0, y = 0) {
     this.type = "GameObject";
@@ -21,10 +21,10 @@ export class GameObject {
     this.visible = true;
     this.children = [];
     this.events = new Map();
-    this.transform = new TransformComponent2(this, x, y);
-    this.bounds = new BoundsComponent2(this);
-    this.input = new InputComponent2(this);
-    this.dirty = DIRTY_CONST2.DEFAULT;
+    this.transform = new TransformComponent(this, x, y);
+    this.bounds = new BoundsComponent(this);
+    this.input = new InputComponent(this);
+    this.dirty = DIRTY_CONST.DEFAULT;
     this.transform.update();
   }
   isRenderable() {
@@ -42,7 +42,7 @@ export class GameObject {
   setDirty(flag, flag2) {
     if (!this.isDirty(flag)) {
       this.dirty ^= flag;
-      this.dirtyFrame = GameInstance2.getFrame();
+      this.dirtyFrame = GameInstance.getFrame();
     }
     if (!this.isDirty(flag2)) {
       this.dirty ^= flag2;
@@ -76,11 +76,11 @@ export class GameObject {
   }
   destroy(reparentChildren) {
     if (reparentChildren) {
-      ReparentChildren2(this, reparentChildren);
+      ReparentChildren(this, reparentChildren);
     } else {
-      DestroyChildren2(this);
+      DestroyChildren(this);
     }
-    Emit(this, DestroyEvent2, this);
+    Emit(this, DestroyEvent, this);
     this.transform.destroy();
     this.bounds.destroy();
     this.input.destroy();

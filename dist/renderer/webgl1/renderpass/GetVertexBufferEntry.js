@@ -1,8 +1,8 @@
-import {Flush as Flush2} from "./Flush";
+import {Flush} from "./Flush";
 export function GetVertexBufferEntry(renderPass, addToCount = 0) {
   const buffer = renderPass.currentVertexBuffer;
   if (renderPass.count + addToCount >= buffer.batchSize) {
-    Flush2(renderPass);
+    Flush(renderPass);
   }
   const offset = buffer.indexed ? renderPass.count * buffer.entryElementSize : renderPass.count * buffer.vertexElementSize;
   renderPass.count += addToCount;

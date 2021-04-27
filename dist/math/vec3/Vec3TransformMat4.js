@@ -1,5 +1,5 @@
-import {Vec3 as Vec32} from "./Vec3";
-export function Vec3TransformMat4(a, m, out = new Vec32()) {
+import {Vec3} from "./Vec3";
+export function Vec3TransformMat4(a, m, out = new Vec3()) {
   const [m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33] = m.data;
   const {x, y, z} = a;
   let w = m03 * x + m13 * y + m23 * z + m33;

@@ -3,13 +3,13 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Arne16 as Arne162} from "../palettes/Arne16";
-import {CreateCanvas as CreateCanvas2} from "../CreateCanvas";
-import {Texture as Texture2} from "../Texture";
+import {Arne16} from "../palettes/Arne16";
+import {CreateCanvas} from "../CreateCanvas";
+import {Texture} from "../Texture";
 export function PixelTexture(config) {
   const {
     data = [],
-    palette = Arne162,
+    palette = Arne16,
     pixelWidth = 1,
     pixelHeight = pixelWidth,
     preRender = null,
@@ -23,7 +23,7 @@ export function PixelTexture(config) {
   const width = Math.floor(Math.abs(data[0].length * pixelWidth));
   const height = Math.floor(Math.abs(data.length * pixelHeight));
   if (!canvas) {
-    canvas = CreateCanvas2(width, height).canvas;
+    canvas = CreateCanvas(width, height).canvas;
     resizeCanvas = false;
     clearCanvas = false;
   }
@@ -51,5 +51,5 @@ export function PixelTexture(config) {
   if (postRender) {
     postRender(canvas, ctx);
   }
-  return new Texture2(canvas);
+  return new Texture(canvas);
 }

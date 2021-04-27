@@ -1,4 +1,4 @@
-import {DepthFirstSearchRecursiveNested as DepthFirstSearchRecursiveNested2} from "./DepthFirstSearchRecursiveNested";
+import {DepthFirstSearchRecursiveNested} from "./DepthFirstSearchRecursiveNested";
 function GetInfo(entry) {
   const legend = entry.numChildren > 0 ? "Parent" : "Child";
   return `${legend} [ type=${entry.type}, name=${entry.name} ]`;
@@ -15,7 +15,7 @@ function LogChildren(entry) {
   console.groupEnd();
 }
 export function ConsoleTreeChildren(parent) {
-  const entries = DepthFirstSearchRecursiveNested2(parent);
+  const entries = DepthFirstSearchRecursiveNested(parent);
   if (parent.world === parent) {
     console.group("World");
   } else {

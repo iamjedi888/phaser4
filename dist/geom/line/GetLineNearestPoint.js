@@ -4,8 +4,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
-export function GetLineNearestPoint(line, point, out = new Vec22()) {
+import {Vec2} from "../../math/vec2/Vec2";
+export function GetLineNearestPoint(line, point, out = new Vec2()) {
   const {x1, y1, x2, y2} = line;
   const L2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
   if (L2 === 0) {

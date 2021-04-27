@@ -1,1 +1,0 @@
-{"version":3,"file":"FromRotation.d.ts","sourceRoot":"","sources":["../../../src/math/mat4/FromRotation.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,mBAAmB,CAAC;AAC9C,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,wBAAgB,YAAY,CAAE,KAAK,EAAE,MAAM,EAAE,IAAI,EAAE,SAAS,EAAE,GAAG,GAAE,OAAuB,GAAG,OAAO,CAuCnG"}

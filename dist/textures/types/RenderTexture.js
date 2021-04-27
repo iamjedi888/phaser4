@@ -1,5 +1,5 @@
-import {Texture as Texture2} from "../Texture";
-export class RenderTexture extends Texture2 {
+import {Texture} from "../Texture";
+export class RenderTexture extends Texture {
   constructor(renderer, width = 256, height = width) {
     super(null, width, height);
     this.renderer = renderer;

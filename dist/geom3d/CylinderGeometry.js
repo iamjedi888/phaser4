@@ -1,7 +1,7 @@
-import {CreateVertexSet as CreateVertexSet2} from "../gameobjects3d/geometry/CreateVertexSet";
-import {Vec2 as Vec22} from "../math/vec2/Vec2";
-import {Vec3 as Vec32} from "../math/vec3/Vec3";
-import {Vec3Normalize as Vec3Normalize2} from "../math/vec3/Vec3Normalize";
+import {CreateVertexSet} from "../gameobjects3d/geometry/CreateVertexSet";
+import {Vec2} from "../math/vec2/Vec2";
+import {Vec3} from "../math/vec3/Vec3";
+import {Vec3Normalize} from "../math/vec3/Vec3Normalize";
 function GenerateCap(top, data, index, halfHeight, radiusTop, radiusBottom, radialSegments, thetaStart, thetaLength) {
   const {
     vertices,
@@ -9,8 +9,8 @@ function GenerateCap(top, data, index, halfHeight, radiusTop, radiusBottom, radi
     uvs,
     indices
   } = data;
-  const uv = new Vec22();
-  const vertex = new Vec32();
+  const uv = new Vec2();
+  const vertex = new Vec3();
   const radius = top === true ? radiusTop : radiusBottom;
   const sign = top === true ? 1 : -1;
   const centerIndexStart = index;
@@ -48,7 +48,7 @@ function GenerateCap(top, data, index, halfHeight, radiusTop, radiusBottom, radi
   return index;
 }
 export function CylinderGeometry(radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 8, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2) {
-  const data = CreateVertexSet2();
+  const data = CreateVertexSet();
   const {
     vertices,
     normals,
@@ -58,8 +58,8 @@ export function CylinderGeometry(radiusTop = 1, radiusBottom = 1, height = 1, ra
   let index = 0;
   const indexArray = [];
   const halfHeight = height / 2;
-  const normal = new Vec32();
-  const vertex = new Vec32();
+  const normal = new Vec3();
+  const vertex = new Vec3();
   const slope = (radiusBottom - radiusTop) / height;
   for (let y = 0; y <= heightSegments; y++) {
     const indexRow = [];
@@ -75,7 +75,7 @@ export function CylinderGeometry(radiusTop = 1, radiusBottom = 1, height = 1, ra
       vertex.z = radius * cosTheta;
       vertices.push(vertex.x, vertex.y, vertex.z);
       normal.set(sinTheta, slope, cosTheta);
-      Vec3Normalize2(normal, normal);
+      Vec3Normalize(normal, normal);
       normals.push(normal.x, normal.y, normal.z);
       uvs.push(u, 1 - v);
       indexRow.push(index++);

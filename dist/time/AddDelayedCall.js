@@ -1,6 +1,6 @@
-import {AddTimer as AddTimer2} from "./AddTimer";
+import {AddTimer} from "./AddTimer";
 export function AddDelayedCall(clock, delay, callback) {
-  AddTimer2(clock, {
+  AddTimer(clock, {
     duration: 0,
     delay,
     onComplete: callback

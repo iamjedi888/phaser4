@@ -1,8 +1,8 @@
-import {GetVertexBufferEntry as GetVertexBufferEntry2} from "../renderpass/GetVertexBufferEntry";
-import {SetTexture as SetTexture2} from "../renderpass/SetTexture";
+import {GetVertexBufferEntry} from "../renderpass/GetVertexBufferEntry";
+import {SetTexture} from "../renderpass/SetTexture";
 export function BatchTexturedQuad(sprite, renderPass) {
-  const {F32, U32, offset} = GetVertexBufferEntry2(renderPass, 1);
-  const textureIndex = SetTexture2(renderPass, sprite.texture);
+  const {F32, U32, offset} = GetVertexBufferEntry(renderPass, 1);
+  const textureIndex = SetTexture(renderPass, sprite.texture);
   let vertOffset = offset;
   sprite.vertices.forEach((vertex) => {
     F32[vertOffset + 0] = vertex.x;

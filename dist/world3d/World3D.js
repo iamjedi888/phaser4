@@ -1,19 +1,19 @@
 import {Flush, PopShader, SetShader} from "../renderer/webgl1/renderpass";
-import {Light as Light2} from "../gameobjects3d/light/Light";
-import {AmbientLightShader as AmbientLightShader2} from "../renderer/webgl1/shaders/AmbientLightShader";
-import {BaseWorld3D as BaseWorld3D2} from "./BaseWorld3D";
-import {CreateWorld3DRenderData as CreateWorld3DRenderData2} from "./CreateWorld3DRenderData";
-import {NewCamera3D as NewCamera3D2} from "../camera3d/NewCamera3D";
-export class World3D extends BaseWorld3D2 {
+import {Light} from "../gameobjects3d/light/Light";
+import {AmbientLightShader} from "../renderer/webgl1/shaders/AmbientLightShader";
+import {BaseWorld3D} from "./BaseWorld3D";
+import {CreateWorld3DRenderData} from "./CreateWorld3DRenderData";
+import {NewCamera3D} from "../camera3d/NewCamera3D";
+export class World3D extends BaseWorld3D {
   constructor(scene, x = 0, y = 0, z = 0, lightConfig) {
     super(scene);
     this.enableCameraCull = true;
     this.type = "World3D";
-    this.camera = new NewCamera3D2();
+    this.camera = new NewCamera3D();
     this.camera.position.set(x, y, z);
-    this.light = new Light2(lightConfig);
-    this.shader = new AmbientLightShader2();
-    this.renderData = CreateWorld3DRenderData2(this, this.camera);
+    this.light = new Light(lightConfig);
+    this.shader = new AmbientLightShader();
+    this.renderData = CreateWorld3DRenderData(this, this.camera);
   }
   renderGL(renderPass) {
     Flush(renderPass);

@@ -1,15 +1,15 @@
-import {GetMaxTextures as GetMaxTextures2} from "../../../config/maxtextures/GetMaxTextures";
-import {MULTI_QUAD_FRAG as MULTI_QUAD_FRAG2} from "../glsl/MULTI_QUAD_FRAG";
-import {QuadShader as QuadShader2} from "./QuadShader";
-export class MultiTextureQuadShader extends QuadShader2 {
+import {GetMaxTextures} from "../../../config/maxtextures/GetMaxTextures";
+import {MULTI_QUAD_FRAG} from "../glsl/MULTI_QUAD_FRAG";
+import {QuadShader} from "./QuadShader";
+export class MultiTextureQuadShader extends QuadShader {
   constructor(config = {}) {
     if (!config.fragmentShader) {
-      config.fragmentShader = MULTI_QUAD_FRAG2;
+      config.fragmentShader = MULTI_QUAD_FRAG;
     }
     super(config);
   }
   create(fragmentShaderSource, vertexShaderSource, uniforms, attribs) {
-    const maxTextures = GetMaxTextures2();
+    const maxTextures = GetMaxTextures();
     let src = "";
     for (let i = 1; i < maxTextures; i++) {
       if (i > 1) {

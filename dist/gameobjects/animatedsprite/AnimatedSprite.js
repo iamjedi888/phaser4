@@ -1,5 +1,5 @@
-import {Sprite as Sprite2} from "../sprite/Sprite";
-export class AnimatedSprite extends Sprite2 {
+import {Sprite} from "../sprite/Sprite";
+export class AnimatedSprite extends Sprite {
   constructor(x, y, texture, frame) {
     super(x, y, texture, frame);
     this.type = "AnimatedSprite";

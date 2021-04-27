@@ -3,10 +3,10 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CheckMatrix as CheckMatrix2} from "./CheckMatrix";
+import {CheckMatrix} from "./CheckMatrix";
 export function MatrixToString(matrix) {
   let str = "";
-  if (!CheckMatrix2(matrix)) {
+  if (!CheckMatrix(matrix)) {
     return str;
   }
   for (let r = 0; r < matrix.length; r++) {

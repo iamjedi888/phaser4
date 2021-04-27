@@ -1,25 +1,25 @@
-import {CreateCanvas as CreateCanvas2} from "./CreateCanvas";
-import {Texture as Texture2} from "./Texture";
-import {TextureManagerInstance as TextureManagerInstance2} from "./TextureManagerInstance";
+import {CreateCanvas} from "./CreateCanvas";
+import {Texture} from "./Texture";
+import {TextureManagerInstance} from "./TextureManagerInstance";
 export class TextureManager {
   constructor() {
     this.textures = new Map();
     this.createDefaultTextures();
-    TextureManagerInstance2.set(this);
+    TextureManagerInstance.set(this);
   }
   createDefaultTextures() {
-    this.add("__BLANK", new Texture2(CreateCanvas2(32, 32).canvas));
-    const missing = CreateCanvas2(32, 32);
+    this.add("__BLANK", new Texture(CreateCanvas(32, 32).canvas));
+    const missing = CreateCanvas(32, 32);
     missing.strokeStyle = "#0f0";
     missing.moveTo(0, 0);
     missing.lineTo(32, 32);
     missing.stroke();
     missing.strokeRect(0.5, 0.5, 31, 31);
-    this.add("__MISSING", new Texture2(missing.canvas));
-    const white = CreateCanvas2(32, 32);
+    this.add("__MISSING", new Texture(missing.canvas));
+    const white = CreateCanvas(32, 32);
     white.fillStyle = "#fff";
     white.fillRect(0, 0, 32, 32);
-    this.add("__WHITE", new Texture2(white.canvas));
+    this.add("__WHITE", new Texture(white.canvas));
   }
   get(key) {
     const textures = this.textures;
@@ -36,10 +36,10 @@ export class TextureManager {
     let texture;
     const textures = this.textures;
     if (!textures.has(key)) {
-      if (source instanceof Texture2) {
+      if (source instanceof Texture) {
         texture = source;
       } else {
-        texture = new Texture2(source, 0, 0, glConfig);
+        texture = new Texture(source, 0, 0, glConfig);
       }
       texture.key = key;
       textures.set(key, texture);

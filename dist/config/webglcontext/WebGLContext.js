@@ -1,6 +1,6 @@
-import {SetWebGLContext as SetWebGLContext2} from "./SetWebGLContext";
+import {SetWebGLContext} from "./SetWebGLContext";
 export function WebGLContext(contextAttributes) {
   return () => {
-    SetWebGLContext2(contextAttributes);
+    SetWebGLContext(contextAttributes);
   };
 }

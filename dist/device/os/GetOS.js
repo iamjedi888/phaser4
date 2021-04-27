@@ -1,40 +1,40 @@
-import {IsAndroid as IsAndroid2} from "./IsAndroid";
-import {IsChromeOS as IsChromeOS2} from "./IsChromeOS";
-import {IsCordova as IsCordova2} from "./IsCordova";
-import {IsCrosswalk as IsCrosswalk2} from "./IsCrosswalk";
-import {IsEjecta as IsEjecta2} from "./IsEjecta";
-import {IsKindle as IsKindle2} from "./IsKindle";
-import {IsLinux as IsLinux2} from "./IsLinux";
-import {IsMacOS as IsMacOS2} from "./IsMacOS";
-import {IsNode as IsNode2} from "./IsNode";
-import {IsNodeWebkit as IsNodeWebkit2} from "./IsNodeWebkit";
-import {IsWebApp as IsWebApp2} from "./IsWebApp";
-import {IsWindows as IsWindows2} from "./IsWindows";
-import {IsWindowsPhone as IsWindowsPhone2} from "./IsWindowsPhone";
-import {IsiOS as IsiOS2} from "./IsiOS";
+import {IsAndroid} from "./IsAndroid";
+import {IsChromeOS} from "./IsChromeOS";
+import {IsCordova} from "./IsCordova";
+import {IsCrosswalk} from "./IsCrosswalk";
+import {IsEjecta} from "./IsEjecta";
+import {IsKindle} from "./IsKindle";
+import {IsLinux} from "./IsLinux";
+import {IsMacOS} from "./IsMacOS";
+import {IsNode} from "./IsNode";
+import {IsNodeWebkit} from "./IsNodeWebkit";
+import {IsWebApp} from "./IsWebApp";
+import {IsWindows} from "./IsWindows";
+import {IsWindowsPhone} from "./IsWindowsPhone";
+import {IsiOS} from "./IsiOS";
 export function GetOS() {
   const ua = navigator.userAgent;
-  const {iOS, iOSVersion, iPad, iPhone} = IsiOS2();
+  const {iOS, iOSVersion, iPad, iPhone} = IsiOS();
   const result = {
-    android: IsAndroid2(),
-    chromeOS: IsChromeOS2(),
-    cordova: IsCordova2(),
-    crosswalk: IsCrosswalk2(),
+    android: IsAndroid(),
+    chromeOS: IsChromeOS(),
+    cordova: IsCordova(),
+    crosswalk: IsCrosswalk(),
     desktop: false,
-    ejecta: IsEjecta2(),
+    ejecta: IsEjecta(),
     iOS,
     iOSVersion,
     iPad,
     iPhone,
-    kindle: IsKindle2(),
-    linux: IsLinux2(),
-    macOS: IsMacOS2(),
-    node: IsNode2(),
-    nodeWebkit: IsNodeWebkit2(),
+    kindle: IsKindle(),
+    linux: IsLinux(),
+    macOS: IsMacOS(),
+    node: IsNode(),
+    nodeWebkit: IsNodeWebkit(),
     pixelRatio: 1,
-    webApp: IsWebApp2(),
-    windows: IsWindows2(),
-    windowsPhone: IsWindowsPhone2()
+    webApp: IsWebApp(),
+    windows: IsWindows(),
+    windowsPhone: IsWindowsPhone()
   };
   if (result.windowsPhone) {
     result.android = false;

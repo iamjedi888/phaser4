@@ -1,7 +1,7 @@
-import {SetParent as SetParent2} from "./SetParent";
+import {SetParent} from "./SetParent";
 export function AddChild(parent, child) {
   parent.children.push(child);
-  SetParent2(parent, child);
+  SetParent(parent, child);
   child.transform.updateWorld();
   return child;
 }

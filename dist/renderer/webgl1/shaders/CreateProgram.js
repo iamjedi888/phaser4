@@ -1,4 +1,4 @@
-import {DeleteShaders as DeleteShaders2} from "./DeleteShaders";
+import {DeleteShaders} from "./DeleteShaders";
 import {gl} from "../GL";
 export function CreateProgram(...shaders) {
   const program = gl.createProgram();
@@ -11,7 +11,7 @@ export function CreateProgram(...shaders) {
     const info = gl.getProgramInfoLog(program);
     console.error(`Error linking program: ${info}`);
     gl.deleteProgram(program);
-    DeleteShaders2(...shaders);
+    DeleteShaders(...shaders);
     return null;
   }
   return program;

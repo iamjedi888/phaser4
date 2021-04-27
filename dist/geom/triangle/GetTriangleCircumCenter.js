@@ -3,11 +3,11 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
+import {Vec2} from "../../math/vec2/Vec2";
 function Det(m00, m01, m10, m11) {
   return m00 * m11 - m01 * m10;
 }
-export function GetTriangleCircumCenter(triangle, out = new Vec22()) {
+export function GetTriangleCircumCenter(triangle, out = new Vec2()) {
   const cx = triangle.x3;
   const cy = triangle.y3;
   const ax = triangle.x1 - cx;

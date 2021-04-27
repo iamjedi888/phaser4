@@ -1,1 +1,0 @@
-{"version":3,"file":"ToEulerAngles.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/ToEulerAngles.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AACpD,OAAO,EAAE,IAAI,EAAE,MAAM,SAAS,CAAC;AAI/B,wBAAgB,aAAa,CAAE,CAAC,EAAE,eAAe,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAoC/E"}

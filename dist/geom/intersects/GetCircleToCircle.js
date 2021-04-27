@@ -4,10 +4,10 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CircleToCircle as CircleToCircle2} from "./CircleToCircle";
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
+import {CircleToCircle} from "./CircleToCircle";
+import {Vec2} from "../../math/vec2/Vec2";
 export function GetCircleToCircle(circleA, circleB, out = []) {
-  if (CircleToCircle2(circleA, circleB)) {
+  if (CircleToCircle(circleA, circleB)) {
     const x0 = circleA.x;
     const y0 = circleA.y;
     const r0 = circleA.radius;
@@ -26,10 +26,10 @@ export function GetCircleToCircle(circleA, circleB, out = []) {
       coefficientC = x1 * x1 + x * x - 2 * x1 * x + y1 * y1 - r1 * r1;
       lambda = coefficientB * coefficientB - 4 * coefficientA * coefficientC;
       if (lambda === 0) {
-        out.push(new Vec22(x, -coefficientB / (2 * coefficientA)));
+        out.push(new Vec2(x, -coefficientB / (2 * coefficientA)));
       } else if (lambda > 0) {
-        out.push(new Vec22(x, (-coefficientB + Math.sqrt(lambda)) / (2 * coefficientA)));
-        out.push(new Vec22(x, (-coefficientB - Math.sqrt(lambda)) / (2 * coefficientA)));
+        out.push(new Vec2(x, (-coefficientB + Math.sqrt(lambda)) / (2 * coefficientA)));
+        out.push(new Vec2(x, (-coefficientB - Math.sqrt(lambda)) / (2 * coefficientA)));
       }
     } else {
       const v1 = (x0 - x1) / (y0 - y1);
@@ -40,12 +40,12 @@ export function GetCircleToCircle(circleA, circleB, out = []) {
       lambda = coefficientB * coefficientB - 4 * coefficientA * coefficientC;
       if (lambda === 0) {
         x = -coefficientB / (2 * coefficientA);
-        out.push(new Vec22(x, n - x * v1));
+        out.push(new Vec2(x, n - x * v1));
       } else if (lambda > 0) {
         x = (-coefficientB + Math.sqrt(lambda)) / (2 * coefficientA);
-        out.push(new Vec22(x, n - x * v1));
+        out.push(new Vec2(x, n - x * v1));
         x = (-coefficientB - Math.sqrt(lambda)) / (2 * coefficientA);
-        out.push(new Vec22(x, n - x * v1));
+        out.push(new Vec2(x, n - x * v1));
       }
     }
   }

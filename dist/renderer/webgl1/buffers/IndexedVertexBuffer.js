@@ -1,7 +1,7 @@
-import {DeleteGLBuffer as DeleteGLBuffer2} from "./DeleteGLBuffer";
-import {VertexBuffer as VertexBuffer2} from "./VertexBuffer";
+import {DeleteGLBuffer} from "./DeleteGLBuffer";
+import {VertexBuffer} from "./VertexBuffer";
 import {gl} from "../GL";
-export class IndexedVertexBuffer extends VertexBuffer2 {
+export class IndexedVertexBuffer extends VertexBuffer {
   constructor(config = {}) {
     super(config);
     const {
@@ -39,7 +39,7 @@ export class IndexedVertexBuffer extends VertexBuffer2 {
   }
   destroy() {
     super.destroy();
-    DeleteGLBuffer2(this.indexBuffer);
+    DeleteGLBuffer(this.indexBuffer);
     this.index = null;
     this.indexLayout = null;
     this.indexBuffer = null;

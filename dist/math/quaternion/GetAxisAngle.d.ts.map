@@ -1,1 +1,0 @@
-{"version":3,"file":"GetAxisAngle.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/GetAxisAngle.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AACpD,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAa1C,wBAAgB,YAAY,CAAE,CAAC,EAAE,eAAe,EAAE,GAAG,GAAE,UAA6B,GAAG,MAAM,CAqB5F"}

@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {TriangleContains as TriangleContains2} from "./TriangleContains";
+import {TriangleContains} from "./TriangleContains";
 export class Triangle {
   constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0) {
     this.set(x1, y1, x2, y2, x3, y3);
@@ -18,7 +18,7 @@ export class Triangle {
     return this;
   }
   contains(x, y) {
-    return TriangleContains2(this, x, y);
+    return TriangleContains(this, x, y);
   }
   get left() {
     return Math.min(this.x1, this.x2, this.x3);

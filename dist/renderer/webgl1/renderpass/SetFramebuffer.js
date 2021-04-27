@@ -1,7 +1,7 @@
-import {AddFramebuffer as AddFramebuffer2} from "./AddFramebuffer";
-import {BindFramebuffer as BindFramebuffer2} from "./BindFramebuffer";
+import {AddFramebuffer} from "./AddFramebuffer";
+import {BindFramebuffer} from "./BindFramebuffer";
 export function SetFramebuffer(renderPass, framebuffer, clear = true, viewport) {
-  const entry = AddFramebuffer2(renderPass, framebuffer, viewport);
-  BindFramebuffer2(renderPass, clear, entry);
+  const entry = AddFramebuffer(renderPass, framebuffer, viewport);
+  BindFramebuffer(renderPass, clear, entry);
   renderPass.currentFramebuffer = entry;
 }

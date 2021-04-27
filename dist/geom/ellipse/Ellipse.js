@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {EllipseContains as EllipseContains2} from "./EllipseContains";
+import {EllipseContains} from "./EllipseContains";
 export class Ellipse {
   constructor(x = 0, y = 0, width = 0, height = 0) {
     this.set(x, y, width, height);
@@ -16,7 +16,7 @@ export class Ellipse {
     return this;
   }
   contains(x, y) {
-    return EllipseContains2(this, x, y);
+    return EllipseContains(this, x, y);
   }
   getMinorRadius() {
     return Math.min(this.width, this.height) / 2;

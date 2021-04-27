@@ -1,5 +1,5 @@
-import {PopFramebuffer as PopFramebuffer2} from "./PopFramebuffer";
-import {SetFramebuffer as SetFramebuffer2} from "./SetFramebuffer";
+import {PopFramebuffer} from "./PopFramebuffer";
+import {SetFramebuffer} from "./SetFramebuffer";
 import {gl} from "../GL";
 export function Draw(renderPass) {
   const count = renderPass.count;
@@ -10,7 +10,7 @@ export function Draw(renderPass) {
   const currentShader = renderPass.currentShader;
   const renderToFramebuffer = currentShader.shader.renderToFramebuffer;
   if (renderToFramebuffer) {
-    SetFramebuffer2(renderPass, currentShader.shader.framebuffer, true);
+    SetFramebuffer(renderPass, currentShader.shader.framebuffer, true);
   }
   if (count === currentBuffer.batchSize) {
     const type = currentBuffer.isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
@@ -26,6 +26,6 @@ export function Draw(renderPass) {
     gl.drawArrays(gl.TRIANGLES, 0, count);
   }
   if (renderToFramebuffer) {
-    PopFramebuffer2(renderPass);
+    PopFramebuffer(renderPass);
   }
 }

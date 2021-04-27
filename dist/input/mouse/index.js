@@ -1,4 +1,4 @@
-import {Mouse as Mouse2} from "./Mouse";
+import {Mouse} from "./Mouse";
 export {
-  Mouse2 as Mouse
+  Mouse
 };

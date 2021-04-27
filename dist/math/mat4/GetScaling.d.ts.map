@@ -1,1 +1,0 @@
-{"version":3,"file":"GetScaling.d.ts","sourceRoot":"","sources":["../../../src/math/mat4/GetScaling.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AACtC,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AAEpC,wBAAgB,UAAU,CAAE,MAAM,EAAE,QAAQ,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAU1E"}

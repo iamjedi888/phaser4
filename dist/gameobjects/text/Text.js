@@ -1,10 +1,10 @@
-import {CanvasTexture as CanvasTexture2} from "../../textures/types/CanvasTexture";
-import {DIRTY_CONST as DIRTY_CONST2} from "../DIRTY_CONST";
-import {GameInstance as GameInstance2} from "../../GameInstance";
-import {Sprite as Sprite2} from "../sprite/Sprite";
-export class Text extends Sprite2 {
+import {CanvasTexture} from "../../textures/types/CanvasTexture";
+import {DIRTY_CONST} from "../DIRTY_CONST";
+import {GameInstance} from "../../GameInstance";
+import {Sprite} from "../sprite/Sprite";
+export class Text extends Sprite {
   constructor(x, y, text = "", font, fillStyle) {
-    super(x, y, CanvasTexture2());
+    super(x, y, CanvasTexture());
     this.splitRegExp = /(?:\r\n|\r|\n)/;
     this.padding = {left: 0, right: 0, top: 0, bottom: 0};
     this.verticalAlign = "ascent";
@@ -20,7 +20,7 @@ export class Text extends Sprite2 {
     this.lineDash = [];
     this.antialias = false;
     this.type = "Text";
-    const game = GameInstance2.get();
+    const game = GameInstance.get();
     this.resolution = game.renderer.resolution;
     this.canvas = this.texture.image;
     this.context = this.canvas.getContext("2d");
@@ -66,7 +66,7 @@ export class Text extends Sprite2 {
     let y = 0;
     const lineMetrics = [];
     const vAlignAscent = this.verticalAlign === "ascent";
-    const metrics = ctx.measureText("|MÉq");
+    const metrics = ctx.measureText("|M\xC9q");
     const averageLineHeight = Math.ceil(Math.abs(metrics.actualBoundingBoxAscent) + Math.abs(metrics.actualBoundingBoxDescent)) + strokeWidth;
     for (let i = 0; i < lines.length; i++) {
       const metrics2 = ctx.measureText(lines[i]);
@@ -150,7 +150,7 @@ export class Text extends Sprite2 {
     if (this.texture.binding) {
       this.texture.binding.update();
     }
-    this.setDirty(DIRTY_CONST2.TEXTURE);
+    this.setDirty(DIRTY_CONST.TEXTURE);
     return this;
   }
   get text() {

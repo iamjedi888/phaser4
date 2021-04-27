@@ -1,8 +1,8 @@
 import {Clamp, DegToRad} from "../math";
-import {FORWARD, Forward, RIGHT, Right, UP, Up, Vec3, Vec3Callback, Vec3ScaleAndAdd, Vec3TransformMat4Zero} from "../math/vec3";
-import {FromRotationXYTranslation, Invert, Matrix4, Multiply, Perspective} from "../math/mat4";
-import {Quaternion, RotationYawPitchRoll} from "../math/quaternion";
-import {GameInstance as GameInstance2} from "../GameInstance";
+import {FORWARD, RIGHT, UP, Vec3, Vec3Callback, Vec3Forward, Vec3Right, Vec3ScaleAndAdd, Vec3TransformMat4Zero, Vec3Up} from "../math/vec3";
+import {Mat4FromRotationXYTranslation, Mat4Invert, Mat4Multiply, Mat4Perspective, Matrix4} from "../math/mat4";
+import {QuatRotationYawPitchRoll, Quaternion} from "../math/quaternion";
+import {GameInstance} from "../GameInstance";
 import {Rectangle} from "../geom/rectangle";
 export class NewCamera3D {
   constructor(fov = 45, near = 0.1, far = 1e3) {
@@ -30,25 +30,25 @@ export class NewCamera3D {
     this.viewProjectionMatrix = new Matrix4();
     this.position = new Vec3Callback(() => this.update());
     this.rotation = new Quaternion();
-    const game = GameInstance2.get();
+    const game = GameInstance.get();
     const renderer = game.renderer;
     this.viewport = new Rectangle(0, 0, renderer.width, renderer.height);
     this.renderer = renderer;
-    this.forward = Forward();
-    this.up = Up();
-    this.right = Right();
+    this.forward = Vec3Forward();
+    this.up = Vec3Up();
+    this.right = Vec3Right();
     this.start = new Vec3();
     this.setAspectRatio();
   }
   update() {
     const matrix = this.matrix;
     const view = this.viewMatrix;
-    FromRotationXYTranslation(this.rotation, this.position, !this.isOrbit, matrix);
+    Mat4FromRotationXYTranslation(this.rotation, this.position, !this.isOrbit, matrix);
     Vec3TransformMat4Zero(FORWARD, matrix, this.forward);
     Vec3TransformMat4Zero(UP, matrix, this.up);
     Vec3TransformMat4Zero(RIGHT, matrix, this.right);
-    Invert(matrix, view);
-    Multiply(this.projectionMatrix, view, this.viewProjectionMatrix);
+    Mat4Invert(matrix, view);
+    Mat4Multiply(this.projectionMatrix, view, this.viewProjectionMatrix);
     return this;
   }
   panX(amount) {
@@ -109,7 +109,7 @@ export class NewCamera3D {
     return this.updateProjectionMatrix();
   }
   updateProjectionMatrix() {
-    Perspective(DegToRad(this._fov), this.aspect, this._near, this._far, this.projectionMatrix);
+    Mat4Perspective(DegToRad(this._fov), this.aspect, this._near, this._far, this.projectionMatrix);
     return this;
   }
   get fov() {
@@ -142,20 +142,20 @@ export class NewCamera3D {
   }
   set yaw(value) {
     this._yaw = value;
-    RotationYawPitchRoll(value, this._pitch, this._roll, this.rotation);
+    QuatRotationYawPitchRoll(value, this._pitch, this._roll, this.rotation);
   }
   get pitch() {
     return this._pitch;
   }
   set pitch(value) {
     this._pitch = value;
-    RotationYawPitchRoll(this._yaw, value, this._roll, this.rotation);
+    QuatRotationYawPitchRoll(this._yaw, value, this._roll, this.rotation);
   }
   get roll() {
     return this._roll;
   }
   set roll(value) {
     this._roll = value;
-    RotationYawPitchRoll(this._yaw, this._pitch, value, this.rotation);
+    QuatRotationYawPitchRoll(this._yaw, this._pitch, value, this.rotation);
   }
 }

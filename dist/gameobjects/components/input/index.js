@@ -1,4 +1,4 @@
-import {InputComponent as InputComponent2} from "./InputComponent";
+import {InputComponent} from "./InputComponent";
 export {
-  InputComponent2 as InputComponent
+  InputComponent
 };

@@ -13,14 +13,14 @@ import * as Geom3D from "./geom3d/";
 import * as Input from "./input/";
 import * as Loader from "./loader/";
 import * as Materials3D from "./materials3d/";
-import * as Math2 from "./math/";
+import * as Math from "./math/";
 import * as Textures from "./textures/";
 import * as Time from "./time/";
 import * as WebGL1 from "./renderer/webgl1/";
 import * as World from "./world/";
 import * as World3D from "./world3d/";
-import {Game as Game2} from "./Game";
-import {Scene as Scene2} from "./scenes/Scene";
+import {Game} from "./Game";
+import {Scene} from "./scenes/Scene";
 export {
   Camera,
   Camera3D,
@@ -30,8 +30,8 @@ export {
   Display,
   Display3D,
   Events,
-  Game2 as Game,
-  Scene2 as Scene,
+  Game,
+  Scene,
   GameObjects,
   GameObjects3D,
   Geom,
@@ -39,7 +39,7 @@ export {
   Input,
   Loader,
   Materials3D,
-  Math2 as Math,
+  Math,
   Textures,
   Time,
   WebGL1,

@@ -1,15 +1,15 @@
-import {DIRTY_CONST as DIRTY_CONST2} from "../gameobjects/DIRTY_CONST";
-import {GetChildIndex as GetChildIndex2} from "./GetChildIndex";
+import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
+import {GetChildIndex} from "./GetChildIndex";
 export function MoveChildDown(parent, child) {
   const parentChildren = parent.children;
-  const currentIndex = GetChildIndex2(parent, child);
+  const currentIndex = GetChildIndex(parent, child);
   if (currentIndex > 0) {
     const child2 = parentChildren[currentIndex - 1];
     const index2 = parentChildren.indexOf(child2);
     parentChildren[currentIndex] = child2;
     parentChildren[index2] = child;
-    child.setDirty(DIRTY_CONST2.TRANSFORM);
-    child2.setDirty(DIRTY_CONST2.TRANSFORM);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+    child2.setDirty(DIRTY_CONST.TRANSFORM);
   }
   return child;
 }

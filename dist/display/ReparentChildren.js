@@ -1,8 +1,8 @@
-import {RemoveChildrenBetween as RemoveChildrenBetween2} from "./RemoveChildrenBetween";
-import {SetParent as SetParent2} from "./SetParent";
+import {RemoveChildrenBetween} from "./RemoveChildrenBetween";
+import {SetParent} from "./SetParent";
 export function ReparentChildren(parent, newParent, beginIndex = 0, endIndex) {
-  const moved = RemoveChildrenBetween2(parent, beginIndex, endIndex);
-  SetParent2(newParent, ...moved);
+  const moved = RemoveChildrenBetween(parent, beginIndex, endIndex);
+  SetParent(newParent, ...moved);
   moved.forEach((child) => {
     child.transform.updateWorld();
   });

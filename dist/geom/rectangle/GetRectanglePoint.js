@@ -3,13 +3,13 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetRectanglePerimeter as GetRectanglePerimeter2} from "./GetRectanglePerimeter";
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
-export function GetRectanglePoint(rectangle, position, out = new Vec22()) {
+import {GetRectanglePerimeter} from "./GetRectanglePerimeter";
+import {Vec2} from "../../math/vec2/Vec2";
+export function GetRectanglePoint(rectangle, position, out = new Vec2()) {
   if (position <= 0 || position >= 1) {
     return out.set(rectangle.x, rectangle.y);
   }
-  let p = GetRectanglePerimeter2(rectangle) * position;
+  let p = GetRectanglePerimeter(rectangle) * position;
   if (position > 0.5) {
     p -= rectangle.width + rectangle.height;
     if (p <= rectangle.width) {

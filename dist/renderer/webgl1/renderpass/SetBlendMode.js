@@ -1,7 +1,7 @@
-import {AddBlendMode as AddBlendMode2} from "./AddBlendMode";
-import {BindBlendMode as BindBlendMode2} from "./BindBlendMode";
+import {AddBlendMode} from "./AddBlendMode";
+import {BindBlendMode} from "./BindBlendMode";
 export function SetBlendMode(renderPass, enable, sfactor, dfactor) {
-  const entry = AddBlendMode2(renderPass, enable, sfactor, dfactor);
-  BindBlendMode2(renderPass, entry);
+  const entry = AddBlendMode(renderPass, enable, sfactor, dfactor);
+  BindBlendMode(renderPass, entry);
   renderPass.currentBlendMode = entry;
 }

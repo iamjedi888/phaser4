@@ -1,5 +1,5 @@
-import {BindingQueue as BindingQueue2} from "../renderer/BindingQueue";
-import {Frame as Frame2} from "./Frame";
+import {BindingQueue} from "../renderer/BindingQueue";
+import {Frame} from "./Frame";
 export class Texture {
   constructor(image, width, height, glConfig) {
     this.key = "";
@@ -13,13 +13,13 @@ export class Texture {
     this.frames = new Map();
     this.data = {};
     this.addFrame("__BASE", 0, 0, width, height);
-    BindingQueue2.add(this, glConfig);
+    BindingQueue.add(this, glConfig);
   }
   addFrame(key, x, y, width, height) {
     if (this.frames.has(key)) {
       return null;
     }
-    const frame = new Frame2(this, key, x, y, width, height);
+    const frame = new Frame(this, key, x, y, width, height);
     this.frames.set(key, frame);
     if (!this.firstFrame || this.firstFrame.key === "__BASE") {
       this.firstFrame = frame;
@@ -30,7 +30,7 @@ export class Texture {
     if (!key) {
       return this.firstFrame;
     }
-    if (key instanceof Frame2) {
+    if (key instanceof Frame) {
       key = key.key;
     }
     let frame = this.frames.get(key);

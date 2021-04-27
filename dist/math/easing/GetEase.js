@@ -8,15 +8,15 @@ import * as Quadratic from "./quadratic";
 import * as Quartic from "./quartic";
 import * as Quintic from "./quintic";
 import * as Sine from "./sine";
-import {Linear as Linear2} from "./Linear";
-import {Stepped as Stepped2} from "./Stepped";
+import {Linear} from "./Linear";
+import {Stepped} from "./Stepped";
 const EaseMap = new Map([
-  ["power0", Linear2],
+  ["power0", Linear],
   ["power1", Quadratic.Out],
   ["power2", Cubic.Out],
   ["power3", Quartic.Out],
   ["power4", Quintic.Out],
-  ["linear", Linear2],
+  ["linear", Linear],
   ["quad", Quadratic.Out],
   ["cubic", Cubic.Out],
   ["quart", Quartic.Out],
@@ -27,7 +27,7 @@ const EaseMap = new Map([
   ["elastic", Elastic.Out],
   ["back", Back.Out],
   ["bounce", Bounce.Out],
-  ["stepped", Stepped2],
+  ["stepped", Stepped],
   ["quad.in", Quadratic.In],
   ["cubic.in", Cubic.In],
   ["quart.in", Quartic.In],
@@ -65,6 +65,6 @@ export function GetEase(name) {
   if (EaseMap.has(name)) {
     return EaseMap.get(name);
   } else {
-    return Linear2;
+    return Linear;
   }
 }

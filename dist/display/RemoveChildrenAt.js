@@ -1,9 +1,9 @@
-import {RemoveChildAt as RemoveChildAt2} from "./RemoveChildAt";
+import {RemoveChildAt} from "./RemoveChildAt";
 export function RemoveChildrenAt(parent, ...index) {
   const removed = [];
   index.sort((a, b) => a - b);
   index.reverse().forEach((i) => {
-    const child = RemoveChildAt2(parent, i);
+    const child = RemoveChildAt(parent, i);
     if (child) {
       removed.push(child);
     }

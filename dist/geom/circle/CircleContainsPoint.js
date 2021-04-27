@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CircleContains as CircleContains2} from "./CircleContains";
+import {CircleContains} from "./CircleContains";
 export function CircleContainsPoint(circle, point) {
-  return CircleContains2(circle, point.x, point.y);
+  return CircleContains(circle, point.x, point.y);
 }

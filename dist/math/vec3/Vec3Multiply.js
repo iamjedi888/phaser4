@@ -1,4 +1,4 @@
-import {Vec3 as Vec32} from "./Vec3";
-export function Vec3Multiply(a, b, out = new Vec32()) {
+import {Vec3} from "./Vec3";
+export function Vec3Multiply(a, b, out = new Vec3()) {
   return out.set(a.x * b.x, a.y * b.y, a.z * b.z);
 }

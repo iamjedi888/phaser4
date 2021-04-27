@@ -1,7 +1,7 @@
-import {AddChild as AddChild2} from "./AddChild";
+import {AddChild} from "./AddChild";
 export function AddChildren(parent, ...children) {
   children.forEach((child) => {
-    AddChild2(parent, child);
+    AddChild(parent, child);
   });
   return children;
 }

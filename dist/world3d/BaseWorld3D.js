@@ -1,12 +1,12 @@
 import * as GameObjectEvents from "../gameobjects/events";
 import * as World3DEvents from "./events";
 import {Emit, Off, On, Once} from "../events";
-import {BuildRenderList as BuildRenderList2} from "./BuildRenderList";
-import {GameObject3D as GameObject3D2} from "../gameobjects3d/GameObject3D";
-import {MergeRenderData as MergeRenderData2} from "./MergeRenderData";
-import {RemoveChildren3D as RemoveChildren3D2} from "../display3d/RemoveChildren3D";
-import {ResetWorld3DRenderData as ResetWorld3DRenderData2} from "./ResetWorld3DRenderData";
-export class BaseWorld3D extends GameObject3D2 {
+import {BuildRenderList} from "./BuildRenderList";
+import {GameObject3D} from "../gameobjects3d/GameObject3D";
+import {MergeRenderData} from "./MergeRenderData";
+import {RemoveChildren3D} from "../display3d/RemoveChildren3D";
+import {ResetWorld3DRenderData} from "./ResetWorld3DRenderData";
+export class BaseWorld3D extends GameObject3D {
   constructor(scene) {
     super();
     this.forceRefresh = false;
@@ -33,13 +33,13 @@ export class BaseWorld3D extends GameObject3D2 {
   }
   render(sceneRenderData) {
     const renderData = this.renderData;
-    ResetWorld3DRenderData2(renderData, sceneRenderData.gameFrame);
+    ResetWorld3DRenderData(renderData, sceneRenderData.gameFrame);
     if (!this.willRender || !this.visible) {
       return;
     }
-    BuildRenderList2(this);
+    BuildRenderList(this);
     Emit(this, World3DEvents.World3DRenderEvent, renderData, this);
-    MergeRenderData2(sceneRenderData, renderData);
+    MergeRenderData(sceneRenderData, renderData);
   }
   renderNode(entry, renderPass) {
     entry.node.renderGL(renderPass);
@@ -57,14 +57,14 @@ export class BaseWorld3D extends GameObject3D2 {
     Off(scene, "update", this._updateListener);
     Off(scene, "render", this._renderListener);
     Off(scene, "shutdown", this._shutdownListener);
-    RemoveChildren3D2(this);
+    RemoveChildren3D(this);
     Emit(this, World3DEvents.World3DShutdownEvent, this);
-    ResetWorld3DRenderData2(this.renderData, 0);
+    ResetWorld3DRenderData(this.renderData, 0);
   }
   destroy(reparentChildren) {
     super.destroy(reparentChildren);
     Emit(this, GameObjectEvents.DestroyEvent, this);
-    ResetWorld3DRenderData2(this.renderData, 0);
+    ResetWorld3DRenderData(this.renderData, 0);
     this.events.clear();
     this.camera = null;
     this.renderData = null;

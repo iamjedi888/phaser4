@@ -1,8 +1,8 @@
-import {Tween as Tween2} from "./Tween";
-import {TweenPlugin as TweenPlugin2} from "./TweenPlugin";
-import {TweenProperty as TweenProperty2} from "./TweenProperty";
+import {Tween} from "./Tween";
+import {TweenPlugin} from "./TweenPlugin";
+import {TweenProperty} from "./TweenProperty";
 export {
-  Tween2 as Tween,
-  TweenPlugin2 as TweenPlugin,
-  TweenProperty2 as TweenProperty
+  Tween,
+  TweenPlugin,
+  TweenProperty
 };

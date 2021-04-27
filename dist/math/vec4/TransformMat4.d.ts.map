@@ -1,1 +1,0 @@
-{"version":3,"file":"TransformMat4.d.ts","sourceRoot":"","sources":["../../../src/math/vec4/TransformMat4.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,kBAAkB,CAAC;AAC5C,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAE9B,wBAAgB,aAAa,CAAE,CAAC,EAAE,IAAI,EAAE,CAAC,EAAE,QAAQ,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAWjF"}

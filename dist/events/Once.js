@@ -1,4 +1,4 @@
-import {On as On2} from "./On";
+import {On} from "./On";
 export function Once(emitter, event, callback, context = emitter) {
-  return On2(emitter, event, callback, context, true);
+  return On(emitter, event, callback, context, true);
 }

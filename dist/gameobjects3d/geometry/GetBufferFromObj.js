@@ -1,7 +1,7 @@
-import {ParseObj as ParseObj2} from "./ParseObj";
-import {VertexBuffer as VertexBuffer2} from "../../renderer/webgl1/buffers/VertexBuffer";
+import {ParseObj} from "./ParseObj";
+import {VertexBuffer} from "../../renderer/webgl1/buffers/VertexBuffer";
 export function GetBufferFromObj(data, flipUVs = true) {
-  const parser = new ParseObj2(data, flipUVs);
+  const parser = new ParseObj(data, flipUVs);
   const result = parser.parse();
   const output = [];
   result.models.forEach((model) => {
@@ -15,7 +15,7 @@ export function GetBufferFromObj(data, flipUVs = true) {
     for (let i = 0; i < faces.length; i++) {
       totalFaces += faces[i].vertices.length === 4 ? 6 : 3;
     }
-    const buffer = new VertexBuffer2({batchSize: totalFaces, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
+    const buffer = new VertexBuffer({batchSize: totalFaces, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
     const F32 = buffer.vertexViewF32;
     let offset = 0;
     for (let i = 0; i < faces.length; i++) {

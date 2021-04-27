@@ -1,5 +1,5 @@
-import {Vec4Callback as Vec4Callback2} from "./Vec4Callback";
-export class RGBACallback extends Vec4Callback2 {
+import {Vec4Callback} from "./Vec4Callback";
+export class RGBACallback extends Vec4Callback {
   constructor(onChange, r = 0, g = 0, b = 0, a = 1) {
     super(onChange, r, g, b, a);
   }

@@ -1,9 +1,9 @@
-import {BindVertexBuffer as BindVertexBuffer2} from "./BindVertexBuffer";
+import {BindVertexBuffer} from "./BindVertexBuffer";
 export function PopVertexBuffer(renderPass) {
   const stack = renderPass.vertexBufferStack;
   if (stack.length > 1) {
     stack.pop();
   }
   renderPass.currentVertexBuffer = stack[stack.length - 1];
-  BindVertexBuffer2(renderPass);
+  BindVertexBuffer(renderPass);
 }

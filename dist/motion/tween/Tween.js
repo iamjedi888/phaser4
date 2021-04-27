@@ -1,5 +1,5 @@
-import {Linear as Linear2} from "../../math/easing/Linear";
-import {TweenProperty as TweenProperty2} from "./TweenProperty";
+import {Linear} from "../../math/easing/Linear";
+import {TweenProperty} from "./TweenProperty";
 export class Tween {
   constructor(target, autoStart = true) {
     this.progress = 0;
@@ -12,7 +12,7 @@ export class Tween {
     this.properties = [];
     this.target = target;
     this.autoStart = autoStart;
-    this.ease = Linear2;
+    this.ease = Linear;
     this.isRunning = false;
   }
   to(duration, toState = null, overwrite = true) {
@@ -25,7 +25,7 @@ export class Tween {
     const properties = this.properties;
     for (const name in state) {
       const value = state[name];
-      properties.push(new TweenProperty2(name, value));
+      properties.push(new TweenProperty(name, value));
     }
     this.duration = duration * 1e3;
     this.reversed = reversed;

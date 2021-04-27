@@ -3,8 +3,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
-export function GetTriangleRandomPoint(triangle, out = new Vec22()) {
+import {Vec2} from "../../math/vec2/Vec2";
+export function GetTriangleRandomPoint(triangle, out = new Vec2()) {
   const {x1, y1, x2, y2, x3, y3} = triangle;
   const ux = x2 - x1;
   const uy = y2 - y1;

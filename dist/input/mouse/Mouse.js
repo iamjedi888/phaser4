@@ -1,8 +1,8 @@
 import {Emit, EventEmitter} from "../../events";
-import {Append as Append2} from "../../math/matrix2d/Append";
-import {GameInstance as GameInstance2} from "../../GameInstance";
-import {GlobalToLocal as GlobalToLocal2} from "../../math/matrix2d/GlobalToLocal";
-import {Vec2 as Vec22} from "../../math/vec2/Vec2";
+import {GameInstance} from "../../GameInstance";
+import {Mat2dAppend} from "../../math/mat2d/Mat2dAppend";
+import {Mat2dGlobalToLocal} from "../../math/mat2d/Mat2dGlobalToLocal";
+import {Vec2} from "../../math/vec2/Vec2";
 export class Mouse extends EventEmitter {
   constructor(target) {
     super();
@@ -17,11 +17,11 @@ export class Mouse extends EventEmitter {
     this.mousewheelHandler = (event) => this.onMouseWheel(event);
     this.contextmenuHandler = (event) => this.onContextMenuEvent(event);
     this.blurHandler = () => this.onBlur();
-    this.localPoint = new Vec22();
-    this.hitPoint = new Vec22();
-    this.transPoint = new Vec22();
+    this.localPoint = new Vec2();
+    this.hitPoint = new Vec2();
+    this.transPoint = new Vec2();
     if (!target) {
-      target = GameInstance2.get().renderer.canvas;
+      target = GameInstance.get().renderer.canvas;
     }
     target.addEventListener("mousedown", this.mousedownHandler);
     target.addEventListener("mouseup", this.mouseupHandler);
@@ -96,8 +96,8 @@ export class Mouse extends EventEmitter {
       if (!entity.world) {
         continue;
       }
-      const mat = Append2(entity.world.camera.worldTransform, entity.transform.world);
-      GlobalToLocal2(mat, localX, localY, point);
+      const mat = Mat2dAppend(entity.world.camera.worldTransform, entity.transform.world);
+      Mat2dGlobalToLocal(mat, localX, localY, point);
       if (this.checkHitArea(entity, point.x, point.y)) {
         this.hitPoint.set(point.x, point.y);
         return true;

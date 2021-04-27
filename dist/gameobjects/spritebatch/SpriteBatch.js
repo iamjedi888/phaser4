@@ -1,14 +1,14 @@
-import {BatchTexturedQuadBuffer as BatchTexturedQuadBuffer2} from "../../renderer/webgl1/draw/BatchTexturedQuadBuffer";
-import {Clamp as Clamp2} from "../../math/Clamp";
-import {DIRTY_CONST as DIRTY_CONST2} from "../DIRTY_CONST";
-import {DeleteFramebuffer as DeleteFramebuffer2} from "../../renderer/webgl1/fbo/DeleteFramebuffer";
-import {GetVerticesFromValues as GetVerticesFromValues2} from "../components/transform/GetVerticesFromValues";
-import {Layer as Layer2} from "../layer/Layer";
-import {PackColor as PackColor2} from "../../renderer/webgl1/colors/PackColor";
-import {Texture as Texture2} from "../../textures/Texture";
-import {TextureManagerInstance as TextureManagerInstance2} from "../../textures/TextureManagerInstance";
+import {BatchTexturedQuadBuffer} from "../../renderer/webgl1/draw/BatchTexturedQuadBuffer";
+import {Clamp} from "../../math/Clamp";
+import {DIRTY_CONST} from "../DIRTY_CONST";
+import {DeleteFramebuffer} from "../../renderer/webgl1/fbo/DeleteFramebuffer";
+import {GetVerticesFromValues} from "../components/transform/GetVerticesFromValues";
+import {Layer} from "../layer/Layer";
+import {PackColor} from "../../renderer/webgl1/colors/PackColor";
+import {Texture} from "../../textures/Texture";
+import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
 import {gl} from "../../renderer/webgl1/GL";
-export class SpriteBatch extends Layer2 {
+export class SpriteBatch extends Layer {
   constructor(maxSize, texture) {
     super();
     this.glTextureIndex = 0;
@@ -28,8 +28,8 @@ export class SpriteBatch extends Layer2 {
     this.vertexViewF32 = new Float32Array(this.data);
     this.vertexViewU32 = new Uint32Array(this.data);
     if (gl) {
-      DeleteFramebuffer2(this.vertexBuffer);
-      DeleteFramebuffer2(this.indexBuffer);
+      DeleteFramebuffer(this.vertexBuffer);
+      DeleteFramebuffer(this.indexBuffer);
       this.vertexBuffer = gl.createBuffer();
       this.indexBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
@@ -42,16 +42,16 @@ export class SpriteBatch extends Layer2 {
     this.count = 0;
   }
   setMaxSize(value) {
-    this.maxSize = Clamp2(value, 0, 65535);
+    this.maxSize = Clamp(value, 0, 65535);
     this.resetBuffers();
     return this;
   }
   setTexture(key) {
     let texture;
-    if (key instanceof Texture2) {
+    if (key instanceof Texture) {
       texture = key;
     } else {
-      texture = TextureManagerInstance2.get().get(key);
+      texture = TextureManagerInstance.get().get(key);
     }
     if (!texture) {
       console.warn(`Invalid Texture key: ${key}`);
@@ -103,7 +103,7 @@ export class SpriteBatch extends Layer2 {
     F32[offset + 21] = v0;
     F32[offset + 22] = textureIndex;
     U32[offset + 23] = color;
-    this.setDirty(DIRTY_CONST2.TRANSFORM);
+    this.setDirty(DIRTY_CONST.TRANSFORM);
     this.count++;
     return this;
   }
@@ -124,14 +124,14 @@ export class SpriteBatch extends Layer2 {
     } = config;
     const textureFrame = this.texture.getFrame(frame);
     const {left, right, top, bottom} = textureFrame.getExtent(originX, originY);
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVerticesFromValues2(left, right, top, bottom, x, y, rotation, scaleX, scaleY, skewX, skewY);
-    const packedColor = PackColor2(tint, alpha);
+    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVerticesFromValues(left, right, top, bottom, x, y, rotation, scaleX, scaleY, skewX, skewY);
+    const packedColor = PackColor(tint, alpha);
     return this.addToBatch(textureFrame, packedColor, x0, y0, x1, y1, x2, y2, x3, y3);
   }
   addXY(x, y, frame) {
     const textureFrame = this.texture.getFrame(frame);
     const {left, right, top, bottom} = textureFrame.getExtent(0, 0);
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVerticesFromValues2(left, right, top, bottom, x, y);
+    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVerticesFromValues(left, right, top, bottom, x, y);
     return this.addToBatch(textureFrame, 4294967295, x0, y0, x1, y1, x2, y2, x3, y3);
   }
   updateTextureIndex() {
@@ -149,12 +149,12 @@ export class SpriteBatch extends Layer2 {
     }
   }
   renderGL(renderPass) {
-    BatchTexturedQuadBuffer2(this, renderPass);
+    BatchTexturedQuadBuffer(this, renderPass);
   }
   destroy() {
     super.destroy();
-    DeleteFramebuffer2(this.vertexBuffer);
-    DeleteFramebuffer2(this.indexBuffer);
+    DeleteFramebuffer(this.vertexBuffer);
+    DeleteFramebuffer(this.indexBuffer);
     this.data = null;
     this.vertexViewF32 = null;
     this.vertexViewU32 = null;

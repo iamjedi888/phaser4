@@ -1,16 +1,16 @@
-import {On as On2} from "../../events/On";
-import {Tween as Tween2} from "./Tween";
-import {UpdateEvent as UpdateEvent2} from "../../gameobjects/events/UpdateEvent";
+import {On} from "../../events/On";
+import {Tween} from "./Tween";
+import {UpdateEvent} from "../../gameobjects/events/UpdateEvent";
 export class TweenPlugin {
   constructor(world) {
     this.tweens = new Set();
     this.paused = false;
     this.timeScale = 1;
     this.world = world;
-    On2(world, UpdateEvent2, (delta) => this.update(delta));
+    On(world, UpdateEvent, (delta) => this.update(delta));
   }
   add(target, autoStart = true) {
-    const tween = new Tween2(target, autoStart);
+    const tween = new Tween(target, autoStart);
     this.tweens.add(tween);
     return tween;
   }

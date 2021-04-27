@@ -3,8 +3,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Circle as Circle2} from "../Circle/Circle";
-export function GetTriangleCircumCircle(triangle, out = new Circle2()) {
+import {Circle} from "../Circle/Circle";
+export function GetTriangleCircumCircle(triangle, out = new Circle()) {
   const {x1, y1, x2, y2, x3, y3} = triangle;
   const A = x2 - x1;
   const B = y2 - y1;

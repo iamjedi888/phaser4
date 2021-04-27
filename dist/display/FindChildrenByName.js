@@ -1,6 +1,6 @@
-import {DepthFirstSearch as DepthFirstSearch2} from "./DepthFirstSearch";
+import {DepthFirstSearch} from "./DepthFirstSearch";
 export function FindChildrenByName(parent, searchString) {
-  const children = DepthFirstSearch2(parent);
+  const children = DepthFirstSearch(parent);
   const regex = RegExp(searchString);
   const results = [];
   children.forEach((child) => {
