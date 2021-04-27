@@ -4,3 +4,4 @@
 /dev/*
 /src/stats/*
 **/*.js
+.eslintrc.js

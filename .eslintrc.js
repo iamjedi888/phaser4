@@ -1,4 +1,4 @@
-{
+module.exports = {
     "env": {
         "browser": true,
         "es6": true
@@ -16,7 +16,7 @@
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module",
-        "tsconfigRootDir": "./",
+        "tsconfigRootDir": __dirname,
         "project": [ "tsconfig-umd.json" ]
     },
     "plugins": [
@@ -159,4 +159,4 @@
             }
         ]
     }
-}
+};
