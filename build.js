@@ -3,6 +3,7 @@ const path = require('path');
 const dirTree = require('directory-tree');
 const { build } = require('esbuild');
 const { exec } = require('child_process');
+const babel = require('esbuild-plugin-babel');
 
 const filterConfig = {
     extensions: /\.ts/,
@@ -137,7 +138,21 @@ build({
 
 logTime(`✔ Built Phaser 4 v${distPackage.version} - ${ESMInputBundle.length} modules`);
 
-//  Run tsc
+//  ES5 Build
+
+build({
+    entryPoints: ESMInputBundle,
+    bundle: true,
+    outfile: './dist/umd/Phaser.js',
+    plugins: [ babel() ],
+    target: ['es5']
+})
+.catch(() => {
+    console.log('❌ esbuild ES5 error');
+    return;
+});
+
+//  Run tsc to generate TS defs
 
 exec('tsc --build ./tsconfig.json', (error, stdout, stderr) => {
 
