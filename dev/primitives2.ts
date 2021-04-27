@@ -1,5 +1,5 @@
 import { AKey, DownKey, LeftKey, MKey, RightKey, UpKey } from '../src/input/keyboard/keys';
-import { BackgroundColor, Parent, Scenes, SetWebGL, Size } from '../src/config';
+import { BackgroundColor, Parent, Scenes, Size, WebGL } from '../src/config';
 
 import { AddChild3D } from '../src/display3d/AddChild3D';
 import { AddChildren3D } from '../src/display3d/AddChildren3D';
@@ -7,7 +7,7 @@ import { Box } from '../src/gameobjects3d/box/Box';
 import { BoxGeometry } from '../src/geom3d/BoxGeometry';
 import { Cache } from '../src/cache/Cache';
 import { Camera3D } from '../src/camera3d/Camera3D';
-import { Clone } from '../src/math/vec3/Clone';
+// import { Clone } from '../src/math/vec3/Vec3Clone';
 import { Cone } from '../src/gameobjects3d/cone/Cone';
 import { ConeGeometry } from '../src/geom3d/ConeGeometry';
 import { CylinderGeometry } from '../src/geom3d/CylinderGeometry';
@@ -187,7 +187,7 @@ class Demo extends Scene
 export default function (): void
 {
     new Game(
-        SetWebGL(),
+        WebGL(),
         Size(800, 600),
         Parent('gameParent'),
         BackgroundColor(0x1d1d1d),
