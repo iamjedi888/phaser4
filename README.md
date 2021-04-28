@@ -22,10 +22,10 @@ You can find all packages under the [@phaserjs](https://www.npmjs.com/settings/p
 
 | script | action |
 | ------ | ------ |
+| `ts` | Run TypeScript to check for type errors |
 | `lint` | Run ESLint across the whole src folder in fix mode |
 | `build` | Build all of the Phaser 4 modules |
-| `watch` | Build all modules and enter watch mode |
-| `dev` | Build the `dev/index.ts` script to run a local test without publishing |
+| `umdbuild` | Build the Phaser 4 UMD Bundle |
 
 ## VS Code Extensions
 
