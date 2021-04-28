@@ -1,6 +1,6 @@
 {
     "name": "@phaserjs/phaser",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "description": "Phaser 4 Genesis",
     "scripts": {
         "prepublishOnly": "echo \"Error: Don't run 'npm publish' in root. Use 'npm run dist' instead.\" && exit 1",
