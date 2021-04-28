@@ -16,7 +16,6 @@ import { End } from './End';
 import { Flush } from './Flush';
 import { FlushBuffer } from './FlushBuffer';
 import { GetVertexBufferEntry } from './GetVertexBufferEntry';
-import { IRenderPass } from './IRenderPass';
 import { PopBlendMode } from './PopBlendMode';
 import { PopFramebuffer } from './PopFramebuffer';
 import { PopShader } from './PopShader';
@@ -58,7 +57,6 @@ export {
     Flush,
     FlushBuffer,
     GetVertexBufferEntry,
-    IRenderPass,
     PopBlendMode,
     PopFramebuffer,
     PopShader,
