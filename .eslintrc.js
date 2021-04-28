@@ -24,6 +24,7 @@ module.exports = {
     ],
     "ignorePatterns": [
         "**/*.js",
+        "**/*.mjs",
         "/node_modules/**/*",
         "src/stats/",
         "src/motion/tween/Tween.ts",
