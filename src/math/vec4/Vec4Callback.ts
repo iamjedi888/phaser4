@@ -1,7 +1,7 @@
 import { IVec4Like } from './IVec4Like';
 import { NOOP } from '../../utils/NOOP';
 
-export type Vec4CallbackType = (vec3: Vec4Callback) => void;
+export type Vec4CallbackType = (vec4: Vec4Callback) => void;
 
 export class Vec4Callback implements IVec4Like
 {
