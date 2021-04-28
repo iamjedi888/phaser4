@@ -16,7 +16,6 @@ import { End } from './End';
 import { Flush } from './Flush';
 import { FlushBuffer } from './FlushBuffer';
 import { GetVertexBufferEntry } from './GetVertexBufferEntry';
-import { IRenderPass } from './IRenderPass';
 import { PopBlendMode } from './PopBlendMode';
 import { PopFramebuffer } from './PopFramebuffer';
 import { PopShader } from './PopShader';
@@ -38,5 +37,5 @@ import { SetVertexBuffer } from './SetVertexBuffer';
 import { SetViewport } from './SetViewport';
 import { Start } from './Start';
 import { UnbindTexture } from './UnbindTexture';
-export { AddBlendMode, AddFramebuffer, AddShader, AddVertexBuffer, AddViewport, Begin, BindBlendMode, BindFramebuffer, BindShader, BindTexture, BindVertexBuffer, BindViewport, CreateTempTextures, Draw, End, Flush, FlushBuffer, GetVertexBufferEntry, IRenderPass, PopBlendMode, PopFramebuffer, PopShader, PopVertexBuffer, PopViewport, ProcessBindingQueue, RenderPass, ResetTextures, SetBlendMode, SetDefaultBlendMode, SetDefaultFramebuffer, SetDefaultShader, SetDefaultVertexBuffer, SetDefaultViewport, SetFramebuffer, SetShader, SetTexture, SetVertexBuffer, SetViewport, Start, UnbindTexture };
+export { AddBlendMode, AddFramebuffer, AddShader, AddVertexBuffer, AddViewport, Begin, BindBlendMode, BindFramebuffer, BindShader, BindTexture, BindVertexBuffer, BindViewport, CreateTempTextures, Draw, End, Flush, FlushBuffer, GetVertexBufferEntry, PopBlendMode, PopFramebuffer, PopShader, PopVertexBuffer, PopViewport, ProcessBindingQueue, RenderPass, ResetTextures, SetBlendMode, SetDefaultBlendMode, SetDefaultFramebuffer, SetDefaultShader, SetDefaultVertexBuffer, SetDefaultViewport, SetFramebuffer, SetShader, SetTexture, SetVertexBuffer, SetViewport, Start, UnbindTexture };
 //# sourceMappingURL=index.d.ts.map

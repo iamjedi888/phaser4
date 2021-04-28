@@ -1,5 +1,5 @@
 import { IVec4Like } from './IVec4Like';
-export declare type Vec4CallbackType = (vec3: Vec4Callback) => void;
+export declare type Vec4CallbackType = (vec4: Vec4Callback) => void;
 export declare class Vec4Callback implements IVec4Like {
     private _x;
     private _y;
