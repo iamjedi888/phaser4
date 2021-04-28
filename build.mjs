@@ -136,6 +136,17 @@ if (buildResults.errors.length > 0)
 
 logTime(`✔ Built Phaser 4 v${distPackage.version} - ${ESMInputBundle.length} modules`);
 
+//  ES6 Bundle
+
+esbuild.buildSync({
+    entryPoints: [ './src/index.ts' ],
+    bundle: true,
+    format: 'esm',
+    outfile: './dist/Phaser.js',
+});
+
+logTime(`✔ Built Phaser.mjs ES6 Bundle`);
+
 logTime(`+ Building TypeScript Defs ...`, true);
 
 //  Run tsc to generate TS defs
