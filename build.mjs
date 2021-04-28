@@ -3,6 +3,7 @@ import cp from 'child_process';
 import dirTree from 'directory-tree';
 import esbuild from 'esbuild';
 import fs from 'fs-extra';
+import sloc from 'sloc';
 
 const filterConfig = {
     extensions: /\.ts/,
@@ -156,6 +157,12 @@ esbuild.buildSync({
 });
 
 logTime('Built Phaser.js ES6 Bundle');
+
+const slocSrc = fs.readFileSync('./dist/Phaser.js', 'utf8');
+
+const stats = sloc(slocSrc, 'js');
+
+logTime(`${stats.source} lines of source code`);
 
 endLog('Build complete');
 
