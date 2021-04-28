@@ -22,9 +22,9 @@ export default [
         input: './src/index.ts',
         output: [
             {
-                file: './dist/umd/Phaser4.js',
+                file: './dist/umd/Phaser.js',
                 format: 'umd',
-                name: 'Phaser4',
+                name: 'Phaser',
                 sourcemap: true,
                 esModule: false,
                 plugins: [
@@ -65,9 +65,9 @@ export default [
 
         output: [
             {
-                file: './dist/umd/Phaser4.min.js',
+                file: './dist/umd/Phaser.min.js',
                 format: 'umd',
-                name: 'Phaser4',
+                name: 'Phaser',
                 sourcemap: false,
                 esModule: false,
                 plugins: [
