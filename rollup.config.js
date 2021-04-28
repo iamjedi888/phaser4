@@ -1,13 +1,9 @@
-// Can't use official plugin because: https://github.com/rollup/plugins/issues/287 >:-(
-// import typescript from '@rollup/plugin-typescript';
-
 import filesize from 'rollup-plugin-filesize';
 import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 
-// Another crashing plugin that used to work (and hopefully will again!):
-// import visualizer from 'rollup-plugin-visualizer';
+// Can't use official TypeScript plugin because: https://github.com/rollup/plugins/issues/287 >:-(
 
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx'

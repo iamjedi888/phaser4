@@ -1,3 +1,4 @@
+import boxen from 'boxen';
 import cp from 'child_process';
 import dirTree from 'directory-tree';
 import esbuild from 'esbuild';
@@ -13,6 +14,7 @@ const filterConfig = {
 
 const ESMInputBundle = [];
 
+let info = '';
 const times = [];
 
 const startTimer = () =>
@@ -24,7 +26,7 @@ const logTime = (message, skipTime = false) =>
 {
     if (skipTime)
     {
-        console.log(`${message}`);
+        info = info.concat(`${message}\n`);
 
         startTimer();
 
@@ -39,11 +41,11 @@ const logTime = (message, skipTime = false) =>
         duration /= 1000;
         duration = duration.toFixed(2);
 
-        console.log(`${message} (${duration} secs)`);
+        info = info.concat(`${message} (${duration} secs)\n`);
     }
     else
     {
-        console.log(`${message} (${duration} ms)`);
+        info = info.concat(`${message} (${duration} ms)\n`);
     }
 
     startTimer();
@@ -51,6 +53,8 @@ const logTime = (message, skipTime = false) =>
 
 const endLog = (message) =>
 {
+    times.push(Date.now());
+
     let total = 0;
 
     for (let i = 1; i < times.length; i++)
@@ -63,7 +67,13 @@ const endLog = (message) =>
 
     total /= 1000;
 
-    console.log(`${message} in ${total} secs\n`);
+    info = info.concat(`${message} in ${total} secs`);
+
+    console.log(boxen(info, { padding: 1, margin: 1, borderColor: 'cyanBright', borderStyle: 'bold' }));
+
+    //  Reset for next pass
+    info = '';
+    times.length = 0;
 }
 
 dirTree('src', filterConfig, (item) =>
@@ -99,7 +109,7 @@ startTimer();
 
 fs.emptyDirSync('./dist');
 
-logTime('✔ Cleared target folder');
+logTime('Cleared target folder');
 
 //  Copy package.json version number to dist/package.json
 
@@ -115,7 +125,7 @@ fs.copySync('./LICENSE', './dist/LICENSE');
 fs.copySync('./logo.png', './dist/logo.png');
 fs.copySync('./README.dist.md', './dist/README.md');
 
-logTime('✔ Copied dist files');
+logTime('Copied dist files');
 
 //  Run esbuild - this converts from TS into ES6 JS modules in the dist folder
 
@@ -134,7 +144,7 @@ if (buildResults.errors.length > 0)
     process.exit(1);
 }
 
-logTime(`✔ Built Phaser 4 v${distPackage.version} - ${ESMInputBundle.length} modules`);
+logTime(`Built Phaser 4 v${distPackage.version} - ${ESMInputBundle.length} modules`);
 
 //  ES6 Bundle
 
@@ -145,9 +155,13 @@ esbuild.buildSync({
     outfile: './dist/Phaser.js',
 });
 
-logTime(`✔ Built Phaser.mjs ES6 Bundle`);
+logTime('Built Phaser.js ES6 Bundle');
 
-logTime(`+ Building TypeScript Defs ...`, true);
+endLog('Build complete');
+
+console.log('Building TypeScript Defs ...');
+
+startTimer();
 
 //  Run tsc to generate TS defs
 
@@ -166,7 +180,5 @@ cp.exec('tsc --build ./tsconfig.json', (error, stdout, stderr) =>
         process.exit(1);
     }
 
-    logTime('✔ TypeScript Defs complete');
-
-    endLog('✔ Build complete');
+    endLog('TypeScript Defs complete');
 });
