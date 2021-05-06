@@ -1,17 +1,18 @@
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
-import { ISprite } from '../../../gameobjects/sprite/ISprite';
+import { ITexture } from '../../../textures/ITexture';
 import { SetTexture } from '../renderpass/SetTexture';
+import { Vertex } from '../../../gameobjects/components';
 
-export function BatchTexturedQuad <T extends ISprite> (sprite: T, renderPass: IRenderPass): void
+export function BatchTexturedQuad <T extends ITexture> (texture: T, vertices: Vertex[], renderPass: IRenderPass): void
 {
     const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
 
-    const textureIndex = SetTexture(renderPass, sprite.texture);
+    const textureIndex = SetTexture(renderPass, texture);
 
     let vertOffset = offset;
 
-    sprite.vertices.forEach(vertex =>
+    vertices.forEach(vertex =>
     {
         F32[vertOffset + 0] = vertex.x;
         F32[vertOffset + 1] = vertex.y;

@@ -1,18 +1,15 @@
+import { Frame } from '../../../textures';
 import { ICanvasRenderer } from '../ICanvasRenderer';
-import { ISprite } from '../../../gameobjects/sprite/ISprite';
+import { ITransformComponent } from '../../../gameobjects/components/transform/ITransformComponent';
 
-export function DrawTexturedQuad <T extends ISprite> (sprite: T, renderer: ICanvasRenderer): void
+export function DrawTexturedQuad (frame: Frame, alpha: number, transform: ITransformComponent, renderer: ICanvasRenderer): void
 {
-    const frame = sprite.frame;
-
     if (!frame)
     {
         return;
     }
 
     const ctx = renderer.ctx;
-
-    const transform = sprite.transform;
 
     const { a, b, c, d, tx, ty } = transform.world;
     const { x, y } = transform.extent;
@@ -21,7 +18,7 @@ export function DrawTexturedQuad <T extends ISprite> (sprite: T, renderer: ICanv
 
     ctx.setTransform(a, b, c, d, tx, ty);
 
-    ctx.globalAlpha = sprite.alpha;
+    ctx.globalAlpha = alpha;
 
     ctx.drawImage(frame.texture.image as HTMLImageElement, frame.x, frame.y, frame.width, frame.height, x, y, frame.width, frame.height);
 

@@ -1,11 +1,9 @@
-import { ISprite } from '../../../gameobjects/sprite/ISprite';
+import { Vertex } from '../../../gameobjects/components/Vertex';
 
-export function PackColors <T extends ISprite> (sprite: T): T
+export function PackColors (vertices: Vertex[]): void
 {
-    sprite.vertices.forEach(vertex =>
+    vertices.forEach(vertex =>
     {
         vertex.packColor();
     });
-
-    return sprite;
 }
