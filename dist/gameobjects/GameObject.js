@@ -2,7 +2,7 @@ import {BoundsComponent} from "./components/bounds/BoundsComponent";
 import {DIRTY_CONST} from "./DIRTY_CONST";
 import {DestroyChildren} from "../display/DestroyChildren";
 import {DestroyEvent} from "./events/DestroyEvent";
-import {Emit} from "../events";
+import {Emit} from "../events/Emit";
 import {GameInstance} from "../GameInstance";
 import {InputComponent} from "./components/input/InputComponent";
 import {ReparentChildren} from "../display/ReparentChildren";
@@ -20,6 +20,7 @@ export class GameObject {
     this.dirtyFrame = 0;
     this.visible = true;
     this.children = [];
+    this.vertices = [];
     this.events = new Map();
     this.transform = new TransformComponent(this, x, y);
     this.bounds = new BoundsComponent(this);
@@ -88,5 +89,6 @@ export class GameObject {
     this.world = null;
     this.parent = null;
     this.children = null;
+    this.vertices = [];
   }
 }

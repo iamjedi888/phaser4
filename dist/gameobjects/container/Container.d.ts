@@ -1,14 +1,21 @@
 import { GameObject } from '../GameObject';
 import { IContainer } from './IContainer';
+import { Vec2 } from '../../math/vec2/Vec2';
 export declare class Container extends GameObject implements IContainer {
     protected _alpha: number;
     constructor(x?: number, y?: number);
     setSize(width: number, height?: number): this;
+    getSize(out?: Vec2): Vec2;
     setPosition(x: number, y: number): this;
+    getPosition(out?: Vec2): Vec2;
     setOrigin(x: number, y?: number): this;
+    getOrigin(out?: Vec2): Vec2;
     setSkew(x: number, y?: number): this;
+    getSkew(out?: Vec2): Vec2;
     setScale(x: number, y?: number): this;
+    getScale(out?: Vec2): Vec2;
     setRotation(value: number): this;
+    getRotation(): number;
     set width(value: number);
     get width(): number;
     set height(value: number);

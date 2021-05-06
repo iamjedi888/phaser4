@@ -1,4 +1,4 @@
 import { IRenderPass } from './IRenderPass';
-import { Texture } from '../../../textures';
-export declare function SetTexture(renderPass: IRenderPass, texture: Texture): number;
+import { ITexture } from '../../../textures/ITexture';
+export declare function SetTexture(renderPass: IRenderPass, texture: ITexture): number;
 //# sourceMappingURL=SetTexture.d.ts.map

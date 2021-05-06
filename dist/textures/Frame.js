@@ -54,7 +54,7 @@ export class Frame {
     }
     return {left, right, top, bottom};
   }
-  setExtent(child) {
+  copyToExtent(child) {
     const transform = child.transform;
     const originX = transform.origin.x;
     const originY = transform.origin.y;
@@ -76,6 +76,15 @@ export class Frame {
       height = sourceSizeHeight;
     }
     transform.setExtent(x, y, width, height);
+    return this;
+  }
+  copyToVertices(vertices, offset = 0) {
+    const {u0, u1, v0, v1} = this;
+    vertices[offset + 0].setUV(u0, v0);
+    vertices[offset + 1].setUV(u0, v1);
+    vertices[offset + 2].setUV(u1, v1);
+    vertices[offset + 3].setUV(u1, v0);
+    return this;
   }
   updateUVs() {
     const {x, y, width, height} = this;

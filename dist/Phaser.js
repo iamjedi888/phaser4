@@ -5451,7 +5451,7 @@ var Frame = class {
     }
     return {left, right, top, bottom};
   }
-  setExtent(child) {
+  copyToExtent(child) {
     const transform = child.transform;
     const originX = transform.origin.x;
     const originY = transform.origin.y;
@@ -5473,6 +5473,15 @@ var Frame = class {
       height = sourceSizeHeight;
     }
     transform.setExtent(x, y, width, height);
+    return this;
+  }
+  copyToVertices(vertices, offset = 0) {
+    const {u0, u1, v0, v1} = this;
+    vertices[offset + 0].setUV(u0, v0);
+    vertices[offset + 1].setUV(u0, v1);
+    vertices[offset + 2].setUV(u1, v1);
+    vertices[offset + 3].setUV(u1, v0);
+    return this;
   }
   updateUVs() {
     const {x, y, width, height} = this;
@@ -7968,6 +7977,7 @@ __export(gameobjects_exports, {
   EffectLayer: () => EffectLayer,
   GameObject: () => GameObject,
   Layer: () => Layer,
+  Rectangle: () => Rectangle2,
   RenderLayer: () => RenderLayer,
   Sprite: () => Sprite,
   SpriteBatch: () => SpriteBatch,
@@ -8092,10 +8102,61 @@ var InputComponent = class {
 var transform_exports = {};
 __export(transform_exports, {
   GetVertices: () => GetVertices,
+  GetVerticesFromValues: () => GetVerticesFromValues,
+  PreRenderVertices: () => PreRenderVertices,
   TransformComponent: () => TransformComponent,
   UpdateLocalTransform: () => UpdateLocalTransform,
+  UpdateVertices: () => UpdateVertices,
   UpdateWorldTransform: () => UpdateWorldTransform
 });
+
+// src/gameobjects/components/transform/GetVerticesFromValues.ts
+function GetVerticesFromValues(left, right, top, bottom, x, y, rotation = 0, scaleX = 1, scaleY = 1, skewX = 0, skewY = 0) {
+  const a = Math.cos(rotation + skewY) * scaleX;
+  const b = Math.sin(rotation + skewY) * scaleX;
+  const c = -Math.sin(rotation - skewX) * scaleY;
+  const d = Math.cos(rotation - skewX) * scaleY;
+  const x0 = left * a + top * c + x;
+  const y0 = left * b + top * d + y;
+  const x1 = left * a + bottom * c + x;
+  const y1 = left * b + bottom * d + y;
+  const x2 = right * a + bottom * c + x;
+  const y2 = right * b + bottom * d + y;
+  const x3 = right * a + top * c + x;
+  const y3 = right * b + top * d + y;
+  return {x0, y0, x1, y1, x2, y2, x3, y3};
+}
+
+// src/renderer/webgl1/colors/PackColors.ts
+function PackColors(vertices) {
+  vertices.forEach((vertex) => {
+    vertex.packColor();
+  });
+}
+
+// src/gameobjects/components/transform/UpdateVertices.ts
+function UpdateVertices(gameObject) {
+  const vertices = gameObject.vertices;
+  const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(gameObject.transform);
+  vertices[0].setPosition(x0, y0);
+  vertices[1].setPosition(x1, y1);
+  vertices[2].setPosition(x2, y2);
+  vertices[3].setPosition(x3, y3);
+  return gameObject;
+}
+
+// src/gameobjects/components/transform/PreRenderVertices.ts
+function PreRenderVertices(gameObject) {
+  if (gameObject.isDirty(DIRTY_CONST.COLORS)) {
+    PackColors(gameObject.vertices);
+    gameObject.clearDirty(DIRTY_CONST.COLORS);
+  }
+  if (gameObject.isDirty(DIRTY_CONST.TRANSFORM)) {
+    UpdateVertices(gameObject);
+    gameObject.clearDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return gameObject;
+}
 
 // src/config/defaultorigin/GetDefaultOriginX.ts
 function GetDefaultOriginX() {
@@ -8768,11 +8829,11 @@ var Vertex = class {
 };
 
 // src/renderer/webgl1/draw/BatchTexturedQuad.ts
-function BatchTexturedQuad(sprite, renderPass) {
+function BatchTexturedQuad(texture, vertices, renderPass) {
   const {F32, U32, offset} = GetVertexBufferEntry(renderPass, 1);
-  const textureIndex = SetTexture(renderPass, sprite.texture);
+  const textureIndex = SetTexture(renderPass, texture);
   let vertOffset = offset;
-  sprite.vertices.forEach((vertex) => {
+  vertices.forEach((vertex) => {
     F32[vertOffset + 0] = vertex.x;
     F32[vertOffset + 1] = vertex.y;
     F32[vertOffset + 2] = vertex.u;
@@ -8797,6 +8858,7 @@ var GameObject = class {
     this.dirtyFrame = 0;
     this.visible = true;
     this.children = [];
+    this.vertices = [];
     this.events = new Map();
     this.transform = new TransformComponent(this, x, y);
     this.bounds = new BoundsComponent(this);
@@ -8865,6 +8927,7 @@ var GameObject = class {
     this.world = null;
     this.parent = null;
     this.children = null;
+    this.vertices = [];
   }
 };
 
@@ -8879,25 +8942,47 @@ var Container = class extends GameObject {
     this.transform.updateExtent(width, height);
     return this;
   }
+  getSize(out = new Vec2()) {
+    return GetRectangleSize(this.transform.extent, out);
+  }
   setPosition(x, y) {
     this.transform.position.set(x, y);
     return this;
+  }
+  getPosition(out = new Vec2()) {
+    const position = this.transform.position;
+    return out.set(position.x, position.y);
   }
   setOrigin(x, y = x) {
     this.transform.origin.set(x, y);
     return this;
   }
+  getOrigin(out = new Vec2()) {
+    const origin = this.transform.origin;
+    return out.set(origin.x, origin.y);
+  }
   setSkew(x, y = x) {
     this.transform.skew.set(x, y);
     return this;
+  }
+  getSkew(out = new Vec2()) {
+    const skew = this.transform.skew;
+    return out.set(skew.x, skew.y);
   }
   setScale(x, y = x) {
     this.transform.scale.set(x, y);
     return this;
   }
+  getScale(out = new Vec2()) {
+    const scale = this.transform.scale;
+    return out.set(scale.x, scale.y);
+  }
   setRotation(value) {
     this.transform.rotation = value;
     return this;
+  }
+  getRotation() {
+    return this.transform.rotation;
   }
   set width(value) {
     this.transform.updateExtent(value);
@@ -8971,55 +9056,44 @@ var Container = class extends GameObject {
   set alpha(value) {
     if (value !== this._alpha) {
       this._alpha = value;
-      this.setDirty(DIRTY_CONST.TRANSFORM);
+      this.vertices.forEach((vertex) => {
+        vertex.setAlpha(value);
+      });
+      this.setDirty(DIRTY_CONST.COLORS);
     }
   }
 };
 
 // src/renderer/canvas/draw/DrawTexturedQuad.ts
-function DrawTexturedQuad(sprite, renderer) {
-  const frame2 = sprite.frame;
+function DrawTexturedQuad(frame2, alpha, transform, renderer) {
   if (!frame2) {
     return;
   }
   const ctx = renderer.ctx;
-  const transform = sprite.transform;
   const {a, b, c, d, tx, ty} = transform.world;
   const {x, y} = transform.extent;
   ctx.save();
   ctx.setTransform(a, b, c, d, tx, ty);
-  ctx.globalAlpha = sprite.alpha;
+  ctx.globalAlpha = alpha;
   ctx.drawImage(frame2.texture.image, frame2.x, frame2.y, frame2.width, frame2.height, x, y, frame2.width, frame2.height);
   ctx.restore();
-}
-
-// src/renderer/webgl1/colors/PackColors.ts
-function PackColors(sprite) {
-  sprite.vertices.forEach((vertex) => {
-    vertex.packColor();
-  });
-  return sprite;
 }
 
 // src/gameobjects/sprite/SetFrame.ts
 function SetFrame(texture, key, ...children) {
   const frame2 = texture.getFrame(key);
-  const {u0, u1, v0, v1, pivot} = frame2;
+  const pivot = frame2.pivot;
   children.forEach((child) => {
     if (!child || frame2 === child.frame) {
       return;
     }
     child.frame = frame2;
+    child.hasTexture = true;
     if (pivot) {
       child.setOrigin(pivot.x, pivot.y);
     }
-    child.frame.setExtent(child);
-    child.hasTexture = true;
-    const vertices = child.vertices;
-    vertices[0].setUV(u0, v0);
-    vertices[1].setUV(u0, v1);
-    vertices[2].setUV(u1, v1);
-    vertices[3].setUV(u1, v0);
+    frame2.copyToExtent(child);
+    frame2.copyToVertices(child.vertices);
   });
   return children;
 }
@@ -9062,17 +9136,6 @@ function SetTexture2(key, frame2, ...children) {
   return children;
 }
 
-// src/gameobjects/sprite/UpdateVertices.ts
-function UpdateVertices(sprite) {
-  const vertices = sprite.vertices;
-  const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(sprite.transform);
-  vertices[0].setPosition(x0, y0);
-  vertices[1].setPosition(x1, y1);
-  vertices[2].setPosition(x2, y2);
-  vertices[3].setPosition(x3, y3);
-  return sprite;
-}
-
 // src/gameobjects/sprite/Sprite.ts
 var Sprite = class extends Container {
   constructor(x, y, texture, frame2) {
@@ -9094,35 +9157,13 @@ var Sprite = class extends Container {
   isRenderable() {
     return this.visible && this.willRender && this.hasTexture && this.alpha > 0;
   }
-  preRender() {
-    if (this.isDirty(DIRTY_CONST.COLORS)) {
-      PackColors(this);
-      this.clearDirty(DIRTY_CONST.COLORS);
-    }
-    if (this.isDirty(DIRTY_CONST.TRANSFORM)) {
-      UpdateVertices(this);
-      this.clearDirty(DIRTY_CONST.TRANSFORM);
-    }
-  }
   renderGL(renderPass) {
-    this.preRender();
-    BatchTexturedQuad(this, renderPass);
+    PreRenderVertices(this);
+    BatchTexturedQuad(this.texture, this.vertices, renderPass);
   }
   renderCanvas(renderer) {
-    this.preRender();
-    DrawTexturedQuad(this, renderer);
-  }
-  get alpha() {
-    return this._alpha;
-  }
-  set alpha(value) {
-    if (value !== this._alpha) {
-      this._alpha = value;
-      this.vertices.forEach((vertex) => {
-        vertex.setAlpha(value);
-      });
-      this.setDirty(DIRTY_CONST.COLORS);
-    }
+    PreRenderVertices(this);
+    DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
   }
   get tint() {
     return this._tint;
@@ -9141,7 +9182,6 @@ var Sprite = class extends Container {
     this.texture = null;
     this.frame = null;
     this.hasTexture = false;
-    this.vertices = [];
   }
 };
 
@@ -9385,25 +9425,59 @@ var EffectLayer = class extends RenderLayer {
   }
 };
 
+// src/gameobjects/rectangle/Rectangle.ts
+var Rectangle2 = class extends Container {
+  constructor(x, y, width = 64, height = 64, color = 16777215) {
+    super(x, y);
+    this._color = 16777215;
+    this.type = "Rectangle";
+    this.vertices = [new Vertex(), new Vertex(), new Vertex(), new Vertex()];
+    this.color = color;
+    this.setWhiteTexture();
+    this.setSize(width, height);
+  }
+  setWhiteTexture() {
+    this.texture = TextureManagerInstance.get().get("__WHITE");
+    this.frame = this.texture.getFrame();
+    this.frame.copyToExtent(this);
+    this.frame.copyToVertices(this.vertices);
+  }
+  setColor(color) {
+    this.color = color;
+    return this;
+  }
+  isRenderable() {
+    return this.visible && this.willRender && this.alpha > 0;
+  }
+  renderGL(renderPass) {
+    PreRenderVertices(this);
+    BatchTexturedQuad(this.texture, this.vertices, renderPass);
+  }
+  renderCanvas(renderer) {
+    PreRenderVertices(this);
+    DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
+  }
+  get color() {
+    return this._color;
+  }
+  set color(value) {
+    if (value !== this._color) {
+      this._color = value;
+      this.vertices.forEach((vertex) => {
+        vertex.setTint(value);
+      });
+      this.setDirty(DIRTY_CONST.COLORS);
+    }
+  }
+  destroy(reparentChildren) {
+    super.destroy(reparentChildren);
+    this.texture = null;
+    this.frame = null;
+  }
+};
+
 // src/renderer/webgl1/draw/BatchTexturedQuadBuffer.ts
 function BatchTexturedQuadBuffer(batch, renderPass) {
-}
-
-// src/gameobjects/components/transform/GetVerticesFromValues.ts
-function GetVerticesFromValues(left, right, top, bottom, x, y, rotation = 0, scaleX = 1, scaleY = 1, skewX = 0, skewY = 0) {
-  const a = Math.cos(rotation + skewY) * scaleX;
-  const b = Math.sin(rotation + skewY) * scaleX;
-  const c = -Math.sin(rotation - skewX) * scaleY;
-  const d = Math.cos(rotation - skewX) * scaleY;
-  const x0 = left * a + top * c + x;
-  const y0 = left * b + top * d + y;
-  const x1 = left * a + bottom * c + x;
-  const y1 = left * b + bottom * d + y;
-  const x2 = right * a + bottom * c + x;
-  const y2 = right * b + bottom * d + y;
-  const x3 = right * a + top * c + x;
-  const y3 = right * b + top * d + y;
-  return {x0, y0, x1, y1, x2, y2, x3, y3};
 }
 
 // src/gameobjects/spritebatch/SpriteBatch.ts

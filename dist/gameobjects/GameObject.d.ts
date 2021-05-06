@@ -6,7 +6,8 @@ import { IGameObject } from './IGameObject';
 import { IInputComponent } from './components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ITransformComponent } from './components/transform/ITransformComponent';
-export declare class GameObject {
+import { Vertex } from './components/Vertex';
+export declare class GameObject implements IGameObject {
     type: string;
     name: string;
     world: IBaseWorld;
@@ -23,6 +24,7 @@ export declare class GameObject {
     transform: ITransformComponent;
     bounds: IBoundsComponent;
     input: IInputComponent;
+    vertices: Vertex[];
     visible: boolean;
     constructor(x?: number, y?: number);
     isRenderable(): boolean;

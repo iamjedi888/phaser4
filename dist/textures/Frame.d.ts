@@ -1,5 +1,6 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 import { Texture } from './Texture';
+import { Vertex } from '../gameobjects/components';
 export declare class Frame {
     texture: Texture;
     key: string | number;
@@ -33,7 +34,8 @@ export declare class Frame {
         top: number;
         bottom: number;
     };
-    setExtent(child: IGameObject): void;
+    copyToExtent(child: IGameObject): this;
+    copyToVertices(vertices: Vertex[], offset?: number): this;
     updateUVs(): void;
 }
 //# sourceMappingURL=Frame.d.ts.map

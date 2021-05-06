@@ -1,3 +1,3 @@
-import { ISprite } from '../../../gameobjects/sprite/ISprite';
-export declare function PackColors<T extends ISprite>(sprite: T): T;
+import { Vertex } from '../../../gameobjects/components/Vertex';
+export declare function PackColors(vertices: Vertex[]): void;
 //# sourceMappingURL=PackColors.d.ts.map

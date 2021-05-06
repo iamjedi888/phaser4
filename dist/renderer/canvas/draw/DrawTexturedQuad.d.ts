@@ -1,4 +1,5 @@
+import { Frame } from '../../../textures';
 import { ICanvasRenderer } from '../ICanvasRenderer';
-import { ISprite } from '../../../gameobjects/sprite/ISprite';
-export declare function DrawTexturedQuad<T extends ISprite>(sprite: T, renderer: ICanvasRenderer): void;
+import { ITransformComponent } from '../../../gameobjects/components/transform/ITransformComponent';
+export declare function DrawTexturedQuad(frame: Frame, alpha: number, transform: ITransformComponent, renderer: ICanvasRenderer): void;
 //# sourceMappingURL=DrawTexturedQuad.d.ts.map

@@ -1,1 +1,1 @@
-{"version":3,"file":"PackColors.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/colors/PackColors.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,qCAAqC,CAAC;AAE9D,wBAAgB,UAAU,CAAE,CAAC,SAAS,OAAO,EAAG,MAAM,EAAE,CAAC,GAAG,CAAC,CAQ5D"}
+{"version":3,"file":"PackColors.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/colors/PackColors.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,wCAAwC,CAAC;AAEhE,wBAAgB,UAAU,CAAE,QAAQ,EAAE,MAAM,EAAE,GAAG,IAAI,CAMpD"}

@@ -1027,7 +1027,7 @@
         return (rect.x <= x && rect.x + rect.width >= x && rect.y <= y && rect.y + rect.height >= y);
     }
 
-    var Rectangle = (function () {
+    var Rectangle$1 = (function () {
         function Rectangle(x, y, width, height) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
@@ -1260,7 +1260,7 @@
             var game = GameInstance.get();
             this.renderer = game.renderer;
             this.matrix = Mat4Identity();
-            this.bounds = new Rectangle();
+            this.bounds = new Rectangle$1();
             this.worldTransform = new Matrix2D();
             this.position = new Vec2Callback(function () { return _this.updateTransform(); }, 0, 0);
             this.scale = new Vec2Callback(function () { return _this.updateTransform(); }, 1, 1);
@@ -1336,7 +1336,7 @@
             var game = GameInstance.get();
             this.renderer = game.renderer;
             this.matrix = Mat4Identity();
-            this.bounds = new Rectangle();
+            this.bounds = new Rectangle$1();
             this.worldTransform = new Matrix2D();
             this.reset();
         }
@@ -4802,7 +4802,7 @@
         if (y === void 0) { y = 0; }
         if (width === void 0) { width = 0; }
         if (height === void 0) { height = 0; }
-        var viewport = new Rectangle(x, y, width, height);
+        var viewport = new Rectangle$1(x, y, width, height);
         renderPass.viewportStack.push(viewport);
         return viewport;
     }
@@ -5585,7 +5585,7 @@
             }
             return { left: left, right: right, top: top, bottom: bottom };
         };
-        Frame.prototype.setExtent = function (child) {
+        Frame.prototype.copyToExtent = function (child) {
             var transform = child.transform;
             var originX = transform.origin.x;
             var originY = transform.origin.y;
@@ -5608,6 +5608,16 @@
                 height = sourceSizeHeight;
             }
             transform.setExtent(x, y, width, height);
+            return this;
+        };
+        Frame.prototype.copyToVertices = function (vertices, offset) {
+            if (offset === void 0) { offset = 0; }
+            var _a = this, u0 = _a.u0, u1 = _a.u1, v0 = _a.v0, v1 = _a.v1;
+            vertices[offset + 0].setUV(u0, v0);
+            vertices[offset + 1].setUV(u0, v1);
+            vertices[offset + 2].setUV(u1, v1);
+            vertices[offset + 3].setUV(u1, v0);
+            return this;
         };
         Frame.prototype.updateUVs = function () {
             var _a = this, x = _a.x, y = _a.y, width = _a.width, height = _a.height;
@@ -5904,7 +5914,7 @@
         if (y === void 0) { y = 0; }
         if (width === void 0) { width = 0; }
         if (height === void 0) { height = 0; }
-        var entry = new Rectangle(x, y, width, height);
+        var entry = new Rectangle$1(x, y, width, height);
         renderPass.viewportStack[0] = entry;
         renderPass.currentViewport = entry;
         renderPass.defaultViewport = entry;
@@ -8146,7 +8156,7 @@
             this.includeChildren = true;
             this.visibleOnly = true;
             this.entity = entity;
-            this.area = new Rectangle();
+            this.area = new Rectangle$1();
         }
         BoundsComponent.prototype.set = function (x, y, width, height) {
             this.area.set(x, y, width, height);
@@ -8228,6 +8238,55 @@
         InputComponent: InputComponent
     });
 
+    function GetVerticesFromValues(left, right, top, bottom, x, y, rotation, scaleX, scaleY, skewX, skewY) {
+        if (rotation === void 0) { rotation = 0; }
+        if (scaleX === void 0) { scaleX = 1; }
+        if (scaleY === void 0) { scaleY = 1; }
+        if (skewX === void 0) { skewX = 0; }
+        if (skewY === void 0) { skewY = 0; }
+        var a = Math.cos(rotation + skewY) * scaleX;
+        var b = Math.sin(rotation + skewY) * scaleX;
+        var c = -Math.sin(rotation - skewX) * scaleY;
+        var d = Math.cos(rotation - skewX) * scaleY;
+        var x0 = (left * a) + (top * c) + x;
+        var y0 = (left * b) + (top * d) + y;
+        var x1 = (left * a) + (bottom * c) + x;
+        var y1 = (left * b) + (bottom * d) + y;
+        var x2 = (right * a) + (bottom * c) + x;
+        var y2 = (right * b) + (bottom * d) + y;
+        var x3 = (right * a) + (top * c) + x;
+        var y3 = (right * b) + (top * d) + y;
+        return { x0: x0, y0: y0, x1: x1, y1: y1, x2: x2, y2: y2, x3: x3, y3: y3 };
+    }
+
+    function PackColors(vertices) {
+        vertices.forEach(function (vertex) {
+            vertex.packColor();
+        });
+    }
+
+    function UpdateVertices(gameObject) {
+        var vertices = gameObject.vertices;
+        var _a = GetVertices(gameObject.transform), x0 = _a.x0, y0 = _a.y0, x1 = _a.x1, y1 = _a.y1, x2 = _a.x2, y2 = _a.y2, x3 = _a.x3, y3 = _a.y3;
+        vertices[0].setPosition(x0, y0);
+        vertices[1].setPosition(x1, y1);
+        vertices[2].setPosition(x2, y2);
+        vertices[3].setPosition(x3, y3);
+        return gameObject;
+    }
+
+    function PreRenderVertices(gameObject) {
+        if (gameObject.isDirty(DIRTY_CONST.COLORS)) {
+            PackColors(gameObject.vertices);
+            gameObject.clearDirty(DIRTY_CONST.COLORS);
+        }
+        if (gameObject.isDirty(DIRTY_CONST.TRANSFORM)) {
+            UpdateVertices(gameObject);
+            gameObject.clearDirty(DIRTY_CONST.TRANSFORM);
+        }
+        return gameObject;
+    }
+
     function GetDefaultOriginX() {
         return ConfigStore.get(CONFIG_DEFAULTS.DEFAULT_ORIGIN).x;
     }
@@ -8257,7 +8316,7 @@
     }
 
     function CloneRectangle(source) {
-        return new Rectangle(source.x, source.y, source.width, source.height);
+        return new Rectangle$1(source.x, source.y, source.width, source.height);
     }
 
     function CopyRectangleFrom(source, dest) {
@@ -8445,7 +8504,7 @@
     }
 
     function GetRectangleIntersection$1(rectA, rectB, out) {
-        if (out === void 0) { out = new Rectangle(); }
+        if (out === void 0) { out = new Rectangle$1(); }
         if (RectangleToRectangle(rectA, rectB)) {
             out.set(Math.max(rectA.x, rectB.x), Math.max(rectA.y, rectB.y), Math.min(rectA.right, rectB.right) - out.x, Math.min(rectA.bottom, rectB.bottom) - out.y);
         }
@@ -8616,7 +8675,7 @@
     }
 
     function GetRectangleUnion(rectA, rectB, out) {
-        if (out === void 0) { out = new Rectangle(); }
+        if (out === void 0) { out = new Rectangle$1(); }
         var x = Math.min(rectA.x, rectB.x);
         var y = Math.min(rectA.y, rectB.y);
         var w = Math.max(rectA.right, rectB.right) - x;
@@ -8652,7 +8711,7 @@
     }
 
     function RectangleFromPoints(points, out) {
-        if (out === void 0) { out = new Rectangle(); }
+        if (out === void 0) { out = new Rectangle$1(); }
         if (points.length === 0) {
             return out;
         }
@@ -8727,7 +8786,7 @@
         GetRectangleUnion: GetRectangleUnion,
         InflateRectangle: InflateRectangle,
         MergeRectangle: MergeRectangle,
-        Rectangle: Rectangle,
+        Rectangle: Rectangle$1,
         RectangleContains: RectangleContains,
         RectangleContainsPoint: RectangleContainsPoint,
         RectangleContainsRectangle: RectangleContainsRectangle,
@@ -8785,7 +8844,7 @@
             this.scale = new Vec2Callback(update, 1, 1);
             this.skew = new Vec2Callback(update);
             this.origin = new Vec2Callback(updateExtent, GetDefaultOriginX(), GetDefaultOriginY());
-            this.extent = new Rectangle();
+            this.extent = new Rectangle$1();
         }
         TransformComponent.prototype.update = function () {
             this.updateLocal();
@@ -8875,9 +8934,12 @@
     var index$t = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetVertices: GetVertices,
+        GetVerticesFromValues: GetVerticesFromValues,
+        PreRenderVertices: PreRenderVertices,
         TransformComponent: TransformComponent,
         UpdateLocalTransform: UpdateLocalTransform,
-        UpdateWorldTransform: UpdateWorldTransform
+        UpdateWorldTransform: UpdateWorldTransform,
+        UpdateVertices: UpdateVertices
     });
 
     function PackColor(rgb, alpha) {
@@ -8944,11 +9006,11 @@
         Vertex: Vertex
     });
 
-    function BatchTexturedQuad(sprite, renderPass) {
+    function BatchTexturedQuad(texture, vertices, renderPass) {
         var _a = GetVertexBufferEntry(renderPass, 1), F32 = _a.F32, U32 = _a.U32, offset = _a.offset;
-        var textureIndex = SetTexture$2(renderPass, sprite.texture);
+        var textureIndex = SetTexture$2(renderPass, texture);
         var vertOffset = offset;
-        sprite.vertices.forEach(function (vertex) {
+        vertices.forEach(function (vertex) {
             F32[vertOffset + 0] = vertex.x;
             F32[vertOffset + 1] = vertex.y;
             F32[vertOffset + 2] = vertex.u;
@@ -8974,6 +9036,7 @@
             this.dirtyFrame = 0;
             this.visible = true;
             this.children = [];
+            this.vertices = [];
             this.events = new Map();
             this.transform = new TransformComponent(this, x, y);
             this.bounds = new BoundsComponent(this);
@@ -9047,6 +9110,7 @@
             this.world = null;
             this.parent = null;
             this.children = null;
+            this.vertices = [];
         };
         return GameObject;
     }());
@@ -9066,28 +9130,55 @@
             this.transform.updateExtent(width, height);
             return this;
         };
+        Container.prototype.getSize = function (out) {
+            if (out === void 0) { out = new Vec2(); }
+            return GetRectangleSize(this.transform.extent, out);
+        };
         Container.prototype.setPosition = function (x, y) {
             this.transform.position.set(x, y);
             return this;
+        };
+        Container.prototype.getPosition = function (out) {
+            if (out === void 0) { out = new Vec2(); }
+            var position = this.transform.position;
+            return out.set(position.x, position.y);
         };
         Container.prototype.setOrigin = function (x, y) {
             if (y === void 0) { y = x; }
             this.transform.origin.set(x, y);
             return this;
         };
+        Container.prototype.getOrigin = function (out) {
+            if (out === void 0) { out = new Vec2(); }
+            var origin = this.transform.origin;
+            return out.set(origin.x, origin.y);
+        };
         Container.prototype.setSkew = function (x, y) {
             if (y === void 0) { y = x; }
             this.transform.skew.set(x, y);
             return this;
+        };
+        Container.prototype.getSkew = function (out) {
+            if (out === void 0) { out = new Vec2(); }
+            var skew = this.transform.skew;
+            return out.set(skew.x, skew.y);
         };
         Container.prototype.setScale = function (x, y) {
             if (y === void 0) { y = x; }
             this.transform.scale.set(x, y);
             return this;
         };
+        Container.prototype.getScale = function (out) {
+            if (out === void 0) { out = new Vec2(); }
+            var scale = this.transform.scale;
+            return out.set(scale.x, scale.y);
+        };
         Container.prototype.setRotation = function (value) {
             this.transform.rotation = value;
             return this;
+        };
+        Container.prototype.getRotation = function () {
+            return this.transform.rotation;
         };
         Object.defineProperty(Container.prototype, "width", {
             get: function () {
@@ -9206,7 +9297,10 @@
             set: function (value) {
                 if (value !== this._alpha) {
                     this._alpha = value;
-                    this.setDirty(DIRTY_CONST.TRANSFORM);
+                    this.vertices.forEach(function (vertex) {
+                        vertex.setAlpha(value);
+                    });
+                    this.setDirty(DIRTY_CONST.COLORS);
                 }
             },
             enumerable: false,
@@ -9215,27 +9309,18 @@
         return Container;
     }(GameObject));
 
-    function DrawTexturedQuad$1(sprite, renderer) {
-        var frame = sprite.frame;
+    function DrawTexturedQuad$1(frame, alpha, transform, renderer) {
         if (!frame) {
             return;
         }
         var ctx = renderer.ctx;
-        var transform = sprite.transform;
         var _a = transform.world, a = _a.a, b = _a.b, c = _a.c, d = _a.d, tx = _a.tx, ty = _a.ty;
         var _b = transform.extent, x = _b.x, y = _b.y;
         ctx.save();
         ctx.setTransform(a, b, c, d, tx, ty);
-        ctx.globalAlpha = sprite.alpha;
+        ctx.globalAlpha = alpha;
         ctx.drawImage(frame.texture.image, frame.x, frame.y, frame.width, frame.height, x, y, frame.width, frame.height);
         ctx.restore();
-    }
-
-    function PackColors(sprite) {
-        sprite.vertices.forEach(function (vertex) {
-            vertex.packColor();
-        });
-        return sprite;
     }
 
     function SetFrame$1(texture, key) {
@@ -9244,22 +9329,18 @@
             children[_i - 2] = arguments[_i];
         }
         var frame = texture.getFrame(key);
-        var u0 = frame.u0, u1 = frame.u1, v0 = frame.v0, v1 = frame.v1, pivot = frame.pivot;
+        var pivot = frame.pivot;
         children.forEach(function (child) {
             if (!child || frame === child.frame) {
                 return;
             }
             child.frame = frame;
+            child.hasTexture = true;
             if (pivot) {
                 child.setOrigin(pivot.x, pivot.y);
             }
-            child.frame.setExtent(child);
-            child.hasTexture = true;
-            var vertices = child.vertices;
-            vertices[0].setUV(u0, v0);
-            vertices[1].setUV(u0, v1);
-            vertices[2].setUV(u1, v1);
-            vertices[3].setUV(u1, v0);
+            frame.copyToExtent(child);
+            frame.copyToVertices(child.vertices);
         });
         return children;
     }
@@ -9307,16 +9388,6 @@
         return children;
     }
 
-    function UpdateVertices(sprite) {
-        var vertices = sprite.vertices;
-        var _a = GetVertices(sprite.transform), x0 = _a.x0, y0 = _a.y0, x1 = _a.x1, y1 = _a.y1, x2 = _a.x2, y2 = _a.y2, x3 = _a.x3, y3 = _a.y3;
-        vertices[0].setPosition(x0, y0);
-        vertices[1].setPosition(x1, y1);
-        vertices[2].setPosition(x2, y2);
-        vertices[3].setPosition(x3, y3);
-        return sprite;
-    }
-
     var Sprite = (function (_super) {
         __extends(Sprite, _super);
         function Sprite(x, y, texture, frame) {
@@ -9339,40 +9410,14 @@
         Sprite.prototype.isRenderable = function () {
             return (this.visible && this.willRender && this.hasTexture && this.alpha > 0);
         };
-        Sprite.prototype.preRender = function () {
-            if (this.isDirty(DIRTY_CONST.COLORS)) {
-                PackColors(this);
-                this.clearDirty(DIRTY_CONST.COLORS);
-            }
-            if (this.isDirty(DIRTY_CONST.TRANSFORM)) {
-                UpdateVertices(this);
-                this.clearDirty(DIRTY_CONST.TRANSFORM);
-            }
-        };
         Sprite.prototype.renderGL = function (renderPass) {
-            this.preRender();
-            BatchTexturedQuad(this, renderPass);
+            PreRenderVertices(this);
+            BatchTexturedQuad(this.texture, this.vertices, renderPass);
         };
         Sprite.prototype.renderCanvas = function (renderer) {
-            this.preRender();
-            DrawTexturedQuad$1(this, renderer);
+            PreRenderVertices(this);
+            DrawTexturedQuad$1(this.frame, this.alpha, this.transform, renderer);
         };
-        Object.defineProperty(Sprite.prototype, "alpha", {
-            get: function () {
-                return this._alpha;
-            },
-            set: function (value) {
-                if (value !== this._alpha) {
-                    this._alpha = value;
-                    this.vertices.forEach(function (vertex) {
-                        vertex.setAlpha(value);
-                    });
-                    this.setDirty(DIRTY_CONST.COLORS);
-                }
-            },
-            enumerable: false,
-            configurable: true
-        });
         Object.defineProperty(Sprite.prototype, "tint", {
             get: function () {
                 return this._tint;
@@ -9394,7 +9439,6 @@
             this.texture = null;
             this.frame = null;
             this.hasTexture = false;
-            this.vertices = [];
         };
         return Sprite;
     }(Container));
@@ -9670,26 +9714,65 @@
         return EffectLayer;
     }(RenderLayer));
 
-    function GetVerticesFromValues(left, right, top, bottom, x, y, rotation, scaleX, scaleY, skewX, skewY) {
-        if (rotation === void 0) { rotation = 0; }
-        if (scaleX === void 0) { scaleX = 1; }
-        if (scaleY === void 0) { scaleY = 1; }
-        if (skewX === void 0) { skewX = 0; }
-        if (skewY === void 0) { skewY = 0; }
-        var a = Math.cos(rotation + skewY) * scaleX;
-        var b = Math.sin(rotation + skewY) * scaleX;
-        var c = -Math.sin(rotation - skewX) * scaleY;
-        var d = Math.cos(rotation - skewX) * scaleY;
-        var x0 = (left * a) + (top * c) + x;
-        var y0 = (left * b) + (top * d) + y;
-        var x1 = (left * a) + (bottom * c) + x;
-        var y1 = (left * b) + (bottom * d) + y;
-        var x2 = (right * a) + (bottom * c) + x;
-        var y2 = (right * b) + (bottom * d) + y;
-        var x3 = (right * a) + (top * c) + x;
-        var y3 = (right * b) + (top * d) + y;
-        return { x0: x0, y0: y0, x1: x1, y1: y1, x2: x2, y2: y2, x3: x3, y3: y3 };
-    }
+    var Rectangle = (function (_super) {
+        __extends(Rectangle, _super);
+        function Rectangle(x, y, width, height, color) {
+            if (width === void 0) { width = 64; }
+            if (height === void 0) { height = 64; }
+            if (color === void 0) { color = 0xffffff; }
+            var _this = _super.call(this, x, y) || this;
+            _this._color = 0xffffff;
+            _this.type = 'Rectangle';
+            _this.vertices = [new Vertex(), new Vertex(), new Vertex(), new Vertex()];
+            _this.color = color;
+            _this.setWhiteTexture();
+            _this.setSize(width, height);
+            return _this;
+        }
+        Rectangle.prototype.setWhiteTexture = function () {
+            this.texture = TextureManagerInstance.get().get('__WHITE');
+            this.frame = this.texture.getFrame();
+            this.frame.copyToExtent(this);
+            this.frame.copyToVertices(this.vertices);
+        };
+        Rectangle.prototype.setColor = function (color) {
+            this.color = color;
+            return this;
+        };
+        Rectangle.prototype.isRenderable = function () {
+            return (this.visible && this.willRender && this.alpha > 0);
+        };
+        Rectangle.prototype.renderGL = function (renderPass) {
+            PreRenderVertices(this);
+            BatchTexturedQuad(this.texture, this.vertices, renderPass);
+        };
+        Rectangle.prototype.renderCanvas = function (renderer) {
+            PreRenderVertices(this);
+            DrawTexturedQuad$1(this.frame, this.alpha, this.transform, renderer);
+        };
+        Object.defineProperty(Rectangle.prototype, "color", {
+            get: function () {
+                return this._color;
+            },
+            set: function (value) {
+                if (value !== this._color) {
+                    this._color = value;
+                    this.vertices.forEach(function (vertex) {
+                        vertex.setTint(value);
+                    });
+                    this.setDirty(DIRTY_CONST.COLORS);
+                }
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Rectangle.prototype.destroy = function (reparentChildren) {
+            _super.prototype.destroy.call(this, reparentChildren);
+            this.texture = null;
+            this.frame = null;
+        };
+        return Rectangle;
+    }(Container));
 
     var SpriteBatch = (function (_super) {
         __extends(SpriteBatch, _super);
@@ -10047,9 +10130,10 @@
         Components: index$s,
         Container: Container,
         EffectLayer: EffectLayer,
-        Layer: Layer,
-        RenderLayer: RenderLayer,
         GameObject: GameObject,
+        Layer: Layer,
+        Rectangle: Rectangle,
+        RenderLayer: RenderLayer,
         Sprite: Sprite,
         SpriteBatch: SpriteBatch,
         Text: Text
@@ -11436,7 +11520,7 @@
     }
 
     function GetCircleBounds(circle, out) {
-        if (out === void 0) { out = new Rectangle(); }
+        if (out === void 0) { out = new Rectangle$1(); }
         return out.set(circle.left, circle.top, circle.diameter, circle.diameter);
     }
 
@@ -11626,7 +11710,7 @@
     }
 
     function GetEllipseBounds(ellipse, out) {
-        if (out === void 0) { out = new Rectangle(); }
+        if (out === void 0) { out = new Rectangle$1(); }
         return out.set(ellipse.left, ellipse.top, ellipse.width, ellipse.height);
     }
 
@@ -11943,7 +12027,7 @@
     }
 
     function GetRectangleIntersection(rectA, rectB, out) {
-        if (out === void 0) { out = new Rectangle(); }
+        if (out === void 0) { out = new Rectangle$1(); }
         if (RectangleToRectangle(rectA, rectB)) {
             var x = Math.max(rectA.x, rectB.x);
             var y = Math.max(rectA.y, rectB.y);
@@ -15519,7 +15603,7 @@
             this.rotation = new Quaternion();
             var game = GameInstance.get();
             var renderer = game.renderer;
-            this.viewport = new Rectangle(0, 0, renderer.width, renderer.height);
+            this.viewport = new Rectangle$1(0, 0, renderer.width, renderer.height);
             this.renderer = renderer;
             this.forward = Vec3Forward();
             this.up = Vec3Up();

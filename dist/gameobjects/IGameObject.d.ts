@@ -5,6 +5,7 @@ import { IEventInstance } from '../events/IEventInstance';
 import { IInputComponent } from './components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ITransformComponent } from './components/transform/ITransformComponent';
+import { Vertex } from './components/Vertex';
 export interface IGameObject {
     type: string;
     name: string;
@@ -24,6 +25,7 @@ export interface IGameObject {
     transform: ITransformComponent;
     bounds: IBoundsComponent;
     input: IInputComponent;
+    vertices: Vertex[];
     isRenderable(): boolean;
     isDirty(flag: number): boolean;
     clearDirty(flag: number): this;

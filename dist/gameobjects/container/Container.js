@@ -1,5 +1,7 @@
 import {DIRTY_CONST} from "../DIRTY_CONST";
 import {GameObject} from "../GameObject";
+import {GetRectangleSize} from "../../geom/rectangle/GetRectangleSize";
+import {Vec2} from "../../math/vec2/Vec2";
 export class Container extends GameObject {
   constructor(x = 0, y = 0) {
     super(x, y);
@@ -10,25 +12,47 @@ export class Container extends GameObject {
     this.transform.updateExtent(width, height);
     return this;
   }
+  getSize(out = new Vec2()) {
+    return GetRectangleSize(this.transform.extent, out);
+  }
   setPosition(x, y) {
     this.transform.position.set(x, y);
     return this;
+  }
+  getPosition(out = new Vec2()) {
+    const position = this.transform.position;
+    return out.set(position.x, position.y);
   }
   setOrigin(x, y = x) {
     this.transform.origin.set(x, y);
     return this;
   }
+  getOrigin(out = new Vec2()) {
+    const origin = this.transform.origin;
+    return out.set(origin.x, origin.y);
+  }
   setSkew(x, y = x) {
     this.transform.skew.set(x, y);
     return this;
+  }
+  getSkew(out = new Vec2()) {
+    const skew = this.transform.skew;
+    return out.set(skew.x, skew.y);
   }
   setScale(x, y = x) {
     this.transform.scale.set(x, y);
     return this;
   }
+  getScale(out = new Vec2()) {
+    const scale = this.transform.scale;
+    return out.set(scale.x, scale.y);
+  }
   setRotation(value) {
     this.transform.rotation = value;
     return this;
+  }
+  getRotation() {
+    return this.transform.rotation;
   }
   set width(value) {
     this.transform.updateExtent(value);
@@ -102,7 +126,10 @@ export class Container extends GameObject {
   set alpha(value) {
     if (value !== this._alpha) {
       this._alpha = value;
-      this.setDirty(DIRTY_CONST.TRANSFORM);
+      this.vertices.forEach((vertex) => {
+        vertex.setAlpha(value);
+      });
+      this.setDirty(DIRTY_CONST.COLORS);
     }
   }
 }

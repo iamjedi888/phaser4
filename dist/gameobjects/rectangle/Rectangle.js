@@ -3,28 +3,30 @@ import {Container} from "../container/Container";
 import {DIRTY_CONST} from "../DIRTY_CONST";
 import {DrawTexturedQuad} from "../../renderer/canvas/draw/DrawTexturedQuad";
 import {PreRenderVertices} from "../components/transform/PreRenderVertices";
-import {SetFrame} from "./SetFrame";
-import {SetTexture} from "./SetTexture";
+import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
 import {Vertex} from "../components/Vertex";
-export class Sprite extends Container {
-  constructor(x, y, texture, frame) {
+export class Rectangle extends Container {
+  constructor(x, y, width = 64, height = 64, color = 16777215) {
     super(x, y);
-    this.hasTexture = false;
-    this._tint = 16777215;
-    this.type = "Sprite";
+    this._color = 16777215;
+    this.type = "Rectangle";
     this.vertices = [new Vertex(), new Vertex(), new Vertex(), new Vertex()];
-    this.setTexture(texture, frame);
+    this.color = color;
+    this.setWhiteTexture();
+    this.setSize(width, height);
   }
-  setTexture(key, frame) {
-    SetTexture(key, frame, this);
-    return this;
+  setWhiteTexture() {
+    this.texture = TextureManagerInstance.get().get("__WHITE");
+    this.frame = this.texture.getFrame();
+    this.frame.copyToExtent(this);
+    this.frame.copyToVertices(this.vertices);
   }
-  setFrame(key) {
-    SetFrame(this.texture, key, this);
+  setColor(color) {
+    this.color = color;
     return this;
   }
   isRenderable() {
-    return this.visible && this.willRender && this.hasTexture && this.alpha > 0;
+    return this.visible && this.willRender && this.alpha > 0;
   }
   renderGL(renderPass) {
     PreRenderVertices(this);
@@ -34,12 +36,12 @@ export class Sprite extends Container {
     PreRenderVertices(this);
     DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
   }
-  get tint() {
-    return this._tint;
+  get color() {
+    return this._color;
   }
-  set tint(value) {
-    if (value !== this._tint) {
-      this._tint = value;
+  set color(value) {
+    if (value !== this._color) {
+      this._color = value;
       this.vertices.forEach((vertex) => {
         vertex.setTint(value);
       });
@@ -50,6 +52,5 @@ export class Sprite extends Container {
     super.destroy(reparentChildren);
     this.texture = null;
     this.frame = null;
-    this.hasTexture = false;
   }
 }

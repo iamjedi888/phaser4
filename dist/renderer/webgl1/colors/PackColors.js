@@ -1,6 +1,5 @@
-export function PackColors(sprite) {
-  sprite.vertices.forEach((vertex) => {
+export function PackColors(vertices) {
+  vertices.forEach((vertex) => {
     vertex.packColor();
   });
-  return sprite;
 }
