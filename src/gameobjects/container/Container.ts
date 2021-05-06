@@ -1,6 +1,8 @@
 import { DIRTY_CONST } from '../DIRTY_CONST';
 import { GameObject } from '../GameObject';
+import { GetRectangleSize } from '../../geom/rectangle/GetRectangleSize';
 import { IContainer } from './IContainer';
+import { Vec2 } from '../../math/vec2/Vec2';
 
 export class Container extends GameObject implements IContainer
 {
@@ -20,11 +22,23 @@ export class Container extends GameObject implements IContainer
         return this;
     }
 
+    getSize (out: Vec2 = new Vec2()): Vec2
+    {
+        return GetRectangleSize(this.transform.extent, out);
+    }
+
     setPosition (x: number, y: number): this
     {
         this.transform.position.set(x, y);
 
         return this;
+    }
+
+    getPosition (out: Vec2 = new Vec2()): Vec2
+    {
+        const position = this.transform.position;
+
+        return out.set(position.x, position.y);
     }
 
     setOrigin (x: number, y: number = x): this
@@ -34,11 +48,25 @@ export class Container extends GameObject implements IContainer
         return this;
     }
 
+    getOrigin (out: Vec2 = new Vec2()): Vec2
+    {
+        const origin = this.transform.origin;
+
+        return out.set(origin.x, origin.y);
+    }
+
     setSkew (x: number, y: number = x): this
     {
         this.transform.skew.set(x, y);
 
         return this;
+    }
+
+    getSkew (out: Vec2 = new Vec2()): Vec2
+    {
+        const skew = this.transform.skew;
+
+        return out.set(skew.x, skew.y);
     }
 
     setScale (x: number, y: number = x): this
@@ -48,11 +76,23 @@ export class Container extends GameObject implements IContainer
         return this;
     }
 
+    getScale (out: Vec2 = new Vec2()): Vec2
+    {
+        const scale = this.transform.scale;
+
+        return out.set(scale.x, scale.y);
+    }
+
     setRotation (value: number): this
     {
         this.transform.rotation = value;
 
         return this;
+    }
+
+    getRotation (): number
+    {
+        return this.transform.rotation;
     }
 
     set width (value: number)
@@ -176,8 +216,12 @@ export class Container extends GameObject implements IContainer
         {
             this._alpha = value;
 
-            //  TODO - Switch to Alpha or Colors dirty flag instead
-            this.setDirty(DIRTY_CONST.TRANSFORM);
+            this.vertices.forEach(vertex =>
+            {
+                vertex.setAlpha(value);
+            });
+
+            this.setDirty(DIRTY_CONST.COLORS);
         }
     }
 }
