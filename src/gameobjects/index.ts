@@ -5,6 +5,7 @@ import { Container } from './container/Container';
 import { EffectLayer } from './effectlayer/EffectLayer';
 import { GameObject } from './GameObject';
 import { Layer } from './layer/Layer';
+import { Rectangle } from './rectangle/Rectangle';
 import { RenderLayer } from './renderlayer/RenderLayer';
 import { Sprite } from './sprite/Sprite';
 import { SpriteBatch } from './spritebatch/SpriteBatch';
@@ -15,9 +16,10 @@ export {
     Components,
     Container,
     EffectLayer,
-    Layer,
-    RenderLayer,
     GameObject,
+    Layer,
+    Rectangle,
+    RenderLayer,
     Sprite,
     SpriteBatch,
     Text
