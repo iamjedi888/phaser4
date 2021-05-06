@@ -1,11 +1,11 @@
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
-import { Texture } from '../../../textures';
+import { ITexture } from '../../../textures/ITexture';
 import { gl } from '../GL';
 
 //  request the next available texture and bind it
 //  returns the new ID
-export function SetTexture (renderPass: IRenderPass, texture: Texture): number
+export function SetTexture (renderPass: IRenderPass, texture: ITexture): number
 {
     const binding = texture.binding;
     const currentActiveTexture = renderPass.currentActiveTexture;
