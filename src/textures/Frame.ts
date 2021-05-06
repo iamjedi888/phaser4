@@ -1,5 +1,6 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 import { Texture } from './Texture';
+import { Vertex } from '../gameobjects/components';
 
 export class Frame
 {
@@ -112,7 +113,7 @@ export class Frame
         return { left, right, top, bottom };
     }
 
-    setExtent (child: IGameObject): void
+    copyToExtent (child: IGameObject): this
     {
         const transform = child.transform;
 
@@ -145,6 +146,20 @@ export class Frame
         }
 
         transform.setExtent(x, y, width, height);
+
+        return this;
+    }
+
+    copyToVertices (vertices: Vertex[], offset: number = 0): this
+    {
+        const { u0, u1, v0, v1 } = this;
+
+        vertices[offset + 0].setUV(u0, v0);
+        vertices[offset + 1].setUV(u0, v1);
+        vertices[offset + 2].setUV(u1, v1);
+        vertices[offset + 3].setUV(u1, v0);
+
+        return this;
     }
 
     updateUVs (): void
