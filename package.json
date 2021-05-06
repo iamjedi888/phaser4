@@ -28,21 +28,21 @@
     },
     "homepage": "https://github.com/phaserjs/phaser#readme",
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^11.2.1",
-        "@typescript-eslint/eslint-plugin": "4.22.0",
-        "@typescript-eslint/parser": "4.22.0",
+        "@rollup/plugin-node-resolve": "^13.0.0",
+        "@typescript-eslint/eslint-plugin": "4.22.1",
+        "@typescript-eslint/parser": "4.22.1",
         "boxen": "^5.0.1",
         "directory-tree": "^2.2.9",
-        "esbuild": "^0.11.16",
+        "esbuild": "^0.11.19",
         "eslint": "^7.25.0",
-        "fs-extra": "^9.1.0",
-        "rollup": "^2.46.0",
+        "fs-extra": "^10.0.0",
+        "rollup": "^2.47.0",
         "rollup-plugin-filesize": "9.1.1",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.30.0",
         "tslib": "^2.2.0",
         "typescript": "^4.2.4",
-        "uplot": "^1.6.8"
+        "uplot": "^1.6.9"
     },
     "dependencies": {
         "sloc": "^0.2.1"
