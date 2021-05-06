@@ -5,7 +5,6 @@ import { SetQuadTint } from './SetQuadTint';
 import { SetTexture } from './SetTexture';
 import { SetTint } from './SetTint';
 import { Sprite } from './Sprite';
-import { UpdateVertices } from './UpdateVertices';
 
 export {
     SetAlpha,
@@ -14,6 +13,5 @@ export {
     SetQuadTint,
     SetTexture,
     SetTint,
-    Sprite,
-    UpdateVertices
+    Sprite
 };
