@@ -7,11 +7,10 @@ import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
-import { PackColors } from '../../renderer/webgl1/colors/PackColors';
+import { PreRenderVertices } from '../components/transform/PreRenderVertices';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
-import { UpdateVertices } from './UpdateVertices';
 import { Vertex } from '../components/Vertex';
 
 export class Sprite extends Container implements ISprite
@@ -19,7 +18,6 @@ export class Sprite extends Container implements ISprite
     texture: Texture;
     frame: Frame;
     hasTexture: boolean = false;
-    vertices: Vertex[];
 
     protected _tint: number = 0xffffff;
 
@@ -53,55 +51,18 @@ export class Sprite extends Container implements ISprite
         return (this.visible && this.willRender && this.hasTexture && this.alpha > 0);
     }
 
-    preRender (): void
-    {
-        if (this.isDirty(DIRTY_CONST.COLORS))
-        {
-            PackColors(this);
-
-            this.clearDirty(DIRTY_CONST.COLORS);
-        }
-
-        if (this.isDirty(DIRTY_CONST.TRANSFORM))
-        {
-            UpdateVertices(this);
-
-            this.clearDirty(DIRTY_CONST.TRANSFORM);
-        }
-    }
-
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        this.preRender();
+        PreRenderVertices(this);
 
-        BatchTexturedQuad(this, renderPass);
+        BatchTexturedQuad(this.texture, this.vertices, renderPass);
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
     {
-        this.preRender();
+        PreRenderVertices(this);
 
-        DrawTexturedQuad(this, renderer);
-    }
-
-    get alpha (): number
-    {
-        return this._alpha;
-    }
-
-    set alpha (value: number)
-    {
-        if (value !== this._alpha)
-        {
-            this._alpha = value;
-
-            this.vertices.forEach(vertex =>
-            {
-                vertex.setAlpha(value);
-            });
-
-            this.setDirty(DIRTY_CONST.COLORS);
-        }
+        DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
     }
 
     get tint (): number
@@ -131,6 +92,5 @@ export class Sprite extends Container implements ISprite
         this.texture = null;
         this.frame = null;
         this.hasTexture = false;
-        this.vertices = [];
     }
 }
