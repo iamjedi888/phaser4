@@ -2,7 +2,7 @@ import { BoundsComponent } from './components/bounds/BoundsComponent';
 import { DIRTY_CONST } from './DIRTY_CONST';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
-import { Emit } from '../events';
+import { Emit } from '../events/Emit';
 import { GameInstance } from '../GameInstance';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IBoundsComponent } from './components/bounds/IBoundsComponent';
@@ -15,8 +15,9 @@ import { ITransformComponent } from './components/transform/ITransformComponent'
 import { InputComponent } from './components/input/InputComponent';
 import { ReparentChildren } from '../display/ReparentChildren';
 import { TransformComponent } from './components/transform/TransformComponent';
+import { Vertex } from './components/Vertex';
 
-export class GameObject
+export class GameObject implements IGameObject
 {
     type: string = 'GameObject';
     name: string = '';
@@ -44,12 +45,14 @@ export class GameObject
     transform: ITransformComponent;
     bounds: IBoundsComponent;
     input: IInputComponent;
+    vertices: Vertex[];
 
     visible: boolean = true;
 
     constructor (x: number = 0, y: number = 0)
     {
         this.children = [];
+        this.vertices = [];
 
         this.events = new Map();
 
@@ -176,5 +179,7 @@ export class GameObject
         this.world = null;
         this.parent = null;
         this.children = null;
+
+        this.vertices = [];
     }
 }
