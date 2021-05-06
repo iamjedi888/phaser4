@@ -20,33 +20,6 @@ export default [
     {
         //  UMD Bundle
         input: './src/index.ts',
-        output: [
-            {
-                file: './dist/umd/Phaser.js',
-                format: 'umd',
-                name: 'Phaser',
-                sourcemap: true,
-                esModule: false,
-                plugins: [
-                    filesize()
-                ]
-            }
-        ],
-        plugins: [
-
-            resolve({
-                extensions
-            }),
-
-            typescript({
-                tsconfig: './tsconfig-umd.json'
-            })
-
-        ]
-    },
-    {
-        //  UMD Minified Bundle
-        input: './src/index.ts',
 
         onwarn: (warning, next) =>
         {
@@ -65,6 +38,16 @@ export default [
 
         output: [
             {
+                file: './dist/umd/Phaser.js',
+                format: 'umd',
+                name: 'Phaser',
+                sourcemap: true,
+                esModule: false,
+                plugins: [
+                    filesize()
+                ]
+            },
+            {
                 file: './dist/umd/Phaser.min.js',
                 format: 'umd',
                 name: 'Phaser',
@@ -80,7 +63,6 @@ export default [
                 ]
             }
         ],
-
         plugins: [
 
             resolve({
