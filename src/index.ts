@@ -1,5 +1,6 @@
 import * as Camera from './camera/';
 import * as Camera3D from './camera3d/';
+import * as Color from './color/';
 import * as Config from './config/';
 import * as DOM from './dom/';
 import * as Device from './device/';
@@ -26,6 +27,7 @@ import { Scene } from './scenes/Scene';
 export {
     Camera,
     Camera3D,
+    Color,
     Config,
     Device,
     DOM,
