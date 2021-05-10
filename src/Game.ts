@@ -3,6 +3,7 @@ import { Emit, EventEmitter } from './events';
 
 import { GameInstance } from './GameInstance';
 import { GetBanner } from './config/banner';
+import { GetGlobalVar } from './config/globalvar';
 import { GetParent } from './config/parent';
 import { GetRenderer } from './config/renderer';
 import { IRenderer } from './renderer/IRenderer';
@@ -59,6 +60,13 @@ export class Game extends EventEmitter
         if (parent)
         {
             AddToDOM(this.renderer.canvas, parent);
+        }
+
+        const globalVar = GetGlobalVar();
+
+        if (globalVar && window)
+        {
+            (window as unknown)[globalVar] = this;
         }
 
         this.isBooted = true;
