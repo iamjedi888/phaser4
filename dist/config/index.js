@@ -4,6 +4,7 @@ import {BatchSize} from "./batchsize/BatchSize";
 import {Canvas} from "./canvas/Canvas";
 import {CanvasContext} from "./canvascontext/CanvasContext";
 import {DefaultOrigin} from "./defaultorigin/DefaultOrigin";
+import {GlobalVar} from "./globalvar/GlobalVar";
 import {MaxTextures} from "./maxtextures/MaxTextures";
 import {Parent} from "./parent/Parent";
 import {Scenes} from "./scenes/Scenes";
@@ -17,6 +18,7 @@ export {
   Canvas,
   CanvasContext,
   DefaultOrigin,
+  GlobalVar,
   MaxTextures,
   Parent,
   Scenes,

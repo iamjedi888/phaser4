@@ -1,5 +1,6 @@
 import * as Camera from './camera/';
 import * as Camera3D from './camera3d/';
+import * as Color from './color/';
 import * as Config from './config/';
 import * as DOM from './dom/';
 import * as Device from './device/';
@@ -21,5 +22,5 @@ import * as World from './world/';
 import * as World3D from './world3d/';
 import { Game } from './Game';
 import { Scene } from './scenes/Scene';
-export { Camera, Camera3D, Config, Device, DOM, Display, Display3D, Events, Game, Scene, GameObjects, GameObjects3D, Geom, Geom3D, Input, Loader, Materials3D, Math, Textures, Time, WebGL1, World, World3D };
+export { Camera, Camera3D, Color, Config, Device, DOM, Display, Display3D, Events, Game, Scene, GameObjects, GameObjects3D, Geom, Geom3D, Input, Loader, Materials3D, Math, Textures, Time, WebGL1, World, World3D };
 //# sourceMappingURL=index.d.ts.map

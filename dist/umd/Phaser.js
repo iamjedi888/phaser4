@@ -931,7 +931,7 @@
         return matrix.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
-    var index$13 = /*#__PURE__*/Object.freeze({
+    var index$14 = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetMat4Determinant: GetMat4Determinant,
         GetMat4Frobenius: GetMat4Frobenius,
@@ -1238,7 +1238,7 @@
         return Wrap(angle, -180, 180);
     }
 
-    var index$12 = /*#__PURE__*/Object.freeze({
+    var index$13 = /*#__PURE__*/Object.freeze({
         __proto__: null,
         AngleBetween: AngleBetween,
         AngleBetweenY: AngleBetweenY,
@@ -1360,7 +1360,7 @@
         return StaticCamera;
     }());
 
-    var index$11 = /*#__PURE__*/Object.freeze({
+    var index$12 = /*#__PURE__*/Object.freeze({
         __proto__: null,
         Camera: Camera,
         StaticCamera: StaticCamera
@@ -2052,7 +2052,7 @@
         return Vec3Scale(out, 1 / num, out);
     }
 
-    var index$10 = /*#__PURE__*/Object.freeze({
+    var index$11 = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetVec3Angle: GetVec3Angle,
         GetVec3Distance: GetVec3Distance,
@@ -2359,7 +2359,7 @@
         return new Quaternion(0, 0, 0, 0);
     }
 
-    var index$$ = /*#__PURE__*/Object.freeze({
+    var index$10 = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetQuatAngle: GetQuatAngle,
         GetQuatAngleTo: GetQuatAngleTo,
@@ -2423,7 +2423,7 @@
         return --v * v * ((overshoot + 1) * v + overshoot) + 1;
     }
 
-    var index$_ = /*#__PURE__*/Object.freeze({
+    var index$$ = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$9,
         InOut: InOut$9,
@@ -2490,7 +2490,7 @@
         }
     }
 
-    var index$Z = /*#__PURE__*/Object.freeze({
+    var index$_ = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$8,
         InOut: InOut$8,
@@ -2514,7 +2514,7 @@
         return Math.sqrt(1 - (--v * v));
     }
 
-    var index$Y = /*#__PURE__*/Object.freeze({
+    var index$Z = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$7,
         InOut: InOut$7,
@@ -2538,7 +2538,7 @@
         return --v * v * v + 1;
     }
 
-    var index$X = /*#__PURE__*/Object.freeze({
+    var index$Y = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$6,
         InOut: InOut$6,
@@ -2613,7 +2613,7 @@
         }
     }
 
-    var index$W = /*#__PURE__*/Object.freeze({
+    var index$X = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$5,
         InOut: InOut$5,
@@ -2643,7 +2643,7 @@
         return 1 - Math.pow(2, -10 * v);
     }
 
-    var index$V = /*#__PURE__*/Object.freeze({
+    var index$W = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$4,
         InOut: InOut$4,
@@ -2667,7 +2667,7 @@
         return v * (2 - v);
     }
 
-    var index$U = /*#__PURE__*/Object.freeze({
+    var index$V = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$3,
         InOut: InOut$3,
@@ -2691,7 +2691,7 @@
         return -(--v * v * v * v - 1);
     }
 
-    var index$T = /*#__PURE__*/Object.freeze({
+    var index$U = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$2,
         InOut: InOut$2,
@@ -2715,7 +2715,7 @@
         return (v = v - 1) * v * v * v * v + 1;
     }
 
-    var index$S = /*#__PURE__*/Object.freeze({
+    var index$T = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In$1,
         InOut: InOut$1,
@@ -2758,7 +2758,7 @@
         }
     }
 
-    var index$R = /*#__PURE__*/Object.freeze({
+    var index$S = /*#__PURE__*/Object.freeze({
         __proto__: null,
         In: In,
         InOut: InOut,
@@ -2857,20 +2857,20 @@
         GetEase: GetEase
     });
 
-    var index$Q = /*#__PURE__*/Object.freeze({
+    var index$R = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        Back: index$_,
-        Bounce: index$Z,
-        Circular: index$Y,
-        Cubic: index$X,
-        Elastic: index$W,
-        Expo: index$V,
+        Back: index$$,
+        Bounce: index$_,
+        Circular: index$Z,
+        Cubic: index$Y,
+        Elastic: index$X,
+        Expo: index$W,
         GetEase: GetEase$1,
         Linear: Linear$2,
-        Quadratic: index$U,
-        Quartic: index$T,
-        Quintic: index$S,
-        Sine: index$R,
+        Quadratic: index$V,
+        Quartic: index$U,
+        Quintic: index$T,
+        Sine: index$S,
         Stepped: Stepped$1
     });
 
@@ -2894,7 +2894,7 @@
         return a < b + epsilon;
     }
 
-    var index$P = /*#__PURE__*/Object.freeze({
+    var index$Q = /*#__PURE__*/Object.freeze({
         __proto__: null,
         FuzzyCeil: FuzzyCeil,
         FuzzyEqual: FuzzyEqual,
@@ -3023,7 +3023,7 @@
         return min + (max - min) * SmootherStep(t, 0, 1);
     }
 
-    var index$O = /*#__PURE__*/Object.freeze({
+    var index$P = /*#__PURE__*/Object.freeze({
         __proto__: null,
         BezierInterpolation: BezierInterpolation,
         CatmullRomInterpolation: CatmullRomInterpolation,
@@ -3255,7 +3255,7 @@
         return target.set(0, 0, 0, 0, 0, 0);
     }
 
-    var index$N = /*#__PURE__*/Object.freeze({
+    var index$O = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetMat2dDeterminant: GetMat2dDeterminant,
         GetMat2dFrobenius: GetMat2dFrobenius,
@@ -3304,7 +3304,7 @@
         return (value > 0 && (value & (value - 1)) === 0);
     }
 
-    var index$M = /*#__PURE__*/Object.freeze({
+    var index$N = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetPowerOfTwo: GetPowerOfTwo,
         IsSizePowerOfTwo: IsSizePowerOfTwo,
@@ -3344,7 +3344,7 @@
         return (divide) ? (start + value) / gap : start + value;
     }
 
-    var index$L = /*#__PURE__*/Object.freeze({
+    var index$M = /*#__PURE__*/Object.freeze({
         __proto__: null,
         SnapCeil: SnapCeil,
         SnapFloor: SnapFloor,
@@ -3659,7 +3659,7 @@
         return new Vec2(0, 0);
     }
 
-    var index$K = /*#__PURE__*/Object.freeze({
+    var index$L = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetChebyshevDistance: GetChebyshevDistance,
         GetDistanceFromSegment: GetDistanceFromSegment,
@@ -4197,7 +4197,7 @@
         return new Vec4(0, 0, 0, 0);
     }
 
-    var index$J = /*#__PURE__*/Object.freeze({
+    var index$K = /*#__PURE__*/Object.freeze({
         __proto__: null,
         GetVec4Distance: GetVec4Distance,
         GetVec4DistanceSquared: GetVec4DistanceSquared,
@@ -4361,10 +4361,10 @@
         return (Math.abs(a - b) <= tolerance);
     }
 
-    var index$I = /*#__PURE__*/Object.freeze({
+    var index$J = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        Angle: index$12,
-        Easing: index$Q,
+        Angle: index$13,
+        Easing: index$R,
         Average: Average,
         Bernstein: Bernstein,
         Between: Between,
@@ -4378,29 +4378,29 @@
         FloatBetween: FloatBetween,
         FloorTo: FloorTo,
         FromPercent: FromPercent,
-        Fuzzy: index$P,
+        Fuzzy: index$Q,
         GetSpeed: GetSpeed,
         Hermite: Hermite,
-        Interpolation: index$O,
+        Interpolation: index$P,
         Linear: Linear,
         MATH_CONST: MATH_CONST,
-        Matrix2D: index$N,
-        Matrix4: index$13,
+        Matrix2D: index$O,
+        Matrix4: index$14,
         MaxAdd: MaxAdd,
         MinSub: MinSub,
         Percent: Percent,
-        Pow2: index$M,
-        Quaternion: index$$,
+        Pow2: index$N,
+        Quaternion: index$10,
         RadToDeg: RadToDeg,
         RoundAwayFromZero: RoundAwayFromZero,
         RoundTo: RoundTo,
         SinCosTableGenerator: SinCosTableGenerator,
         SmootherStep: SmootherStep,
         SmoothStep: SmoothStep,
-        Snap: index$L,
-        Vec2: index$K,
-        Vec3: index$10,
-        Vec4: index$J,
+        Snap: index$M,
+        Vec2: index$L,
+        Vec3: index$11,
+        Vec4: index$K,
         Within: Within,
         Wrap: Wrap
     });
@@ -4540,26 +4540,76 @@
         return Camera3D;
     }());
 
-    var index$H = /*#__PURE__*/Object.freeze({
+    var index$I = /*#__PURE__*/Object.freeze({
         __proto__: null,
         Camera3D: Camera3D
     });
 
+    function GetColorFromRGB(red, green, blue) {
+        return red << 16 | green << 8 | blue;
+    }
+
+    function GetColorSpectrum(limit) {
+        if (limit === void 0) { limit = 1024; }
+        var colors = [];
+        var range = 255;
+        var i;
+        var r = 255;
+        var g = 0;
+        var b = 0;
+        for (i = 0; i <= range; i++) {
+            colors.push(GetColorFromRGB(r, i, b));
+        }
+        g = 255;
+        for (i = range; i >= 0; i--) {
+            colors.push(GetColorFromRGB(i, g, b));
+        }
+        r = 0;
+        for (i = 0; i <= range; i++, g--) {
+            colors.push(GetColorFromRGB(r, g, i));
+        }
+        g = 0;
+        b = 255;
+        for (i = 0; i <= range; i++, b--, r++) {
+            colors.push(GetColorFromRGB(r, g, b));
+        }
+        if (limit === 1024) {
+            return colors;
+        }
+        else {
+            var out = [];
+            var t = 0;
+            var inc = 1024 / limit;
+            for (i = 0; i < limit; i++) {
+                out.push(colors[Math.floor(t)]);
+                t += inc;
+            }
+            return out;
+        }
+    }
+
+    var index$H = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        GetColorFromRGB: GetColorFromRGB,
+        GetColorSpectrum: GetColorSpectrum
+    });
+
     var CONFIG_DEFAULTS = {
+        AUTO: 'Auto',
         BACKGROUND_COLOR: 'BackgroundColor',
+        BANNER: 'Banner',
         BATCH_SIZE: 'BatchSize',
+        CANVAS_CONTEXT: 'CanvasContext',
+        CANVAS: 'Canvas',
         DEFAULT_ORIGIN: 'DefaultOrigin',
+        GLOBAL_VAR: 'GlobalVar',
         MAX_TEXTURES: 'MaxTextures',
         PARENT: 'Parent',
-        SIZE: 'Size',
-        SCENES: 'Scenes',
         RENDERER: 'Renderer',
-        AUTO: 'Auto',
-        WEBGL: 'WebGL',
-        CANVAS: 'Canvas',
+        SCENES: 'Scenes',
+        SIZE: 'Size',
         WEBGL_CONTEXT: 'WebGLContext',
-        CANVAS_CONTEXT: 'CanvasContext',
-        BANNER: 'Banner',
+        WEBGL: 'WebGL'
     };
 
     var ConfigStore = new Map();
@@ -4745,6 +4795,16 @@
         if (y === void 0) { y = x; }
         return function () {
             SetDefaultOrigin(x, y);
+        };
+    }
+
+    function SetGlobalVar(name) {
+        ConfigStore.set(CONFIG_DEFAULTS.GLOBAL_VAR, name);
+    }
+
+    function GlobalVar(name) {
+        return function () {
+            SetGlobalVar(name);
         };
     }
 
@@ -6234,6 +6294,7 @@
         Canvas: Canvas,
         CanvasContext: CanvasContext,
         DefaultOrigin: DefaultOrigin,
+        GlobalVar: GlobalVar,
         MaxTextures: MaxTextures,
         Parent: Parent,
         Scenes: Scenes,
@@ -15826,6 +15887,10 @@
         }
     }
 
+    function GetGlobalVar() {
+        return ConfigStore.get(CONFIG_DEFAULTS.GLOBAL_VAR);
+    }
+
     function GetParent() {
         return ConfigStore.get(CONFIG_DEFAULTS.PARENT);
     }
@@ -15963,6 +16028,10 @@
             if (parent) {
                 AddToDOM(this.renderer.canvas, parent);
             }
+            var globalVar = GetGlobalVar();
+            if (globalVar && window) {
+                window[globalVar] = this;
+            }
             this.isBooted = true;
             GetBanner();
             Emit(this, 'boot');
@@ -16040,8 +16109,9 @@
         return Scene;
     }());
 
-    exports.Camera = index$11;
-    exports.Camera3D = index$H;
+    exports.Camera = index$12;
+    exports.Camera3D = index$I;
+    exports.Color = index$H;
     exports.Config = index$G;
     exports.DOM = index$F;
     exports.Device = index$A;
@@ -16056,7 +16126,7 @@
     exports.Input = index$c;
     exports.Loader = index$a;
     exports.Materials3D = index$9;
-    exports.Math = index$I;
+    exports.Math = index$J;
     exports.Scene = Scene;
     exports.Textures = index$5;
     exports.Time = index$4;

@@ -4328,6 +4328,56 @@ var Camera3D = class {
   }
 };
 
+// src/color/index.ts
+var color_exports = {};
+__export(color_exports, {
+  GetColorFromRGB: () => GetColorFromRGB,
+  GetColorSpectrum: () => GetColorSpectrum
+});
+
+// src/color/GetColorFromRGB.ts
+function GetColorFromRGB(red, green, blue) {
+  return red << 16 | green << 8 | blue;
+}
+
+// src/color/GetColorSpectrum.ts
+function GetColorSpectrum(limit = 1024) {
+  const colors = [];
+  const range = 255;
+  let i;
+  let r = 255;
+  let g = 0;
+  let b = 0;
+  for (i = 0; i <= range; i++) {
+    colors.push(GetColorFromRGB(r, i, b));
+  }
+  g = 255;
+  for (i = range; i >= 0; i--) {
+    colors.push(GetColorFromRGB(i, g, b));
+  }
+  r = 0;
+  for (i = 0; i <= range; i++, g--) {
+    colors.push(GetColorFromRGB(r, g, i));
+  }
+  g = 0;
+  b = 255;
+  for (i = 0; i <= range; i++, b--, r++) {
+    colors.push(GetColorFromRGB(r, g, b));
+  }
+  if (limit === 1024) {
+    return colors;
+  } else {
+    const out = [];
+    let t = 0;
+    const inc = 1024 / limit;
+    for (i = 0; i < limit; i++) {
+      out.push(colors[Math.floor(t)]);
+      t += inc;
+    }
+    return out;
+  }
+}
+
 // src/config/index.ts
 var config_exports = {};
 __export(config_exports, {
@@ -4337,6 +4387,7 @@ __export(config_exports, {
   Canvas: () => Canvas,
   CanvasContext: () => CanvasContext,
   DefaultOrigin: () => DefaultOrigin,
+  GlobalVar: () => GlobalVar,
   MaxTextures: () => MaxTextures,
   Parent: () => Parent,
   Scenes: () => Scenes,
@@ -4347,20 +4398,21 @@ __export(config_exports, {
 
 // src/config/const.ts
 var CONFIG_DEFAULTS = {
+  AUTO: "Auto",
   BACKGROUND_COLOR: "BackgroundColor",
+  BANNER: "Banner",
   BATCH_SIZE: "BatchSize",
+  CANVAS_CONTEXT: "CanvasContext",
+  CANVAS: "Canvas",
   DEFAULT_ORIGIN: "DefaultOrigin",
+  GLOBAL_VAR: "GlobalVar",
   MAX_TEXTURES: "MaxTextures",
   PARENT: "Parent",
-  SIZE: "Size",
-  SCENES: "Scenes",
   RENDERER: "Renderer",
-  AUTO: "Auto",
-  WEBGL: "WebGL",
-  CANVAS: "Canvas",
+  SCENES: "Scenes",
+  SIZE: "Size",
   WEBGL_CONTEXT: "WebGLContext",
-  CANVAS_CONTEXT: "CanvasContext",
-  BANNER: "Banner"
+  WEBGL: "WebGL"
 };
 
 // src/config/ConfigStore.ts
@@ -4551,6 +4603,18 @@ function SetDefaultOrigin(x = 0.5, y = x) {
 function DefaultOrigin(x = 0.5, y = x) {
   return () => {
     SetDefaultOrigin(x, y);
+  };
+}
+
+// src/config/globalvar/SetGlobalVar.ts
+function SetGlobalVar(name) {
+  ConfigStore.set(CONFIG_DEFAULTS.GLOBAL_VAR, name);
+}
+
+// src/config/globalvar/GlobalVar.ts
+function GlobalVar(name) {
+  return () => {
+    SetGlobalVar(name);
   };
 }
 
@@ -15308,6 +15372,11 @@ function GetBanner() {
   }
 }
 
+// src/config/globalvar/GetGlobalVar.ts
+function GetGlobalVar() {
+  return ConfigStore.get(CONFIG_DEFAULTS.GLOBAL_VAR);
+}
+
 // src/config/parent/GetParent.ts
 function GetParent() {
   return ConfigStore.get(CONFIG_DEFAULTS.PARENT);
@@ -15423,6 +15492,10 @@ var Game = class extends EventEmitter {
     if (parent) {
       AddToDOM(this.renderer.canvas, parent);
     }
+    const globalVar = GetGlobalVar();
+    if (globalVar && window) {
+      window[globalVar] = this;
+    }
     this.isBooted = true;
     GetBanner();
     Emit(this, "boot");
@@ -15498,6 +15571,7 @@ var Scene = class {
 export {
   camera_exports as Camera,
   camera3d_exports as Camera3D,
+  color_exports as Color,
   config_exports as Config,
   dom_exports as DOM,
   device_exports as Device,
