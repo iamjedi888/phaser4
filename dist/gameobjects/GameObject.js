@@ -75,6 +75,9 @@ export class GameObject {
   get numChildren() {
     return this.children.length;
   }
+  getBounds() {
+    return this.bounds.get();
+  }
   destroy(reparentChildren) {
     if (reparentChildren) {
       ReparentChildren(this, reparentChildren);

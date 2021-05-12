@@ -6,6 +6,7 @@ import { IGameObject } from './IGameObject';
 import { IInputComponent } from './components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ITransformComponent } from './components/transform/ITransformComponent';
+import { Rectangle } from '../geom/rectangle/Rectangle';
 import { Vertex } from './components/Vertex';
 export declare class GameObject implements IGameObject {
     type: string;
@@ -38,6 +39,7 @@ export declare class GameObject implements IGameObject {
     postRenderGL<T extends IRenderPass>(renderPass: T): void;
     postRenderCanvas<T extends ICanvasRenderer>(renderer: T): void;
     get numChildren(): number;
+    getBounds(): Rectangle;
     destroy(reparentChildren?: IGameObject): void;
 }
 //# sourceMappingURL=GameObject.d.ts.map

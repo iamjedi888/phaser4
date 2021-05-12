@@ -16,6 +16,7 @@ import {DestroyChildren} from "./DestroyChildren";
 import {FindChildByName} from "./FindChildByName";
 import {FindChildrenByName} from "./FindChildrenByName";
 import {GetAllChildren} from "./GetAllChildren";
+import {GetBounds} from "./GetBounds";
 import {GetChildAt} from "./GetChildAt";
 import {GetChildIndex} from "./GetChildIndex";
 import {GetChildren} from "./GetChildren";
@@ -28,7 +29,7 @@ import {GetRandomChild} from "./GetRandomChild";
 import {MoveChildDown} from "./MoveChildDown";
 import {MoveChildTo} from "./MoveChildTo";
 import {MoveChildUp} from "./MoveChildUp";
-import {Overlap} from "./Overlap";
+import {OverlapBounds} from "./OverlapBounds";
 import {RemoveChild} from "./RemoveChild";
 import {RemoveChildAt} from "./RemoveChildAt";
 import {RemoveChildren} from "./RemoveChildren";
@@ -73,6 +74,7 @@ export {
   FindChildByName,
   FindChildrenByName,
   GetAllChildren,
+  GetBounds,
   GetChildAt,
   GetChildIndex,
   GetChildren,
@@ -85,7 +87,7 @@ export {
   MoveChildDown,
   MoveChildTo,
   MoveChildUp,
-  Overlap,
+  OverlapBounds,
   RemoveChild,
   RemoveChildAt,
   RemoveChildren,

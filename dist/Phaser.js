@@ -4331,9 +4331,93 @@ var Camera3D = class {
 // src/color/index.ts
 var color_exports = {};
 __export(color_exports, {
+  CloneColor: () => CloneColor,
+  Color: () => Color,
+  FromHSV: () => FromHSV,
   GetColorFromRGB: () => GetColorFromRGB,
-  GetColorSpectrum: () => GetColorSpectrum
+  GetColorSpectrum: () => GetColorSpectrum,
+  RGBAToFloat: () => RGBAToFloat,
+  RGBToFloat: () => RGBToFloat,
+  SetGray: () => SetGray,
+  SetHSV: () => SetHSV
 });
+
+// src/color/Color.ts
+var Color = class {
+  constructor(red = 0, green = 0, blue = 0, alpha = 1) {
+    this.rgba = new Uint8ClampedArray([red, green, blue, alpha]);
+  }
+  set(red, green, blue, alpha = this.alpha) {
+    this.rgba.set([red, green, blue, alpha]);
+    return this;
+  }
+  setColor(color) {
+    const rgba = this.rgba;
+    const alpha = color > 16777215 ? color >>> 24 : 255;
+    rgba.set([
+      color >> 16 & 255,
+      color >> 8 & 255,
+      color & 255,
+      alpha
+    ]);
+    return this;
+  }
+  getColor(includeAlpha = false) {
+    const [r, g, b, a] = this.rgba;
+    if (includeAlpha) {
+      return a << 24 | r << 16 | g << 8 | b;
+    } else {
+      return r << 16 | g << 8 | b;
+    }
+  }
+  get red() {
+    return this.rgba[0];
+  }
+  set red(value) {
+    this.rgba[0] = value;
+  }
+  get green() {
+    return this.rgba[1];
+  }
+  set green(value) {
+    this.rgba[1] = value;
+  }
+  get blue() {
+    return this.rgba[2];
+  }
+  set blue(value) {
+    this.rgba[2] = value;
+  }
+  get alpha() {
+    return this.rgba[3];
+  }
+  set alpha(value) {
+    this.rgba[3] = value;
+  }
+};
+
+// src/color/CloneColor.ts
+function CloneColor(color) {
+  return new Color(color.red, color.green, color.blue, color.alpha);
+}
+
+// src/color/SetHSV.ts
+function ConvertValue(n, h, s, v) {
+  const k = (n + h * 6) % 6;
+  const min = Math.min(k, 4 - k, 1);
+  return Math.round(255 * (v - v * s * Math.max(0, min)));
+}
+function SetHSV(color, h, s = 1, v = 1) {
+  const r = ConvertValue(5, h, s, v);
+  const g = ConvertValue(3, h, s, v);
+  const b = ConvertValue(1, h, s, v);
+  return color.set(r, g, b);
+}
+
+// src/color/FromHSV.ts
+function FromHSV(h, s = 1, v = 1) {
+  return SetHSV(new Color(), h, s, v);
+}
 
 // src/color/GetColorFromRGB.ts
 function GetColorFromRGB(red, green, blue) {
@@ -4376,6 +4460,21 @@ function GetColorSpectrum(limit = 1024) {
     }
     return out;
   }
+}
+
+// src/color/RGBAToFloat.ts
+function RGBAToFloat(red, green, blue, alpha) {
+  return alpha << 24 | red << 16 | green << 8 | blue;
+}
+
+// src/color/RGBToFloat.ts
+function RGBToFloat(red, green, blue) {
+  return red << 16 | green << 8 | blue;
+}
+
+// src/color/SetGray.ts
+function SetGray(color, amount) {
+  return color.set(amount, amount, amount);
 }
 
 // src/config/index.ts
@@ -6725,6 +6824,7 @@ __export(display_exports, {
   FindChildByName: () => FindChildByName,
   FindChildrenByName: () => FindChildrenByName,
   GetAllChildren: () => GetAllChildren,
+  GetBounds: () => GetBounds,
   GetChildAt: () => GetChildAt,
   GetChildIndex: () => GetChildIndex,
   GetChildren: () => GetChildren,
@@ -6737,7 +6837,7 @@ __export(display_exports, {
   MoveChildDown: () => MoveChildDown,
   MoveChildTo: () => MoveChildTo,
   MoveChildUp: () => MoveChildUp,
-  Overlap: () => Overlap,
+  OverlapBounds: () => OverlapBounds,
   RemoveChild: () => RemoveChild,
   RemoveChildAt: () => RemoveChildAt,
   RemoveChildren: () => RemoveChildren,
@@ -7118,6 +7218,30 @@ function GetAllChildren(parent, property, value) {
   return results;
 }
 
+// src/display/GetBounds.ts
+function GetBounds(...children) {
+  let minX = Number.MAX_SAFE_INTEGER;
+  let minY = Number.MAX_SAFE_INTEGER;
+  let maxX = Number.MIN_SAFE_INTEGER;
+  let maxY = Number.MIN_SAFE_INTEGER;
+  children.forEach((child) => {
+    const {x, y, right, bottom} = child.bounds.get();
+    if (x < minX) {
+      minX = x;
+    }
+    if (y < minY) {
+      minY = y;
+    }
+    if (right > maxX) {
+      maxX = right;
+    }
+    if (bottom > maxY) {
+      maxY = bottom;
+    }
+  });
+  return new Rectangle(minX, minY, maxX, maxY);
+}
+
 // src/display/GetChildAt.ts
 function GetChildAt(parent, index) {
   const children = parent.children;
@@ -7270,13 +7394,15 @@ function RectangleToRectangle(rectA, rectB) {
   return !(rectA.right < rectB.x || rectA.bottom < rectB.y || rectA.x > rectB.right || rectA.y > rectB.bottom);
 }
 
-// src/display/Overlap.ts
-function Overlap(source, ...targets) {
-  const sourceBounds = source.bounds.get();
+// src/display/OverlapBounds.ts
+function OverlapBounds(source, ...targets) {
+  const sourceBounds = source.getBounds();
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i];
-    const targetBounds = target.bounds.get();
-    if (RectangleToRectangle(sourceBounds, targetBounds)) {
+    if (target === source) {
+      continue;
+    }
+    if (RectangleToRectangle(sourceBounds, target.getBounds())) {
       return true;
     }
   }
@@ -8976,6 +9102,9 @@ var GameObject = class {
   }
   get numChildren() {
     return this.children.length;
+  }
+  getBounds() {
+    return this.bounds.get();
   }
   destroy(reparentChildren) {
     if (reparentChildren) {
@@ -14288,6 +14417,7 @@ var types_exports = {};
 __export(types_exports, {
   CanvasTexture: () => CanvasTexture,
   GridTexture: () => GridTexture,
+  LinearGradientTexture: () => LinearGradientTexture,
   PixelTexture: () => PixelTexture,
   RenderTexture: () => RenderTexture,
   SolidColorTexture: () => SolidColorTexture
@@ -14306,6 +14436,28 @@ function GridTexture(color1, color2, width = 32, height = 32, cols = 2, rows = 2
       ctx.fillRect(x * colWidth, y * rowHeight, colWidth, rowHeight);
     }
   }
+  return new Texture(ctx.canvas);
+}
+
+// src/textures/types/LinearGradientTexture.ts
+function LinearGradientTexture(config) {
+  const {
+    width = 256,
+    height = 256,
+    horizontal = false,
+    x0 = 0,
+    y0 = 0,
+    x1 = horizontal ? width : 0,
+    y1 = horizontal ? 0 : height,
+    colorStops = [{offset: 0, color: "red"}]
+  } = config;
+  const ctx = CreateCanvas(width, height);
+  const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+  for (const colorStop of colorStops.values()) {
+    gradient.addColorStop(colorStop.offset, colorStop.color);
+  }
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
   return new Texture(ctx.canvas);
 }
 

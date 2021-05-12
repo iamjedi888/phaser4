@@ -5,6 +5,7 @@ import { IEventInstance } from '../events/IEventInstance';
 import { IInputComponent } from './components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ITransformComponent } from './components/transform/ITransformComponent';
+import { Rectangle } from '../geom/rectangle/Rectangle';
 import { Vertex } from './components/Vertex';
 export interface IGameObject {
     type: string;
@@ -36,6 +37,7 @@ export interface IGameObject {
     renderCanvas<T extends ICanvasRenderer>(renderer: T): void;
     postRenderGL<T extends IRenderPass>(renderPass: T): void;
     postRenderCanvas<T extends ICanvasRenderer>(renderer: T): void;
+    getBounds(): Rectangle;
     destroy(reparentChildren?: IGameObject): void;
 }
 //# sourceMappingURL=IGameObject.d.ts.map
