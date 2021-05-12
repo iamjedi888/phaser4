@@ -4,7 +4,7 @@ Rebooting the Phaser universe from scratch.
 
 ![Phaser4](logo.png)
 
-Examples can be found in the [Phaser 4 Examples repo](https://github.com/phaserjs/examples).
+Examples can be found in the [Phaser 4 Examples repo](https://github.com/phaserjs/dev).
 
 Developer updates can be found on the [Phaser Patreon](https://www.patreon.com/join/photonstorm).
 
