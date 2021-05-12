@@ -1,9 +1,9 @@
 export interface IColor
 {
     set (red: number, green: number, blue: number, alpha?: number): this;
-    fromArray (rgba: number[]): this;
-    getColor (): number;
-    getColor32 (): number;
+    setColor (color: number): this;
+    getColor (includeAlpha: boolean): number;
+    rgba: Uint8ClampedArray;
     red: number;
     green: number;
     blue: number;
