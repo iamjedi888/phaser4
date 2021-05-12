@@ -9,7 +9,8 @@
         "distminor": "npm version minor && npm run build && npm run umdbuild && cd dist && npm publish --ignore-scripts",
         "distmajor": "npm version major && npm run build && npm run umdbuild && cd dist && npm publish --ignore-scripts",
         "build": "node build.mjs",
-        "umdbuild": "swc --config-file .swcrc dist/Phaser.js -o dist/umd/Phaser.js",
+        "oldumdbuild": "rollup -c rollup.config.js",
+        "umdbuild": "swc --config-file swcrc.json dist/Phaser.js -o dist/umd/Phaser.js",
         "ts": "tsc --build tsconfig.json",
         "lint": "eslint ./src --fix --ext .ts"
     },
