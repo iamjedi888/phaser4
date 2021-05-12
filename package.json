@@ -9,7 +9,7 @@
         "distminor": "npm version minor && npm run build && npm run umdbuild && cd dist && npm publish --ignore-scripts",
         "distmajor": "npm version major && npm run build && npm run umdbuild && cd dist && npm publish --ignore-scripts",
         "build": "node build.mjs",
-        "umdbuild": "rollup -c rollup.config.js",
+        "umdbuild": "swc --config-file .swcrc dist/Phaser.js -o dist/umd/Phaser.js",
         "ts": "tsc --build tsconfig.json",
         "lint": "eslint ./src --fix --ext .ts"
     },
@@ -29,6 +29,8 @@
     "homepage": "https://github.com/phaserjs/phaser#readme",
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.0",
+        "@swc/cli": "^0.1.39",
+        "@swc/core": "^1.2.57",
         "@typescript-eslint/eslint-plugin": "4.23.0",
         "@typescript-eslint/parser": "4.23.0",
         "boxen": "^5.0.1",

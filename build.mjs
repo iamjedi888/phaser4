@@ -4,6 +4,7 @@ import dirTree from 'directory-tree';
 import esbuild from 'esbuild';
 import fs from 'fs-extra';
 import sloc from 'sloc';
+import swc from '@swc/core';
 
 const filterConfig = {
     extensions: /\.ts/,
@@ -157,6 +158,46 @@ esbuild.buildSync({
 });
 
 logTime('Built Phaser.js ES6 Bundle');
+
+/*
+const { umdCode, umdMap } = swc.transformFileSync('./dist/Phaser.js', {
+    "jsc": {
+        "parser": {
+            "syntax": "ecmascript",
+            "jsx": false,
+            "dynamicImport": false,
+            "privateMethod": false,
+            "functionBind": false,
+            "exportDefaultFrom": false,
+            "exportNamespaceFrom": false,
+            "decorators": false,
+            "decoratorsBeforeExport": false,
+            "topLevelAwait": false,
+            "importMeta": false
+        },
+        "transform": null,
+        "target": "es5",
+        "loose": true,
+        "externalHelpers": true,
+        "keepClassNames": false
+    },
+    "module": {
+        "type": "umd",
+        "globals": {},
+        "strict": false,
+        "strictMode": true,
+        "lazy": false,
+        "noInterop": false
+    },
+    "minify": true,
+    "sourceMaps": true
+});
+
+fs.writeFileSync('./dist/umd/Phaser.js', umdCode, { encoding: 'utf8' });
+fs.writeFileSync('./dist/umd/Phaser.js.map', umdMap, { encoding: 'utf8' });
+
+logTime('Built Phaser.js UMD Bundle');
+*/
 
 const slocSrc = fs.readFileSync('./dist/Phaser.js', 'utf8');
 
