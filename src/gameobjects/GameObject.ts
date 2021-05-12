@@ -13,6 +13,7 @@ import { IInputComponent } from './components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ITransformComponent } from './components/transform/ITransformComponent';
 import { InputComponent } from './components/input/InputComponent';
+import { Rectangle } from '../geom/rectangle/Rectangle';
 import { ReparentChildren } from '../display/ReparentChildren';
 import { TransformComponent } from './components/transform/TransformComponent';
 import { Vertex } from './components/Vertex';
@@ -155,6 +156,11 @@ export class GameObject implements IGameObject
     get numChildren (): number
     {
         return this.children.length;
+    }
+
+    getBounds (): Rectangle
+    {
+        return this.bounds.get();
     }
 
     destroy (reparentChildren?: IGameObject): void
