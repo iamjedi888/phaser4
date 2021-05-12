@@ -30,7 +30,7 @@
     "homepage": "https://github.com/phaserjs/phaser#readme",
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.0",
-        "@swc/cli": "^0.1.39",
+        "@swc/cli": "^0.1.40",
         "@swc/core": "^1.2.57",
         "@typescript-eslint/eslint-plugin": "4.23.0",
         "@typescript-eslint/parser": "4.23.0",
