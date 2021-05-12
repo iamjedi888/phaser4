@@ -16,6 +16,7 @@ import { DestroyChildren } from './DestroyChildren';
 import { FindChildByName } from './FindChildByName';
 import { FindChildrenByName } from './FindChildrenByName';
 import { GetAllChildren } from './GetAllChildren';
+import { GetBounds } from './GetBounds';
 import { GetChildAt } from './GetChildAt';
 import { GetChildIndex } from './GetChildIndex';
 import { GetChildren } from './GetChildren';
@@ -74,6 +75,7 @@ export {
     FindChildByName,
     FindChildrenByName,
     GetAllChildren,
+    GetBounds,
     GetChildAt,
     GetChildIndex,
     GetChildren,
