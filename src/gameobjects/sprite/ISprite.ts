@@ -8,6 +8,6 @@ export interface ISprite extends IContainer
     frame: Frame;
     hasTexture: boolean;
     tint: number;
-    setTexture (key: string | Texture, frame?: string | number): this;
+    setTexture (key: string | Texture | Frame, frame?: string | number | Frame): this;
     setFrame (key?: string | number | Frame): this;
 }

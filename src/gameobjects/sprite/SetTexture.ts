@@ -1,10 +1,10 @@
 import { Frame } from '../../textures/Frame';
+import { GetTexture } from '../../textures/GetTexture';
 import { ISprite } from './ISprite';
 import { SetFrame } from './SetFrame';
 import { Texture } from '../../textures/Texture';
-import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 
-export function SetTexture <T extends ISprite> (key: string | Texture, frame: string | number | Frame, ...children: T[]): T[]
+export function SetTexture <T extends ISprite> (key: string | Texture | Frame, frame: string | number | Frame, ...children: T[]): T[]
 {
     if (!key)
     {
@@ -20,13 +20,18 @@ export function SetTexture <T extends ISprite> (key: string | Texture, frame: st
     {
         let texture: Texture;
 
-        if (key instanceof Texture)
+        if (key instanceof Frame)
+        {
+            frame = key;
+            texture = key.texture;
+        }
+        else if (key instanceof Texture)
         {
             texture = key;
         }
         else
         {
-            texture = TextureManagerInstance.get().get(key);
+            texture = GetTexture(key);
         }
 
         if (!texture)

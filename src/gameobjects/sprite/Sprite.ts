@@ -21,7 +21,7 @@ export class Sprite extends Container implements ISprite
 
     protected _tint: number = 0xffffff;
 
-    constructor (x: number, y: number, texture: string | Texture, frame?: string | number)
+    constructor (x: number, y: number, texture: string | Texture | Frame, frame?: string | number | Frame)
     {
         super(x, y);
 
@@ -32,7 +32,7 @@ export class Sprite extends Container implements ISprite
         this.setTexture(texture, frame);
     }
 
-    setTexture (key: string | Texture, frame?: string | number): this
+    setTexture (key: string | Texture | Frame, frame?: string | number | Frame): this
     {
         SetTexture(key, frame, this);
 
