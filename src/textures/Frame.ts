@@ -1,8 +1,9 @@
+import { IFrame } from './IFrame';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { Texture } from './Texture';
-import { Vertex } from '../gameobjects/components';
+import { Vertex } from '../components';
 
-export class Frame
+export class Frame implements IFrame
 {
     texture: Texture;
     key: string | number;
@@ -174,5 +175,10 @@ export class Frame
 
         this.u1 = (x + width) / baseTextureWidth;
         this.v1 = (y + height) / baseTextureHeight;
+    }
+
+    destroy (): void
+    {
+        this.texture = null;
     }
 }
