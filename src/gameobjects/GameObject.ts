@@ -1,22 +1,22 @@
-import { BoundsComponent } from './components/bounds/BoundsComponent';
+import { BoundsComponent } from '../components/bounds/BoundsComponent';
 import { DIRTY_CONST } from './DIRTY_CONST';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
 import { GameInstance } from '../GameInstance';
 import { IBaseWorld } from '../world/IBaseWorld';
-import { IBoundsComponent } from './components/bounds/IBoundsComponent';
+import { IBoundsComponent } from '../components/bounds/IBoundsComponent';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
-import { IInputComponent } from './components/input/IInputComponent';
+import { IInputComponent } from '../components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
-import { ITransformComponent } from './components/transform/ITransformComponent';
-import { InputComponent } from './components/input/InputComponent';
+import { ITransformComponent } from '../components/transform/ITransformComponent';
+import { InputComponent } from '../components/input/InputComponent';
 import { Rectangle } from '../geom/rectangle/Rectangle';
 import { ReparentChildren } from '../display/ReparentChildren';
-import { TransformComponent } from './components/transform/TransformComponent';
-import { Vertex } from './components/Vertex';
+import { TransformComponent } from '../components/transform/TransformComponent';
+import { Vertex } from '../components/Vertex';
 
 export class GameObject implements IGameObject
 {

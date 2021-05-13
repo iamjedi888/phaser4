@@ -1,4 +1,4 @@
-import * as Components from './components/';
+import * as Components from '../components/';
 
 import { AnimatedSprite } from './animatedsprite/AnimatedSprite';
 import { Container } from './container/Container';
