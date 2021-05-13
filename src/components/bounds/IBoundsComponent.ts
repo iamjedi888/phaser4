@@ -1,5 +1,5 @@
-import { IGameObject } from '../../IGameObject';
-import { Rectangle } from '../../../geom/rectangle';
+import { IGameObject } from '../../gameobjects/IGameObject';
+import { Rectangle } from '../../geom/rectangle';
 
 export interface IBoundsComponent
 {

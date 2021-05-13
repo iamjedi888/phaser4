@@ -1,6 +1,6 @@
-import { DIRTY_CONST } from '../../DIRTY_CONST';
-import { IGameObject } from '../../IGameObject';
-import { PackColors } from '../../../renderer/webgl1/colors/PackColors';
+import { DIRTY_CONST } from '../../gameobjects/DIRTY_CONST';
+import { IGameObject } from '../../gameobjects/IGameObject';
+import { PackColors } from '../../renderer/webgl1/colors/PackColors';
 import { UpdateVertices } from './UpdateVertices';
 
 export function PreRenderVertices <T extends IGameObject> (gameObject: T): T

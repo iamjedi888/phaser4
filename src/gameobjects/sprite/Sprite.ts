@@ -7,11 +7,11 @@ import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
-import { PreRenderVertices } from '../components/transform/PreRenderVertices';
+import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
-import { Vertex } from '../components/Vertex';
+import { Vertex } from '../../components/Vertex';
 
 export class Sprite extends Container implements ISprite
 {

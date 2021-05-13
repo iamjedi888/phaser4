@@ -1,5 +1,5 @@
-import { IGameObject } from '../../IGameObject';
-import { IInteractiveArea } from '../../../input/IInteractiveArea';
+import { IGameObject } from '../../gameobjects/IGameObject';
+import { IInteractiveArea } from '../../input/IInteractiveArea';
 
 export interface IInputComponent
 {

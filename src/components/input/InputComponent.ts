@@ -1,6 +1,6 @@
-import { IGameObject } from '../../IGameObject';
+import { IGameObject } from '../../gameobjects/IGameObject';
 import { IInputComponent } from './IInputComponent';
-import { IInteractiveArea } from '../../../input/IInteractiveArea';
+import { IInteractiveArea } from '../../input/IInteractiveArea';
 
 export class InputComponent implements IInputComponent
 {

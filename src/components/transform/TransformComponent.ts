@@ -1,11 +1,11 @@
-import { GetDefaultOriginX, GetDefaultOriginY } from '../../../config/defaultorigin/';
-import { Vec2, Vec2Callback } from '../../../math/vec2';
+import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin/';
+import { Vec2, Vec2Callback } from '../../math/vec2';
 
-import { DIRTY_CONST } from '../../DIRTY_CONST';
-import { IGameObject } from '../../IGameObject';
+import { DIRTY_CONST } from '../../gameobjects/DIRTY_CONST';
+import { IGameObject } from '../../gameobjects/IGameObject';
 import { ITransformComponent } from './ITransformComponent';
-import { Matrix2D } from '../../../math/mat2d/Matrix2D';
-import { Rectangle } from '../../../geom/rectangle';
+import { Matrix2D } from '../../math/mat2d/Matrix2D';
+import { Rectangle } from '../../geom/rectangle';
 import { UpdateLocalTransform } from './UpdateLocalTransform';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
 

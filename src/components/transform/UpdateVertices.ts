@@ -1,5 +1,5 @@
 import { GetVertices } from './GetVertices';
-import { IGameObject } from '../../IGameObject';
+import { IGameObject } from '../../gameobjects/IGameObject';
 
 export function UpdateVertices <T extends IGameObject> (gameObject: T): T
 {

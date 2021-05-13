@@ -1,8 +1,8 @@
-import { DIRTY_CONST } from '../../DIRTY_CONST';
+import { DIRTY_CONST } from '../../gameobjects/DIRTY_CONST';
 import { GetVertices } from '../transform/GetVertices';
 import { IBoundsComponent } from './IBoundsComponent';
-import { IGameObject } from '../../IGameObject';
-import { Rectangle } from '../../../geom/rectangle/Rectangle';
+import { IGameObject } from '../../gameobjects/IGameObject';
+import { Rectangle } from '../../geom/rectangle/Rectangle';
 
 export class BoundsComponent implements IBoundsComponent
 {

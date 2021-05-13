@@ -1,4 +1,4 @@
-import { PackColor } from '../../renderer/webgl1/colors/PackColor';
+import { PackColor } from '../renderer/webgl1/colors/PackColor';
 
 export class Vertex
 {

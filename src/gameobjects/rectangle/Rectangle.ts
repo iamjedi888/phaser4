@@ -7,10 +7,10 @@ import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRectangle } from './IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
-import { PreRenderVertices } from '../components/transform/PreRenderVertices';
+import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { Texture } from '../../textures/Texture';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
-import { Vertex } from '../components/Vertex';
+import { Vertex } from '../../components/Vertex';
 
 export class Rectangle extends Container implements IRectangle
 {
