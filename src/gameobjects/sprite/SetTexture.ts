@@ -1,10 +1,12 @@
 import { Frame } from '../../textures/Frame';
 import { GetTexture } from '../../textures/GetTexture';
+import { IFrame } from '../../textures/IFrame';
 import { ISprite } from './ISprite';
+import { ITexture } from '../../textures/ITexture';
 import { SetFrame } from './SetFrame';
 import { Texture } from '../../textures/Texture';
 
-export function SetTexture <T extends ISprite> (key: string | Texture | Frame, frame: string | number | Frame, ...children: T[]): T[]
+export function SetTexture <T extends ISprite> (key: string | ITexture | IFrame, frame: string | number | IFrame, ...children: T[]): T[]
 {
     if (!key)
     {
@@ -31,7 +33,7 @@ export function SetTexture <T extends ISprite> (key: string | Texture | Frame, f
         }
         else
         {
-            texture = GetTexture(key);
+            texture = GetTexture(key as string);
         }
 
         if (!texture)

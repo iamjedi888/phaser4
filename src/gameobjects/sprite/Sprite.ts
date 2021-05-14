@@ -4,9 +4,11 @@ import { DIRTY_CONST } from '../DIRTY_CONST';
 import { DrawTexturedQuad } from '../../renderer/canvas/draw/DrawTexturedQuad';
 import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
+import { IFrame } from '../../textures/IFrame';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
+import { ITexture } from '../../textures/ITexture';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
@@ -32,14 +34,14 @@ export class Sprite extends Container implements ISprite
         this.setTexture(texture, frame);
     }
 
-    setTexture (key: string | Texture | Frame, frame?: string | number | Frame): this
+    setTexture (key: string | ITexture | IFrame, frame?: string | number | IFrame): this
     {
         SetTexture(key, frame, this);
 
         return this;
     }
 
-    setFrame (key?: string | number | Frame): this
+    setFrame (key?: string | number | IFrame): this
     {
         SetFrame(this.texture, key, this);
 
