@@ -142,7 +142,9 @@ export class AnimatedSprite extends Sprite
             return;
         }
 
-        data.nextFrameTime -= delta * 1000;
+        data.nextFrameTime -= delta;
+
+        // data.nextFrameTime -= delta * 1000;
 
         //  Clamp to zero, otherwise a huge delta could cause animation playback issues
         data.nextFrameTime = Math.max(data.nextFrameTime, 0);
