@@ -58,20 +58,7 @@ export function Play <T extends IAnimatedSprite> (animation: IAnimation, config:
         sprite.currentAnimation = animation;
         sprite.currentFrame = animation.firstFrame;
 
-        //  If there is no start delay, we set the first frame immediately
-        if (spriteAnimData.delay === 0)
-        {
-            sprite.setTexture(texture, frame);
-
-            if (spriteAnimData.onStart)
-            {
-                spriteAnimData.onStart(sprite, animation);
-            }
-        }
-        else
-        {
-            spriteAnimData.pendingStart = true;
-        }
+        sprite.play();
     });
 
     return sprites;

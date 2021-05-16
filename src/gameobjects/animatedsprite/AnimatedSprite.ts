@@ -203,11 +203,105 @@ export class AnimatedSprite extends Sprite
 
     nextFrame (): this
     {
-        this.currentFrame = this.currentFrame.nextFrame;
+        const frame = this.currentFrame;
+        const data = this.animData;
 
-        this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+        if (frame.isLast)
+        {
+            //  We're at the end of the animation
+
+            //  Yoyo? (happens before repeat)
+            if (data.yoyo)
+            {
+                // this.handleYoyoFrame(state, false);
+            }
+            else if (this.repeatCounter > 0)
+            {
+                //  Repeat (happens before complete)
+
+                if (this.inReverse && this.forward)
+                {
+                    this.forward = false;
+                }
+                else
+                {
+                    this.repeatAnimation();
+                }
+            }
+            else
+            {
+                // this.complete();
+            }
+        }
+        else
+        {
+            // this.updateAndGetNextTick(state, frame.nextFrame);
+
+            this.currentFrame = this.currentFrame.nextFrame;
+
+            this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+
+            this.accumulator -= this.nextTick;
+
+            this.nextTick = this.currentAnimation.msPerFrame + frame.duration;
+        }
 
         return this;
+    }
+
+    repeatAnimation (): this
+    {
+        if (this.pendingStop === 2)
+        {
+            if (this.pendingStopValue === 0)
+            {
+                return this.stop();
+            }
+            else
+            {
+                this.pendingStopValue--;
+            }
+        }
+
+        const data = this.animData;
+
+        if (data.repeatDelay > 0 && !this.pendingRepeat)
+        {
+            this.pendingRepeat = true;
+            this.accumulator -= this.nextTick;
+            this.nextTick += data.repeatDelay;
+        }
+        else
+        {
+            this.repeatCounter--;
+
+            if (this.forward)
+            {
+                this.currentFrame = this.currentFrame.nextFrame;
+
+                this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+
+                // state.setCurrentFrame(state.currentFrame.nextFrame);
+            }
+            else
+            {
+                this.currentFrame = this.currentFrame.prevFrame;
+
+                this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+
+                // state.setCurrentFrame(state.currentFrame.prevFrame);
+            }
+
+            if (this.isPlaying)
+            {
+                // this.getNextTick(state);
+                this.accumulator -= this.nextTick;
+
+                this.nextTick = this.currentAnimation.msPerFrame + this.currentFrame.duration;
+
+                this.handleRepeat();
+            }
+        }
     }
 
     prevFrame (): this
@@ -215,6 +309,36 @@ export class AnimatedSprite extends Sprite
         this.currentFrame = this.currentFrame.prevFrame;
 
         this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+
+        return this;
+    }
+
+    play (): this
+    {
+        const data = this.animData;
+
+        if (data.repeat === -1)
+        {
+            //  Should give us 9,007,199,254,740,991 safe repeats
+            this.repeatCounter = Number.MAX_VALUE;
+        }
+
+        data.isPlaying = true;
+
+        //  If there is no start delay, we set the first frame immediately
+        if (data.delay === 0)
+        {
+            this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+
+            if (data.onStart)
+            {
+                data.onStart(this, this.currentAnimation);
+            }
+        }
+        else
+        {
+            data.pendingStart = true;
+        }
 
         return this;
     }

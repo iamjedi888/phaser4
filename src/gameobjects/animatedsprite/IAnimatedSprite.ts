@@ -13,4 +13,6 @@ export interface IAnimatedSprite extends ISprite
     hasStarted: boolean;
     forward: boolean;
     inReverse: boolean;
+
+    play (): this;
 }
