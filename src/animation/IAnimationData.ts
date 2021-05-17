@@ -3,6 +3,7 @@ import { IAnimation } from './IAnimation';
 
 export interface IAnimationData
 {
+    currentAnim: string;
     frameRate: number;
     duration: number;
     delay: number;

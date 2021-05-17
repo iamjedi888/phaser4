@@ -1,4 +1,4 @@
-import { Vertex } from '../../../gameobjects/components/Vertex';
+import { Vertex } from '../../../components/Vertex';
 
 export function PackColors (vertices: Vertex[]): void
 {

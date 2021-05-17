@@ -1,5 +1,5 @@
 import { IVec3Like } from '../../math/vec3/IVec3Like';
-import { Vertex } from '../../gameobjects/components/Vertex';
+import { Vertex } from '../../components/Vertex';
 
 export interface IFace
 {

@@ -1,6 +1,6 @@
 import { Frame } from '../../../textures';
 import { ICanvasRenderer } from '../ICanvasRenderer';
-import { ITransformComponent } from '../../../gameobjects/components/transform/ITransformComponent';
+import { ITransformComponent } from '../../../components/transform/ITransformComponent';
 
 export function DrawTexturedQuad (frame: Frame, alpha: number, transform: ITransformComponent, renderer: ICanvasRenderer): void
 {

@@ -11,7 +11,7 @@ export function Stop <T extends IAnimatedSprite> (...sprites: T[]): T[]
 
         if (data.onComplete)
         {
-            data.onComplete(sprite, data.currentAnim);
+            data.onComplete(sprite, sprite.currentAnimation);
         }
     });
 
