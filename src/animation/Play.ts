@@ -6,6 +6,7 @@ import { IPlayAnimationConfig } from './IPlayAnimationConfig';
 export function Play <T extends IAnimatedSprite> (animation: IAnimation, config: IPlayAnimationConfig = {}, ...sprites: T[]): T[]
 {
     const data = CreateAnimData(
+        animation.key,
         animation.frameRate,
         animation.duration,
         animation.delay,

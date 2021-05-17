@@ -2,7 +2,7 @@ import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
 import { SetTexture } from '../renderpass/SetTexture';
-import { Vertex } from '../../../gameobjects/components';
+import { Vertex } from '../../../components';
 
 export function BatchTexturedQuad <T extends ITexture> (texture: T, vertices: Vertex[], renderPass: IRenderPass): void
 {

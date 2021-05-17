@@ -1,7 +1,7 @@
 import { IVec2Like } from '../../math/vec2/IVec2Like';
 import { IVec3Like } from '../../math/vec3/IVec3Like';
 import { PackColor } from '../../renderer/webgl1';
-import { Vertex } from '../../gameobjects/components';
+import { Vertex } from '../../components';
 
 export class FaceUVNormalTexture
 {

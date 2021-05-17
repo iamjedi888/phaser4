@@ -1,6 +1,7 @@
 import { IAnimationData } from './IAnimationData';
 
 export function CreateAnimData (
+    currentAnim: string = '',
     frameRate: number = 0,
     duration: number = 0,
     delay: number = 0,
@@ -13,6 +14,7 @@ export function CreateAnimData (
 ): IAnimationData
 {
     return {
+        currentAnim,
         frameRate,
         duration,
         delay,
