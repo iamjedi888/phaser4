@@ -1,6 +1,7 @@
+import {Frame} from "../../textures/Frame";
+import {GetTexture} from "../../textures/GetTexture";
 import {SetFrame} from "./SetFrame";
 import {Texture} from "../../textures/Texture";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
 export function SetTexture(key, frame, ...children) {
   if (!key) {
     children.forEach((child) => {
@@ -10,10 +11,13 @@ export function SetTexture(key, frame, ...children) {
     });
   } else {
     let texture;
-    if (key instanceof Texture) {
+    if (key instanceof Frame) {
+      frame = key;
+      texture = key.texture;
+    } else if (key instanceof Texture) {
       texture = key;
     } else {
-      texture = TextureManagerInstance.get().get(key);
+      texture = GetTexture(key);
     }
     if (!texture) {
       console.warn(`Invalid Texture key: ${key}`);

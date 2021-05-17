@@ -1,13 +1,13 @@
 import { IBaseWorld } from '../world/IBaseWorld';
-import { IBoundsComponent } from './components/bounds/IBoundsComponent';
+import { IBoundsComponent } from '../components/bounds/IBoundsComponent';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
-import { IInputComponent } from './components/input/IInputComponent';
+import { IInputComponent } from '../components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
-import { ITransformComponent } from './components/transform/ITransformComponent';
+import { ITransformComponent } from '../components/transform/ITransformComponent';
 import { Rectangle } from '../geom/rectangle/Rectangle';
-import { Vertex } from './components/Vertex';
+import { Vertex } from '../components/Vertex';
 export declare class GameObject implements IGameObject {
     type: string;
     name: string;

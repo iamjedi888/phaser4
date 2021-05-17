@@ -95,4 +95,7 @@ export class Frame {
     this.u1 = (x + width) / baseTextureWidth;
     this.v1 = (y + height) / baseTextureHeight;
   }
+  destroy() {
+    this.texture = null;
+  }
 }

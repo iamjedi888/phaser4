@@ -1,5 +1,5 @@
 import {PackColor} from "../../renderer/webgl1";
-import {Vertex} from "../../gameobjects/components";
+import {Vertex} from "../../components";
 export class FaceUVNormalTexture {
   constructor(v1, v2, v3, n1, n2, n3, uv1, uv2, uv3, scale = 1) {
     this.color = 16777215;

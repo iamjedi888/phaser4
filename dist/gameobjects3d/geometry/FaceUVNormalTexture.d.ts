@@ -1,6 +1,6 @@
 import { IVec2Like } from '../../math/vec2/IVec2Like';
 import { IVec3Like } from '../../math/vec3/IVec3Like';
-import { Vertex } from '../../gameobjects/components';
+import { Vertex } from '../../components';
 export declare class FaceUVNormalTexture {
     vertex1: Vertex;
     vertex2: Vertex;

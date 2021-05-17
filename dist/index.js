@@ -1,3 +1,4 @@
+import * as Animation from "./animation/";
 import * as Camera from "./camera/";
 import * as Camera3D from "./camera3d/";
 import * as Color from "./color/";
@@ -23,6 +24,7 @@ import * as World3D from "./world3d/";
 import {Game} from "./Game";
 import {Scene} from "./scenes/Scene";
 export {
+  Animation,
   Camera,
   Camera3D,
   Color,

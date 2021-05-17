@@ -2,10 +2,10 @@ import {BatchTexturedQuad} from "../../renderer/webgl1/draw/BatchTexturedQuad";
 import {Container} from "../container/Container";
 import {DIRTY_CONST} from "../DIRTY_CONST";
 import {DrawTexturedQuad} from "../../renderer/canvas/draw/DrawTexturedQuad";
-import {PreRenderVertices} from "../components/transform/PreRenderVertices";
+import {PreRenderVertices} from "../../components/transform/PreRenderVertices";
 import {SetFrame} from "./SetFrame";
 import {SetTexture} from "./SetTexture";
-import {Vertex} from "../components/Vertex";
+import {Vertex} from "../../components/Vertex";
 export class Sprite extends Container {
   constructor(x, y, texture, frame) {
     super(x, y);

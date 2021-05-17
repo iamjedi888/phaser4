@@ -1,12 +1,12 @@
-import {BoundsComponent} from "./components/bounds/BoundsComponent";
+import {BoundsComponent} from "../components/bounds/BoundsComponent";
 import {DIRTY_CONST} from "./DIRTY_CONST";
 import {DestroyChildren} from "../display/DestroyChildren";
 import {DestroyEvent} from "./events/DestroyEvent";
 import {Emit} from "../events/Emit";
 import {GameInstance} from "../GameInstance";
-import {InputComponent} from "./components/input/InputComponent";
+import {InputComponent} from "../components/input/InputComponent";
 import {ReparentChildren} from "../display/ReparentChildren";
-import {TransformComponent} from "./components/transform/TransformComponent";
+import {TransformComponent} from "../components/transform/TransformComponent";
 export class GameObject {
   constructor(x = 0, y = 0) {
     this.type = "GameObject";

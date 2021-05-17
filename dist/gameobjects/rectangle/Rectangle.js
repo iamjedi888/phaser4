@@ -2,9 +2,9 @@ import {BatchTexturedQuad} from "../../renderer/webgl1/draw/BatchTexturedQuad";
 import {Container} from "../container/Container";
 import {DIRTY_CONST} from "../DIRTY_CONST";
 import {DrawTexturedQuad} from "../../renderer/canvas/draw/DrawTexturedQuad";
-import {PreRenderVertices} from "../components/transform/PreRenderVertices";
+import {PreRenderVertices} from "../../components/transform/PreRenderVertices";
 import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
-import {Vertex} from "../components/Vertex";
+import {Vertex} from "../../components/Vertex";
 export class Rectangle extends Container {
   constructor(x, y, width = 64, height = 64, color = 16777215) {
     super(x, y);

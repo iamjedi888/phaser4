@@ -4,7 +4,7 @@ export function Stop(...sprites) {
     data.isPlaying = false;
     data.currentAnim = "";
     if (data.onComplete) {
-      data.onComplete(sprite, data.currentAnim);
+      data.onComplete(sprite, sprite.currentAnimation);
     }
   });
   return sprites;

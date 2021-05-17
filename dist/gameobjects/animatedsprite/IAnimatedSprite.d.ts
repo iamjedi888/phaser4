@@ -1,13 +1,14 @@
-import { Frame } from '../../textures/Frame';
-import { IAnimationData } from './IAnimationData';
+import { IAnimation } from '../../animation/IAnimation';
+import { IAnimationData } from '../../animation/IAnimationData';
+import { IAnimationFrame } from '../../animation/IAnimationFrame';
 import { ISprite } from '../sprite/ISprite';
 export interface IAnimatedSprite extends ISprite {
-    anims: Map<string, Frame[]>;
+    currentAnimation: IAnimation;
+    currentFrame: IAnimationFrame;
     animData: IAnimationData;
-    nextFrame(): void;
-    prevFrame(): void;
-    isPlaying: boolean;
-    isPlayingForward: boolean;
-    currentAnimation: string;
+    hasStarted: boolean;
+    forward: boolean;
+    inReverse: boolean;
+    play(): this;
 }
 //# sourceMappingURL=IAnimatedSprite.d.ts.map

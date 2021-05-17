@@ -1,5 +1,5 @@
-import { Frame } from '../../textures/Frame';
+import { IFrame } from '../../textures/IFrame';
 import { ISprite } from './ISprite';
-import { Texture } from '../../textures/Texture';
-export declare function SetTexture<T extends ISprite>(key: string | Texture, frame: string | number | Frame, ...children: T[]): T[];
+import { ITexture } from '../../textures/ITexture';
+export declare function SetTexture<T extends ISprite>(key: string | ITexture | IFrame, frame: string | number | IFrame, ...children: T[]): T[];
 //# sourceMappingURL=SetTexture.d.ts.map

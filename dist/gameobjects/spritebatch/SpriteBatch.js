@@ -2,7 +2,7 @@ import {BatchTexturedQuadBuffer} from "../../renderer/webgl1/draw/BatchTexturedQ
 import {Clamp} from "../../math/Clamp";
 import {DIRTY_CONST} from "../DIRTY_CONST";
 import {DeleteFramebuffer} from "../../renderer/webgl1/fbo/DeleteFramebuffer";
-import {GetVerticesFromValues} from "../components/transform/GetVerticesFromValues";
+import {GetVerticesFromValues} from "../../components/transform/GetVerticesFromValues";
 import {Layer} from "../layer/Layer";
 import {PackColor} from "../../renderer/webgl1/colors/PackColor";
 import {Texture} from "../../textures/Texture";

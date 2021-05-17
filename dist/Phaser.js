@@ -4,6 +4,948 @@ var __export = (target, all) => {
     __defProp(target, name, {get: all[name], enumerable: true});
 };
 
+// src/animation/index.ts
+var animation_exports = {};
+__export(animation_exports, {
+  AddFrame: () => AddFrame,
+  AddFrames: () => AddFrames,
+  Animation: () => Animation,
+  AnimationFrame: () => AnimationFrame,
+  CalculateDuration: () => CalculateDuration,
+  CreateAnimData: () => CreateAnimData,
+  CreateAnimationFromAtlas: () => CreateAnimationFromAtlas,
+  LinkFrames: () => LinkFrames,
+  Play: () => Play,
+  RemoveFrame: () => RemoveFrame,
+  RemoveFrames: () => RemoveFrames
+});
+
+// src/animation/CalculateDuration.ts
+function CalculateDuration(animation, frameRate, duration) {
+  const totalFrames = animation.frames.size;
+  if (!Number.isFinite(duration) && !Number.isFinite(frameRate)) {
+    animation.frameRate = 24;
+    animation.duration = 24 / totalFrames * 1e3;
+  } else if (duration && !Number.isFinite(frameRate)) {
+    animation.duration = duration;
+    animation.frameRate = totalFrames / (duration / 1e3);
+  } else {
+    animation.frameRate = frameRate;
+    animation.duration = totalFrames / frameRate * 1e3;
+  }
+  animation.msPerFrame = 1e3 / animation.frameRate;
+  return animation;
+}
+
+// src/animation/LinkFrames.ts
+function LinkFrames(animation) {
+  const totalFrames = animation.frames.size;
+  if (totalFrames === 0) {
+    return animation;
+  }
+  let i = 0;
+  const framePercent = 1 / totalFrames;
+  let firstFrame;
+  let prevFrame;
+  for (const frame2 of animation.frames.values()) {
+    if (!prevFrame) {
+      frame2.isFirst = true;
+      animation.firstFrame = frame2;
+      firstFrame = frame2;
+    } else {
+      prevFrame.nextFrame = frame2;
+      frame2.prevFrame = prevFrame;
+    }
+    prevFrame = frame2;
+    i++;
+    frame2.progress = framePercent * i;
+    if (i === totalFrames) {
+      frame2.isLast = true;
+      frame2.nextFrame = firstFrame;
+      firstFrame.prevFrame = frame2;
+    }
+  }
+  return animation;
+}
+
+// src/animation/AddFrame.ts
+function AddFrame(animation, frame2) {
+  animation.frames.add(frame2);
+  CalculateDuration(animation, animation.frameRate);
+  return LinkFrames(animation);
+}
+
+// src/animation/AddFrames.ts
+function AddFrames(animation, ...frames) {
+  frames.forEach((frame2) => {
+    animation.frames.add(frame2);
+  });
+  CalculateDuration(animation, animation.frameRate);
+  return LinkFrames(animation);
+}
+
+// src/animation/Animation.ts
+var Animation = class {
+  constructor(config) {
+    const {
+      key,
+      frames = [],
+      frameRate = null,
+      duration = null,
+      skipMissedFrames = true,
+      delay = 0,
+      repeat = 0,
+      repeatDelay = 0,
+      yoyo = false,
+      showOnStart = false,
+      hideOnComplete = false,
+      paused = false
+    } = config;
+    this.key = key;
+    this.skipMissedFrames = skipMissedFrames;
+    this.delay = delay;
+    this.repeat = repeat;
+    this.repeatDelay = repeatDelay;
+    this.yoyo = yoyo;
+    this.showOnStart = showOnStart;
+    this.hideOnComplete = hideOnComplete;
+    this.paused = paused;
+    this.frames = new Set(frames);
+    CalculateDuration(this, frameRate, duration);
+    LinkFrames(this);
+  }
+  getTotalFrames() {
+    return this.frames.size;
+  }
+  destroy() {
+    this.frames.clear();
+  }
+};
+
+// src/animation/AnimationFrame.ts
+var AnimationFrame = class {
+  constructor(texture, frame2) {
+    this.isFirst = false;
+    this.isLast = false;
+    this.isKeyFrame = false;
+    this.duration = 0;
+    this.progress = 0;
+    this.texture = texture;
+    this.frame = frame2;
+  }
+  destroy() {
+    this.texture = null;
+    this.frame = null;
+    this.nextFrame = null;
+    this.prevFrame = null;
+  }
+};
+
+// src/animation/CreateAnimData.ts
+function CreateAnimData(currentAnim = "", frameRate = 0, duration = 0, delay = 0, repeat = 0, repeatDelay = 0, yoyo = false, hold = 0, showOnStart = false, hideOnComplete = false) {
+  return {
+    currentAnim,
+    frameRate,
+    duration,
+    delay,
+    repeat,
+    repeatDelay,
+    yoyo,
+    hold,
+    showOnStart,
+    hideOnComplete,
+    stopAfter: 0,
+    startFrame: 0,
+    timeScale: 1,
+    onStart: null,
+    onRepeat: null,
+    onComplete: null,
+    nextFrameTime: 0,
+    repeatCount: 0,
+    isPlaying: false,
+    forceRestart: false,
+    pendingStart: false,
+    playingForward: true
+  };
+}
+
+// src/textures/GetFramesInRange.ts
+function GetFramesInRange(texture, config) {
+  const {
+    prefix = "",
+    start = 0,
+    zeroPad = 0,
+    suffix = ""
+  } = config;
+  let end = config.end;
+  const output = [];
+  const diff = start < end ? 1 : -1;
+  end += diff;
+  for (let i = start; i !== end; i += diff) {
+    const frameKey = prefix + i.toString().padStart(zeroPad, "0") + suffix;
+    output.push(texture.getFrame(frameKey));
+  }
+  return output;
+}
+
+// src/textures/TextureManagerInstance.ts
+var instance;
+var TextureManagerInstance = {
+  get: () => {
+    return instance;
+  },
+  set: (manager) => {
+    instance = manager;
+  }
+};
+
+// src/textures/GetTexture.ts
+function GetTexture(key) {
+  return TextureManagerInstance.get().get(key);
+}
+
+// src/textures/index.ts
+var textures_exports = {};
+__export(textures_exports, {
+  CreateCanvas: () => CreateCanvas,
+  Frame: () => Frame,
+  GetFrames: () => GetFrames,
+  GetFramesInRange: () => GetFramesInRange,
+  Palettes: () => palettes_exports,
+  Parsers: () => parsers_exports,
+  SetFilter: () => SetFilter,
+  Texture: () => Texture,
+  TextureManager: () => TextureManager,
+  Types: () => types_exports
+});
+
+// src/textures/palettes/index.ts
+var palettes_exports = {};
+__export(palettes_exports, {
+  Arne16: () => Arne16,
+  C64: () => C64,
+  CGA: () => CGA,
+  JMP: () => JMP,
+  MSX: () => MSX,
+  PICO8: () => PICO8
+});
+
+// src/textures/palettes/Arne16.ts
+var Arne16 = [
+  "#000",
+  "#9D9D9D",
+  "#FFF",
+  "#BE2633",
+  "#E06F8B",
+  "#493C2B",
+  "#A46422",
+  "#EB8931",
+  "#F7E26B",
+  "#2F484E",
+  "#44891A",
+  "#A3CE27",
+  "#1B2632",
+  "#005784",
+  "#31A2F2",
+  "#B2DCEF"
+];
+
+// src/textures/palettes/C64.ts
+var C64 = [
+  "#000",
+  "#fff",
+  "#8b4131",
+  "#7bbdc5",
+  "#8b41ac",
+  "#6aac41",
+  "#3931a4",
+  "#d5de73",
+  "#945a20",
+  "#5a4100",
+  "#bd736a",
+  "#525252",
+  "#838383",
+  "#acee8b",
+  "#7b73de",
+  "#acacac"
+];
+
+// src/textures/palettes/CGA.ts
+var CGA = [
+  "#000",
+  "#2234d1",
+  "#0c7e45",
+  "#44aacc",
+  "#8a3622",
+  "#5c2e78",
+  "#aa5c3d",
+  "#b5b5b5",
+  "#5e606e",
+  "#4c81fb",
+  "#6cd947",
+  "#7be2f9",
+  "#eb8a60",
+  "#e23d69",
+  "#ffd93f",
+  "#fff"
+];
+
+// src/textures/palettes/JMP.ts
+var JMP = [
+  "#000",
+  "#191028",
+  "#46af45",
+  "#a1d685",
+  "#453e78",
+  "#7664fe",
+  "#833129",
+  "#9ec2e8",
+  "#dc534b",
+  "#e18d79",
+  "#d6b97b",
+  "#e9d8a1",
+  "#216c4b",
+  "#d365c8",
+  "#afaab9",
+  "#f5f4eb"
+];
+
+// src/textures/palettes/MSX.ts
+var MSX = [
+  "#000",
+  "#191028",
+  "#46af45",
+  "#a1d685",
+  "#453e78",
+  "#7664fe",
+  "#833129",
+  "#9ec2e8",
+  "#dc534b",
+  "#e18d79",
+  "#d6b97b",
+  "#e9d8a1",
+  "#216c4b",
+  "#d365c8",
+  "#afaab9",
+  "#fff"
+];
+
+// src/textures/palettes/PICO8.ts
+var PICO8 = [
+  "#000",
+  "#1D2B53",
+  "#7E2553",
+  "#008751",
+  "#AB5236",
+  "#5F574F",
+  "#C2C3C7",
+  "#FFF1E8",
+  "#FF004D",
+  "#FFA300",
+  "#FFEC27",
+  "#00E436",
+  "#29ADFF",
+  "#83769C",
+  "#FF77A8",
+  "#FFCCAA"
+];
+
+// src/textures/parsers/index.ts
+var parsers_exports = {};
+__export(parsers_exports, {
+  AtlasParser: () => AtlasParser,
+  BitmapTextParser: () => BitmapTextParser,
+  SpriteSheetParser: () => SpriteSheetParser
+});
+
+// src/textures/parsers/AtlasParser.ts
+function AtlasParser(texture, data) {
+  let frames;
+  if (Array.isArray(data.textures)) {
+    frames = data.textures[0].frames;
+  } else if (Array.isArray(data.frames)) {
+    frames = data.frames;
+  } else if (data.hasOwnProperty("frames")) {
+    frames = Object.values(data.frames);
+  } else {
+    console.warn("Invalid Texture Atlas JSON");
+  }
+  if (frames) {
+    let newFrame;
+    for (let i = 0; i < frames.length; i++) {
+      const src = frames[i];
+      newFrame = texture.addFrame(src.filename, src.frame.x, src.frame.y, src.frame.w, src.frame.h);
+      if (src.trimmed) {
+        newFrame.setTrim(src.sourceSize.w, src.sourceSize.h, src.spriteSourceSize.x, src.spriteSourceSize.y, src.spriteSourceSize.w, src.spriteSourceSize.h);
+      } else {
+        newFrame.setSourceSize(src.sourceSize.w, src.sourceSize.h);
+      }
+      if (src.rotated) {
+      }
+      if (src.anchor) {
+        newFrame.setPivot(src.anchor.x, src.anchor.y);
+      }
+    }
+  }
+}
+
+// src/textures/parsers/BitmapTextParser.ts
+function GetValue(node, attribute) {
+  return parseInt(node.getAttribute(attribute), 10);
+}
+function BitmapTextParser(texture, xml, frame2) {
+  const xSpacing = 0;
+  const ySpacing = 0;
+  const info = xml.getElementsByTagName("info")[0];
+  const common = xml.getElementsByTagName("common")[0];
+  const data = {
+    font: info.getAttribute("face"),
+    size: GetValue(info, "size"),
+    lineHeight: GetValue(common, "lineHeight") + ySpacing,
+    chars: {}
+  };
+  const letters = xml.getElementsByTagName("char");
+  for (let i = 0; i < letters.length; i++) {
+    const node = letters[i];
+    const charCode = GetValue(node, "id");
+    const x = GetValue(node, "x");
+    const y = GetValue(node, "y");
+    const width = GetValue(node, "width");
+    const height = GetValue(node, "height");
+    data.chars[charCode] = {
+      x,
+      y,
+      width,
+      height,
+      xOffset: GetValue(node, "xoffset"),
+      yOffset: GetValue(node, "yoffset"),
+      xAdvance: GetValue(node, "xadvance") + xSpacing,
+      kerning: {}
+    };
+    texture.addFrame(charCode, x, y, width, height);
+  }
+  const kernings = xml.getElementsByTagName("kerning");
+  for (let i = 0; i < kernings.length; i++) {
+    const kern = kernings[i];
+    const first = GetValue(kern, "first");
+    const second = GetValue(kern, "second");
+    const amount = GetValue(kern, "amount");
+    data.chars[second].kerning[first] = amount;
+  }
+  return data;
+}
+
+// src/textures/parsers/SpriteSheetParser.ts
+function SpriteSheetParser(texture, x, y, width, height, frameConfig) {
+  const {
+    frameWidth = null,
+    endFrame = -1,
+    margin = 0,
+    spacing = 0
+  } = frameConfig;
+  let {
+    frameHeight = null,
+    startFrame = 0
+  } = frameConfig;
+  if (!frameHeight) {
+    frameHeight = frameWidth;
+  }
+  if (frameWidth === null) {
+    throw new Error("SpriteSheetParser: Invalid frameWidth");
+  }
+  const row = Math.floor((width - margin + spacing) / (frameWidth + spacing));
+  const column = Math.floor((height - margin + spacing) / (frameHeight + spacing));
+  let total = row * column;
+  if (total === 0) {
+    console.warn("SpriteSheetParser: Frame config will result in zero frames");
+  }
+  if (startFrame > total || startFrame < -total) {
+    startFrame = 0;
+  }
+  if (startFrame < 0) {
+    startFrame = total + startFrame;
+  }
+  if (endFrame !== -1) {
+    total = startFrame + (endFrame + 1);
+  }
+  let fx = margin;
+  let fy = margin;
+  let ax = 0;
+  let ay = 0;
+  for (let i = 0; i < total; i++) {
+    ax = 0;
+    ay = 0;
+    const w = fx + frameWidth;
+    const h = fy + frameHeight;
+    if (w > width) {
+      ax = w - width;
+    }
+    if (h > height) {
+      ay = h - height;
+    }
+    texture.addFrame(i, x + fx, y + fy, frameWidth - ax, frameHeight - ay);
+    fx += frameWidth + spacing;
+    if (fx + frameWidth > width) {
+      fx = margin;
+      fy += frameHeight + spacing;
+    }
+  }
+}
+
+// src/textures/types/index.ts
+var types_exports = {};
+__export(types_exports, {
+  CanvasTexture: () => CanvasTexture,
+  GridTexture: () => GridTexture,
+  LinearGradientTexture: () => LinearGradientTexture,
+  PixelTexture: () => PixelTexture,
+  RenderTexture: () => RenderTexture,
+  SolidColorTexture: () => SolidColorTexture
+});
+
+// src/textures/CreateCanvas.ts
+function CreateCanvas(width, height) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  return canvas.getContext("2d");
+}
+
+// src/renderer/BindingQueue.ts
+var queue = [];
+var BindingQueue = {
+  add: (texture, glConfig) => {
+    queue.push({texture, glConfig});
+  },
+  get: () => {
+    return queue;
+  },
+  clear: () => {
+    queue.length = 0;
+  }
+};
+
+// src/textures/Frame.ts
+var Frame = class {
+  constructor(texture, key, x, y, width, height) {
+    this.trimmed = false;
+    this.texture = texture;
+    this.key = key;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.sourceSizeWidth = width;
+    this.sourceSizeHeight = height;
+    this.updateUVs();
+  }
+  setPivot(x, y) {
+    this.pivot = {x, y};
+  }
+  setSize(width, height) {
+    this.width = width;
+    this.height = height;
+    this.sourceSizeWidth = width;
+    this.sourceSizeHeight = height;
+    this.updateUVs();
+  }
+  setSourceSize(width, height) {
+    this.sourceSizeWidth = width;
+    this.sourceSizeHeight = height;
+  }
+  setTrim(width, height, x, y, w, h) {
+    this.trimmed = true;
+    this.sourceSizeWidth = width;
+    this.sourceSizeHeight = height;
+    this.spriteSourceSizeX = x;
+    this.spriteSourceSizeY = y;
+    this.spriteSourceSizeWidth = w;
+    this.spriteSourceSizeHeight = h;
+  }
+  getExtent(originX, originY) {
+    const sourceSizeWidth = this.sourceSizeWidth;
+    const sourceSizeHeight = this.sourceSizeHeight;
+    let left;
+    let right;
+    let top;
+    let bottom;
+    if (this.trimmed) {
+      left = this.spriteSourceSizeX - originX * sourceSizeWidth;
+      right = left + this.spriteSourceSizeWidth;
+      top = this.spriteSourceSizeY - originY * sourceSizeHeight;
+      bottom = top + this.spriteSourceSizeHeight;
+    } else {
+      left = -originX * sourceSizeWidth;
+      right = left + sourceSizeWidth;
+      top = -originY * sourceSizeHeight;
+      bottom = top + sourceSizeHeight;
+    }
+    return {left, right, top, bottom};
+  }
+  copyToExtent(child) {
+    const transform = child.transform;
+    const originX = transform.origin.x;
+    const originY = transform.origin.y;
+    const sourceSizeWidth = this.sourceSizeWidth;
+    const sourceSizeHeight = this.sourceSizeHeight;
+    let x;
+    let y;
+    let width;
+    let height;
+    if (this.trimmed) {
+      x = this.spriteSourceSizeX - originX * sourceSizeWidth;
+      y = this.spriteSourceSizeY - originY * sourceSizeHeight;
+      width = this.spriteSourceSizeWidth;
+      height = this.spriteSourceSizeHeight;
+    } else {
+      x = -originX * sourceSizeWidth;
+      y = -originY * sourceSizeHeight;
+      width = sourceSizeWidth;
+      height = sourceSizeHeight;
+    }
+    transform.setExtent(x, y, width, height);
+    return this;
+  }
+  copyToVertices(vertices, offset = 0) {
+    const {u0, u1, v0, v1} = this;
+    vertices[offset + 0].setUV(u0, v0);
+    vertices[offset + 1].setUV(u0, v1);
+    vertices[offset + 2].setUV(u1, v1);
+    vertices[offset + 3].setUV(u1, v0);
+    return this;
+  }
+  updateUVs() {
+    const {x, y, width, height} = this;
+    const baseTextureWidth = this.texture.width;
+    const baseTextureHeight = this.texture.height;
+    this.u0 = x / baseTextureWidth;
+    this.v0 = y / baseTextureHeight;
+    this.u1 = (x + width) / baseTextureWidth;
+    this.v1 = (y + height) / baseTextureHeight;
+  }
+  destroy() {
+    this.texture = null;
+  }
+};
+
+// src/textures/Texture.ts
+var Texture = class {
+  constructor(image, width, height, glConfig) {
+    this.key = "";
+    if (image) {
+      width = image.width;
+      height = image.height;
+    }
+    this.image = image;
+    this.width = width;
+    this.height = height;
+    this.frames = new Map();
+    this.data = {};
+    this.addFrame("__BASE", 0, 0, width, height);
+    BindingQueue.add(this, glConfig);
+  }
+  addFrame(key, x, y, width, height) {
+    if (this.frames.has(key)) {
+      return null;
+    }
+    const frame2 = new Frame(this, key, x, y, width, height);
+    this.frames.set(key, frame2);
+    if (!this.firstFrame || this.firstFrame.key === "__BASE") {
+      this.firstFrame = frame2;
+    }
+    return frame2;
+  }
+  getFrame(key) {
+    if (!key) {
+      return this.firstFrame;
+    }
+    if (key instanceof Frame) {
+      key = key.key;
+    }
+    let frame2 = this.frames.get(key);
+    if (!frame2) {
+      console.warn(`Frame missing: ${key}`);
+      frame2 = this.firstFrame;
+    }
+    return frame2;
+  }
+  setSize(width, height) {
+    this.width = width;
+    this.height = height;
+    const frame2 = this.frames.get("__BASE");
+    frame2.setSize(width, height);
+  }
+  destroy() {
+    if (this.binding) {
+      this.binding.destroy();
+    }
+    this.frames.clear();
+    this.data = null;
+    this.image = null;
+    this.firstFrame = null;
+  }
+};
+
+// src/textures/types/CanvasTexture.ts
+function CanvasTexture(width = 32, height = 32) {
+  const ctx = CreateCanvas(width, height);
+  return new Texture(ctx.canvas);
+}
+
+// src/textures/types/GridTexture.ts
+function GridTexture(color1, color2, width = 32, height = 32, cols = 2, rows = 2) {
+  const ctx = CreateCanvas(width, height);
+  const colWidth = width / cols;
+  const rowHeight = height / rows;
+  ctx.fillStyle = color1;
+  ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = color2;
+  for (let y = 0; y < rows; y++) {
+    for (let x = y % 2; x < cols; x += 2) {
+      ctx.fillRect(x * colWidth, y * rowHeight, colWidth, rowHeight);
+    }
+  }
+  return new Texture(ctx.canvas);
+}
+
+// src/textures/types/LinearGradientTexture.ts
+function LinearGradientTexture(config) {
+  const {
+    width = 256,
+    height = 256,
+    horizontal = false,
+    x0 = 0,
+    y0 = 0,
+    x1 = horizontal ? width : 0,
+    y1 = horizontal ? 0 : height,
+    colorStops = [{offset: 0, color: "red"}]
+  } = config;
+  const ctx = CreateCanvas(width, height);
+  const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+  for (const colorStop of colorStops.values()) {
+    gradient.addColorStop(colorStop.offset, colorStop.color);
+  }
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+  return new Texture(ctx.canvas);
+}
+
+// src/textures/types/PixelTexture.ts
+function PixelTexture(config) {
+  const {
+    data = [],
+    palette = Arne16,
+    pixelWidth = 1,
+    pixelHeight = pixelWidth,
+    preRender = null,
+    postRender = null
+  } = config;
+  let {
+    canvas = null,
+    resizeCanvas = true,
+    clearCanvas = true
+  } = config;
+  const width = Math.floor(Math.abs(data[0].length * pixelWidth));
+  const height = Math.floor(Math.abs(data.length * pixelHeight));
+  if (!canvas) {
+    canvas = CreateCanvas(width, height).canvas;
+    resizeCanvas = false;
+    clearCanvas = false;
+  }
+  if (resizeCanvas) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  const ctx = canvas.getContext("2d");
+  if (clearCanvas) {
+    ctx.clearRect(0, 0, width, height);
+  }
+  if (preRender) {
+    preRender(canvas, ctx);
+  }
+  for (let y = 0; y < data.length; y++) {
+    const row = data[y];
+    for (let x = 0; x < row.length; x++) {
+      const d = row[x];
+      if (d !== "." && d !== " ") {
+        ctx.fillStyle = palette[parseInt("0x" + d.toUpperCase())];
+        ctx.fillRect(x * pixelWidth, y * pixelHeight, pixelWidth, pixelHeight);
+      }
+    }
+  }
+  if (postRender) {
+    postRender(canvas, ctx);
+  }
+  return new Texture(canvas);
+}
+
+// src/textures/types/RenderTexture.ts
+var RenderTexture = class extends Texture {
+  constructor(renderer, width = 256, height = width) {
+    super(null, width, height);
+    this.renderer = renderer;
+  }
+  cls() {
+    return this;
+  }
+  batchStart() {
+    return this;
+  }
+  batchDraw(sprites) {
+    for (let i = 0, len = sprites.length; i < len; i++) {
+    }
+    return this;
+  }
+  batchEnd() {
+    const renderer = this.renderer;
+    renderer.reset();
+    return this;
+  }
+  draw(...sprites) {
+    this.batchStart();
+    this.batchDraw(sprites);
+    this.batchEnd();
+    return this;
+  }
+};
+
+// src/textures/types/SolidColorTexture.ts
+function SolidColorTexture(color = "rgba(0,0,0,0)", width = 32, height = 32) {
+  const ctx = CreateCanvas(width, height);
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, width, height);
+  return new Texture(ctx.canvas);
+}
+
+// src/textures/GetFrames.ts
+function GetFrames(texture, frames) {
+  if (typeof texture === "string") {
+    texture = GetTexture(texture);
+  }
+  const output = [];
+  for (const frame2 of texture.frames.values()) {
+    if (frame2.key === "__BASE" && texture.frames.size > 1) {
+      continue;
+    }
+    if (!frames || frames.indexOf(frame2.key) !== -1) {
+      output.push(frame2);
+    }
+  }
+  return output;
+}
+
+// src/textures/SetFilter.ts
+function SetFilter(linear, ...textures) {
+  textures.forEach((texture) => {
+    if (texture.binding) {
+      texture.binding.setFilter(linear);
+    }
+  });
+  return textures;
+}
+
+// src/textures/TextureManager.ts
+var TextureManager = class {
+  constructor() {
+    this.textures = new Map();
+    this.createDefaultTextures();
+    TextureManagerInstance.set(this);
+  }
+  createDefaultTextures() {
+    this.add("__BLANK", new Texture(CreateCanvas(32, 32).canvas));
+    const missing = CreateCanvas(32, 32);
+    missing.strokeStyle = "#0f0";
+    missing.moveTo(0, 0);
+    missing.lineTo(32, 32);
+    missing.stroke();
+    missing.strokeRect(0.5, 0.5, 31, 31);
+    this.add("__MISSING", new Texture(missing.canvas));
+    const white = CreateCanvas(32, 32);
+    white.fillStyle = "#fff";
+    white.fillRect(0, 0, 32, 32);
+    this.add("__WHITE", new Texture(white.canvas));
+  }
+  get(key) {
+    const textures = this.textures;
+    if (textures.has(key)) {
+      return textures.get(key);
+    } else {
+      return textures.get("__MISSING");
+    }
+  }
+  has(key) {
+    return this.textures.has(key);
+  }
+  add(key, source, glConfig) {
+    let texture;
+    const textures = this.textures;
+    if (!textures.has(key)) {
+      if (source instanceof Texture) {
+        texture = source;
+      } else {
+        texture = new Texture(source, 0, 0, glConfig);
+      }
+      texture.key = key;
+      textures.set(key, texture);
+    }
+    return texture;
+  }
+};
+
+// src/animation/CreateAnimationFromAtlas.ts
+function CreateAnimationFromAtlas(config) {
+  const texture = config.texture instanceof Texture ? config.texture : GetTexture(config.texture);
+  const frames = [];
+  GetFramesInRange(texture, config).forEach((frame2) => {
+    frames.push(new AnimationFrame(texture, frame2));
+  });
+  return new Animation({frames, ...config});
+}
+
+// src/animation/Play.ts
+function Play(animation, config = {}, ...sprites) {
+  const data = CreateAnimData(animation.key, animation.frameRate, animation.duration, animation.delay, animation.repeat, animation.repeatDelay, animation.yoyo, animation.hold, animation.showOnStart, animation.hideOnComplete);
+  Object.assign(data, config);
+  data.nextFrameTime = animation.msPerFrame + data.delay;
+  sprites.forEach((sprite) => {
+    if (!sprite || !sprite.animData) {
+      return;
+    }
+    const spriteAnimData = sprite.animData;
+    if (spriteAnimData.isPlaying) {
+      if (sprite.currentAnimation !== animation) {
+        spriteAnimData.isPlaying = false;
+        if (spriteAnimData.onComplete) {
+          spriteAnimData.onComplete(sprite, sprite.currentAnimation);
+        }
+      } else if (!data.forceRestart) {
+        return;
+      }
+    }
+    Object.assign(spriteAnimData, data);
+    sprite.currentAnimation = animation;
+    sprite.currentFrame = animation.firstFrame;
+    sprite.play();
+  });
+  return sprites;
+}
+
+// src/animation/RemoveFrame.ts
+function RemoveFrame(animation, frame2) {
+  animation.frames.delete(frame2);
+  CalculateDuration(animation, animation.frameRate);
+  return LinkFrames(animation);
+}
+
+// src/animation/RemoveFrames.ts
+function RemoveFrames(animation, ...frames) {
+  frames.forEach((frame2) => {
+    animation.frames.delete(frame2);
+  });
+  CalculateDuration(animation, animation.frameRate);
+  return LinkFrames(animation);
+}
+
 // src/camera/index.ts
 var camera_exports = {};
 __export(camera_exports, {
@@ -12,15 +954,15 @@ __export(camera_exports, {
 });
 
 // src/GameInstance.ts
-var instance;
+var instance2;
 var frame = 0;
 var elapsed = 0;
 var GameInstance = {
   get: () => {
-    return instance;
+    return instance2;
   },
   set: (game) => {
-    instance = game;
+    instance2 = game;
   },
   getFrame: () => {
     return frame;
@@ -4583,20 +5525,6 @@ function Size(width = 800, height = 600, resolution = 1) {
   };
 }
 
-// src/renderer/BindingQueue.ts
-var queue = [];
-var BindingQueue = {
-  add: (texture, glConfig) => {
-    queue.push({texture, glConfig});
-  },
-  get: () => {
-    return queue;
-  },
-  clear: () => {
-    queue.length = 0;
-  }
-};
-
 // src/config/backgroundcolor/GetBackgroundColor.ts
 function GetBackgroundColor() {
   return ConfigStore.get(CONFIG_DEFAULTS.BACKGROUND_COLOR);
@@ -5557,164 +6485,6 @@ void main (void)
     gl_Position = uProjectionMatrix * uCameraMatrix * vec4(aVertexPosition, 0.0, 1.0);
 }`;
 
-// src/textures/Frame.ts
-var Frame = class {
-  constructor(texture, key, x, y, width, height) {
-    this.trimmed = false;
-    this.texture = texture;
-    this.key = key;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.sourceSizeWidth = width;
-    this.sourceSizeHeight = height;
-    this.updateUVs();
-  }
-  setPivot(x, y) {
-    this.pivot = {x, y};
-  }
-  setSize(width, height) {
-    this.width = width;
-    this.height = height;
-    this.sourceSizeWidth = width;
-    this.sourceSizeHeight = height;
-    this.updateUVs();
-  }
-  setSourceSize(width, height) {
-    this.sourceSizeWidth = width;
-    this.sourceSizeHeight = height;
-  }
-  setTrim(width, height, x, y, w, h) {
-    this.trimmed = true;
-    this.sourceSizeWidth = width;
-    this.sourceSizeHeight = height;
-    this.spriteSourceSizeX = x;
-    this.spriteSourceSizeY = y;
-    this.spriteSourceSizeWidth = w;
-    this.spriteSourceSizeHeight = h;
-  }
-  getExtent(originX, originY) {
-    const sourceSizeWidth = this.sourceSizeWidth;
-    const sourceSizeHeight = this.sourceSizeHeight;
-    let left;
-    let right;
-    let top;
-    let bottom;
-    if (this.trimmed) {
-      left = this.spriteSourceSizeX - originX * sourceSizeWidth;
-      right = left + this.spriteSourceSizeWidth;
-      top = this.spriteSourceSizeY - originY * sourceSizeHeight;
-      bottom = top + this.spriteSourceSizeHeight;
-    } else {
-      left = -originX * sourceSizeWidth;
-      right = left + sourceSizeWidth;
-      top = -originY * sourceSizeHeight;
-      bottom = top + sourceSizeHeight;
-    }
-    return {left, right, top, bottom};
-  }
-  copyToExtent(child) {
-    const transform = child.transform;
-    const originX = transform.origin.x;
-    const originY = transform.origin.y;
-    const sourceSizeWidth = this.sourceSizeWidth;
-    const sourceSizeHeight = this.sourceSizeHeight;
-    let x;
-    let y;
-    let width;
-    let height;
-    if (this.trimmed) {
-      x = this.spriteSourceSizeX - originX * sourceSizeWidth;
-      y = this.spriteSourceSizeY - originY * sourceSizeHeight;
-      width = this.spriteSourceSizeWidth;
-      height = this.spriteSourceSizeHeight;
-    } else {
-      x = -originX * sourceSizeWidth;
-      y = -originY * sourceSizeHeight;
-      width = sourceSizeWidth;
-      height = sourceSizeHeight;
-    }
-    transform.setExtent(x, y, width, height);
-    return this;
-  }
-  copyToVertices(vertices, offset = 0) {
-    const {u0, u1, v0, v1} = this;
-    vertices[offset + 0].setUV(u0, v0);
-    vertices[offset + 1].setUV(u0, v1);
-    vertices[offset + 2].setUV(u1, v1);
-    vertices[offset + 3].setUV(u1, v0);
-    return this;
-  }
-  updateUVs() {
-    const {x, y, width, height} = this;
-    const baseTextureWidth = this.texture.width;
-    const baseTextureHeight = this.texture.height;
-    this.u0 = x / baseTextureWidth;
-    this.v0 = y / baseTextureHeight;
-    this.u1 = (x + width) / baseTextureWidth;
-    this.v1 = (y + height) / baseTextureHeight;
-  }
-};
-
-// src/textures/Texture.ts
-var Texture = class {
-  constructor(image, width, height, glConfig) {
-    this.key = "";
-    if (image) {
-      width = image.width;
-      height = image.height;
-    }
-    this.image = image;
-    this.width = width;
-    this.height = height;
-    this.frames = new Map();
-    this.data = {};
-    this.addFrame("__BASE", 0, 0, width, height);
-    BindingQueue.add(this, glConfig);
-  }
-  addFrame(key, x, y, width, height) {
-    if (this.frames.has(key)) {
-      return null;
-    }
-    const frame2 = new Frame(this, key, x, y, width, height);
-    this.frames.set(key, frame2);
-    if (!this.firstFrame || this.firstFrame.key === "__BASE") {
-      this.firstFrame = frame2;
-    }
-    return frame2;
-  }
-  getFrame(key) {
-    if (!key) {
-      return this.firstFrame;
-    }
-    if (key instanceof Frame) {
-      key = key.key;
-    }
-    let frame2 = this.frames.get(key);
-    if (!frame2) {
-      console.warn(`Frame missing: ${key}`);
-      frame2 = this.firstFrame;
-    }
-    return frame2;
-  }
-  setSize(width, height) {
-    this.width = width;
-    this.height = height;
-    const frame2 = this.frames.get("__BASE");
-    frame2.setSize(width, height);
-  }
-  destroy() {
-    if (this.binding) {
-      this.binding.destroy();
-    }
-    this.frames.clear();
-    this.data = null;
-    this.image = null;
-    this.firstFrame = null;
-  }
-};
-
 // src/renderer/webgl1/shaders/Shader.ts
 var Shader = class {
   constructor(config) {
@@ -6141,13 +6911,13 @@ function UnbindTexture(renderPass, index = 0) {
 }
 
 // src/renderer/webgl1/WebGLRendererInstance.ts
-var instance2;
+var instance3;
 var WebGLRendererInstance = {
   get: () => {
-    return instance2;
+    return instance3;
   },
   set: (renderer) => {
-    instance2 = renderer;
+    instance3 = renderer;
   }
 };
 
@@ -8174,7 +8944,7 @@ __export(gameobjects_exports, {
   Text: () => Text
 });
 
-// src/gameobjects/components/index.ts
+// src/components/index.ts
 var components_exports = {};
 __export(components_exports, {
   Bounds: () => bounds_exports,
@@ -8183,13 +8953,13 @@ __export(components_exports, {
   Vertex: () => Vertex
 });
 
-// src/gameobjects/components/bounds/index.ts
+// src/components/bounds/index.ts
 var bounds_exports = {};
 __export(bounds_exports, {
   BoundsComponent: () => BoundsComponent
 });
 
-// src/gameobjects/components/transform/GetVertices.ts
+// src/components/transform/GetVertices.ts
 function GetVertices(transform) {
   const {a, b, c, d, tx, ty} = transform.world;
   const {x, y, right, bottom} = transform.extent;
@@ -8204,7 +8974,7 @@ function GetVertices(transform) {
   return {x0, y0, x1, y1, x2, y2, x3, y3};
 }
 
-// src/gameobjects/components/bounds/BoundsComponent.ts
+// src/components/bounds/BoundsComponent.ts
 var BoundsComponent = class {
   constructor(entity) {
     this.fixed = false;
@@ -8269,13 +9039,13 @@ var BoundsComponent = class {
   }
 };
 
-// src/gameobjects/components/input/index.ts
+// src/components/input/index.ts
 var input_exports = {};
 __export(input_exports, {
   InputComponent: () => InputComponent
 });
 
-// src/gameobjects/components/input/InputComponent.ts
+// src/components/input/InputComponent.ts
 var InputComponent = class {
   constructor(entity) {
     this.enabled = false;
@@ -8288,7 +9058,7 @@ var InputComponent = class {
   }
 };
 
-// src/gameobjects/components/transform/index.ts
+// src/components/transform/index.ts
 var transform_exports = {};
 __export(transform_exports, {
   GetVertices: () => GetVertices,
@@ -8300,7 +9070,7 @@ __export(transform_exports, {
   UpdateWorldTransform: () => UpdateWorldTransform
 });
 
-// src/gameobjects/components/transform/GetVerticesFromValues.ts
+// src/components/transform/GetVerticesFromValues.ts
 function GetVerticesFromValues(left, right, top, bottom, x, y, rotation = 0, scaleX = 1, scaleY = 1, skewX = 0, skewY = 0) {
   const a = Math.cos(rotation + skewY) * scaleX;
   const b = Math.sin(rotation + skewY) * scaleX;
@@ -8324,7 +9094,7 @@ function PackColors(vertices) {
   });
 }
 
-// src/gameobjects/components/transform/UpdateVertices.ts
+// src/components/transform/UpdateVertices.ts
 function UpdateVertices(gameObject) {
   const vertices = gameObject.vertices;
   const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(gameObject.transform);
@@ -8335,7 +9105,7 @@ function UpdateVertices(gameObject) {
   return gameObject;
 }
 
-// src/gameobjects/components/transform/PreRenderVertices.ts
+// src/components/transform/PreRenderVertices.ts
 function PreRenderVertices(gameObject) {
   if (gameObject.isDirty(DIRTY_CONST.COLORS)) {
     PackColors(gameObject.vertices);
@@ -8842,7 +9612,7 @@ function TranslateRectanglePoint(rect, point) {
   return rect;
 }
 
-// src/gameobjects/components/transform/UpdateLocalTransform.ts
+// src/components/transform/UpdateLocalTransform.ts
 function UpdateLocalTransform(transform) {
   const local = transform.local;
   const x = transform.position.x;
@@ -8855,7 +9625,7 @@ function UpdateLocalTransform(transform) {
   local.set(Math.cos(rotation + skewY) * scaleX, Math.sin(rotation + skewY) * scaleX, -Math.sin(rotation - skewX) * scaleY, Math.cos(rotation - skewX) * scaleY, x, y);
 }
 
-// src/gameobjects/components/transform/UpdateWorldTransform.ts
+// src/components/transform/UpdateWorldTransform.ts
 function UpdateWorldTransform(gameObject) {
   const parent = gameObject.parent;
   const transform = gameObject.transform;
@@ -8872,7 +9642,7 @@ function UpdateWorldTransform(gameObject) {
   }
 }
 
-// src/gameobjects/components/transform/TransformComponent.ts
+// src/components/transform/TransformComponent.ts
 var TransformComponent = class {
   constructor(entity, x = 0, y = 0) {
     this.passthru = false;
@@ -8972,7 +9742,7 @@ function PackColor(rgb, alpha) {
   return (ua << 24 | rgb) >>> 0;
 }
 
-// src/gameobjects/components/Vertex.ts
+// src/components/Vertex.ts
 var Vertex = class {
   constructor(x = 0, y = 0, z = 0) {
     this.x = 0;
@@ -9291,17 +10061,6 @@ function SetFrame(texture, key, ...children) {
   return children;
 }
 
-// src/textures/TextureManagerInstance.ts
-var instance3;
-var TextureManagerInstance = {
-  get: () => {
-    return instance3;
-  },
-  set: (manager) => {
-    instance3 = manager;
-  }
-};
-
 // src/gameobjects/sprite/SetTexture.ts
 function SetTexture2(key, frame2, ...children) {
   if (!key) {
@@ -9312,10 +10071,13 @@ function SetTexture2(key, frame2, ...children) {
     });
   } else {
     let texture;
-    if (key instanceof Texture) {
+    if (key instanceof Frame) {
+      frame2 = key;
+      texture = key.texture;
+    } else if (key instanceof Texture) {
       texture = key;
     } else {
-      texture = TextureManagerInstance.get().get(key);
+      texture = GetTexture(key);
     }
     if (!texture) {
       console.warn(`Invalid Texture key: ${key}`);
@@ -9382,114 +10144,258 @@ var Sprite = class extends Container {
 var AnimatedSprite = class extends Sprite {
   constructor(x, y, texture, frame2) {
     super(x, y, texture, frame2);
+    this.hasStarted = false;
+    this.forward = true;
+    this.inReverse = false;
+    this.accumulator = 0;
+    this.nextTick = 0;
+    this.delayCounter = 0;
+    this.repeatCounter = 0;
+    this.pendingRepeat = false;
+    this.paused = false;
+    this.wasPlaying = false;
+    this.pendingStop = 0;
+    this.pendingStopValue = 0;
     this.type = "AnimatedSprite";
-    this.anims = new Map();
-    this.animData = {
-      currentAnim: "",
-      currentFrames: [],
-      frameIndex: 0,
-      animSpeed: 0,
-      nextFrameTime: 0,
-      repeatCount: 0,
-      isPlaying: false,
-      yoyo: false,
-      pendingStart: false,
-      playingForward: true,
-      delay: 0,
-      repeatDelay: 0,
-      onStart: null,
-      onRepeat: null,
-      onComplete: null
-    };
+    this.currentAnimation;
+    this.animData = CreateAnimData();
+  }
+  handleStart() {
+    if (this.animData.showOnStart) {
+      this.visible = true;
+    }
+    this.setCurrentFrame(this.currentFrame);
+    this.hasStarted = true;
+  }
+  handleRepeat() {
+    this.pendingRepeat = false;
+  }
+  handleStop() {
+    this.pendingStop = 0;
+    this.animData.isPlaying = false;
+  }
+  handleComplete() {
+    this.pendingStop = 0;
+    this.animData.isPlaying = false;
+    if (this.animData.hideOnComplete) {
+      this.visible = false;
+    }
+  }
+  reverse() {
+    if (this.isPlaying) {
+      this.inReverse = !this.inReverse;
+      this.forward = !this.forward;
+    }
+    return this;
+  }
+  getProgress() {
+    const frame2 = this.currentFrame;
+    if (!frame2) {
+      return 0;
+    }
+    let p = frame2.progress;
+    if (this.inReverse) {
+      p *= -1;
+    }
+    return p;
   }
   stop() {
-    const data = this.animData;
-    data.isPlaying = false;
-    data.currentAnim = "";
-    if (data.onComplete) {
-      data.onComplete(this, data.currentAnim);
+    this.pendingStop = 0;
+    this.animData.isPlaying = false;
+    if (this.currentAnimation) {
+      this.handleStop();
     }
-  }
-  nextFrame() {
-    const data = this.animData;
-    data.frameIndex++;
-    if (data.frameIndex === data.currentFrames.length) {
-      if (data.yoyo) {
-        data.frameIndex--;
-        data.playingForward = false;
-      } else if (data.repeatCount === -1 || data.repeatCount > 0) {
-        data.frameIndex = 0;
-        if (data.repeatCount !== -1) {
-          data.repeatCount--;
-        }
-        if (data.onRepeat) {
-          data.onRepeat(this, data.currentAnim);
-        }
-        data.nextFrameTime += data.repeatDelay;
-      } else {
-        data.frameIndex--;
-        return this.stop();
-      }
-    }
-    this.setFrame(data.currentFrames[data.frameIndex]);
-    data.nextFrameTime += data.animSpeed;
-  }
-  prevFrame() {
-    const data = this.animData;
-    data.frameIndex--;
-    if (data.frameIndex === -1) {
-      if (data.repeatCount === -1 || data.repeatCount > 0) {
-        data.frameIndex = 0;
-        data.playingForward = true;
-        if (data.repeatCount !== -1) {
-          data.repeatCount--;
-        }
-        if (data.onRepeat) {
-          data.onRepeat(this, data.currentAnim);
-        }
-        data.nextFrameTime += data.repeatDelay;
-      } else {
-        data.frameIndex = 0;
-        return this.stop();
-      }
-    }
-    this.setFrame(data.currentFrames[data.frameIndex]);
-    data.nextFrameTime += data.animSpeed;
+    return this;
   }
   update(delta, now) {
     super.update(delta, now);
     const data = this.animData;
-    if (!data.isPlaying) {
+    const anim = this.currentAnimation;
+    if (!anim || !data.isPlaying || anim.paused) {
       return;
     }
-    data.nextFrameTime -= delta * 1e3;
-    data.nextFrameTime = Math.max(data.nextFrameTime, 0);
-    if (data.nextFrameTime === 0) {
-      if (data.pendingStart) {
-        if (data.onStart) {
-          data.onStart(this, data.currentAnim);
-        }
-        data.pendingStart = false;
-        data.nextFrameTime = data.animSpeed;
-      } else if (data.playingForward) {
+    this.accumulator += delta * data.timeScale;
+    if (this.pendingStop === 1) {
+      this.pendingStopValue -= delta;
+      if (this.pendingStopValue <= 0) {
+        this.stop();
+        return;
+      }
+    }
+    if (!this.hasStarted) {
+      if (this.accumulator >= this.delayCounter) {
+        this.accumulator -= this.delayCounter;
+        this.handleStart();
+      }
+    } else if (this.accumulator >= this.nextTick) {
+      if (this.forward) {
         this.nextFrame();
       } else {
         this.prevFrame();
       }
+      if (data.isPlaying && this.pendingStop === 0 && anim.skipMissedFrames && this.accumulator > this.nextTick) {
+        let safetyNet = 0;
+        do {
+          if (this.forward) {
+            this.nextFrame();
+          } else {
+            this.prevFrame();
+          }
+          safetyNet++;
+        } while (data.isPlaying && this.accumulator > this.nextTick && safetyNet < 60);
+      }
     }
+  }
+  nextFrame() {
+    const frame2 = this.currentFrame;
+    const data = this.animData;
+    if (frame2.isLast) {
+      if (data.yoyo) {
+        this.handleYoyoFrame(false);
+      } else if (this.repeatCounter > 0) {
+        if (this.inReverse && this.forward) {
+          this.forward = false;
+        } else {
+          this.repeatAnimation();
+        }
+      } else {
+        this.complete();
+      }
+    } else {
+      this.setCurrentFrame(this.currentFrame.nextFrame);
+      this.getNextTick();
+    }
+    return this;
+  }
+  repeatAnimation() {
+    if (this.pendingStop === 2) {
+      if (this.pendingStopValue === 0) {
+        return this.stop();
+      } else {
+        this.pendingStopValue--;
+      }
+    }
+    const data = this.animData;
+    if (data.repeatDelay > 0 && !this.pendingRepeat) {
+      this.pendingRepeat = true;
+      this.accumulator -= this.nextTick;
+      this.nextTick += data.repeatDelay;
+    } else {
+      this.repeatCounter--;
+      if (this.forward) {
+        this.setCurrentFrame(this.currentFrame.nextFrame);
+      } else {
+        this.setCurrentFrame(this.currentFrame.prevFrame);
+      }
+      if (this.isPlaying) {
+        this.getNextTick();
+        this.handleRepeat();
+      }
+    }
+  }
+  setCurrentFrame(animFrame) {
+    this.currentFrame = animFrame;
+    this.setTexture(animFrame.texture, animFrame.frame);
+  }
+  getNextTick() {
+    this.accumulator -= this.nextTick;
+    this.nextTick = this.currentAnimation.msPerFrame + this.currentFrame.duration;
+  }
+  handleYoyoFrame(isReverse = false) {
+    const animData = this.animData;
+    if (this.inReverse === !isReverse && this.repeatCounter > 0) {
+      if (animData.repeatDelay === 0 || this.pendingRepeat) {
+        this.forward = isReverse;
+      }
+      this.repeatAnimation();
+      return;
+    }
+    if (this.inReverse !== isReverse && this.repeatCounter === 0) {
+      this.complete();
+      return;
+    }
+    this.forward = isReverse;
+    if (isReverse) {
+      this.setCurrentFrame(this.currentFrame.nextFrame);
+    } else {
+      this.setCurrentFrame(this.currentFrame.prevFrame);
+    }
+    this.getNextTick();
+  }
+  prevFrame() {
+    const frame2 = this.currentFrame;
+    const animData = this.animData;
+    if (frame2.isFirst) {
+      if (animData.yoyo) {
+        this.handleYoyoFrame(true);
+      } else if (this.repeatCounter > 0) {
+        if (this.inReverse && !this.forward) {
+          this.repeatAnimation();
+        } else {
+          this.forward = true;
+          this.repeatAnimation();
+        }
+      } else {
+        this.complete();
+      }
+    } else {
+      this.setCurrentFrame(frame2.prevFrame);
+      this.getNextTick();
+    }
+    return this;
+  }
+  complete() {
+    this.pendingStop = 0;
+    this.animData.isPlaying = false;
+    if (this.currentAnimation) {
+      this.handleComplete();
+    }
+  }
+  play() {
+    const data = this.animData;
+    if (data.repeat === -1) {
+      this.repeatCounter = Number.MAX_VALUE;
+    }
+    data.isPlaying = true;
+    if (data.delay === 0) {
+      this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+      if (data.onStart) {
+        data.onStart(this, this.currentAnimation);
+      }
+    } else {
+      data.pendingStart = true;
+    }
+    return this;
+  }
+  pause(atFrame) {
+    if (!this.paused) {
+      this.paused = true;
+      this.wasPlaying = this.isPlaying;
+      this.animData.isPlaying = false;
+    }
+    if (atFrame) {
+      this.setCurrentFrame(atFrame);
+    }
+    return this;
+  }
+  resume(fromFrame) {
+    if (this.paused) {
+      this.paused = false;
+      this.animData.isPlaying = this.wasPlaying;
+    }
+    if (fromFrame) {
+      this.setCurrentFrame(fromFrame);
+    }
+    return this;
   }
   get isPlaying() {
     return this.animData.isPlaying;
   }
   get isPlayingForward() {
-    return this.animData.isPlaying && this.animData.playingForward;
-  }
-  get currentAnimation() {
-    return this.animData.currentAnim;
+    return this.animData.isPlaying && this.forward;
   }
   destroy(reparentChildren) {
     super.destroy(reparentChildren);
-    this.anims.clear();
     this.animData = null;
   }
 };
@@ -9829,20 +10735,6 @@ var SpriteBatch = class extends Layer {
     this.hasTexture = false;
   }
 };
-
-// src/textures/CreateCanvas.ts
-function CreateCanvas(width, height) {
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  return canvas.getContext("2d");
-}
-
-// src/textures/types/CanvasTexture.ts
-function CanvasTexture(width = 32, height = 32) {
-  const ctx = CreateCanvas(width, height);
-  return new Texture(ctx.canvas);
-}
 
 // src/gameobjects/text/Text.ts
 var Text = class extends Sprite {
@@ -13411,37 +14303,6 @@ __export(files_exports, {
   XMLFile: () => XMLFile
 });
 
-// src/textures/parsers/AtlasParser.ts
-function AtlasParser(texture, data) {
-  let frames;
-  if (Array.isArray(data.textures)) {
-    frames = data.textures[0].frames;
-  } else if (Array.isArray(data.frames)) {
-    frames = data.frames;
-  } else if (data.hasOwnProperty("frames")) {
-    frames = Object.values(data.frames);
-  } else {
-    console.warn("Invalid Texture Atlas JSON");
-  }
-  if (frames) {
-    let newFrame;
-    for (let i = 0; i < frames.length; i++) {
-      const src = frames[i];
-      newFrame = texture.addFrame(src.filename, src.frame.x, src.frame.y, src.frame.w, src.frame.h);
-      if (src.trimmed) {
-        newFrame.setTrim(src.sourceSize.w, src.sourceSize.h, src.spriteSourceSize.x, src.spriteSourceSize.y, src.spriteSourceSize.w, src.spriteSourceSize.h);
-      } else {
-        newFrame.setSourceSize(src.sourceSize.w, src.sourceSize.h);
-      }
-      if (src.rotated) {
-      }
-      if (src.anchor) {
-        newFrame.setPivot(src.anchor.x, src.anchor.y);
-      }
-    }
-  }
-}
-
 // src/loader/File.ts
 var File = class {
   constructor(key, url, config) {
@@ -13608,52 +14469,6 @@ function AtlasFile(key, textureURL, atlasURL, glConfig) {
     });
   };
   return file;
-}
-
-// src/textures/parsers/BitmapTextParser.ts
-function GetValue(node, attribute) {
-  return parseInt(node.getAttribute(attribute), 10);
-}
-function BitmapTextParser(texture, xml, frame2) {
-  const xSpacing = 0;
-  const ySpacing = 0;
-  const info = xml.getElementsByTagName("info")[0];
-  const common = xml.getElementsByTagName("common")[0];
-  const data = {
-    font: info.getAttribute("face"),
-    size: GetValue(info, "size"),
-    lineHeight: GetValue(common, "lineHeight") + ySpacing,
-    chars: {}
-  };
-  const letters = xml.getElementsByTagName("char");
-  for (let i = 0; i < letters.length; i++) {
-    const node = letters[i];
-    const charCode = GetValue(node, "id");
-    const x = GetValue(node, "x");
-    const y = GetValue(node, "y");
-    const width = GetValue(node, "width");
-    const height = GetValue(node, "height");
-    data.chars[charCode] = {
-      x,
-      y,
-      width,
-      height,
-      xOffset: GetValue(node, "xoffset"),
-      yOffset: GetValue(node, "yoffset"),
-      xAdvance: GetValue(node, "xadvance") + xSpacing,
-      kerning: {}
-    };
-    texture.addFrame(charCode, x, y, width, height);
-  }
-  const kernings = xml.getElementsByTagName("kerning");
-  for (let i = 0; i < kernings.length; i++) {
-    const kern = kernings[i];
-    const first = GetValue(kern, "first");
-    const second = GetValue(kern, "second");
-    const amount = GetValue(kern, "amount");
-    data.chars[second].kerning[first] = amount;
-  }
-  return data;
 }
 
 // src/loader/files/XMLFile.ts
@@ -13830,63 +14645,6 @@ function OBJGeometryFile(key, url, flipUVs = true) {
     });
   };
   return file;
-}
-
-// src/textures/parsers/SpriteSheetParser.ts
-function SpriteSheetParser(texture, x, y, width, height, frameConfig) {
-  const {
-    frameWidth = null,
-    endFrame = -1,
-    margin = 0,
-    spacing = 0
-  } = frameConfig;
-  let {
-    frameHeight = null,
-    startFrame = 0
-  } = frameConfig;
-  if (!frameHeight) {
-    frameHeight = frameWidth;
-  }
-  if (frameWidth === null) {
-    throw new Error("SpriteSheetParser: Invalid frameWidth");
-  }
-  const row = Math.floor((width - margin + spacing) / (frameWidth + spacing));
-  const column = Math.floor((height - margin + spacing) / (frameHeight + spacing));
-  let total = row * column;
-  if (total === 0) {
-    console.warn("SpriteSheetParser: Frame config will result in zero frames");
-  }
-  if (startFrame > total || startFrame < -total) {
-    startFrame = 0;
-  }
-  if (startFrame < 0) {
-    startFrame = total + startFrame;
-  }
-  if (endFrame !== -1) {
-    total = startFrame + (endFrame + 1);
-  }
-  let fx = margin;
-  let fy = margin;
-  let ax = 0;
-  let ay = 0;
-  for (let i = 0; i < total; i++) {
-    ax = 0;
-    ay = 0;
-    const w = fx + frameWidth;
-    const h = fy + frameHeight;
-    if (w > width) {
-      ax = w - width;
-    }
-    if (h > height) {
-      ay = h - height;
-    }
-    texture.addFrame(i, x + fx, y + fy, frameWidth - ax, frameHeight - ay);
-    fx += frameWidth + spacing;
-    if (fx + frameWidth > width) {
-      fx = margin;
-      fy += frameHeight + spacing;
-    }
-  }
 }
 
 // src/loader/files/SpriteSheetFile.ts
@@ -14257,382 +15015,6 @@ var YellowRubber = new Material({
   specular: [0.7, 0.7, 0.04],
   shine: 0.078125
 });
-
-// src/textures/index.ts
-var textures_exports = {};
-__export(textures_exports, {
-  CreateCanvas: () => CreateCanvas,
-  Frame: () => Frame,
-  GetFrames: () => GetFrames,
-  GetFramesInRange: () => GetFramesInRange,
-  Palettes: () => palettes_exports,
-  Parsers: () => parsers_exports,
-  SetFilter: () => SetFilter,
-  Texture: () => Texture,
-  TextureManager: () => TextureManager,
-  Types: () => types_exports
-});
-
-// src/textures/palettes/index.ts
-var palettes_exports = {};
-__export(palettes_exports, {
-  Arne16: () => Arne16,
-  C64: () => C64,
-  CGA: () => CGA,
-  JMP: () => JMP,
-  MSX: () => MSX,
-  PICO8: () => PICO8
-});
-
-// src/textures/palettes/Arne16.ts
-var Arne16 = [
-  "#000",
-  "#9D9D9D",
-  "#FFF",
-  "#BE2633",
-  "#E06F8B",
-  "#493C2B",
-  "#A46422",
-  "#EB8931",
-  "#F7E26B",
-  "#2F484E",
-  "#44891A",
-  "#A3CE27",
-  "#1B2632",
-  "#005784",
-  "#31A2F2",
-  "#B2DCEF"
-];
-
-// src/textures/palettes/C64.ts
-var C64 = [
-  "#000",
-  "#fff",
-  "#8b4131",
-  "#7bbdc5",
-  "#8b41ac",
-  "#6aac41",
-  "#3931a4",
-  "#d5de73",
-  "#945a20",
-  "#5a4100",
-  "#bd736a",
-  "#525252",
-  "#838383",
-  "#acee8b",
-  "#7b73de",
-  "#acacac"
-];
-
-// src/textures/palettes/CGA.ts
-var CGA = [
-  "#000",
-  "#2234d1",
-  "#0c7e45",
-  "#44aacc",
-  "#8a3622",
-  "#5c2e78",
-  "#aa5c3d",
-  "#b5b5b5",
-  "#5e606e",
-  "#4c81fb",
-  "#6cd947",
-  "#7be2f9",
-  "#eb8a60",
-  "#e23d69",
-  "#ffd93f",
-  "#fff"
-];
-
-// src/textures/palettes/JMP.ts
-var JMP = [
-  "#000",
-  "#191028",
-  "#46af45",
-  "#a1d685",
-  "#453e78",
-  "#7664fe",
-  "#833129",
-  "#9ec2e8",
-  "#dc534b",
-  "#e18d79",
-  "#d6b97b",
-  "#e9d8a1",
-  "#216c4b",
-  "#d365c8",
-  "#afaab9",
-  "#f5f4eb"
-];
-
-// src/textures/palettes/MSX.ts
-var MSX = [
-  "#000",
-  "#191028",
-  "#46af45",
-  "#a1d685",
-  "#453e78",
-  "#7664fe",
-  "#833129",
-  "#9ec2e8",
-  "#dc534b",
-  "#e18d79",
-  "#d6b97b",
-  "#e9d8a1",
-  "#216c4b",
-  "#d365c8",
-  "#afaab9",
-  "#fff"
-];
-
-// src/textures/palettes/PICO8.ts
-var PICO8 = [
-  "#000",
-  "#1D2B53",
-  "#7E2553",
-  "#008751",
-  "#AB5236",
-  "#5F574F",
-  "#C2C3C7",
-  "#FFF1E8",
-  "#FF004D",
-  "#FFA300",
-  "#FFEC27",
-  "#00E436",
-  "#29ADFF",
-  "#83769C",
-  "#FF77A8",
-  "#FFCCAA"
-];
-
-// src/textures/parsers/index.ts
-var parsers_exports = {};
-__export(parsers_exports, {
-  AtlasParser: () => AtlasParser,
-  BitmapTextParser: () => BitmapTextParser,
-  SpriteSheetParser: () => SpriteSheetParser
-});
-
-// src/textures/types/index.ts
-var types_exports = {};
-__export(types_exports, {
-  CanvasTexture: () => CanvasTexture,
-  GridTexture: () => GridTexture,
-  LinearGradientTexture: () => LinearGradientTexture,
-  PixelTexture: () => PixelTexture,
-  RenderTexture: () => RenderTexture,
-  SolidColorTexture: () => SolidColorTexture
-});
-
-// src/textures/types/GridTexture.ts
-function GridTexture(color1, color2, width = 32, height = 32, cols = 2, rows = 2) {
-  const ctx = CreateCanvas(width, height);
-  const colWidth = width / cols;
-  const rowHeight = height / rows;
-  ctx.fillStyle = color1;
-  ctx.fillRect(0, 0, width, height);
-  ctx.fillStyle = color2;
-  for (let y = 0; y < rows; y++) {
-    for (let x = y % 2; x < cols; x += 2) {
-      ctx.fillRect(x * colWidth, y * rowHeight, colWidth, rowHeight);
-    }
-  }
-  return new Texture(ctx.canvas);
-}
-
-// src/textures/types/LinearGradientTexture.ts
-function LinearGradientTexture(config) {
-  const {
-    width = 256,
-    height = 256,
-    horizontal = false,
-    x0 = 0,
-    y0 = 0,
-    x1 = horizontal ? width : 0,
-    y1 = horizontal ? 0 : height,
-    colorStops = [{offset: 0, color: "red"}]
-  } = config;
-  const ctx = CreateCanvas(width, height);
-  const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
-  for (const colorStop of colorStops.values()) {
-    gradient.addColorStop(colorStop.offset, colorStop.color);
-  }
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-  return new Texture(ctx.canvas);
-}
-
-// src/textures/types/PixelTexture.ts
-function PixelTexture(config) {
-  const {
-    data = [],
-    palette = Arne16,
-    pixelWidth = 1,
-    pixelHeight = pixelWidth,
-    preRender = null,
-    postRender = null
-  } = config;
-  let {
-    canvas = null,
-    resizeCanvas = true,
-    clearCanvas = true
-  } = config;
-  const width = Math.floor(Math.abs(data[0].length * pixelWidth));
-  const height = Math.floor(Math.abs(data.length * pixelHeight));
-  if (!canvas) {
-    canvas = CreateCanvas(width, height).canvas;
-    resizeCanvas = false;
-    clearCanvas = false;
-  }
-  if (resizeCanvas) {
-    canvas.width = width;
-    canvas.height = height;
-  }
-  const ctx = canvas.getContext("2d");
-  if (clearCanvas) {
-    ctx.clearRect(0, 0, width, height);
-  }
-  if (preRender) {
-    preRender(canvas, ctx);
-  }
-  for (let y = 0; y < data.length; y++) {
-    const row = data[y];
-    for (let x = 0; x < row.length; x++) {
-      const d = row[x];
-      if (d !== "." && d !== " ") {
-        ctx.fillStyle = palette[parseInt("0x" + d.toUpperCase())];
-        ctx.fillRect(x * pixelWidth, y * pixelHeight, pixelWidth, pixelHeight);
-      }
-    }
-  }
-  if (postRender) {
-    postRender(canvas, ctx);
-  }
-  return new Texture(canvas);
-}
-
-// src/textures/types/RenderTexture.ts
-var RenderTexture = class extends Texture {
-  constructor(renderer, width = 256, height = width) {
-    super(null, width, height);
-    this.renderer = renderer;
-  }
-  cls() {
-    return this;
-  }
-  batchStart() {
-    return this;
-  }
-  batchDraw(sprites) {
-    for (let i = 0, len = sprites.length; i < len; i++) {
-    }
-    return this;
-  }
-  batchEnd() {
-    const renderer = this.renderer;
-    renderer.reset();
-    return this;
-  }
-  draw(...sprites) {
-    this.batchStart();
-    this.batchDraw(sprites);
-    this.batchEnd();
-    return this;
-  }
-};
-
-// src/textures/types/SolidColorTexture.ts
-function SolidColorTexture(color = "rgba(0,0,0,0)", width = 32, height = 32) {
-  const ctx = CreateCanvas(width, height);
-  ctx.fillStyle = color;
-  ctx.fillRect(0, 0, width, height);
-  return new Texture(ctx.canvas);
-}
-
-// src/textures/GetFrames.ts
-function GetFrames(texture, frames) {
-  const output = [];
-  frames.forEach((key) => {
-    output.push(texture.getFrame(key));
-  });
-  return output;
-}
-
-// src/textures/GetFramesInRange.ts
-function GetFramesInRange(texture, config) {
-  const {
-    prefix = "",
-    start = 0,
-    zeroPad = 0,
-    suffix = ""
-  } = config;
-  let end = config.end;
-  const output = [];
-  const diff = start < end ? 1 : -1;
-  end += diff;
-  for (let i = start; i !== end; i += diff) {
-    const frameKey = prefix + i.toString().padStart(zeroPad, "0") + suffix;
-    output.push(texture.getFrame(frameKey));
-  }
-  return output;
-}
-
-// src/textures/SetFilter.ts
-function SetFilter(linear, ...textures) {
-  textures.forEach((texture) => {
-    if (texture.binding) {
-      texture.binding.setFilter(linear);
-    }
-  });
-  return textures;
-}
-
-// src/textures/TextureManager.ts
-var TextureManager = class {
-  constructor() {
-    this.textures = new Map();
-    this.createDefaultTextures();
-    TextureManagerInstance.set(this);
-  }
-  createDefaultTextures() {
-    this.add("__BLANK", new Texture(CreateCanvas(32, 32).canvas));
-    const missing = CreateCanvas(32, 32);
-    missing.strokeStyle = "#0f0";
-    missing.moveTo(0, 0);
-    missing.lineTo(32, 32);
-    missing.stroke();
-    missing.strokeRect(0.5, 0.5, 31, 31);
-    this.add("__MISSING", new Texture(missing.canvas));
-    const white = CreateCanvas(32, 32);
-    white.fillStyle = "#fff";
-    white.fillRect(0, 0, 32, 32);
-    this.add("__WHITE", new Texture(white.canvas));
-  }
-  get(key) {
-    const textures = this.textures;
-    if (textures.has(key)) {
-      return textures.get(key);
-    } else {
-      return textures.get("__MISSING");
-    }
-  }
-  has(key) {
-    return this.textures.has(key);
-  }
-  add(key, source, glConfig) {
-    let texture;
-    const textures = this.textures;
-    if (!textures.has(key)) {
-      if (source instanceof Texture) {
-        texture = source;
-      } else {
-        texture = new Texture(source, 0, 0, glConfig);
-      }
-      texture.key = key;
-      textures.set(key, texture);
-    }
-    return texture;
-  }
-};
 
 // src/time/index.ts
 var time_exports = {};
@@ -15721,6 +16103,7 @@ var Scene = class {
   }
 };
 export {
+  animation_exports as Animation,
   camera_exports as Camera,
   camera3d_exports as Camera3D,
   color_exports as Color,

@@ -1,1 +1,0 @@
-{"version":3,"file":"GetVertices.d.ts","sourceRoot":"","sources":["../../../../src/gameobjects/components/transform/GetVertices.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,mBAAmB,EAAE,MAAM,uBAAuB,CAAC;AAC5D,OAAO,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AAEtC,wBAAgB,WAAW,CAAE,SAAS,EAAE,mBAAmB,GAAG,QAAQ,CAkBrE"}
