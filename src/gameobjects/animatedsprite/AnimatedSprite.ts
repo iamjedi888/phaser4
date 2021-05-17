@@ -19,6 +19,8 @@ export class AnimatedSprite extends Sprite
     forward: boolean = true;
     inReverse: boolean = false;
 
+
+
     private accumulator: number = 0;
     private nextTick: number = 0;
     private delayCounter: number = 0;
@@ -47,7 +49,7 @@ export class AnimatedSprite extends Sprite
             this.visible = true;
         }
 
-        // this.setCurrentFrame(this.currentFrame);
+        this.setCurrentFrame(this.currentFrame);
 
         this.hasStarted = true;
 
@@ -96,7 +98,6 @@ export class AnimatedSprite extends Sprite
         return this;
     }
 
-    /*
     getProgress (): number
     {
         const frame = this.currentFrame;
@@ -106,7 +107,7 @@ export class AnimatedSprite extends Sprite
             return 0;
         }
 
-        var p = frame.progress;
+        let p = frame.progress;
 
         if (this.inReverse)
         {
@@ -115,7 +116,6 @@ export class AnimatedSprite extends Sprite
 
         return p;
     }
-    */
 
     stop (): this
     {
@@ -432,7 +432,7 @@ export class AnimatedSprite extends Sprite
         return this;
     }
 
-    pause (): this
+    pause (atFrame: IAnimationFrame): this
     {
         if (!this.paused)
         {
@@ -441,15 +441,25 @@ export class AnimatedSprite extends Sprite
             this.animData.isPlaying = false;
         }
 
+        if (atFrame)
+        {
+            this.setCurrentFrame(atFrame);
+        }
+
         return this;
     }
 
-    resume (): this
+    resume (fromFrame: IAnimationFrame): this
     {
         if (this.paused)
         {
             this.paused = false;
             this.animData.isPlaying = this.wasPlaying;
+        }
+
+        if (fromFrame)
+        {
+            this.setCurrentFrame(fromFrame);
         }
 
         return this;
