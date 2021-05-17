@@ -1,3 +1,4 @@
+import { AnimationFrame } from '../../animation';
 import { CreateAnimData } from '../../animation/CreateAnimData';
 import { Frame } from '../../textures/Frame';
 import { IAnimation } from '../../animation/IAnimation';
@@ -213,12 +214,11 @@ export class AnimatedSprite extends Sprite
             //  Yoyo? (happens before repeat)
             if (data.yoyo)
             {
-                // this.handleYoyoFrame(state, false);
+                this.handleYoyoFrame(false);
             }
             else if (this.repeatCounter > 0)
             {
                 //  Repeat (happens before complete)
-
                 if (this.inReverse && this.forward)
                 {
                     this.forward = false;
@@ -230,20 +230,14 @@ export class AnimatedSprite extends Sprite
             }
             else
             {
-                // this.complete();
+                this.complete();
             }
         }
         else
         {
-            // this.updateAndGetNextTick(state, frame.nextFrame);
+            this.setCurrentFrame(this.currentFrame.nextFrame);
 
-            this.currentFrame = this.currentFrame.nextFrame;
-
-            this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
-
-            this.accumulator -= this.nextTick;
-
-            this.nextTick = this.currentAnimation.msPerFrame + frame.duration;
+            this.getNextTick();
         }
 
         return this;
@@ -277,40 +271,135 @@ export class AnimatedSprite extends Sprite
 
             if (this.forward)
             {
-                this.currentFrame = this.currentFrame.nextFrame;
-
-                this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
-
-                // state.setCurrentFrame(state.currentFrame.nextFrame);
+                this.setCurrentFrame(this.currentFrame.nextFrame);
             }
             else
             {
-                this.currentFrame = this.currentFrame.prevFrame;
-
-                this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
-
-                // state.setCurrentFrame(state.currentFrame.prevFrame);
+                this.setCurrentFrame(this.currentFrame.prevFrame);
             }
 
             if (this.isPlaying)
             {
-                // this.getNextTick(state);
-                this.accumulator -= this.nextTick;
-
-                this.nextTick = this.currentAnimation.msPerFrame + this.currentFrame.duration;
+                this.getNextTick();
 
                 this.handleRepeat();
             }
         }
     }
 
+    setCurrentFrame (animFrame: IAnimationFrame): void
+    {
+        this.currentFrame = animFrame;
+
+        this.setTexture(animFrame.texture, animFrame.frame);
+    }
+
+    getNextTick (): void
+    {
+        this.accumulator -= this.nextTick;
+
+        this.nextTick = this.currentAnimation.msPerFrame + this.currentFrame.duration;
+    }
+
+    handleYoyoFrame (isReverse: boolean = false): void
+    {
+        const animData = this.animData;
+
+        if (this.inReverse === !isReverse && this.repeatCounter > 0)
+        {
+            if (animData.repeatDelay === 0 || this.pendingRepeat)
+            {
+                this.forward = isReverse;
+            }
+
+            this.repeatAnimation();
+
+            return;
+        }
+
+        if (this.inReverse !== isReverse && this.repeatCounter === 0)
+        {
+            this.complete();
+
+            return;
+        }
+
+        this.forward = isReverse;
+
+        if (isReverse)
+        {
+            this.setCurrentFrame(this.currentFrame.nextFrame);
+        }
+        else
+        {
+            this.setCurrentFrame(this.currentFrame.prevFrame);
+        }
+
+        this.getNextTick();
+    }
+
     prevFrame (): this
     {
-        this.currentFrame = this.currentFrame.prevFrame;
+        const frame = this.currentFrame;
+        const animData = this.animData;
 
-        this.setTexture(this.currentFrame.texture, this.currentFrame.frame);
+        if (frame.isFirst)
+        {
+            //  We're at the start of the animation
+            if (animData.yoyo)
+            {
+                this.handleYoyoFrame(true);
+            }
+            else if (this.repeatCounter > 0)
+            {
+                if (this.inReverse && !this.forward)
+                {
+                    this.repeatAnimation();
+                }
+                else
+                {
+                    //  Repeat (happens before complete)
+                    this.forward = true;
+
+                    this.repeatAnimation();
+                }
+            }
+            else
+            {
+                this.complete();
+            }
+        }
+        else
+        {
+            this.setCurrentFrame(frame.prevFrame);
+            this.getNextTick();
+        }
 
         return this;
+    }
+
+    complete (): void
+    {
+        this.pendingStop = 0;
+
+        this.animData.isPlaying = false;
+
+        if (this.currentAnimation)
+        {
+            this.handleComplete();
+        }
+
+        /*
+        //  Queue - implement?
+        if (this.nextAnim)
+        {
+            var key = this.nextAnim;
+
+            this.nextAnim = (this.nextAnimsQueue.length > 0) ? this.nextAnimsQueue.shift() : null;
+
+            this.play(key);
+        }
+        */
     }
 
     play (): this

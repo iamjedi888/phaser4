@@ -22,9 +22,6 @@ export function Play <T extends IAnimatedSprite> (animation: IAnimation, config:
 
     data.nextFrameTime = animation.msPerFrame + data.delay;
 
-    const texture = animation.firstFrame.texture;
-    const frame = animation.firstFrame.frame;
-
     sprites.forEach(sprite =>
     {
         if (!sprite || !sprite.animData)
