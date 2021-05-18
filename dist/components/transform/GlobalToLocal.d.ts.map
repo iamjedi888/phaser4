@@ -1,0 +1,1 @@
+{"version":3,"file":"GlobalToLocal.d.ts","sourceRoot":"","sources":["../../../src/components/transform/GlobalToLocal.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,2BAA2B,CAAC;AACtD,OAAO,EAAE,QAAQ,EAAE,MAAM,kBAAkB,CAAC;AAG5C,wBAAgB,aAAa,CAAE,cAAc,EAAE,QAAQ,EAAE,CAAC,EAAE,MAAM,EAAE,CAAC,EAAE,MAAM,EAAE,GAAG,GAAE,SAAsB,GAAG,SAAS,CAUrH"}

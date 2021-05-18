@@ -1,1 +1,1 @@
-{"version":3,"file":"UpdateLocalTransform.d.ts","sourceRoot":"","sources":["../../../src/components/transform/UpdateLocalTransform.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,mBAAmB,EAAE,MAAM,uBAAuB,CAAC;AAE5D,wBAAgB,oBAAoB,CAAE,SAAS,EAAE,mBAAmB,GAAG,IAAI,CAoB1E"}
+{"version":3,"file":"UpdateLocalTransform.d.ts","sourceRoot":"","sources":["../../../src/components/transform/UpdateLocalTransform.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,kBAAkB,CAAC;AAE5C,wBAAgB,oBAAoB,CAAE,cAAc,EAAE,QAAQ,EAAE,aAAa,EAAE,YAAY,GAAG,IAAI,CAYjG"}

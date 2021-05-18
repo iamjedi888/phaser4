@@ -32,7 +32,7 @@ export class Sprite extends Container {
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
+    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get tint() {
     return this._tint;

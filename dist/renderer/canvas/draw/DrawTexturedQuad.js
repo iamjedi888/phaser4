@@ -1,10 +1,10 @@
-export function DrawTexturedQuad(frame, alpha, transform, renderer) {
+export function DrawTexturedQuad(frame, alpha, worldTransform, transformExtent, renderer) {
   if (!frame) {
     return;
   }
   const ctx = renderer.ctx;
-  const {a, b, c, d, tx, ty} = transform.world;
-  const {x, y} = transform.extent;
+  const {a, b, c, d, tx, ty} = worldTransform;
+  const {x, y} = transformExtent;
   ctx.save();
   ctx.setTransform(a, b, c, d, tx, ty);
   ctx.globalAlpha = alpha;

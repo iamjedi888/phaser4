@@ -4,7 +4,7 @@ export function AddChildAt(parent, index, child) {
   if (index >= 0 && index <= children.length) {
     SetParent(parent, child);
     children.splice(index, 0, child);
-    child.transform.updateWorld();
+    child.updateWorldTransform();
   }
   return child;
 }

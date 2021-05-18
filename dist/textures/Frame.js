@@ -55,9 +55,8 @@ export class Frame {
     return {left, right, top, bottom};
   }
   copyToExtent(child) {
-    const transform = child.transform;
-    const originX = transform.origin.x;
-    const originY = transform.origin.y;
+    const originX = child.originX;
+    const originY = child.originY;
     const sourceSizeWidth = this.sourceSizeWidth;
     const sourceSizeHeight = this.sourceSizeHeight;
     let x;
@@ -75,7 +74,7 @@ export class Frame {
       width = sourceSizeWidth;
       height = sourceSizeHeight;
     }
-    transform.setExtent(x, y, width, height);
+    child.setExtent(x, y, width, height);
     return this;
   }
   copyToVertices(vertices, offset = 0) {

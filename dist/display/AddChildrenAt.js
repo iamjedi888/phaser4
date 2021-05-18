@@ -5,7 +5,7 @@ export function AddChildrenAt(parent, index, ...children) {
     children.reverse().forEach((child) => {
       children.splice(index, 0, child);
       SetParent(parent, child);
-      child.transform.updateWorld();
+      child.updateWorldTransform();
     });
   }
   return children;

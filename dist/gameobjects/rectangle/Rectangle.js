@@ -34,7 +34,7 @@ export class Rectangle extends Container {
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
+    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get color() {
     return this._color;

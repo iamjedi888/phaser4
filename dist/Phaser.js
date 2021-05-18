@@ -583,9 +583,8 @@ var Frame = class {
     return {left, right, top, bottom};
   }
   copyToExtent(child) {
-    const transform = child.transform;
-    const originX = transform.origin.x;
-    const originY = transform.origin.y;
+    const originX = child.originX;
+    const originY = child.originY;
     const sourceSizeWidth = this.sourceSizeWidth;
     const sourceSizeHeight = this.sourceSizeHeight;
     let x;
@@ -603,7 +602,7 @@ var Frame = class {
       width = sourceSizeWidth;
       height = sourceSizeHeight;
     }
-    transform.setExtent(x, y, width, height);
+    child.setExtent(x, y, width, height);
     return this;
   }
   copyToVertices(vertices, offset = 0) {
@@ -7747,7 +7746,7 @@ function SetParent2(parent, ...children) {
 function AddChild(parent, child) {
   parent.children.push(child);
   SetParent2(parent, child);
-  child.transform.updateWorld();
+  child.updateWorldTransform();
   return child;
 }
 
@@ -7757,7 +7756,7 @@ function AddChildAt(parent, index, child) {
   if (index >= 0 && index <= children.length) {
     SetParent2(parent, child);
     children.splice(index, 0, child);
-    child.transform.updateWorld();
+    child.updateWorldTransform();
   }
   return child;
 }
@@ -7777,7 +7776,7 @@ function AddChildrenAt(parent, index, ...children) {
     children.reverse().forEach((child) => {
       children.splice(index, 0, child);
       SetParent2(parent, child);
-      child.transform.updateWorld();
+      child.updateWorldTransform();
     });
   }
   return children;
@@ -8043,7 +8042,7 @@ function GetClosestChild(parent, point) {
   let closest = null;
   let distance = 0;
   children.forEach((child) => {
-    const childDistance = GetVec2Distance(point, child.transform.position);
+    const childDistance = GetVec2Distance(point, child.getPosition());
     if (!closest || childDistance < distance) {
       closest = child;
       distance = childDistance;
@@ -8070,7 +8069,7 @@ function GetFurthestChild(parent, point) {
   let furthest = null;
   let distance = 0;
   children.forEach((child) => {
-    const childDistance = GetVec2Distance(point, child.transform.position);
+    const childDistance = GetVec2Distance(point, child.getPosition());
     if (!furthest || childDistance > distance) {
       furthest = child;
       distance = childDistance;
@@ -8205,7 +8204,7 @@ function ReparentChildren(parent, newParent, beginIndex = 0, endIndex) {
   const moved = RemoveChildrenBetween(parent, beginIndex, endIndex);
   SetParent2(newParent, ...moved);
   moved.forEach((child) => {
-    child.transform.updateWorld();
+    child.updateWorldTransform();
   });
   return moved;
 }
@@ -8960,9 +8959,9 @@ __export(bounds_exports, {
 });
 
 // src/components/transform/GetVertices.ts
-function GetVertices(transform) {
-  const {a, b, c, d, tx, ty} = transform.world;
-  const {x, y, right, bottom} = transform.extent;
+function GetVertices(worldTransform, transformExtent) {
+  const {a, b, c, d, tx, ty} = worldTransform;
+  const {x, y, right, bottom} = transformExtent;
   const x0 = x * a + y * c + tx;
   const y0 = x * b + y * d + ty;
   const x1 = x * a + bottom * c + tx;
@@ -8993,7 +8992,7 @@ var BoundsComponent = class {
     return this.area;
   }
   updateLocal() {
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(this.entity.transform);
+    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(this.entity.worldTransform, this.entity.transformExtent);
     const x = Math.min(x0, x1, x2, x3);
     const y = Math.min(y0, y1, y2, y3);
     const right = Math.max(x0, x1, x2, x3);
@@ -9063,8 +9062,9 @@ var transform_exports = {};
 __export(transform_exports, {
   GetVertices: () => GetVertices,
   GetVerticesFromValues: () => GetVerticesFromValues,
+  GlobalToLocal: () => GlobalToLocal,
+  LocalToGlobal: () => LocalToGlobal,
   PreRenderVertices: () => PreRenderVertices,
-  TransformComponent: () => TransformComponent,
   UpdateLocalTransform: () => UpdateLocalTransform,
   UpdateVertices: () => UpdateVertices,
   UpdateWorldTransform: () => UpdateWorldTransform
@@ -9087,6 +9087,23 @@ function GetVerticesFromValues(left, right, top, bottom, x, y, rotation = 0, sca
   return {x0, y0, x1, y1, x2, y2, x3, y3};
 }
 
+// src/components/transform/GlobalToLocal.ts
+function GlobalToLocal(worldTransform, x, y, out = new Vec2()) {
+  const {a, b, c, d, tx, ty} = worldTransform;
+  const id = 1 / (a * d + c * -b);
+  out.x = d * id * x + -c * id * y + (ty * c - tx * d) * id;
+  out.y = a * id * y + -b * id * x + (-ty * a + tx * b) * id;
+  return out;
+}
+
+// src/components/transform/LocalToGlobal.ts
+function LocalToGlobal(worldTransform, x, y, out = new Vec2()) {
+  const {a, b, c, d, tx, ty} = worldTransform;
+  out.x = a * x + c * y + tx;
+  out.y = b * x + d * y + ty;
+  return out;
+}
+
 // src/renderer/webgl1/colors/PackColors.ts
 function PackColors(vertices) {
   vertices.forEach((vertex) => {
@@ -9097,7 +9114,7 @@ function PackColors(vertices) {
 // src/components/transform/UpdateVertices.ts
 function UpdateVertices(gameObject) {
   const vertices = gameObject.vertices;
-  const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(gameObject.transform);
+  const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(gameObject.worldTransform, gameObject.transformExtent);
   vertices[0].setPosition(x0, y0);
   vertices[1].setPosition(x1, y1);
   vertices[2].setPosition(x2, y2);
@@ -9118,623 +9135,24 @@ function PreRenderVertices(gameObject) {
   return gameObject;
 }
 
-// src/config/defaultorigin/GetDefaultOriginX.ts
-function GetDefaultOriginX() {
-  return ConfigStore.get(CONFIG_DEFAULTS.DEFAULT_ORIGIN).x;
-}
-
-// src/config/defaultorigin/GetDefaultOriginY.ts
-function GetDefaultOriginY() {
-  return ConfigStore.get(CONFIG_DEFAULTS.DEFAULT_ORIGIN).y;
-}
-
-// src/geom/rectangle/index.ts
-var rectangle_exports = {};
-__export(rectangle_exports, {
-  CeilRectangle: () => CeilRectangle,
-  CeilRectanglePosition: () => CeilRectanglePosition,
-  CenterRectangleOn: () => CenterRectangleOn,
-  CloneRectangle: () => CloneRectangle,
-  CopyRectangleFrom: () => CopyRectangleFrom,
-  DecomposeRectangle: () => DecomposeRectangle,
-  FitRectangleInside: () => FitRectangleInside,
-  FitRectangleOutside: () => FitRectangleOutside,
-  FitRectangleToPoint: () => FitRectangleToPoint,
-  FitRectangleToPoints: () => FitRectangleToPoints,
-  FloorRectangle: () => FloorRectangle,
-  FloorRectanglePosition: () => FloorRectanglePosition,
-  GetRectangleArea: () => GetRectangleArea,
-  GetRectangleAspectRatio: () => GetRectangleAspectRatio,
-  GetRectangleCenter: () => GetRectangleCenter,
-  GetRectangleCenterX: () => GetRectangleCenterX,
-  GetRectangleCenterY: () => GetRectangleCenterY,
-  GetRectangleEdges: () => GetRectangleEdges,
-  GetRectangleIntersection: () => GetRectangleIntersection,
-  GetRectangleMarchingAnts: () => GetRectangleMarchingAnts,
-  GetRectangleOverlap: () => GetRectangleOverlap,
-  GetRectanglePerimeter: () => GetRectanglePerimeter,
-  GetRectanglePerimeterPoint: () => GetRectanglePerimeterPoint,
-  GetRectanglePoint: () => GetRectanglePoint,
-  GetRectanglePoints: () => GetRectanglePoints,
-  GetRectangleRandomPoint: () => GetRectangleRandomPoint,
-  GetRectangleRandomPointOutside: () => GetRectangleRandomPointOutside,
-  GetRectangleSize: () => GetRectangleSize,
-  GetRectangleUnion: () => GetRectangleUnion,
-  InflateRectangle: () => InflateRectangle,
-  MergeRectangle: () => MergeRectangle,
-  Rectangle: () => Rectangle,
-  RectangleContains: () => RectangleContains,
-  RectangleContainsPoint: () => RectangleContainsPoint,
-  RectangleContainsRectangle: () => RectangleContainsRectangle,
-  RectangleEquals: () => RectangleEquals,
-  RectangleFromPoints: () => RectangleFromPoints,
-  RectangleSizeEquals: () => RectangleSizeEquals,
-  ScaleRectangle: () => ScaleRectangle,
-  TranslateRectangle: () => TranslateRectangle,
-  TranslateRectanglePoint: () => TranslateRectanglePoint
-});
-
-// src/geom/rectangle/CeilRectangle.ts
-function CeilRectangle(rect) {
-  rect.x = Math.ceil(rect.x);
-  rect.y = Math.ceil(rect.y);
-  rect.width = Math.ceil(rect.width);
-  rect.height = Math.ceil(rect.height);
-  return rect;
-}
-
-// src/geom/rectangle/CeilRectanglePosition.ts
-function CeilRectanglePosition(rect) {
-  rect.x = Math.ceil(rect.x);
-  rect.y = Math.ceil(rect.y);
-  return rect;
-}
-
-// src/geom/rectangle/CenterRectangleOn.ts
-function CenterRectangleOn(rect, x, y) {
-  rect.x = x - rect.width / 2;
-  rect.y = y - rect.height / 2;
-  return rect;
-}
-
-// src/geom/rectangle/CloneRectangle.ts
-function CloneRectangle(source) {
-  return new Rectangle(source.x, source.y, source.width, source.height);
-}
-
-// src/geom/rectangle/CopyRectangleFrom.ts
-function CopyRectangleFrom(source, dest) {
-  return dest.set(source.x, source.y, source.width, source.height);
-}
-
-// src/geom/rectangle/DecomposeRectangle.ts
-function DecomposeRectangle(rect, out = []) {
-  out.push(new Vec2(rect.x, rect.y), new Vec2(rect.right, rect.y), new Vec2(rect.right, rect.bottom), new Vec2(rect.x, rect.bottom));
-  return out;
-}
-
-// src/geom/rectangle/GetRectangleAspectRatio.ts
-function GetRectangleAspectRatio(rect) {
-  return rect.height === 0 ? NaN : rect.width / rect.height;
-}
-
-// src/geom/rectangle/GetRectangleCenterX.ts
-function GetRectangleCenterX(rect) {
-  return rect.x + rect.width / 2;
-}
-
-// src/geom/rectangle/GetRectangleCenterY.ts
-function GetRectangleCenterY(rect) {
-  return rect.y + rect.height / 2;
-}
-
-// src/geom/rectangle/FitRectangleInside.ts
-function FitRectangleInside(target, source) {
-  const ratio = GetRectangleAspectRatio(target);
-  let width = source.width;
-  let height = source.height;
-  if (ratio < GetRectangleAspectRatio(source)) {
-    width = source.height * ratio;
-  } else {
-    height = source.width / ratio;
-  }
-  return target.set(GetRectangleCenterX(source) - target.width / 2, GetRectangleCenterY(source) - target.height / 2, width, height);
-}
-
-// src/geom/rectangle/FitRectangleOutside.ts
-function FitRectangleOutside(target, source) {
-  const ratio = GetRectangleAspectRatio(target);
-  let width = source.width;
-  let height = source.height;
-  if (ratio > GetRectangleAspectRatio(source)) {
-    width = source.height * ratio;
-  } else {
-    height = source.width / ratio;
-  }
-  return target.set(GetRectangleCenterX(source) - target.width / 2, GetRectangleCenterY(source) - target.height / 2, width, height);
-}
-
-// src/geom/rectangle/FitRectangleToPoint.ts
-function FitRectangleToPoint(target, x, y) {
-  const minX = Math.min(target.x, x);
-  const maxX = Math.max(target.right, x);
-  const minY = Math.min(target.y, y);
-  const maxY = Math.max(target.bottom, y);
-  return target.set(minX, minY, maxX - minX, maxY - minY);
-}
-
-// src/geom/rectangle/FitRectangleToPoints.ts
-function FitRectangleToPoints(target, points) {
-  let minX = target.x;
-  let maxX = target.right;
-  let minY = target.y;
-  let maxY = target.bottom;
-  for (let i = 0; i < points.length; i++) {
-    minX = Math.min(minX, points[i].x);
-    maxX = Math.max(maxX, points[i].x);
-    minY = Math.min(minY, points[i].y);
-    maxY = Math.max(maxY, points[i].y);
-  }
-  return target.set(minX, minY, maxX - minX, maxY - minY);
-}
-
-// src/geom/rectangle/FloorRectangle.ts
-function FloorRectangle(rect) {
-  rect.x = Math.floor(rect.x);
-  rect.y = Math.floor(rect.y);
-  rect.width = Math.floor(rect.width);
-  rect.height = Math.floor(rect.height);
-  return rect;
-}
-
-// src/geom/rectangle/FloorRectanglePosition.ts
-function FloorRectanglePosition(rect) {
-  rect.x = Math.floor(rect.x);
-  rect.y = Math.floor(rect.y);
-  return rect;
-}
-
-// src/geom/rectangle/GetRectangleArea.ts
-function GetRectangleArea(rect) {
-  return rect.width * rect.height;
-}
-
-// src/geom/rectangle/GetRectangleCenter.ts
-function GetRectangleCenter(rect, out = new Vec2()) {
-  return out.set(GetRectangleCenterX(rect), GetRectangleCenterY(rect));
-}
-
-// src/geom/line/Line.ts
-var Line = class {
-  constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-    this.set(x1, y1, x2, y2);
-  }
-  set(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-    return this;
-  }
-  get left() {
-    return Math.min(this.x1, this.x2);
-  }
-  set left(value) {
-    if (this.x1 <= this.x2) {
-      this.x1 = value;
-    } else {
-      this.x2 = value;
-    }
-  }
-  get right() {
-    return Math.max(this.x1, this.x2);
-  }
-  set right(value) {
-    if (this.x1 > this.x2) {
-      this.x1 = value;
-    } else {
-      this.x2 = value;
-    }
-  }
-  get top() {
-    return Math.min(this.y1, this.y2);
-  }
-  set top(value) {
-    if (this.y1 <= this.y2) {
-      this.y1 = value;
-    } else {
-      this.y2 = value;
-    }
-  }
-  get bottom() {
-    return Math.max(this.y1, this.y2);
-  }
-  set bottom(value) {
-    if (this.y1 > this.y2) {
-      this.y1 = value;
-    } else {
-      this.y2 = value;
-    }
-  }
-};
-
-// src/geom/rectangle/GetRectangleEdges.ts
-function GetRectangleEdges(rectangle) {
-  const {x, y, right, bottom} = rectangle;
-  const line1 = new Line(x, y, right, y);
-  const line2 = new Line(right, y, right, bottom);
-  const line3 = new Line(right, bottom, x, bottom);
-  const line4 = new Line(x, bottom, x, y);
-  return [line1, line2, line3, line4];
-}
-
-// src/geom/rectangle/GetRectangleIntersection.ts
-function GetRectangleIntersection(rectA, rectB, out = new Rectangle()) {
-  if (RectangleToRectangle(rectA, rectB)) {
-    out.set(Math.max(rectA.x, rectB.x), Math.max(rectA.y, rectB.y), Math.min(rectA.right, rectB.right) - out.x, Math.min(rectA.bottom, rectB.bottom) - out.y);
-  } else {
-    out.set();
-  }
-  return out;
-}
-
-// src/geom/rectangle/GetRectanglePerimeter.ts
-function GetRectanglePerimeter(rect) {
-  return 2 * (rect.width + rect.height);
-}
-
-// src/geom/rectangle/GetRectangleMarchingAnts.ts
-function GetRectangleMarchingAnts(rect, step, quantity, out = []) {
-  if (!step && !quantity) {
-    return out;
-  }
-  if (!step) {
-    step = GetRectanglePerimeter(rect) / quantity;
-  } else {
-    quantity = Math.round(GetRectanglePerimeter(rect) / step);
-  }
-  let x = rect.x;
-  let y = rect.y;
-  let face = 0;
-  for (let i = 0; i < quantity; i++) {
-    out.push(new Vec2(x, y));
-    switch (face) {
-      case 0:
-        x += step;
-        if (x >= rect.right) {
-          face = 1;
-          y += x - rect.right;
-          x = rect.right;
-        }
-        break;
-      case 1:
-        y += step;
-        if (y >= rect.bottom) {
-          face = 2;
-          x -= y - rect.bottom;
-          y = rect.bottom;
-        }
-        break;
-      case 2:
-        x -= step;
-        if (x <= rect.x) {
-          face = 3;
-          y -= rect.x - x;
-          x = rect.x;
-        }
-        break;
-      case 3:
-        y -= step;
-        if (y <= rect.y) {
-          face = 0;
-          y = rect.y;
-        }
-        break;
-    }
-  }
-  return out;
-}
-
-// src/geom/rectangle/GetRectangleOverlap.ts
-function GetRectangleOverlap(rectA, rectB) {
-  return rectA.x < rectB.right && rectA.right > rectB.x && rectA.y < rectB.bottom && rectA.bottom > rectB.y;
-}
-
-// src/geom/rectangle/GetRectanglePerimeterPoint.ts
-function GetRectanglePerimeterPoint(rectangle, angle, out = new Vec2()) {
-  angle = DegToRad(angle);
-  const s = Math.sin(angle);
-  const c = Math.cos(angle);
-  let dx = c > 0 ? rectangle.width / 2 : rectangle.width / -2;
-  let dy = s > 0 ? rectangle.height / 2 : rectangle.height / -2;
-  if (Math.abs(dx * s) < Math.abs(dy * c)) {
-    dy = dx * s / c;
-  } else {
-    dx = dy * c / s;
-  }
-  return out.set(dx + GetRectangleCenterX(rectangle), dy + GetRectangleCenterY(rectangle));
-}
-
-// src/geom/rectangle/GetRectanglePoint.ts
-function GetRectanglePoint(rectangle, position, out = new Vec2()) {
-  if (position <= 0 || position >= 1) {
-    return out.set(rectangle.x, rectangle.y);
-  }
-  let p = GetRectanglePerimeter(rectangle) * position;
-  if (position > 0.5) {
-    p -= rectangle.width + rectangle.height;
-    if (p <= rectangle.width) {
-      return out.set(rectangle.right - p, rectangle.bottom);
-    } else {
-      return out.set(rectangle.x, rectangle.bottom - (p - rectangle.width));
-    }
-  } else if (p <= rectangle.width) {
-    return out.set(rectangle.x + p, rectangle.y);
-  } else {
-    return out.set(rectangle.right, rectangle.y + (p - rectangle.width));
-  }
-}
-
-// src/geom/rectangle/GetRectanglePoints.ts
-function GetRectanglePoints(rectangle, step, quantity = 0, out = []) {
-  if (!quantity) {
-    quantity = GetRectanglePerimeter(rectangle) / step;
-  }
-  for (let i = 0; i < quantity; i++) {
-    out.push(GetRectanglePoint(rectangle, i / quantity));
-  }
-  return out;
-}
-
-// src/geom/rectangle/GetRectangleRandomPoint.ts
-function GetRectangleRandomPoint(rect, out = new Vec2()) {
-  return out.set(rect.x + Math.random() * rect.width, rect.y + Math.random() * rect.height);
-}
-
-// src/geom/rectangle/RectangleContainsRectangle.ts
-function RectangleContainsRectangle(rectA, rectB) {
-  if (rectB.width * rectB.height > rectA.width * rectA.height) {
-    return false;
-  }
-  return rectB.x > rectA.x && rectB.x < rectA.right && (rectB.right > rectA.x && rectB.right < rectA.right) && (rectB.y > rectA.y && rectB.y < rectA.bottom) && (rectB.bottom > rectA.y && rectB.bottom < rectA.bottom);
-}
-
-// src/geom/rectangle/GetRectangleRandomPointOutside.ts
-function GetRectangleRandomPointOutside(outer, inner, out = new Vec2()) {
-  if (RectangleContainsRectangle(outer, inner)) {
-    switch (Between(0, 3)) {
-      case 0:
-        out.x = outer.x + Math.random() * (inner.right - outer.x);
-        out.y = outer.y + Math.random() * (inner.y - outer.y);
-        break;
-      case 1:
-        out.x = inner.x + Math.random() * (outer.right - inner.x);
-        out.y = inner.bottom + Math.random() * (outer.bottom - inner.bottom);
-        break;
-      case 2:
-        out.x = outer.x + Math.random() * (inner.x - outer.x);
-        out.y = inner.y + Math.random() * (outer.bottom - inner.y);
-        break;
-      case 3:
-        out.x = inner.right + Math.random() * (outer.right - inner.right);
-        out.y = outer.y + Math.random() * (inner.bottom - outer.y);
-        break;
-    }
-  }
-  return out;
-}
-
-// src/geom/rectangle/GetRectangleSize.ts
-function GetRectangleSize(rect, out = new Vec2()) {
-  return out.set(rect.width, rect.height);
-}
-
-// src/geom/rectangle/GetRectangleUnion.ts
-function GetRectangleUnion(rectA, rectB, out = new Rectangle()) {
-  const x = Math.min(rectA.x, rectB.x);
-  const y = Math.min(rectA.y, rectB.y);
-  const w = Math.max(rectA.right, rectB.right) - x;
-  const h = Math.max(rectA.bottom, rectB.bottom) - y;
-  return out.set(x, y, w, h);
-}
-
-// src/geom/rectangle/InflateRectangle.ts
-function InflateRectangle(rect, x, y) {
-  const cx = GetRectangleCenterX(rect);
-  const cy = GetRectangleCenterY(rect);
-  rect.width = rect.width + x * 2;
-  rect.height = rect.height + y * 2;
-  return CenterRectangleOn(rect, cx, cy);
-}
-
-// src/geom/rectangle/MergeRectangle.ts
-function MergeRectangle(target, source) {
-  const minX = Math.min(target.x, source.x);
-  const maxX = Math.max(target.right, source.right);
-  const minY = Math.min(target.y, source.y);
-  const maxY = Math.max(target.bottom, source.bottom);
-  return target.set(minX, minY, maxX - minX, maxY - minY);
-}
-
-// src/geom/rectangle/RectangleContainsPoint.ts
-function RectangleContainsPoint(rect, point) {
-  return RectangleContains(rect, point.x, point.y);
-}
-
-// src/geom/rectangle/RectangleEquals.ts
-function RectangleEquals(rect, toCompare) {
-  return rect.x === toCompare.x && rect.y === toCompare.y && rect.width === toCompare.width && rect.height === toCompare.height;
-}
-
-// src/geom/rectangle/RectangleFromPoints.ts
-function RectangleFromPoints(points, out = new Rectangle()) {
-  if (points.length === 0) {
-    return out;
-  }
-  let minX = Number.MAX_VALUE;
-  let minY = Number.MAX_VALUE;
-  let maxX = MATH_CONST.MIN_SAFE_INTEGER;
-  let maxY = MATH_CONST.MIN_SAFE_INTEGER;
-  for (let i = 0; i < points.length; i++) {
-    const px = points[i].x;
-    const py = points[i].y;
-    minX = Math.min(minX, px);
-    minY = Math.min(minY, py);
-    maxX = Math.max(maxX, px);
-    maxY = Math.max(maxY, py);
-  }
-  return out.set(minX, minY, maxX - minX, maxY - minY);
-}
-
-// src/geom/rectangle/RectangleSizeEquals.ts
-function RectangleSizeEquals(rect, toCompare) {
-  return rect.width === toCompare.width && rect.height === toCompare.height;
-}
-
-// src/geom/rectangle/ScaleRectangle.ts
-function ScaleRectangle(rect, x, y = x) {
-  rect.width *= x;
-  rect.height *= y;
-  return rect;
-}
-
-// src/geom/rectangle/TranslateRectangle.ts
-function TranslateRectangle(rect, x, y) {
-  rect.x += x;
-  rect.y += y;
-  return rect;
-}
-
-// src/geom/rectangle/TranslateRectanglePoint.ts
-function TranslateRectanglePoint(rect, point) {
-  rect.x += point.x;
-  rect.y += point.y;
-  return rect;
-}
-
 // src/components/transform/UpdateLocalTransform.ts
-function UpdateLocalTransform(transform) {
-  const local = transform.local;
-  const x = transform.position.x;
-  const y = transform.position.y;
-  const rotation = transform.rotation;
-  const scaleX = transform.scale.x;
-  const scaleY = transform.scale.y;
-  const skewX = transform.skew.x;
-  const skewY = transform.skew.y;
-  local.set(Math.cos(rotation + skewY) * scaleX, Math.sin(rotation + skewY) * scaleX, -Math.sin(rotation - skewX) * scaleY, Math.cos(rotation - skewX) * scaleY, x, y);
+function UpdateLocalTransform(localTransform, transformData) {
+  const [x, y, rotation, scaleX, scaleY, skewX, skewY] = transformData;
+  localTransform.set(Math.cos(rotation + skewY) * scaleX, Math.sin(rotation + skewY) * scaleX, -Math.sin(rotation - skewX) * scaleY, Math.cos(rotation - skewX) * scaleY, x, y);
 }
 
 // src/components/transform/UpdateWorldTransform.ts
-function UpdateWorldTransform(gameObject) {
-  const parent = gameObject.parent;
-  const transform = gameObject.transform;
-  const lt = transform.local;
-  const wt = transform.world;
-  if (!parent) {
-    Mat2dCopyFrom(lt, wt);
-  } else if (transform.passthru) {
-    Mat2dCopyFrom(parent.transform.world, wt);
+function UpdateWorldTransform(localTransform, worldTransform, passthru, parentWorldTransform) {
+  if (!parentWorldTransform) {
+    Mat2dCopyFrom(localTransform, worldTransform);
+  } else if (passthru) {
+    Mat2dCopyFrom(parentWorldTransform, worldTransform);
   } else {
-    const {a, b, c, d, tx, ty} = lt;
-    const {a: pa, b: pb, c: pc, d: pd, tx: ptx, ty: pty} = parent.transform.world;
-    wt.set(a * pa + b * pc, a * pb + b * pd, c * pa + d * pc, c * pb + d * pd, tx * pa + ty * pc + ptx, tx * pb + ty * pd + pty);
+    const {a, b, c, d, tx, ty} = localTransform;
+    const {a: pa, b: pb, c: pc, d: pd, tx: ptx, ty: pty} = parentWorldTransform;
+    worldTransform.set(a * pa + b * pc, a * pb + b * pd, c * pa + d * pc, c * pb + d * pd, tx * pa + ty * pc + ptx, tx * pb + ty * pd + pty);
   }
 }
-
-// src/components/transform/TransformComponent.ts
-var TransformComponent = class {
-  constructor(entity, x = 0, y = 0) {
-    this.passthru = false;
-    this._rotation = 0;
-    this.entity = entity;
-    this.local = new Matrix2D();
-    this.world = new Matrix2D();
-    const update = () => this.update();
-    const updateExtent = () => this.updateExtent();
-    this.position = new Vec2Callback(update, x, y);
-    this.scale = new Vec2Callback(update, 1, 1);
-    this.skew = new Vec2Callback(update);
-    this.origin = new Vec2Callback(updateExtent, GetDefaultOriginX(), GetDefaultOriginY());
-    this.extent = new Rectangle();
-  }
-  update() {
-    this.updateLocal();
-    this.updateWorld();
-  }
-  updateLocal() {
-    this.entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-    UpdateLocalTransform(this);
-  }
-  updateWorld() {
-    const entity = this.entity;
-    entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-    UpdateWorldTransform(entity);
-    if (entity.numChildren) {
-      this.updateChildren();
-    }
-  }
-  updateChildren() {
-    const children = this.entity.children;
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
-      child.transform.updateWorld();
-    }
-  }
-  globalToLocal(x, y, out = new Vec2()) {
-    const {a, b, c, d, tx, ty} = this.world;
-    const id = 1 / (a * d + c * -b);
-    out.x = d * id * x + -c * id * y + (ty * c - tx * d) * id;
-    out.y = a * id * y + -b * id * x + (-ty * a + tx * b) * id;
-    return out;
-  }
-  localToGlobal(x, y, out = new Vec2()) {
-    const {a, b, c, d, tx, ty} = this.world;
-    out.x = a * x + c * y + tx;
-    out.y = b * x + d * y + ty;
-    return out;
-  }
-  setExtent(x, y, width, height) {
-    this.extent.set(x, y, width, height);
-    this.entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-  }
-  updateExtent(width, height) {
-    const extent = this.extent;
-    const entity = this.entity;
-    if (width !== void 0) {
-      extent.width = width;
-    }
-    if (height !== void 0) {
-      extent.height = height;
-    }
-    extent.x = -this.origin.x * extent.width;
-    extent.y = -this.origin.y * extent.height;
-    entity.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-  }
-  set rotation(value) {
-    if (value !== this._rotation) {
-      this._rotation = value;
-      this.update();
-    }
-  }
-  get rotation() {
-    return this._rotation;
-  }
-  destroy() {
-    this.position.destroy();
-    this.scale.destroy();
-    this.skew.destroy();
-    this.origin.destroy();
-    this.entity = null;
-    this.local = null;
-    this.world = null;
-    this.position = null;
-    this.scale = null;
-    this.skew = null;
-    this.origin = null;
-    this.extent = null;
-  }
-};
 
 // src/renderer/webgl1/colors/PackColor.ts
 function PackColor(rgb, alpha) {
@@ -9804,6 +9222,35 @@ function BatchTexturedQuad(texture, vertices, renderPass) {
   });
 }
 
+// src/config/defaultorigin/GetDefaultOriginX.ts
+function GetDefaultOriginX() {
+  return ConfigStore.get(CONFIG_DEFAULTS.DEFAULT_ORIGIN).x;
+}
+
+// src/config/defaultorigin/GetDefaultOriginY.ts
+function GetDefaultOriginY() {
+  return ConfigStore.get(CONFIG_DEFAULTS.DEFAULT_ORIGIN).y;
+}
+
+// src/geom/rectangle/GetRectangleSize.ts
+function GetRectangleSize(rect, out = new Vec2()) {
+  return out.set(rect.width, rect.height);
+}
+
+// src/components/transform/TRANSFORM_CONST.ts
+var TRANSFORM_CONST = {
+  X: 0,
+  Y: 1,
+  ROTATION: 2,
+  SCALE_X: 3,
+  SCALE_Y: 4,
+  SKEW_X: 5,
+  SKEW_Y: 6,
+  ORIGIN_X: 7,
+  ORIGIN_Y: 8,
+  PASSTHRU: 9
+};
+
 // src/gameobjects/GameObject.ts
 var GameObject = class {
   constructor(x = 0, y = 0) {
@@ -9820,11 +9267,15 @@ var GameObject = class {
     this.children = [];
     this.vertices = [];
     this.events = new Map();
-    this.transform = new TransformComponent(this, x, y);
+    this.localTransform = new Matrix2D();
+    this.worldTransform = new Matrix2D();
+    this.transformData = new Float32Array([x, y, 0, 1, 1, 0, 0, GetDefaultOriginX(), GetDefaultOriginY(), 0]);
+    this.transformExtent = new Rectangle();
     this.bounds = new BoundsComponent(this);
     this.input = new InputComponent(this);
     this.dirty = DIRTY_CONST.DEFAULT;
-    this.transform.update();
+    this.updateLocalTransform();
+    this.updateWorldTransform();
   }
   isRenderable() {
     return this.visible && this.willRender;
@@ -9876,6 +9327,173 @@ var GameObject = class {
   getBounds() {
     return this.bounds.get();
   }
+  updateTransform(flag, value) {
+    if (this.transformData[flag] !== value) {
+      this.transformData[flag] = value;
+      this.updateLocalTransform();
+      this.updateWorldTransform();
+    }
+  }
+  updateLocalTransform() {
+    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+    UpdateLocalTransform(this.localTransform, this.transformData);
+  }
+  updateWorldTransform() {
+    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+    const parentWorldTransform = this.parent ? this.parent.worldTransform : void 0;
+    UpdateWorldTransform(this.localTransform, this.worldTransform, this.passthru, parentWorldTransform);
+    if (this.numChildren) {
+      const children = this.children;
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        child.updateWorldTransform();
+      }
+    }
+  }
+  setExtent(x, y, width, height) {
+    this.transformExtent.set(x, y, width, height);
+    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+  }
+  updateExtent(width, height) {
+    const extent = this.transformExtent;
+    if (width !== void 0) {
+      extent.width = width;
+    }
+    if (height !== void 0) {
+      extent.height = height;
+    }
+    extent.x = -this.originX * extent.width;
+    extent.y = -this.originY * extent.height;
+    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+  }
+  setSize(width, height = width) {
+    this.updateExtent(width, height);
+    return this;
+  }
+  setPosition(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+  }
+  setSkew(x, y = x) {
+    this.skewX = x;
+    this.skewY = y;
+    return this;
+  }
+  setScale(x, y = x) {
+    this.scaleX = x;
+    this.scaleY = y;
+    return this;
+  }
+  setRotation(value) {
+    this.rotation = value;
+    return this;
+  }
+  setOrigin(x, y = x) {
+    const transformData = this.transformData;
+    transformData[TRANSFORM_CONST.ORIGIN_X] = x;
+    transformData[TRANSFORM_CONST.ORIGIN_Y] = y;
+    this.updateExtent();
+    return this;
+  }
+  getSize(out = new Vec2()) {
+    return GetRectangleSize(this.transformExtent, out);
+  }
+  getPosition(out = new Vec2()) {
+    return out.set(this.x, this.y);
+  }
+  getOrigin(out = new Vec2()) {
+    return out.set(this.originX, this.originY);
+  }
+  getSkew(out = new Vec2()) {
+    return out.set(this.skewX, this.skewY);
+  }
+  getScale(out = new Vec2()) {
+    return out.set(this.scaleX, this.scaleY);
+  }
+  getRotation() {
+    return this.rotation;
+  }
+  set width(value) {
+    this.updateExtent(value);
+  }
+  get width() {
+    return this.transformExtent.width;
+  }
+  set height(value) {
+    this.updateExtent(void 0, value);
+  }
+  get height() {
+    return this.transformExtent.height;
+  }
+  set x(value) {
+    this.updateTransform(TRANSFORM_CONST.X, value);
+  }
+  get x() {
+    return this.transformData[TRANSFORM_CONST.X];
+  }
+  set y(value) {
+    this.updateTransform(TRANSFORM_CONST.Y, value);
+  }
+  get y() {
+    return this.transformData[TRANSFORM_CONST.Y];
+  }
+  set originX(value) {
+    const transformData = this.transformData;
+    if (value !== transformData[TRANSFORM_CONST.ORIGIN_X]) {
+      transformData[TRANSFORM_CONST.ORIGIN_X] = value;
+      this.updateExtent();
+    }
+  }
+  get originX() {
+    return this.transformData[TRANSFORM_CONST.ORIGIN_X];
+  }
+  set originY(value) {
+    const transformData = this.transformData;
+    if (value !== transformData[TRANSFORM_CONST.ORIGIN_Y]) {
+      transformData[TRANSFORM_CONST.ORIGIN_Y] = value;
+      this.updateExtent();
+    }
+  }
+  get originY() {
+    return this.transformData[TRANSFORM_CONST.ORIGIN_Y];
+  }
+  set skewX(value) {
+    this.updateTransform(TRANSFORM_CONST.SKEW_X, value);
+  }
+  get skewX() {
+    return this.transformData[TRANSFORM_CONST.SKEW_X];
+  }
+  set skewY(value) {
+    this.updateTransform(TRANSFORM_CONST.SKEW_Y, value);
+  }
+  get skewY() {
+    return this.transformData[TRANSFORM_CONST.SKEW_Y];
+  }
+  set scaleX(value) {
+    this.updateTransform(TRANSFORM_CONST.SCALE_X, value);
+  }
+  get scaleX() {
+    return this.transformData[TRANSFORM_CONST.SCALE_X];
+  }
+  set scaleY(value) {
+    this.updateTransform(TRANSFORM_CONST.SCALE_Y, value);
+  }
+  get scaleY() {
+    return this.transformData[TRANSFORM_CONST.SCALE_Y];
+  }
+  set rotation(value) {
+    this.updateTransform(TRANSFORM_CONST.ROTATION, value);
+  }
+  get rotation() {
+    return this.transformData[TRANSFORM_CONST.ROTATION];
+  }
+  set passthru(value) {
+    this.updateTransform(TRANSFORM_CONST.PASSTHRU, Number(value));
+  }
+  get passthru() {
+    return Boolean(this.transformData[TRANSFORM_CONST.PASSTHRU]);
+  }
   destroy(reparentChildren) {
     if (reparentChildren) {
       ReparentChildren(this, reparentChildren);
@@ -9883,7 +9501,6 @@ var GameObject = class {
       DestroyChildren(this);
     }
     Emit(this, DestroyEvent, this);
-    this.transform.destroy();
     this.bounds.destroy();
     this.input.destroy();
     this.events.clear();
@@ -9901,118 +9518,6 @@ var Container = class extends GameObject {
     this._alpha = 1;
     this.type = "Container";
   }
-  setSize(width, height = width) {
-    this.transform.updateExtent(width, height);
-    return this;
-  }
-  getSize(out = new Vec2()) {
-    return GetRectangleSize(this.transform.extent, out);
-  }
-  setPosition(x, y) {
-    this.transform.position.set(x, y);
-    return this;
-  }
-  getPosition(out = new Vec2()) {
-    const position = this.transform.position;
-    return out.set(position.x, position.y);
-  }
-  setOrigin(x, y = x) {
-    this.transform.origin.set(x, y);
-    return this;
-  }
-  getOrigin(out = new Vec2()) {
-    const origin = this.transform.origin;
-    return out.set(origin.x, origin.y);
-  }
-  setSkew(x, y = x) {
-    this.transform.skew.set(x, y);
-    return this;
-  }
-  getSkew(out = new Vec2()) {
-    const skew = this.transform.skew;
-    return out.set(skew.x, skew.y);
-  }
-  setScale(x, y = x) {
-    this.transform.scale.set(x, y);
-    return this;
-  }
-  getScale(out = new Vec2()) {
-    const scale = this.transform.scale;
-    return out.set(scale.x, scale.y);
-  }
-  setRotation(value) {
-    this.transform.rotation = value;
-    return this;
-  }
-  getRotation() {
-    return this.transform.rotation;
-  }
-  set width(value) {
-    this.transform.updateExtent(value);
-  }
-  get width() {
-    return this.transform.extent.width;
-  }
-  set height(value) {
-    this.transform.updateExtent(void 0, value);
-  }
-  get height() {
-    return this.transform.extent.height;
-  }
-  set x(value) {
-    this.transform.position.x = value;
-  }
-  get x() {
-    return this.transform.position.x;
-  }
-  set y(value) {
-    this.transform.position.y = value;
-  }
-  get y() {
-    return this.transform.position.y;
-  }
-  set originX(value) {
-    this.transform.origin.x = value;
-  }
-  get originX() {
-    return this.transform.origin.x;
-  }
-  set originY(value) {
-    this.transform.origin.y = value;
-  }
-  get originY() {
-    return this.transform.origin.y;
-  }
-  set skewX(value) {
-    this.transform.skew.x = value;
-  }
-  get skewX() {
-    return this.transform.skew.x;
-  }
-  set skewY(value) {
-    this.transform.skew.y = value;
-  }
-  get skewY() {
-    return this.transform.skew.y;
-  }
-  set scaleX(value) {
-    this.transform.scale.x = value;
-  }
-  get scaleX() {
-    return this.transform.scale.x;
-  }
-  set scaleY(value) {
-    this.transform.scale.y = value;
-  }
-  get scaleY() {
-    return this.transform.scale.y;
-  }
-  set rotation(value) {
-    this.transform.rotation = value;
-  }
-  get rotation() {
-    return this.transform.rotation;
-  }
   get alpha() {
     return this._alpha;
   }
@@ -10028,13 +9533,13 @@ var Container = class extends GameObject {
 };
 
 // src/renderer/canvas/draw/DrawTexturedQuad.ts
-function DrawTexturedQuad(frame2, alpha, transform, renderer) {
+function DrawTexturedQuad(frame2, alpha, worldTransform, transformExtent, renderer) {
   if (!frame2) {
     return;
   }
   const ctx = renderer.ctx;
-  const {a, b, c, d, tx, ty} = transform.world;
-  const {x, y} = transform.extent;
+  const {a, b, c, d, tx, ty} = worldTransform;
+  const {x, y} = transformExtent;
   ctx.save();
   ctx.setTransform(a, b, c, d, tx, ty);
   ctx.globalAlpha = alpha;
@@ -10118,7 +9623,7 @@ var Sprite = class extends Container {
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
+    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get tint() {
     return this._tint;
@@ -10450,7 +9955,7 @@ var Layer = class extends GameObject {
   constructor() {
     super();
     this.type = "Layer";
-    this.transform.passthru = true;
+    this.passthru = true;
     this.willRender = false;
   }
 };
@@ -10554,7 +10059,7 @@ var Rectangle2 = class extends Container {
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.transform, renderer);
+    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get color() {
     return this._color;
@@ -12128,7 +11633,7 @@ function CircleContains(circle, x, y) {
   }
 }
 
-// src/geom/circle/Circle.ts
+// src/geom/Circle/Circle.ts
 var Circle = class {
   constructor(x = 0, y = 0, radius = 0) {
     this.set(x, y, radius);
@@ -12452,7 +11957,7 @@ __export(intersects_exports, {
   GetCircleToRectangle: () => GetCircleToRectangle,
   GetLineToCircle: () => GetLineToCircle,
   GetLineToRectangle: () => GetLineToRectangle,
-  GetRectangleIntersection: () => GetRectangleIntersection2,
+  GetRectangleIntersection: () => GetRectangleIntersection,
   GetRectangleToRectangle: () => GetRectangleToRectangle,
   GetRectangleToTriangle: () => GetRectangleToTriangle,
   GetTriangleToCircle: () => GetTriangleToCircle,
@@ -12616,6 +12121,70 @@ function GetLineToCircle(line, circle, out = []) {
   return out;
 }
 
+// src/geom/line/Line.ts
+var Line = class {
+  constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
+    this.set(x1, y1, x2, y2);
+  }
+  set(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+    return this;
+  }
+  get left() {
+    return Math.min(this.x1, this.x2);
+  }
+  set left(value) {
+    if (this.x1 <= this.x2) {
+      this.x1 = value;
+    } else {
+      this.x2 = value;
+    }
+  }
+  get right() {
+    return Math.max(this.x1, this.x2);
+  }
+  set right(value) {
+    if (this.x1 > this.x2) {
+      this.x1 = value;
+    } else {
+      this.x2 = value;
+    }
+  }
+  get top() {
+    return Math.min(this.y1, this.y2);
+  }
+  set top(value) {
+    if (this.y1 <= this.y2) {
+      this.y1 = value;
+    } else {
+      this.y2 = value;
+    }
+  }
+  get bottom() {
+    return Math.max(this.y1, this.y2);
+  }
+  set bottom(value) {
+    if (this.y1 > this.y2) {
+      this.y1 = value;
+    } else {
+      this.y2 = value;
+    }
+  }
+};
+
+// src/geom/rectangle/GetRectangleEdges.ts
+function GetRectangleEdges(rectangle) {
+  const {x, y, right, bottom} = rectangle;
+  const line1 = new Line(x, y, right, y);
+  const line2 = new Line(right, y, right, bottom);
+  const line3 = new Line(right, bottom, x, bottom);
+  const line4 = new Line(x, bottom, x, y);
+  return [line1, line2, line3, line4];
+}
+
 // src/geom/intersects/GetCircleToRectangle.ts
 function GetCircleToRectangle(circle, rect, out = []) {
   if (CircleToRectangle(circle, rect)) {
@@ -12703,7 +12272,7 @@ function GetLineToRectangle(line, rect, out = []) {
 }
 
 // src/geom/intersects/GetRectangleIntersection.ts
-function GetRectangleIntersection2(rectA, rectB, out = new Rectangle()) {
+function GetRectangleIntersection(rectA, rectB, out = new Rectangle()) {
   if (RectangleToRectangle(rectA, rectB)) {
     const x = Math.max(rectA.x, rectB.x);
     const y = Math.max(rectA.y, rectB.y);
@@ -12730,6 +12299,12 @@ function GetTriangleEdges(triangle) {
   const edge2 = new Line(x2, y2, x3, y3);
   const edge3 = new Line(x3, y3, x1, y1);
   return [edge1, edge2, edge3];
+}
+
+// src/geom/rectangle/DecomposeRectangle.ts
+function DecomposeRectangle(rect, out = []) {
+  out.push(new Vec2(rect.x, rect.y), new Vec2(rect.right, rect.y), new Vec2(rect.right, rect.bottom), new Vec2(rect.x, rect.bottom));
+  return out;
 }
 
 // src/geom/triangle/TriangleContains.ts
@@ -13211,6 +12786,415 @@ function TranslateLine(line, x, y) {
 // src/geom/line/TranslateLinePoint.ts
 function TranslateLinePoint(line, v) {
   return TranslateLine(line, v.x, v.y);
+}
+
+// src/geom/rectangle/index.ts
+var rectangle_exports = {};
+__export(rectangle_exports, {
+  CeilRectangle: () => CeilRectangle,
+  CeilRectanglePosition: () => CeilRectanglePosition,
+  CenterRectangleOn: () => CenterRectangleOn,
+  CloneRectangle: () => CloneRectangle,
+  CopyRectangleFrom: () => CopyRectangleFrom,
+  DecomposeRectangle: () => DecomposeRectangle,
+  FitRectangleInside: () => FitRectangleInside,
+  FitRectangleOutside: () => FitRectangleOutside,
+  FitRectangleToPoint: () => FitRectangleToPoint,
+  FitRectangleToPoints: () => FitRectangleToPoints,
+  FloorRectangle: () => FloorRectangle,
+  FloorRectanglePosition: () => FloorRectanglePosition,
+  GetRectangleArea: () => GetRectangleArea,
+  GetRectangleAspectRatio: () => GetRectangleAspectRatio,
+  GetRectangleCenter: () => GetRectangleCenter,
+  GetRectangleCenterX: () => GetRectangleCenterX,
+  GetRectangleCenterY: () => GetRectangleCenterY,
+  GetRectangleEdges: () => GetRectangleEdges,
+  GetRectangleIntersection: () => GetRectangleIntersection2,
+  GetRectangleMarchingAnts: () => GetRectangleMarchingAnts,
+  GetRectangleOverlap: () => GetRectangleOverlap,
+  GetRectanglePerimeter: () => GetRectanglePerimeter,
+  GetRectanglePerimeterPoint: () => GetRectanglePerimeterPoint,
+  GetRectanglePoint: () => GetRectanglePoint,
+  GetRectanglePoints: () => GetRectanglePoints,
+  GetRectangleRandomPoint: () => GetRectangleRandomPoint,
+  GetRectangleRandomPointOutside: () => GetRectangleRandomPointOutside,
+  GetRectangleSize: () => GetRectangleSize,
+  GetRectangleUnion: () => GetRectangleUnion,
+  InflateRectangle: () => InflateRectangle,
+  MergeRectangle: () => MergeRectangle,
+  Rectangle: () => Rectangle,
+  RectangleContains: () => RectangleContains,
+  RectangleContainsPoint: () => RectangleContainsPoint,
+  RectangleContainsRectangle: () => RectangleContainsRectangle,
+  RectangleEquals: () => RectangleEquals,
+  RectangleFromPoints: () => RectangleFromPoints,
+  RectangleSizeEquals: () => RectangleSizeEquals,
+  ScaleRectangle: () => ScaleRectangle,
+  TranslateRectangle: () => TranslateRectangle,
+  TranslateRectanglePoint: () => TranslateRectanglePoint
+});
+
+// src/geom/rectangle/CeilRectangle.ts
+function CeilRectangle(rect) {
+  rect.x = Math.ceil(rect.x);
+  rect.y = Math.ceil(rect.y);
+  rect.width = Math.ceil(rect.width);
+  rect.height = Math.ceil(rect.height);
+  return rect;
+}
+
+// src/geom/rectangle/CeilRectanglePosition.ts
+function CeilRectanglePosition(rect) {
+  rect.x = Math.ceil(rect.x);
+  rect.y = Math.ceil(rect.y);
+  return rect;
+}
+
+// src/geom/rectangle/CenterRectangleOn.ts
+function CenterRectangleOn(rect, x, y) {
+  rect.x = x - rect.width / 2;
+  rect.y = y - rect.height / 2;
+  return rect;
+}
+
+// src/geom/rectangle/CloneRectangle.ts
+function CloneRectangle(source) {
+  return new Rectangle(source.x, source.y, source.width, source.height);
+}
+
+// src/geom/rectangle/CopyRectangleFrom.ts
+function CopyRectangleFrom(source, dest) {
+  return dest.set(source.x, source.y, source.width, source.height);
+}
+
+// src/geom/rectangle/GetRectangleAspectRatio.ts
+function GetRectangleAspectRatio(rect) {
+  return rect.height === 0 ? NaN : rect.width / rect.height;
+}
+
+// src/geom/rectangle/GetRectangleCenterX.ts
+function GetRectangleCenterX(rect) {
+  return rect.x + rect.width / 2;
+}
+
+// src/geom/rectangle/GetRectangleCenterY.ts
+function GetRectangleCenterY(rect) {
+  return rect.y + rect.height / 2;
+}
+
+// src/geom/rectangle/FitRectangleInside.ts
+function FitRectangleInside(target, source) {
+  const ratio = GetRectangleAspectRatio(target);
+  let width = source.width;
+  let height = source.height;
+  if (ratio < GetRectangleAspectRatio(source)) {
+    width = source.height * ratio;
+  } else {
+    height = source.width / ratio;
+  }
+  return target.set(GetRectangleCenterX(source) - target.width / 2, GetRectangleCenterY(source) - target.height / 2, width, height);
+}
+
+// src/geom/rectangle/FitRectangleOutside.ts
+function FitRectangleOutside(target, source) {
+  const ratio = GetRectangleAspectRatio(target);
+  let width = source.width;
+  let height = source.height;
+  if (ratio > GetRectangleAspectRatio(source)) {
+    width = source.height * ratio;
+  } else {
+    height = source.width / ratio;
+  }
+  return target.set(GetRectangleCenterX(source) - target.width / 2, GetRectangleCenterY(source) - target.height / 2, width, height);
+}
+
+// src/geom/rectangle/FitRectangleToPoint.ts
+function FitRectangleToPoint(target, x, y) {
+  const minX = Math.min(target.x, x);
+  const maxX = Math.max(target.right, x);
+  const minY = Math.min(target.y, y);
+  const maxY = Math.max(target.bottom, y);
+  return target.set(minX, minY, maxX - minX, maxY - minY);
+}
+
+// src/geom/rectangle/FitRectangleToPoints.ts
+function FitRectangleToPoints(target, points) {
+  let minX = target.x;
+  let maxX = target.right;
+  let minY = target.y;
+  let maxY = target.bottom;
+  for (let i = 0; i < points.length; i++) {
+    minX = Math.min(minX, points[i].x);
+    maxX = Math.max(maxX, points[i].x);
+    minY = Math.min(minY, points[i].y);
+    maxY = Math.max(maxY, points[i].y);
+  }
+  return target.set(minX, minY, maxX - minX, maxY - minY);
+}
+
+// src/geom/rectangle/FloorRectangle.ts
+function FloorRectangle(rect) {
+  rect.x = Math.floor(rect.x);
+  rect.y = Math.floor(rect.y);
+  rect.width = Math.floor(rect.width);
+  rect.height = Math.floor(rect.height);
+  return rect;
+}
+
+// src/geom/rectangle/FloorRectanglePosition.ts
+function FloorRectanglePosition(rect) {
+  rect.x = Math.floor(rect.x);
+  rect.y = Math.floor(rect.y);
+  return rect;
+}
+
+// src/geom/rectangle/GetRectangleArea.ts
+function GetRectangleArea(rect) {
+  return rect.width * rect.height;
+}
+
+// src/geom/rectangle/GetRectangleCenter.ts
+function GetRectangleCenter(rect, out = new Vec2()) {
+  return out.set(GetRectangleCenterX(rect), GetRectangleCenterY(rect));
+}
+
+// src/geom/rectangle/GetRectangleIntersection.ts
+function GetRectangleIntersection2(rectA, rectB, out = new Rectangle()) {
+  if (RectangleToRectangle(rectA, rectB)) {
+    out.set(Math.max(rectA.x, rectB.x), Math.max(rectA.y, rectB.y), Math.min(rectA.right, rectB.right) - out.x, Math.min(rectA.bottom, rectB.bottom) - out.y);
+  } else {
+    out.set();
+  }
+  return out;
+}
+
+// src/geom/rectangle/GetRectanglePerimeter.ts
+function GetRectanglePerimeter(rect) {
+  return 2 * (rect.width + rect.height);
+}
+
+// src/geom/rectangle/GetRectangleMarchingAnts.ts
+function GetRectangleMarchingAnts(rect, step, quantity, out = []) {
+  if (!step && !quantity) {
+    return out;
+  }
+  if (!step) {
+    step = GetRectanglePerimeter(rect) / quantity;
+  } else {
+    quantity = Math.round(GetRectanglePerimeter(rect) / step);
+  }
+  let x = rect.x;
+  let y = rect.y;
+  let face = 0;
+  for (let i = 0; i < quantity; i++) {
+    out.push(new Vec2(x, y));
+    switch (face) {
+      case 0:
+        x += step;
+        if (x >= rect.right) {
+          face = 1;
+          y += x - rect.right;
+          x = rect.right;
+        }
+        break;
+      case 1:
+        y += step;
+        if (y >= rect.bottom) {
+          face = 2;
+          x -= y - rect.bottom;
+          y = rect.bottom;
+        }
+        break;
+      case 2:
+        x -= step;
+        if (x <= rect.x) {
+          face = 3;
+          y -= rect.x - x;
+          x = rect.x;
+        }
+        break;
+      case 3:
+        y -= step;
+        if (y <= rect.y) {
+          face = 0;
+          y = rect.y;
+        }
+        break;
+    }
+  }
+  return out;
+}
+
+// src/geom/rectangle/GetRectangleOverlap.ts
+function GetRectangleOverlap(rectA, rectB) {
+  return rectA.x < rectB.right && rectA.right > rectB.x && rectA.y < rectB.bottom && rectA.bottom > rectB.y;
+}
+
+// src/geom/rectangle/GetRectanglePerimeterPoint.ts
+function GetRectanglePerimeterPoint(rectangle, angle, out = new Vec2()) {
+  angle = DegToRad(angle);
+  const s = Math.sin(angle);
+  const c = Math.cos(angle);
+  let dx = c > 0 ? rectangle.width / 2 : rectangle.width / -2;
+  let dy = s > 0 ? rectangle.height / 2 : rectangle.height / -2;
+  if (Math.abs(dx * s) < Math.abs(dy * c)) {
+    dy = dx * s / c;
+  } else {
+    dx = dy * c / s;
+  }
+  return out.set(dx + GetRectangleCenterX(rectangle), dy + GetRectangleCenterY(rectangle));
+}
+
+// src/geom/rectangle/GetRectanglePoint.ts
+function GetRectanglePoint(rectangle, position, out = new Vec2()) {
+  if (position <= 0 || position >= 1) {
+    return out.set(rectangle.x, rectangle.y);
+  }
+  let p = GetRectanglePerimeter(rectangle) * position;
+  if (position > 0.5) {
+    p -= rectangle.width + rectangle.height;
+    if (p <= rectangle.width) {
+      return out.set(rectangle.right - p, rectangle.bottom);
+    } else {
+      return out.set(rectangle.x, rectangle.bottom - (p - rectangle.width));
+    }
+  } else if (p <= rectangle.width) {
+    return out.set(rectangle.x + p, rectangle.y);
+  } else {
+    return out.set(rectangle.right, rectangle.y + (p - rectangle.width));
+  }
+}
+
+// src/geom/rectangle/GetRectanglePoints.ts
+function GetRectanglePoints(rectangle, step, quantity = 0, out = []) {
+  if (!quantity) {
+    quantity = GetRectanglePerimeter(rectangle) / step;
+  }
+  for (let i = 0; i < quantity; i++) {
+    out.push(GetRectanglePoint(rectangle, i / quantity));
+  }
+  return out;
+}
+
+// src/geom/rectangle/GetRectangleRandomPoint.ts
+function GetRectangleRandomPoint(rect, out = new Vec2()) {
+  return out.set(rect.x + Math.random() * rect.width, rect.y + Math.random() * rect.height);
+}
+
+// src/geom/rectangle/RectangleContainsRectangle.ts
+function RectangleContainsRectangle(rectA, rectB) {
+  if (rectB.width * rectB.height > rectA.width * rectA.height) {
+    return false;
+  }
+  return rectB.x > rectA.x && rectB.x < rectA.right && (rectB.right > rectA.x && rectB.right < rectA.right) && (rectB.y > rectA.y && rectB.y < rectA.bottom) && (rectB.bottom > rectA.y && rectB.bottom < rectA.bottom);
+}
+
+// src/geom/rectangle/GetRectangleRandomPointOutside.ts
+function GetRectangleRandomPointOutside(outer, inner, out = new Vec2()) {
+  if (RectangleContainsRectangle(outer, inner)) {
+    switch (Between(0, 3)) {
+      case 0:
+        out.x = outer.x + Math.random() * (inner.right - outer.x);
+        out.y = outer.y + Math.random() * (inner.y - outer.y);
+        break;
+      case 1:
+        out.x = inner.x + Math.random() * (outer.right - inner.x);
+        out.y = inner.bottom + Math.random() * (outer.bottom - inner.bottom);
+        break;
+      case 2:
+        out.x = outer.x + Math.random() * (inner.x - outer.x);
+        out.y = inner.y + Math.random() * (outer.bottom - inner.y);
+        break;
+      case 3:
+        out.x = inner.right + Math.random() * (outer.right - inner.right);
+        out.y = outer.y + Math.random() * (inner.bottom - outer.y);
+        break;
+    }
+  }
+  return out;
+}
+
+// src/geom/rectangle/GetRectangleUnion.ts
+function GetRectangleUnion(rectA, rectB, out = new Rectangle()) {
+  const x = Math.min(rectA.x, rectB.x);
+  const y = Math.min(rectA.y, rectB.y);
+  const w = Math.max(rectA.right, rectB.right) - x;
+  const h = Math.max(rectA.bottom, rectB.bottom) - y;
+  return out.set(x, y, w, h);
+}
+
+// src/geom/rectangle/InflateRectangle.ts
+function InflateRectangle(rect, x, y) {
+  const cx = GetRectangleCenterX(rect);
+  const cy = GetRectangleCenterY(rect);
+  rect.width = rect.width + x * 2;
+  rect.height = rect.height + y * 2;
+  return CenterRectangleOn(rect, cx, cy);
+}
+
+// src/geom/rectangle/MergeRectangle.ts
+function MergeRectangle(target, source) {
+  const minX = Math.min(target.x, source.x);
+  const maxX = Math.max(target.right, source.right);
+  const minY = Math.min(target.y, source.y);
+  const maxY = Math.max(target.bottom, source.bottom);
+  return target.set(minX, minY, maxX - minX, maxY - minY);
+}
+
+// src/geom/rectangle/RectangleContainsPoint.ts
+function RectangleContainsPoint(rect, point) {
+  return RectangleContains(rect, point.x, point.y);
+}
+
+// src/geom/rectangle/RectangleEquals.ts
+function RectangleEquals(rect, toCompare) {
+  return rect.x === toCompare.x && rect.y === toCompare.y && rect.width === toCompare.width && rect.height === toCompare.height;
+}
+
+// src/geom/rectangle/RectangleFromPoints.ts
+function RectangleFromPoints(points, out = new Rectangle()) {
+  if (points.length === 0) {
+    return out;
+  }
+  let minX = Number.MAX_VALUE;
+  let minY = Number.MAX_VALUE;
+  let maxX = MATH_CONST.MIN_SAFE_INTEGER;
+  let maxY = MATH_CONST.MIN_SAFE_INTEGER;
+  for (let i = 0; i < points.length; i++) {
+    const px = points[i].x;
+    const py = points[i].y;
+    minX = Math.min(minX, px);
+    minY = Math.min(minY, py);
+    maxX = Math.max(maxX, px);
+    maxY = Math.max(maxY, py);
+  }
+  return out.set(minX, minY, maxX - minX, maxY - minY);
+}
+
+// src/geom/rectangle/RectangleSizeEquals.ts
+function RectangleSizeEquals(rect, toCompare) {
+  return rect.width === toCompare.width && rect.height === toCompare.height;
+}
+
+// src/geom/rectangle/ScaleRectangle.ts
+function ScaleRectangle(rect, x, y = x) {
+  rect.width *= x;
+  rect.height *= y;
+  return rect;
+}
+
+// src/geom/rectangle/TranslateRectangle.ts
+function TranslateRectangle(rect, x, y) {
+  rect.x += x;
+  rect.y += y;
+  return rect;
+}
+
+// src/geom/rectangle/TranslateRectanglePoint.ts
+function TranslateRectanglePoint(rect, point) {
+  rect.x += point.x;
+  rect.y += point.y;
+  return rect;
 }
 
 // src/geom/triangle/index.ts
@@ -14214,7 +14198,7 @@ var Mouse = class extends EventEmitter {
         return true;
       }
     } else {
-      return entity.transform.extent.contains(px, py);
+      return entity.transformExtent.contains(px, py);
     }
     return false;
   }
@@ -14227,7 +14211,7 @@ var Mouse = class extends EventEmitter {
       if (!entity.world) {
         continue;
       }
-      const mat = Mat2dAppend(entity.world.camera.worldTransform, entity.transform.world);
+      const mat = Mat2dAppend(entity.world.camera.worldTransform, entity.worldTransform);
       Mat2dGlobalToLocal(mat, localX, localY, point);
       if (this.checkHitArea(entity, point.x, point.y)) {
         this.hitPoint.set(point.x, point.y);
@@ -15998,6 +15982,11 @@ function SetConfigDefaults() {
   SetMaxTextures(0);
   SetDefaultOrigin(0.5, 0.5);
   SetSize(800, 600, 1);
+  SetWebGLContext({
+    antialias: true,
+    desynchronized: true,
+    preserveDrawingBuffer: true
+  });
 }
 
 // src/Game.ts

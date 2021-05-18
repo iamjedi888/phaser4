@@ -4,7 +4,7 @@ export function GetFurthestChild(parent, point) {
   let furthest = null;
   let distance = 0;
   children.forEach((child) => {
-    const childDistance = GetVec2Distance(point, child.transform.position);
+    const childDistance = GetVec2Distance(point, child.getPosition());
     if (!furthest || childDistance > distance) {
       furthest = child;
       distance = childDistance;

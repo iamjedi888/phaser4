@@ -4,7 +4,7 @@ export function GetClosestChild(parent, point) {
   let closest = null;
   let distance = 0;
   children.forEach((child) => {
-    const childDistance = GetVec2Distance(point, child.transform.position);
+    const childDistance = GetVec2Distance(point, child.getPosition());
     if (!closest || childDistance < distance) {
       closest = child;
       distance = childDistance;

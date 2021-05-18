@@ -1,6 +1,6 @@
-export function GetVertices(transform) {
-  const {a, b, c, d, tx, ty} = transform.world;
-  const {x, y, right, bottom} = transform.extent;
+export function GetVertices(worldTransform, transformExtent) {
+  const {a, b, c, d, tx, ty} = worldTransform;
+  const {x, y, right, bottom} = transformExtent;
   const x0 = x * a + y * c + tx;
   const y0 = x * b + y * d + ty;
   const x1 = x * a + bottom * c + tx;

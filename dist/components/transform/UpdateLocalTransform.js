@@ -1,11 +1,4 @@
-export function UpdateLocalTransform(transform) {
-  const local = transform.local;
-  const x = transform.position.x;
-  const y = transform.position.y;
-  const rotation = transform.rotation;
-  const scaleX = transform.scale.x;
-  const scaleY = transform.scale.y;
-  const skewX = transform.skew.x;
-  const skewY = transform.skew.y;
-  local.set(Math.cos(rotation + skewY) * scaleX, Math.sin(rotation + skewY) * scaleX, -Math.sin(rotation - skewX) * scaleY, Math.cos(rotation - skewX) * scaleY, x, y);
+export function UpdateLocalTransform(localTransform, transformData) {
+  const [x, y, rotation, scaleX, scaleY, skewX, skewY] = transformData;
+  localTransform.set(Math.cos(rotation + skewY) * scaleX, Math.sin(rotation + skewY) * scaleX, -Math.sin(rotation - skewX) * scaleY, Math.cos(rotation - skewX) * scaleY, x, y);
 }
