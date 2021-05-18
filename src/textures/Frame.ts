@@ -116,10 +116,8 @@ export class Frame implements IFrame
 
     copyToExtent (child: IGameObject): this
     {
-        const transform = child.transform;
-
-        const originX = transform.origin.x;
-        const originY = transform.origin.y;
+        const originX = child.originX;
+        const originY = child.originY;
 
         const sourceSizeWidth = this.sourceSizeWidth;
         const sourceSizeHeight = this.sourceSizeHeight;
@@ -146,7 +144,7 @@ export class Frame implements IFrame
             height = sourceSizeHeight;
         }
 
-        transform.setExtent(x, y, width, height);
+        child.setExtent(x, y, width, height);
 
         return this;
     }

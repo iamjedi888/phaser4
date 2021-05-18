@@ -11,7 +11,7 @@ export class Layer extends GameObject
         super();
 
         this.type = 'Layer';
-        this.transform.passthru = true;
+        this.passthru = true;
         this.willRender = false;
     }
 }

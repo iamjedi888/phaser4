@@ -11,7 +11,7 @@ export function AddChildAt <T extends IGameObject> (parent: IGameObject, index: 
 
         children.splice(index, 0, child);
 
-        child.transform.updateWorld();
+        child.updateWorldTransform();
     }
 
     return child;

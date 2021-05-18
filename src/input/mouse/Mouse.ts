@@ -147,7 +147,7 @@ export class Mouse extends EventEmitter
         }
         else
         {
-            return entity.transform.extent.contains(px, py);
+            return entity.transformExtent.contains(px, py);
         }
 
         return false;
@@ -169,7 +169,7 @@ export class Mouse extends EventEmitter
                 continue;
             }
 
-            const mat = Mat2dAppend(entity.world.camera.worldTransform, entity.transform.world);
+            const mat = Mat2dAppend(entity.world.camera.worldTransform, entity.worldTransform);
 
             Mat2dGlobalToLocal(mat, localX, localY, point);
 

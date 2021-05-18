@@ -11,7 +11,7 @@ export function GetClosestChild (parent: IGameObject, point: Vec2): IGameObject
 
     children.forEach(child =>
     {
-        const childDistance = GetVec2Distance(point, child.transform.position);
+        const childDistance = GetVec2Distance(point, child.getPosition());
 
         if (!closest || childDistance < distance)
         {

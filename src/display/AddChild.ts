@@ -7,7 +7,7 @@ export function AddChild <T extends IGameObject> (parent: IGameObject, child: T)
 
     SetParent(parent, child);
 
-    child.transform.updateWorld();
+    child.updateWorldTransform();
 
     return child;
 }

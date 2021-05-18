@@ -13,7 +13,7 @@ export function AddChildrenAt (parent: IGameObject, index: number, ...children: 
 
             SetParent(parent, child);
 
-            child.transform.updateWorld();
+            child.updateWorldTransform();
         });
     }
 

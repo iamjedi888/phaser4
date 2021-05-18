@@ -1,8 +1,9 @@
 import { Frame } from '../../../textures';
 import { ICanvasRenderer } from '../ICanvasRenderer';
-import { ITransformComponent } from '../../../components/transform/ITransformComponent';
+import { Matrix2D } from '../../../math/mat2d';
+import { Rectangle } from '../../../geom/rectangle';
 
-export function DrawTexturedQuad (frame: Frame, alpha: number, transform: ITransformComponent, renderer: ICanvasRenderer): void
+export function DrawTexturedQuad (frame: Frame, alpha: number, worldTransform: Matrix2D, transformExtent: Rectangle, renderer: ICanvasRenderer): void
 {
     if (!frame)
     {
@@ -11,8 +12,8 @@ export function DrawTexturedQuad (frame: Frame, alpha: number, transform: ITrans
 
     const ctx = renderer.ctx;
 
-    const { a, b, c, d, tx, ty } = transform.world;
-    const { x, y } = transform.extent;
+    const { a, b, c, d, tx, ty } = worldTransform;
+    const { x, y } = transformExtent;
 
     ctx.save();
 

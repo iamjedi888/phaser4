@@ -10,7 +10,7 @@ export function ReparentChildren (parent: IGameObject, newParent: IGameObject, b
 
     moved.forEach(child =>
     {
-        child.transform.updateWorld();
+        child.updateWorldTransform();
     });
 
     return moved;
