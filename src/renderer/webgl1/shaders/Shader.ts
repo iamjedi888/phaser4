@@ -132,6 +132,11 @@ export class Shader implements IShader
 
     bind (renderPass: IRenderPass): boolean
     {
+        const uniforms = this.uniforms;
+
+        uniforms.set('uProjectionMatrix', renderPass.projectionMatrix.data);
+        uniforms.set('uCameraMatrix', renderPass.cameraMatrix.data);
+
         this.updateUniforms(renderPass);
 
         return this.setUniforms(renderPass);
