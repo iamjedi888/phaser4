@@ -41,7 +41,7 @@ export class BoundsComponent implements IBoundsComponent
 
     updateLocal (): Rectangle
     {
-        const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(this.entity.transform);
+        const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(this.entity.worldTransform, this.entity.transformExtent);
 
         const x = Math.min(x0, x1, x2, x3);
         const y = Math.min(y0, y1, y2, y3);

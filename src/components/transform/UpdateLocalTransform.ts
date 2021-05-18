@@ -1,18 +1,10 @@
-import { ITransformComponent } from './ITransformComponent';
+import { Matrix2D } from '../../math/mat2d';
 
-export function UpdateLocalTransform (transform: ITransformComponent): void
+export function UpdateLocalTransform (localTransform: Matrix2D, transformData: Float32Array): void
 {
-    const local = transform.local;
+    const [ x, y, rotation, scaleX, scaleY, skewX, skewY ] = transformData;
 
-    const x = transform.position.x;
-    const y = transform.position.y;
-    const rotation = transform.rotation;
-    const scaleX = transform.scale.x;
-    const scaleY = transform.scale.y;
-    const skewX = transform.skew.x;
-    const skewY = transform.skew.y;
-
-    local.set(
+    localTransform.set(
         Math.cos(rotation + skewY) * scaleX,
         Math.sin(rotation + skewY) * scaleX,
         -Math.sin(rotation - skewX) * scaleY,

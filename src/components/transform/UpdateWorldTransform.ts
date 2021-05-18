@@ -1,28 +1,22 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
 import { Mat2dCopyFrom } from '../../math/mat2d/Mat2dCopyFrom';
+import { Matrix2D } from '../../math/mat2d';
 
-export function UpdateWorldTransform (gameObject: IGameObject): void
+export function UpdateWorldTransform (localTransform: Matrix2D, worldTransform: Matrix2D, passthru: boolean, parentWorldTransform?: Matrix2D): void
 {
-    const parent = gameObject.parent;
-    const transform = gameObject.transform;
-
-    const lt = transform.local;
-    const wt = transform.world;
-
-    if (!parent)
+    if (!parentWorldTransform)
     {
-        Mat2dCopyFrom(lt, wt);
+        Mat2dCopyFrom(localTransform, worldTransform);
     }
-    else if (transform.passthru)
+    else if (passthru)
     {
-        Mat2dCopyFrom(parent.transform.world, wt);
+        Mat2dCopyFrom(parentWorldTransform, worldTransform);
     }
     else
     {
-        const { a, b, c, d, tx, ty } = lt;
-        const { a: pa, b: pb, c: pc, d: pd, tx: ptx, ty: pty } = parent.transform.world;
+        const { a, b, c, d, tx, ty } = localTransform;
+        const { a: pa, b: pb, c: pc, d: pd, tx: ptx, ty: pty } = parentWorldTransform;
 
-        wt.set(
+        worldTransform.set(
             a  * pa + b  * pc,
             a  * pb + b  * pd,
             c  * pa + d  * pc,

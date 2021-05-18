@@ -1,10 +1,11 @@
-import { ITransformComponent } from './ITransformComponent';
+import { Matrix2D } from '../../math/mat2d';
+import { Rectangle } from '../../geom/rectangle';
 import { Vertices } from './Vertices';
 
-export function GetVertices (transform: ITransformComponent): Vertices
+export function GetVertices (worldTransform: Matrix2D, transformExtent: Rectangle): Vertices
 {
-    const { a, b, c, d, tx, ty } = transform.world;
-    const { x, y, right, bottom } = transform.extent;
+    const { a, b, c, d, tx, ty } = worldTransform;
+    const { x, y, right, bottom } = transformExtent;
 
     const x0 = (x * a) + (y * c) + tx;
     const y0 = (x * b) + (y * d) + ty;

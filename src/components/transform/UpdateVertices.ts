@@ -5,7 +5,7 @@ export function UpdateVertices <T extends IGameObject> (gameObject: T): T
 {
     const vertices = gameObject.vertices;
 
-    const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(gameObject.transform);
+    const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(gameObject.worldTransform, gameObject.transformExtent);
 
     vertices[0].setPosition(x0, y0);
     vertices[1].setPosition(x1, y1);
