@@ -1,5 +1,4 @@
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin/';
-import { Vec2, Vec2Callback } from '../../math/vec2';
 
 import { DIRTY_CONST } from '../../gameobjects/DIRTY_CONST';
 import { IGameObject } from '../../gameobjects/IGameObject';
@@ -8,6 +7,7 @@ import { Matrix2D } from '../../math/mat2d/Matrix2D';
 import { Rectangle } from '../../geom/rectangle';
 import { UpdateLocalTransform } from './UpdateLocalTransform';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
+import { Vec2Callback } from '../../math/vec2';
 
 export class TransformComponent implements ITransformComponent
 {
@@ -84,28 +84,6 @@ export class TransformComponent implements ITransformComponent
 
             child.transform.updateWorld();
         }
-    }
-
-    globalToLocal (x: number, y: number, out: Vec2 = new Vec2()): Vec2
-    {
-        const { a, b, c, d, tx, ty } = this.world;
-
-        const id: number = 1 / ((a * d) + (c * -b));
-
-        out.x = (d * id * x) + (-c * id * y) + (((ty * c) - (tx * d)) * id);
-        out.y = (a * id * y) + (-b * id * x) + (((-ty * a) + (tx * b)) * id);
-
-        return out;
-    }
-
-    localToGlobal (x: number, y: number, out: Vec2 = new Vec2()): Vec2
-    {
-        const { a, b, c, d, tx, ty } = this.world;
-
-        out.x = (a * x) + (c * y) + tx;
-        out.y = (b * x) + (d * y) + ty;
-
-        return out;
     }
 
     //  The area covered by this transform component + origin + size (usually from a Frame)

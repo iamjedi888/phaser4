@@ -1,8 +1,7 @@
-import { Vec2, Vec2Callback } from '../../math/vec2';
-
 import { IGameObject } from '../../gameobjects/IGameObject';
 import { Matrix2D } from '../../math/mat2d/Matrix2D';
 import { Rectangle } from '../../geom/rectangle';
+import { Vec2Callback } from '../../math/vec2';
 
 export interface ITransformComponent
 {
@@ -20,8 +19,6 @@ export interface ITransformComponent
     updateLocal (): void;
     updateWorld (): void;
     updateChildren (): void;
-    globalToLocal (x: number, y: number, out?: Vec2): Vec2;
-    localToGlobal (x: number, y: number, out?: Vec2): Vec2;
     setExtent (x: number, y: number, width: number, height: number): void;
     updateExtent (width?: number, height?: number): void;
     destroy (): void;
