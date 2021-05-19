@@ -17,11 +17,15 @@ import { IInputComponent } from '../components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { InputComponent } from '../components/input/InputComponent';
 import { Matrix2D } from '../math/mat2d/Matrix2D';
+import { Position } from '../components/Position';
 import { Rectangle } from '../geom/rectangle/Rectangle';
 import { ReparentChildren } from '../display/ReparentChildren';
 import { TRANSFORM_CONST } from '../components/transform/TRANSFORM_CONST';
+import { Transform2D } from '../components/Transform2D';
 import { Vec2 } from '../math/vec2/Vec2';
 import { Vertex } from '../components/Vertex';
+import { World } from '../components/World';
+import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
 {
@@ -52,6 +56,8 @@ export class GameObject implements IGameObject
     transformData: Float32Array;
     transformExtent: Rectangle;
 
+    id: number;
+
     bounds: IBoundsComponent;
     input: IInputComponent;
 
@@ -78,8 +84,22 @@ export class GameObject implements IGameObject
 
         this.dirty = DIRTY_CONST.DEFAULT;
 
-        this.updateLocalTransform();
-        this.updateWorldTransform();
+        const id = addEntity(World);
+
+        Transform2D.x[id] = x;
+        Transform2D.y[id] = y;
+        Transform2D.rotation[id] = 0;
+        Transform2D.scaleX[id] = 1;
+        Transform2D.scaleY[id] = 1;
+        Transform2D.skewX[id] = 0;
+        Transform2D.skewY[id] = 0;
+
+        this.id = id;
+
+        this.updateTransform();
+
+        // this.updateLocalTransform();
+        // this.updateWorldTransform();
     }
 
     isRenderable (): boolean
@@ -179,6 +199,7 @@ export class GameObject implements IGameObject
         return this.bounds.get();
     }
 
+    /*
     updateTransform (flag: number, value: number): void
     {
         if (this.transformData[flag] !== value)
@@ -195,6 +216,33 @@ export class GameObject implements IGameObject
         this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
 
         UpdateLocalTransform(this.localTransform, this.transformData);
+    }
+    */
+
+    updateTransform (): void
+    {
+        this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+
+        const id = this.id;
+
+        const x = Transform2D.x[id];
+        const y = Transform2D.y[id];
+        const rotation = Transform2D.rotation[id];
+        const scaleX = Transform2D.scaleX[id];
+        const scaleY = Transform2D.scaleY[id];
+        const skewX = Transform2D.skewX[id];
+        const skewY = Transform2D.skewY[id];
+
+        this.localTransform.set(
+            Math.cos(rotation + skewY) * scaleX,
+            Math.sin(rotation + skewY) * scaleX,
+            -Math.sin(rotation - skewX) * scaleY,
+            Math.cos(rotation - skewX) * scaleY,
+            x,
+            y
+        );
+
+        this.updateWorldTransform();
     }
 
     updateWorldTransform (): void
@@ -349,22 +397,26 @@ export class GameObject implements IGameObject
 
     set x (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.X, value);
+        Transform2D.x[this.id] = value;
+
+        this.updateTransform();
     }
 
     get x (): number
     {
-        return this.transformData[TRANSFORM_CONST.X];
+        return Transform2D.x[this.id];
     }
 
     set y (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.Y, value);
+        Transform2D.y[this.id] = value;
+
+        this.updateTransform();
     }
 
     get y (): number
     {
-        return this.transformData[TRANSFORM_CONST.Y];
+        return Transform2D.y[this.id];
     }
 
     set originX (value: number)
@@ -403,57 +455,67 @@ export class GameObject implements IGameObject
 
     set skewX (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.SKEW_X, value);
+        Transform2D.skewX[this.id] = value;
+
+        this.updateTransform();
     }
 
     get skewX (): number
     {
-        return this.transformData[TRANSFORM_CONST.SKEW_X];
+        return Transform2D.skewX[this.id];
     }
 
     set skewY (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.SKEW_Y, value);
+        Transform2D.skewY[this.id] = value;
+
+        this.updateTransform();
     }
 
     get skewY (): number
     {
-        return this.transformData[TRANSFORM_CONST.SKEW_Y];
+        return Transform2D.skewY[this.id];
     }
 
     set scaleX (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.SCALE_X, value);
+        Transform2D.scaleX[this.id] = value;
+
+        this.updateTransform();
     }
 
     get scaleX (): number
     {
-        return this.transformData[TRANSFORM_CONST.SCALE_X];
+        return Transform2D.scaleX[this.id];
     }
 
     set scaleY (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.SCALE_Y, value);
+        Transform2D.scaleY[this.id] = value;
+
+        this.updateTransform();
     }
 
     get scaleY (): number
     {
-        return this.transformData[TRANSFORM_CONST.SCALE_Y];
+        return Transform2D.scaleY[this.id];
     }
 
     set rotation (value: number)
     {
-        this.updateTransform(TRANSFORM_CONST.ROTATION, value);
+        Transform2D.rotation[this.id] = value;
+
+        this.updateTransform();
     }
 
     get rotation (): number
     {
-        return this.transformData[TRANSFORM_CONST.ROTATION];
+        return Transform2D.rotation[this.id];
     }
 
     set passthru (value: boolean)
     {
-        this.updateTransform(TRANSFORM_CONST.PASSTHRU, Number(value));
+        // this.updateTransform(TRANSFORM_CONST.PASSTHRU, Number(value));
     }
 
     get passthru (): boolean
