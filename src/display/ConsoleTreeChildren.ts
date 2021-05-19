@@ -6,7 +6,7 @@ function GetInfo (entry: IGameObject): string
 {
     const legend = (entry.numChildren > 0) ? 'Parent' :  'Child';
 
-    return `${legend} [ type=${entry.type}, name=${entry.name} ]`;
+    return `${legend} [ type=${typeof entry}, name=${entry.name} ]`;
 }
 
 function LogChildren (entry: SearchEntry): void

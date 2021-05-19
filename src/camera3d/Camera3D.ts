@@ -38,8 +38,6 @@ export class Camera3D
 
     constructor (x: number = 0, y: number = 0, z: number = 0, fov: number = 45, near: number = 0.1, far: number = 1000)
     {
-        this.type = 'Camera3D';
-
         const game = GameInstance.get();
 
         this.renderer = game.renderer;

@@ -49,7 +49,6 @@ import { SetRotation } from './SetRotation';
 import { SetScale } from './SetScale';
 import { SetSize } from './SetSize';
 import { SetSkew } from './SetSkew';
-import { SetType } from './SetType';
 import { SetValue } from './SetValue';
 import { SetVisible } from './SetVisible';
 import { SetWorld } from './SetWorld';
@@ -108,7 +107,6 @@ export {
     SetScale,
     SetSize,
     SetSkew,
-    SetType,
     SetValue,
     SetVisible,
     SetWorld,

@@ -37,7 +37,6 @@ export class BaseWorld3D extends GameObject3D implements IBaseWorld3D
     {
         super();
 
-        this.type = 'BaseWorld';
         this.scene = scene;
         this.world = this;
 

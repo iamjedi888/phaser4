@@ -26,8 +26,6 @@ export class World3D extends BaseWorld3D
     {
         super(scene);
 
-        this.type = 'World3D';
-
         this.camera = new NewCamera3D();
 
         this.camera.position.set(x, y, z);

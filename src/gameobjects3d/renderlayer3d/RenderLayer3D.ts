@@ -20,8 +20,6 @@ export class RenderLayer3D extends Layer implements IRenderLayer3D
     {
         super();
 
-        this.type = 'RenderLayer';
-
         this.willRender = true;
         this.willRenderChildren = true;
         this.willCacheChildren = true;

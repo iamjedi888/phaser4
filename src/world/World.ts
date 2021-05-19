@@ -20,8 +20,6 @@ export class World extends BaseWorld implements IWorld
     {
         super(scene);
 
-        this.type = 'World';
-
         this.camera = new Camera();
 
         this.renderData = CreateWorldRenderData(this, this.camera);
