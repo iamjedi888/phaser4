@@ -3,7 +3,9 @@ import { GetHeight, GetResolution, GetWidth } from '../../config/size/';
 import { BindingQueue } from '../BindingQueue';
 import { GetBackgroundColor } from '../../config/backgroundcolor/GetBackgroundColor';
 import { GetCanvasContext } from '../../config/canvascontext/GetCanvasContext';
+import { ICamera } from '../../camera/ICamera';
 import { ISceneRenderData } from '../../scenes/ISceneRenderData';
+import { SearchEntry } from '../../display/SearchEntryType';
 
 export class CanvasRenderer
 {
@@ -94,7 +96,7 @@ export class CanvasRenderer
 
         const ctx = this.ctx;
 
-        //  Cache 1 - Nothing dirty? Display the previous frame
+        //  Nothing dirty? Display the previous frame
         if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0)
         {
             return;
@@ -109,12 +111,13 @@ export class CanvasRenderer
             ctx.fillRect(0, 0, this.width, this.height);
         }
 
-        /*
         const worlds = renderData.worldData;
 
         for (let i: number = 0; i < worlds.length; i++)
         {
-            const { camera, renderList, numRendered } = worlds[i];
+            const { numRendered, world } = worlds[i];
+
+            const camera = worlds[i].camera as ICamera;
 
             const { a, b, c, d, tx, ty } = camera.worldTransform;
 
@@ -123,19 +126,21 @@ export class CanvasRenderer
             //  Process the render list
             for (let s: number = 0; s < numRendered; s++)
             {
-                const gameObject = renderList[s];
+                const entry = world.renderList[s] as SearchEntry;
 
-                if (gameObject.isDirty(DIRTY_CONST.PENDING_RENDER))
-                {
-                    gameObject.renderCanvas(this);
-                }
-                else
-                {
-                    gameObject.postRenderCanvas(this);
-                }
+                entry.node.renderCanvas(this);
+                entry.node.postRenderCanvas(this);
+
+                // if (entry.node.isDirty(DIRTY_CONST.PENDING_RENDER))
+                // {
+                //     entry.node.renderCanvas(this);
+                // }
+                // else
+                // {
+                //     entry.node.postRenderCanvas(this);
+                // }
             }
         }
-        */
     }
 
     destroy (): void
