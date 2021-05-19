@@ -26,7 +26,7 @@ export class WebGLRenderer
     resolution: number;
 
     clearBeforeRender: boolean = true;
-    optimizeRedraw: boolean = false;
+    optimizeRedraw: boolean = true;
     autoResize: boolean = true;
 
     contextLost: boolean = false;
@@ -128,13 +128,13 @@ export class WebGLRenderer
         const gl = this.gl;
         const renderPass = this.renderPass;
 
-        //  This is only here because if we don't do _something_ with the context, GL Spector can't see it.
-        //  Technically, we could move it below the dirty bail-out below.
-        // this.reset();
+        //  This is only here because if we don't do _something_ with the context,
+        //  GL Spector can't see it!
+        gl.getContextAttributes();
 
         ProcessBindingQueue();
 
-        //  Cache 1 - Nothing dirty? Display the previous frame
+        //  Nothing dirty? Display the previous frame
         if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0)
         {
             return;
