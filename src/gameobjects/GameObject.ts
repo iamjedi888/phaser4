@@ -1,5 +1,6 @@
 import { GetDefaultOriginX, GetDefaultOriginY } from '../config/defaultorigin';
 import { UpdateLocalTransform, UpdateWorldTransform } from '../components/transform';
+import { addComponent, addEntity } from 'bitecs';
 
 import { BoundsComponent } from '../components/bounds/BoundsComponent';
 import { DIRTY_CONST } from './DIRTY_CONST';
@@ -17,15 +18,15 @@ import { IInputComponent } from '../components/input/IInputComponent';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { InputComponent } from '../components/input/InputComponent';
 import { Matrix2D } from '../math/mat2d/Matrix2D';
-import { Position } from '../components/Position';
+import { Matrix2DComponent } from '../components/Matrix2DComponent';
 import { Rectangle } from '../geom/rectangle/Rectangle';
 import { ReparentChildren } from '../display/ReparentChildren';
 import { TRANSFORM_CONST } from '../components/transform/TRANSFORM_CONST';
-import { Transform2D } from '../components/Transform2D';
+import { Transform2DComponent } from '../components/Transform2DComponent';
+import { UpdateTransform2DSystem } from '../components/UpdateTransform2DSystem';
 import { Vec2 } from '../math/vec2/Vec2';
 import { Vertex } from '../components/Vertex';
 import { World } from '../components/World';
-import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
 {
@@ -86,13 +87,16 @@ export class GameObject implements IGameObject
 
         const id = addEntity(World);
 
-        Transform2D.x[id] = x;
-        Transform2D.y[id] = y;
-        Transform2D.rotation[id] = 0;
-        Transform2D.scaleX[id] = 1;
-        Transform2D.scaleY[id] = 1;
-        Transform2D.skewX[id] = 0;
-        Transform2D.skewY[id] = 0;
+        addComponent(World, Transform2DComponent, id);
+        addComponent(World, Matrix2DComponent, id);
+
+        Transform2DComponent.x[id] = x;
+        Transform2DComponent.y[id] = y;
+        Transform2DComponent.rotation[id] = 0;
+        Transform2DComponent.scaleX[id] = 1;
+        Transform2DComponent.scaleY[id] = 1;
+        Transform2DComponent.skewX[id] = 0;
+        Transform2DComponent.skewY[id] = 0;
 
         this.id = id;
 
@@ -223,24 +227,28 @@ export class GameObject implements IGameObject
     {
         this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
 
+        //  To take advantage of Changed batching we didn't ought to do this here, but on render
+        UpdateTransform2DSystem(World);
+
         const id = this.id;
 
-        const x = Transform2D.x[id];
-        const y = Transform2D.y[id];
-        const rotation = Transform2D.rotation[id];
-        const scaleX = Transform2D.scaleX[id];
-        const scaleY = Transform2D.scaleY[id];
-        const skewX = Transform2D.skewX[id];
-        const skewY = Transform2D.skewY[id];
-
         this.localTransform.set(
-            Math.cos(rotation + skewY) * scaleX,
-            Math.sin(rotation + skewY) * scaleX,
-            -Math.sin(rotation - skewX) * scaleY,
-            Math.cos(rotation - skewX) * scaleY,
-            x,
-            y
+            Matrix2DComponent.a[id],
+            Matrix2DComponent.b[id],
+            Matrix2DComponent.c[id],
+            Matrix2DComponent.d[id],
+            Matrix2DComponent.tx[id],
+            Matrix2DComponent.ty[id]
         );
+
+        // this.localTransform.set(
+        //     Math.cos(rotation + skewY) * scaleX,
+        //     Math.sin(rotation + skewY) * scaleX,
+        //     -Math.sin(rotation - skewX) * scaleY,
+        //     Math.cos(rotation - skewX) * scaleY,
+        //     x,
+        //     y
+        // );
 
         this.updateWorldTransform();
     }
@@ -397,26 +405,26 @@ export class GameObject implements IGameObject
 
     set x (value: number)
     {
-        Transform2D.x[this.id] = value;
+        Transform2DComponent.x[this.id] = value;
 
         this.updateTransform();
     }
 
     get x (): number
     {
-        return Transform2D.x[this.id];
+        return Transform2DComponent.x[this.id];
     }
 
     set y (value: number)
     {
-        Transform2D.y[this.id] = value;
+        Transform2DComponent.y[this.id] = value;
 
         this.updateTransform();
     }
 
     get y (): number
     {
-        return Transform2D.y[this.id];
+        return Transform2DComponent.y[this.id];
     }
 
     set originX (value: number)
@@ -455,62 +463,62 @@ export class GameObject implements IGameObject
 
     set skewX (value: number)
     {
-        Transform2D.skewX[this.id] = value;
+        Transform2DComponent.skewX[this.id] = value;
 
         this.updateTransform();
     }
 
     get skewX (): number
     {
-        return Transform2D.skewX[this.id];
+        return Transform2DComponent.skewX[this.id];
     }
 
     set skewY (value: number)
     {
-        Transform2D.skewY[this.id] = value;
+        Transform2DComponent.skewY[this.id] = value;
 
         this.updateTransform();
     }
 
     get skewY (): number
     {
-        return Transform2D.skewY[this.id];
+        return Transform2DComponent.skewY[this.id];
     }
 
     set scaleX (value: number)
     {
-        Transform2D.scaleX[this.id] = value;
+        Transform2DComponent.scaleX[this.id] = value;
 
         this.updateTransform();
     }
 
     get scaleX (): number
     {
-        return Transform2D.scaleX[this.id];
+        return Transform2DComponent.scaleX[this.id];
     }
 
     set scaleY (value: number)
     {
-        Transform2D.scaleY[this.id] = value;
+        Transform2DComponent.scaleY[this.id] = value;
 
         this.updateTransform();
     }
 
     get scaleY (): number
     {
-        return Transform2D.scaleY[this.id];
+        return Transform2DComponent.scaleY[this.id];
     }
 
     set rotation (value: number)
     {
-        Transform2D.rotation[this.id] = value;
+        Transform2DComponent.rotation[this.id] = value;
 
         this.updateTransform();
     }
 
     get rotation (): number
     {
-        return Transform2D.rotation[this.id];
+        return Transform2DComponent.rotation[this.id];
     }
 
     set passthru (value: boolean)
