@@ -26,7 +26,7 @@ export class WebGLRenderer
     resolution: number;
 
     clearBeforeRender: boolean = true;
-    optimizeRedraw: boolean = true;
+    optimizeRedraw: boolean = false;
     autoResize: boolean = true;
 
     contextLost: boolean = false;
