@@ -3,7 +3,7 @@ import { ICanvasRenderer } from '../ICanvasRenderer';
 import { Matrix2D } from '../../../math/mat2d';
 import { Rectangle } from '../../../geom/rectangle';
 
-export function DrawTexturedQuad (frame: Frame, alpha: number, worldTransform: Matrix2D, transformExtent: Rectangle, renderer: ICanvasRenderer): void
+export function DrawImage (frame: Frame, alpha: number, worldTransform: Matrix2D, transformExtent: Rectangle, renderer: ICanvasRenderer): void
 {
     if (!frame)
     {

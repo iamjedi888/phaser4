@@ -1,7 +1,7 @@
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { Container } from '../container/Container';
 import { DIRTY_CONST } from '../DIRTY_CONST';
-import { DrawTexturedQuad } from '../../renderer/canvas/draw/DrawTexturedQuad';
+import { DrawImage } from '../../renderer/canvas/draw/DrawImage';
 import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
@@ -65,7 +65,7 @@ export class Rectangle extends Container implements IRectangle
     {
         PreRenderVertices(this);
 
-        DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+        DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }
 
     get color (): number
