@@ -11,7 +11,6 @@ import { Vertex } from '../components/Vertex';
 
 export interface IGameObject
 {
-    type: string;
     name: string;
     world: IBaseWorld;
     parent: IGameObject;

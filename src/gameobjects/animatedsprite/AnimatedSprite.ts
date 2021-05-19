@@ -35,8 +35,6 @@ export class AnimatedSprite extends Sprite
     {
         super(x, y, texture, frame);
 
-        this.type = 'AnimatedSprite';
-
         this.currentAnimation;
 
         this.animData = CreateAnimData();

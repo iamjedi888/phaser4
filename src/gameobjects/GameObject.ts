@@ -25,7 +25,6 @@ import { Vertex } from '../components/Vertex';
 
 export class GameObject implements IGameObject
 {
-    type: string = 'GameObject';
     name: string = '';
 
     //  The World this Game Object belongs to. A Game Object can only belong to one World instance at any one time.

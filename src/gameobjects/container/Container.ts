@@ -9,8 +9,6 @@ export class Container extends GameObject implements IContainer
     constructor (x: number = 0, y: number = 0)
     {
         super(x, y);
-
-        this.type = 'Container';
     }
 
     get alpha (): number

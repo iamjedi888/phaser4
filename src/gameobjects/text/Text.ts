@@ -37,8 +37,6 @@ export class Text extends Sprite
     {
         super(x, y, CanvasTexture());
 
-        this.type = 'Text';
-
         const game = GameInstance.get();
 
         this.resolution = game.renderer.resolution;

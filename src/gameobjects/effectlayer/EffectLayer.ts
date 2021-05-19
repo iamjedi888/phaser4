@@ -18,8 +18,6 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
     {
         super();
 
-        this.type = 'EffectLayer';
-
         if (Array.isArray(shaders))
         {
             this.shaders = shaders;
