@@ -32,6 +32,7 @@
         "@rollup/plugin-node-resolve": "^13.0.0",
         "@swc/cli": "^0.1.40",
         "@swc/core": "^1.2.57",
+        "@types/jest": "^26.0.23",
         "@typescript-eslint/eslint-plugin": "4.24.0",
         "@typescript-eslint/parser": "4.24.0",
         "boxen": "^5.0.1",
