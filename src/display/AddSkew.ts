@@ -1,6 +1,6 @@
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IGameObject } from '../gameobjects/IGameObject';
 
-export function AddSkew (skewX: number, skewY: number, ...children: IContainer[]): IContainer[]
+export function AddSkew (skewX: number, skewY: number, ...children: IGameObject[]): IGameObject[]
 {
     children.forEach(child =>
     {

@@ -1,9 +1,9 @@
-import { Stats } from './Stats';
-import { Game } from '../Game';
-import { Texture } from '../textures/Texture';
 import { Frame } from '../textures/Frame';
-import { IContainer } from '../gameobjects/IContainer';
-import { ISprite } from '../gameobjects/ISprite';
+import { Game } from '../Game';
+import { IGameObject } from '../gameobjects/IGameObject';
+import { ISprite } from '../gameobjects/sprite/ISprite';
+import { Stats } from './Stats';
+import { Texture } from '../textures/Texture';
 
 const TreeCSS = `
 .treeContainer {
@@ -15,7 +15,7 @@ const TreeCSS = `
     left: 0;
     top: 0;
   }
-  
+
 .tree,
 .tree ul {
   margin:0 0 0 1em; /* indentation */
@@ -110,13 +110,13 @@ export class StatsTree
         this.root = root;
     }
 
-    buildList (parent: HTMLUListElement, root: IContainer)
+    buildList (parent: HTMLUListElement, root: IGameObject)
     {
-        const children = root.getChildren();
+        const children = root.children;
 
         for (let i: number = 0; i < children.length; i++)
         {
-            let entity = root.children[i];
+            let entity = children[i];
 
             let textureInfo = '';
 
@@ -141,13 +141,13 @@ export class StatsTree
 
             parent.appendChild(li);
 
-            if (entity.isParent)
+            if (entity.numChildren > 0)
             {
                 let ul = document.createElement('ul');
 
                 li.appendChild(ul);
 
-                this.buildList(ul, entity as unknown as IContainer);
+                this.buildList(ul, entity);
             }
         }
     }

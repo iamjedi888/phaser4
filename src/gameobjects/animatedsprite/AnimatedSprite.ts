@@ -4,7 +4,7 @@ import { Frame } from '../../textures/Frame';
 import { IAnimation } from '../../animation/IAnimation';
 import { IAnimationData } from '../../animation/IAnimationData';
 import { IAnimationFrame } from '../../animation/IAnimationFrame';
-import { IContainer } from '../container/IContainer';
+import { IGameObject } from '../IGameObject';
 import { Sprite } from '../sprite/Sprite';
 import { Texture } from '../../textures/Texture';
 
@@ -475,7 +475,7 @@ export class AnimatedSprite extends Sprite
         return (this.animData.isPlaying && this.forward);
     }
 
-    destroy (reparentChildren?: IContainer): void
+    destroy (reparentChildren?: IGameObject): void
     {
         super.destroy(reparentChildren);
 
