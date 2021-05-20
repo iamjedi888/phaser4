@@ -66,6 +66,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         //  Go through and update all dirty LocalTransforms
+        //  TODO - Make this return the updated IDs so we can then update their World Transforms properly
         UpdateLocalTransform2DSystem(GameObjectWorld);
 
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
