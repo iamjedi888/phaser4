@@ -1,7 +1,6 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
 import { PermissionsComponent } from './PermissionsComponent';
 
-export function WillRender (gameObject: IGameObject): boolean
+export function WillRender (id: number): boolean
 {
-    return Boolean(PermissionsComponent.willRender[gameObject.id]);
+    return Boolean(PermissionsComponent.willRender[id]);
 }

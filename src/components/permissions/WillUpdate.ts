@@ -1,7 +1,6 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
 import { PermissionsComponent } from './PermissionsComponent';
 
-export function WillUpdate (gameObject: IGameObject): boolean
+export function WillUpdate (id: number): boolean
 {
-    return Boolean(PermissionsComponent.willUpdate[gameObject.id]);
+    return Boolean(PermissionsComponent.willUpdate[id]);
 }
