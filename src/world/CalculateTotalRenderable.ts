@@ -1,4 +1,5 @@
 import { IWorldRenderData } from './IWorldRenderData';
+import { IsDirtyFrame } from '../components/dirty';
 import { SearchEntry } from '../display/SearchEntryType';
 
 export function CalculateTotalRenderable (entry: SearchEntry, renderData: IWorldRenderData): void
@@ -6,7 +7,7 @@ export function CalculateTotalRenderable (entry: SearchEntry, renderData: IWorld
     renderData.numRendered++;
     renderData.numRenderable++;
 
-    if (entry.node.dirtyFrame >= renderData.gameFrame)
+    if (IsDirtyFrame(entry.node.id, renderData.gameFrame))
     {
         renderData.dirtyFrame++;
     }

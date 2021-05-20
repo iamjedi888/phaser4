@@ -19,15 +19,18 @@ import { MergeRenderData } from './MergeRenderData';
 import { RemoveChildren } from '../display';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SearchEntry } from '../display/SearchEntryType';
+import { WillUpdate } from '../components/permissions';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
     scene: IScene;
 
     camera: IBaseCamera;
+
     renderData: IWorldRenderData;
+
     forceRefresh: boolean = false;
-    events: Map<string, Set<IEventInstance>>;
+
     is3D: boolean = false;
 
     renderList: SearchEntry[];
@@ -41,21 +44,21 @@ export class BaseWorld extends GameObject implements IBaseWorld
         super();
 
         this.scene = scene;
-        this.world = this;
 
-        this.events = new Map();
+        this.world = this;
 
         this.renderList = [];
 
         this._updateListener = On(scene, 'update', (delta: number, time: number) => this.update(delta, time));
         this._renderListener = On(scene, 'render', (renderData: ISceneRenderData) => this.render(renderData));
         this._shutdownListener = On(scene, 'shutdown', () => this.shutdown());
+
         Once(scene, 'destroy', () => this.destroy());
     }
 
     update (delta: number, time: number): void
     {
-        if (!this.willUpdate)
+        if (!WillUpdate(this.id))
         {
             return;
         }
@@ -76,7 +79,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         ResetWorldRenderData(renderData, sceneRenderData.gameFrame);
 
-        if (!this.willRender || !this.visible)
+        if (!this.isRenderable())
         {
             return;
         }
@@ -168,8 +171,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
     {
         super.destroy(reparentChildren);
 
-        Emit(this, GameObjectEvents.DestroyEvent, this);
-
         ResetWorldRenderData(this.renderData, 0);
 
         if (this.camera)
@@ -177,10 +178,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
             this.camera.destroy();
         }
 
-        this.events.clear();
-
         this.camera = null;
         this.renderData = null;
-        this.events = null;
     }
 }

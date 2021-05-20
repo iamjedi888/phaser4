@@ -1,3 +1,5 @@
+import { WillCacheChildren, WillRenderChildren } from '../components/permissions';
+
 import { IGameObject } from '../gameobjects/IGameObject';
 import { SearchEntry } from '../display/SearchEntryType';
 
@@ -15,9 +17,9 @@ export function WorldDepthFirstSearch (cachedLayers: SearchEntry[], parent: IGam
 
             output.push(entry);
 
-            if (node.willRenderChildren && node.numChildren > 0)
+            if (node.numChildren > 0 && WillRenderChildren(node.id))
             {
-                if (node.willCacheChildren)
+                if (WillCacheChildren(node.id))
                 {
                     cachedLayers.push(entry);
                 }

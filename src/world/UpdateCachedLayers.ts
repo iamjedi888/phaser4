@@ -1,6 +1,6 @@
-import { DIRTY_CONST } from '../gameobjects/DIRTY_CONST';
 import { HasDirtyChildren } from './HasDirtyChildren';
 import { SearchEntry } from '../display/SearchEntryType';
+import { SetDirtyChildCache } from '../components/dirty';
 
 export function UpdateCachedLayers (cachedLayers: SearchEntry[], dirtyCamera: boolean): void
 {
@@ -9,7 +9,7 @@ export function UpdateCachedLayers (cachedLayers: SearchEntry[], dirtyCamera: bo
         if (dirtyCamera || HasDirtyChildren(layer))
         {
             //  Camera is dirty, or layer has at least one dirty child
-            layer.node.setDirty(DIRTY_CONST.CHILD_CACHE);
+            SetDirtyChildCache(layer.node.id);
         }
         else
         {

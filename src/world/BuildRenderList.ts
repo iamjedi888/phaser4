@@ -1,5 +1,6 @@
 import { CalculateTotalRenderable } from './CalculateTotalRenderable';
 import { IBaseWorld } from './IBaseWorld';
+import { IsDirtyFrame } from '../components/dirty';
 import { SearchEntry } from '../display/SearchEntryType';
 import { UpdateCachedLayers } from './UpdateCachedLayers';
 import { WorldDepthFirstSearch } from './WorldDepthFirstSearch';
@@ -34,7 +35,7 @@ export function BuildRenderList (world: IBaseWorld): void
             renderData.numRendered++;
             renderData.numRenderable++;
 
-            if (entry.node.dirtyFrame >= renderData.gameFrame)
+            if (IsDirtyFrame(entry.node.id, renderData.gameFrame))
             {
                 renderData.dirtyFrame++;
             }
