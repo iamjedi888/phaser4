@@ -21,17 +21,14 @@ const updateWorldTransformSystem = defineSystem(world =>
 
         if (!parent)
         {
-            //  copy local to world
             CopyLocalToWorld(id, id);
         }
         else if (!WillTransformChildren(id))
         {
-            //  copy parent world to world
             CopyWorldToWorld(parent.id, id);
         }
         else
         {
-            // multiply parent world with local
             MultiplyLocalWithWorld(parent.id, id);
         }
     }
