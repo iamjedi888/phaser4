@@ -1,6 +1,6 @@
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IGameObject } from '../gameobjects/IGameObject';
 
-export function AddRotation (rotation: number, ...children: IContainer[]): IContainer[]
+export function AddRotation (rotation: number, ...children: IGameObject[]): IGameObject[]
 {
     children.forEach(child =>
     {

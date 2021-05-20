@@ -23,8 +23,6 @@ export class Rectangle extends Container implements IRectangle
     {
         super(x, y);
 
-        this.type = 'Rectangle';
-
         this.vertices = [ new Vertex(), new Vertex(), new Vertex(), new Vertex() ];
 
         this.color = color;

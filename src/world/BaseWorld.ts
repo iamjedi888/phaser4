@@ -40,7 +40,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
     {
         super();
 
-        this.type = 'BaseWorld';
         this.scene = scene;
         this.world = this;
 

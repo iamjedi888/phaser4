@@ -58,8 +58,6 @@ export class NewCamera3D
 
     constructor (fov: number = 45, near: number = 0.1, far: number = 1000)
     {
-        this.type = 'Camera3D';
-
         this._fov = fov;
         this._near = near;
         this._far = far;

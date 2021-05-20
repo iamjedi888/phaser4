@@ -34,7 +34,6 @@ export class SpriteBatch extends Layer implements ISpriteBatch
     {
         super();
 
-        this.type = 'SpriteBatch';
         this.willRender = true;
 
         this.setTexture(texture);

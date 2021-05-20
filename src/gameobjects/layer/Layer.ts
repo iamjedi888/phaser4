@@ -10,7 +10,6 @@ export class Layer extends GameObject
     {
         super();
 
-        this.type = 'Layer';
         this.passthru = true;
         this.willRender = false;
     }

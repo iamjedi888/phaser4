@@ -27,8 +27,6 @@ export class Sprite extends Container implements ISprite
     {
         super(x, y);
 
-        this.type = 'Sprite';
-
         this.vertices = [ new Vertex(), new Vertex(), new Vertex(), new Vertex() ];
 
         this.setTexture(texture, frame);

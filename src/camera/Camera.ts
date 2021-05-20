@@ -31,8 +31,6 @@ export class Camera implements ICamera
 
     constructor ()
     {
-        this.type = 'Camera';
-
         this.dirtyRender = true;
 
         const game = GameInstance.get();

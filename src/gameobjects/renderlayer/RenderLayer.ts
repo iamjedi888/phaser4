@@ -26,8 +26,6 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         super();
 
-        this.type = 'RenderLayer';
-
         this.willRender = true;
         this.willRenderChildren = true;
         this.willCacheChildren = true;

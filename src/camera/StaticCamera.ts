@@ -23,8 +23,6 @@ export class StaticCamera implements IStaticCamera
 
     constructor ()
     {
-        this.type = 'StaticCamera';
-
         this.dirtyRender = true;
 
         const game = GameInstance.get();
