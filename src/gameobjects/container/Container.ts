@@ -1,47 +1,22 @@
+import { AddTransform2DComponent, Extent2DComponent, Transform2DComponent, UpdateExtent } from '../../components/transform/';
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
-import { UpdateLocalTransform, UpdateWorldTransform } from '../../components/transform';
 
-import { AddTransform2DComponent } from '../../components/transform/AddTransform2DComponent';
-import { DIRTY_CONST } from '../DIRTY_CONST';
-import { Extent2DComponent } from '../../components/transform/Extent2DComponent';
 import { GameObject } from '../GameObject';
-import { GameObjectWorld } from '../../components/GameObjectWorld';
-import { GetRectangleSize } from '../../geom/rectangle/GetRectangleSize';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
-import { LocalMatrix2DComponent } from '../../components/transform/LocalMatrix2DComponent';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
-import { SetDirtyAlpha } from '../../components/dirty';
-import { SetExtent } from '../../components/transform/SetExtent';
-import { Transform2DComponent } from '../../components/transform/Transform2DComponent';
-import { UpdateExtent } from '../../components/transform/UpdateExtent';
-import { UpdateTransform2DSystem } from '../../components/transform/UpdateTransform2DSystem';
+import { SetDirtyAlpha } from '../../components/dirty/';
 import { Vec2 } from '../../math/vec2/Vec2';
-import { WorldMatrix2DComponent } from '../../components/transform/WorldMatrix2DComponent';
-import { addComponent } from 'bitecs';
 
 export class Container extends GameObject implements IContainer
 {
     protected _alpha: number = 1;
 
-    // localTransform: Matrix2D;
-    // worldTransform: Matrix2D;
-    // transformExtent: Rectangle;
-    // bounds: IBoundsComponent;
-    // input: IInputComponent;
-
     constructor (x: number = 0, y: number = 0)
     {
         super();
 
-        // this.bounds = new BoundsComponent(this);
-        // this.input = new InputComponent(this);
-        // this.transformExtent = new Rectangle();
-
         AddTransform2DComponent(this.id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
-
-        UpdateTransform2DSystem(GameObjectWorld);
-        // this.updateTransform();
     }
 
     /*
