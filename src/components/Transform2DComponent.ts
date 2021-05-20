@@ -7,7 +7,9 @@ const Transform2D = defineComponent({
     scaleX: Types.f32,
     scaleY: Types.f32,
     skewX: Types.f32,
-    skewY: Types.f32
+    skewY: Types.f32,
+    originX: Types.f32,
+    originY: Types.f32
 });
 
 export const Transform2DComponent = Transform2D;
