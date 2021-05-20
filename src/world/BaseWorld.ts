@@ -4,7 +4,9 @@ import * as WorldEvents from './events';
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Emit, Off, On, Once } from '../events';
 
+import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BuildRenderList } from './BuildRenderList';
+import { CopyLocalToWorld } from '../components/transform/CopyLocalToWorld';
 import { GameObject } from '../gameobjects';
 import { GameObjectWorld } from '../components/GameObjectWorld';
 import { IBaseCamera } from '../camera/IBaseCamera';
@@ -21,6 +23,7 @@ import { RemoveChildren } from '../display';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SearchEntry } from '../display/SearchEntryType';
 import { UpdateLocalTransform2DSystem } from '../components/transform';
+import { UpdateWorldTransform2DSystem } from '../components/transform/UpdateWorldTransform2DSystem';
 import { WillUpdate } from '../components/permissions';
 
 export class BaseWorld extends GameObject implements IBaseWorld
@@ -55,6 +58,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this._renderListener = On(scene, 'render', (renderData: ISceneRenderData) => this.render(renderData));
         this._shutdownListener = On(scene, 'shutdown', () => this.shutdown());
 
+        AddTransform2DComponent(this.id);
+
         Once(scene, 'destroy', () => this.destroy());
     }
 
@@ -66,8 +71,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         //  Go through and update all dirty LocalTransforms
-        //  TODO - Make this return the updated IDs so we can then update their World Transforms properly
+        //  TODO - Make this return the updated IDs so we can then update their World Transforms properly?
         UpdateLocalTransform2DSystem(GameObjectWorld);
+        UpdateWorldTransform2DSystem(GameObjectWorld);
 
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
 
