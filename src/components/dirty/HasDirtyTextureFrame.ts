@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyTextureFrame (gameObject: IGameObject): boolean
+export function HasDirtyTextureFrame (id: number): boolean
 {
-    return Boolean(DirtyComponent.textureFrame[gameObject.id]);
+    return Boolean(DirtyComponent.textureFrame[id]);
 }

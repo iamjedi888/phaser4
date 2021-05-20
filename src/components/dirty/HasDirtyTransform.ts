@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyTransform (gameObject: IGameObject): boolean
+export function HasDirtyTransform (id: number): boolean
 {
-    return Boolean(DirtyComponent.transform[gameObject.id]);
+    return Boolean(DirtyComponent.transform[id]);
 }

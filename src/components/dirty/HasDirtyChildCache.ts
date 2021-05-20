@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyChildCache (gameObject: IGameObject): boolean
+export function HasDirtyChildCache (id: number): boolean
 {
-    return Boolean(DirtyComponent.childCache[gameObject.id]);
+    return Boolean(DirtyComponent.childCache[id]);
 }

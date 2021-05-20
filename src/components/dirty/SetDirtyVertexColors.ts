@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function SetDirtyVertexColors (gameObject: IGameObject): void
+export function SetDirtyVertexColors (id: number): void
 {
-    DirtyComponent.vertexColors[gameObject.id] = 1;
+    DirtyComponent.vertexColors[id] = 1;
 }

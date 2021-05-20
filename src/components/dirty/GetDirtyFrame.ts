@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function GetDirtyFrame (gameObject: IGameObject): number
+export function GetDirtyFrame (id: number): number
 {
-    return DirtyComponent.frame[gameObject.id];
+    return DirtyComponent.frame[id];
 }

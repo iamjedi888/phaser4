@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyBounds (gameObject: IGameObject): boolean
+export function HasDirtyBounds (id: number): boolean
 {
-    return Boolean(DirtyComponent.bounds[gameObject.id]);
+    return Boolean(DirtyComponent.bounds[id]);
 }

@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyAlpha (gameObject: IGameObject): boolean
+export function HasDirtyAlpha (id: number): boolean
 {
-    return Boolean(DirtyComponent.alpha[gameObject.id]);
+    return Boolean(DirtyComponent.alpha[id]);
 }

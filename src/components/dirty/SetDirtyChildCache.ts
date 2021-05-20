@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function SetDirtyChildCache (gameObject: IGameObject): void
+export function SetDirtyChildCache (id: number): void
 {
-    DirtyComponent.childCache[gameObject.id] = 1;
+    DirtyComponent.childCache[id] = 1;
 }

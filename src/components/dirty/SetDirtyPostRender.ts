@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function SetDirtyPostRender (gameObject: IGameObject): void
+export function SetDirtyPostRender (id: number): void
 {
-    DirtyComponent.postRender[gameObject.id] = 1;
+    DirtyComponent.postRender[id] = 1;
 }

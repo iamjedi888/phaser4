@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyTexture (gameObject: IGameObject): boolean
+export function HasDirtyTexture (id: number): boolean
 {
-    return Boolean(DirtyComponent.texture[gameObject.id]);
+    return Boolean(DirtyComponent.texture[id]);
 }

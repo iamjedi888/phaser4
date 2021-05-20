@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyUpdate (gameObject: IGameObject): boolean
+export function HasDirtyUpdate (id: number): boolean
 {
-    return Boolean(DirtyComponent.update[gameObject.id]);
+    return Boolean(DirtyComponent.update[id]);
 }

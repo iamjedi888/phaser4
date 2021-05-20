@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function SetDirtyTextureFrame (gameObject: IGameObject): void
+export function SetDirtyTextureFrame (id: number): void
 {
-    DirtyComponent.textureFrame[gameObject.id] = 1;
+    DirtyComponent.textureFrame[id] = 1;
 }

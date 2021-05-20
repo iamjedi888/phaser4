@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyPostRender (gameObject: IGameObject): boolean
+export function HasDirtyPostRender (id: number): boolean
 {
-    return Boolean(DirtyComponent.postRender[gameObject.id]);
+    return Boolean(DirtyComponent.postRender[id]);
 }

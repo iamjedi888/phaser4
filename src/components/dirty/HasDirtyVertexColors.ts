@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function HasDirtyVertexColors (gameObject: IGameObject): boolean
+export function HasDirtyVertexColors (id: number): boolean
 {
-    return Boolean(DirtyComponent.vertexColors[gameObject.id]);
+    return Boolean(DirtyComponent.vertexColors[id]);
 }

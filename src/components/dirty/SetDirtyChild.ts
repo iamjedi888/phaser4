@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function SetDirtyChild (gameObject: IGameObject): void
+export function SetDirtyChild (id: number): void
 {
-    DirtyComponent.child[gameObject.id] = 1;
+    DirtyComponent.child[id] = 1;
 }

@@ -1,7 +1,6 @@
 import { DirtyComponent } from './DirtyComponent';
-import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function SetDirtyAlpha (gameObject: IGameObject): void
+export function SetDirtyAlpha (id: number): void
 {
-    DirtyComponent.alpha[gameObject.id] = 1;
+    DirtyComponent.alpha[id] = 1;
 }
