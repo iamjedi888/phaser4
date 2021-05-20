@@ -11,6 +11,7 @@ import { HasDirtyTextureFrame } from './HasDirtyTextureFrame';
 import { HasDirtyTransform } from './HasDirtyTransform';
 import { HasDirtyUpdate } from './HasDirtyUpdate';
 import { HasDirtyVertexColors } from './HasDirtyVertexColors';
+import { IsDirtyFrame } from './IsDirtyFrame';
 import { SetDirtyAlpha } from './SetDirtyAlpha';
 import { SetDirtyBounds } from './SetDirtyBounds';
 import { SetDirtyChild } from './SetDirtyChild';
@@ -37,6 +38,7 @@ export {
     HasDirtyTransform,
     HasDirtyUpdate,
     HasDirtyVertexColors,
+    IsDirtyFrame,
     SetDirtyAlpha,
     SetDirtyBounds,
     SetDirtyChild,
