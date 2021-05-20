@@ -1,6 +1,6 @@
 import { AddPermissionsComponent, WillRender } from '../components/permissions';
 
-import { AddDirtyComponent } from '../components/AddDirtyComponent';
+import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
@@ -15,7 +15,7 @@ import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
 {
-    id: number;
+    readonly id: number = addEntity(GameObjectWorld);
 
     name: string = '';
 
@@ -40,12 +40,10 @@ export class GameObject implements IGameObject
 
         this.events = new Map();
 
-        const id = addEntity(GameObjectWorld);
+        // const id = addEntity(GameObjectWorld);
 
-        AddPermissionsComponent(id);
-        AddDirtyComponent(id);
-
-        this.id = id;
+        AddPermissionsComponent(this.id);
+        AddDirtyComponent(this.id);
     }
 
     isRenderable (): boolean

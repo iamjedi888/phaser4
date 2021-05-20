@@ -1,5 +1,5 @@
 import { DirtyComponent } from './DirtyComponent';
-import { GameObjectWorld } from './GameObjectWorld';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { addComponent } from 'bitecs';
 
 export function AddDirtyComponent (id: number): void
@@ -11,7 +11,7 @@ export function AddDirtyComponent (id: number): void
     DirtyComponent.update[id] = 1;
     DirtyComponent.childCache[id] = 0;
     DirtyComponent.postRender[id] = 0;
-    DirtyComponent.colors[id] = 1;
+    DirtyComponent.vertexColors[id] = 1;
     DirtyComponent.bounds[id] = 1;
     DirtyComponent.texture[id] = 0;
     DirtyComponent.textureFrame[id] = 0;

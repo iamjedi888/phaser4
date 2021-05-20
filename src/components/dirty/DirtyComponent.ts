@@ -6,7 +6,7 @@ const Dirty = defineComponent({
     update: Types.ui8,
     childCache: Types.ui8,
     postRender: Types.ui8,
-    colors: Types.ui8,
+    vertexColors: Types.ui8,
     bounds: Types.ui8,
     texture: Types.ui8,
     textureFrame: Types.ui8,
