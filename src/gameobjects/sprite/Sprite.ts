@@ -1,25 +1,29 @@
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { Container } from '../container/Container';
-import { DIRTY_CONST } from '../DIRTY_CONST';
 import { DrawImage } from '../../renderer/canvas/draw/DrawImage';
 import { Frame } from '../../textures/Frame';
+import { GetQuadVertices } from '../../components/transform/GetQuadVertices';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IFrame } from '../../textures/IFrame';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
+import { PackColors } from '../../renderer/webgl1/colors/PackColors';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
+import { SetDirtyVertexColors } from '../../components/dirty';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
 import { Vertex } from '../../components/Vertex';
+import { WillRender } from '../../components/permissions';
 
 export class Sprite extends Container implements ISprite
 {
     texture: Texture;
     frame: Frame;
     hasTexture: boolean = false;
+    vertices: Vertex[];
 
     protected _tint: number = 0xffffff;
 
@@ -48,12 +52,23 @@ export class Sprite extends Container implements ISprite
 
     isRenderable (): boolean
     {
-        return (this.visible && this.willRender && this.hasTexture && this.alpha > 0);
+        return (this.visible && this.hasTexture && WillRender(this.id) && this.alpha > 0);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        PreRenderVertices(this);
+        // PreRenderVertices(this);
+
+        const vertices = this.vertices;
+
+        PackColors(vertices);
+
+        const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetQuadVertices(this.id);
+
+        vertices[0].setPosition(x0, y0);
+        vertices[1].setPosition(x1, y1);
+        vertices[2].setPosition(x2, y2);
+        vertices[3].setPosition(x3, y3);
 
         BatchTexturedQuad(this.texture, this.vertices, renderPass);
     }
@@ -81,7 +96,7 @@ export class Sprite extends Container implements ISprite
                 vertex.setTint(value);
             });
 
-            this.setDirty(DIRTY_CONST.COLORS);
+            SetDirtyVertexColors(this.id);
         }
     }
 
@@ -89,6 +104,7 @@ export class Sprite extends Container implements ISprite
     {
         super.destroy(reparentChildren);
 
+        this.vertices.length = 0;
         this.texture = null;
         this.frame = null;
         this.hasTexture = false;

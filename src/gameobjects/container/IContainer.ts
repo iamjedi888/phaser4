@@ -5,14 +5,6 @@ import { Vec2 } from '../../math/vec2/Vec2';
 
 export interface IContainer extends IGameObject
 {
-    // bounds: IBoundsComponent;
-    // input: IInputComponent;
-    // vertices: Vertex[];
-
-    // localTransform: Matrix2D;
-    // worldTransform: Matrix2D;
-    // transformExtent: Rectangle;
-
     x: number;
     y: number;
     width: number;
@@ -27,11 +19,7 @@ export interface IContainer extends IGameObject
 
     alpha: number;
 
-    getBounds (): Rectangle;
-
-    // updateTransform (flag: number, value: number): void;
-    // updateLocalTransform (): void;
-    // updateWorldTransform (): void;
+    // getBounds (): Rectangle;
 
     setSize (width: number, height?: number): this;
     setPosition (x: number, y: number): this;

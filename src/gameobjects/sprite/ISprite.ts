@@ -3,6 +3,7 @@ import { IContainer } from '../container/IContainer';
 import { IFrame } from '../../textures/IFrame';
 import { ITexture } from '../../textures/ITexture';
 import { Texture } from '../../textures/Texture';
+import { Vertex } from '../../components/Vertex';
 
 export interface ISprite extends IContainer
 {
@@ -10,6 +11,7 @@ export interface ISprite extends IContainer
     frame: Frame;
     hasTexture: boolean;
     tint: number;
+    vertices: Vertex[];
     setTexture (key: string | ITexture | IFrame, frame?: string | number | IFrame): this;
     setFrame (key?: string | number | IFrame): this;
 }
