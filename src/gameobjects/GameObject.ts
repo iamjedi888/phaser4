@@ -4,6 +4,7 @@ import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
+import { GameObjectCache } from './GameObjectCache';
 import { GameObjectWorld } from '../components/GameObjectWorld';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
@@ -44,6 +45,8 @@ export class GameObject implements IGameObject
 
         AddPermissionsComponent(this.id);
         AddDirtyComponent(this.id);
+
+        GameObjectCache.set(this.id, this);
     }
 
     isRenderable (): boolean

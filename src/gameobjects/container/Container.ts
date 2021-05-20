@@ -1,29 +1,32 @@
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 import { UpdateLocalTransform, UpdateWorldTransform } from '../../components/transform';
 
-import { AddTransform2DComponent } from '../../components/AddTransform2DComponent';
+import { AddTransform2DComponent } from '../../components/transform/AddTransform2DComponent';
 import { DIRTY_CONST } from '../DIRTY_CONST';
+import { Extent2DComponent } from '../../components/transform/Extent2DComponent';
 import { GameObject } from '../GameObject';
 import { GameObjectWorld } from '../../components/GameObjectWorld';
 import { GetRectangleSize } from '../../geom/rectangle/GetRectangleSize';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
-import { Matrix2D } from '../../math/mat2d/Matrix2D';
-import { Matrix2DComponent } from '../../components/Matrix2DComponent';
+import { LocalMatrix2DComponent } from '../../components/transform/LocalMatrix2DComponent';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
-import { Transform2DComponent } from '../../components/Transform2DComponent';
-import { UpdateTransform2DSystem } from '../../components/UpdateTransform2DSystem';
+import { SetDirtyAlpha } from '../../components/dirty';
+import { SetExtent } from '../../components/transform/SetExtent';
+import { Transform2DComponent } from '../../components/transform/Transform2DComponent';
+import { UpdateExtent } from '../../components/transform/UpdateExtent';
+import { UpdateTransform2DSystem } from '../../components/transform/UpdateTransform2DSystem';
 import { Vec2 } from '../../math/vec2/Vec2';
+import { WorldMatrix2DComponent } from '../../components/transform/WorldMatrix2DComponent';
 import { addComponent } from 'bitecs';
 
 export class Container extends GameObject implements IContainer
 {
     protected _alpha: number = 1;
 
-    localTransform: Matrix2D;
-    worldTransform: Matrix2D;
-    transformExtent: Rectangle;
-
+    // localTransform: Matrix2D;
+    // worldTransform: Matrix2D;
+    // transformExtent: Rectangle;
     // bounds: IBoundsComponent;
     // input: IInputComponent;
 
@@ -33,20 +36,12 @@ export class Container extends GameObject implements IContainer
 
         // this.bounds = new BoundsComponent(this);
         // this.input = new InputComponent(this);
-
-        this.localTransform = new Matrix2D();
-        this.worldTransform = new Matrix2D();
-
-        this.transformExtent = new Rectangle();
-
-        addComponent(GameObjectWorld, Matrix2DComponent, this.id);
+        // this.transformExtent = new Rectangle();
 
         AddTransform2DComponent(this.id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
 
-        this.updateTransform();
-
-        // this.updateLocalTransform();
-        // this.updateWorldTransform();
+        UpdateTransform2DSystem(GameObjectWorld);
+        // this.updateTransform();
     }
 
     /*
@@ -67,7 +62,6 @@ export class Container extends GameObject implements IContainer
 
         UpdateLocalTransform(this.localTransform, this.transformData);
     }
-    */
 
     updateTransform (): void
     {
@@ -85,13 +79,15 @@ export class Container extends GameObject implements IContainer
             Matrix2DComponent.d[id],
             Matrix2DComponent.tx[id],
             Matrix2DComponent.ty[id]
-        );
+            );
 
-        this.updateWorldTransform();
-    }
+            this.updateWorldTransform();
+        }
+    */
 
     updateWorldTransform (): void
     {
+        /*
         this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
 
         const parentWorldTransform = (this.parent) ? this.parent.worldTransform : undefined;
@@ -110,34 +106,7 @@ export class Container extends GameObject implements IContainer
                 child.updateWorldTransform();
             }
         }
-    }
-
-    //  The area covered by this transform component + origin + size (usually from a Frame)
-    setExtent (x: number, y: number, width: number, height: number): void
-    {
-        this.transformExtent.set(x, y, width, height);
-
-        this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-    }
-
-    updateExtent (width?: number, height?: number): void
-    {
-        const extent = this.transformExtent;
-
-        if (width !== undefined)
-        {
-            extent.width = width;
-        }
-
-        if (height !== undefined)
-        {
-            extent.height = height;
-        }
-
-        extent.x = -(this.originX) * extent.width;
-        extent.y = -(this.originY) * extent.height;
-
-        this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
+        */
     }
 
     getBounds (): Rectangle
@@ -147,7 +116,7 @@ export class Container extends GameObject implements IContainer
 
     setSize (width: number, height: number = width): this
     {
-        this.updateExtent(width, height);
+        UpdateExtent(this.id, width, height);
 
         return this;
     }
@@ -185,15 +154,19 @@ export class Container extends GameObject implements IContainer
 
     setOrigin (x: number, y: number = x): this
     {
-        this.originX = x;
-        this.originY = y;
+        const id = this.id;
+
+        Transform2DComponent.originX[id] = x;
+        Transform2DComponent.originY[id] = y;
+
+        UpdateExtent(id, this.width, this.height);
 
         return this;
     }
 
     getSize (out: Vec2 = new Vec2()): Vec2
     {
-        return GetRectangleSize(this.transformExtent, out);
+        return out.set(Extent2DComponent.width[this.id], Extent2DComponent.height[this.id]);
     }
 
     getPosition (out: Vec2 = new Vec2()): Vec2
@@ -223,29 +196,27 @@ export class Container extends GameObject implements IContainer
 
     set width (value: number)
     {
-        this.updateExtent(value);
+        UpdateExtent(this.id, value, this.height);
     }
 
     get width (): number
     {
-        return this.transformExtent.width;
+        return Extent2DComponent.width[this.id];
     }
 
     set height (value: number)
     {
-        this.updateExtent(undefined, value);
+        UpdateExtent(this.id, this.width, value);
     }
 
     get height (): number
     {
-        return this.transformExtent.height;
+        return Extent2DComponent.height[this.id];
     }
 
     set x (value: number)
     {
         Transform2DComponent.x[this.id] = value;
-
-        this.updateTransform();
     }
 
     get x (): number
@@ -256,8 +227,6 @@ export class Container extends GameObject implements IContainer
     set y (value: number)
     {
         Transform2DComponent.y[this.id] = value;
-
-        this.updateTransform();
     }
 
     get y (): number
@@ -269,7 +238,7 @@ export class Container extends GameObject implements IContainer
     {
         Transform2DComponent.originX[this.id] = value;
 
-        this.updateExtent();
+        UpdateExtent(this.id, this.width, this.height);
     }
 
     get originX (): number
@@ -281,7 +250,7 @@ export class Container extends GameObject implements IContainer
     {
         Transform2DComponent.originY[this.id] = value;
 
-        this.updateExtent();
+        UpdateExtent(this.id, this.width, this.height);
     }
 
     get originY (): number
@@ -292,8 +261,6 @@ export class Container extends GameObject implements IContainer
     set skewX (value: number)
     {
         Transform2DComponent.skewX[this.id] = value;
-
-        this.updateTransform();
     }
 
     get skewX (): number
@@ -304,8 +271,6 @@ export class Container extends GameObject implements IContainer
     set skewY (value: number)
     {
         Transform2DComponent.skewY[this.id] = value;
-
-        this.updateTransform();
     }
 
     get skewY (): number
@@ -316,8 +281,6 @@ export class Container extends GameObject implements IContainer
     set scaleX (value: number)
     {
         Transform2DComponent.scaleX[this.id] = value;
-
-        this.updateTransform();
     }
 
     get scaleX (): number
@@ -328,8 +291,6 @@ export class Container extends GameObject implements IContainer
     set scaleY (value: number)
     {
         Transform2DComponent.scaleY[this.id] = value;
-
-        this.updateTransform();
     }
 
     get scaleY (): number
@@ -340,8 +301,6 @@ export class Container extends GameObject implements IContainer
     set rotation (value: number)
     {
         Transform2DComponent.rotation[this.id] = value;
-
-        this.updateTransform();
     }
 
     get rotation (): number
@@ -356,6 +315,11 @@ export class Container extends GameObject implements IContainer
 
     set alpha (value: number)
     {
+        this._alpha = value;
+
+        SetDirtyAlpha(this.id);
+
+        /*
         if (value !== this._alpha)
         {
             this._alpha = value;
@@ -367,6 +331,7 @@ export class Container extends GameObject implements IContainer
 
             this.setDirty(DIRTY_CONST.COLORS);
         }
+        */
     }
 
     destroy (reparentChildren?: IGameObject): void

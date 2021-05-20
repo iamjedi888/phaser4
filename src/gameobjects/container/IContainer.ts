@@ -9,9 +9,9 @@ export interface IContainer extends IGameObject
     // input: IInputComponent;
     // vertices: Vertex[];
 
-    localTransform: Matrix2D;
-    worldTransform: Matrix2D;
-    transformExtent: Rectangle;
+    // localTransform: Matrix2D;
+    // worldTransform: Matrix2D;
+    // transformExtent: Rectangle;
 
     x: number;
     y: number;
@@ -29,11 +29,9 @@ export interface IContainer extends IGameObject
 
     getBounds (): Rectangle;
 
-    updateTransform (flag: number, value: number): void;
-    updateLocalTransform (): void;
-    updateWorldTransform (): void;
-    updateExtent (width?: number, height?: number): void;
-    setExtent (x: number, y: number, width: number, height: number): void;
+    // updateTransform (flag: number, value: number): void;
+    // updateLocalTransform (): void;
+    // updateWorldTransform (): void;
 
     setSize (width: number, height?: number): this;
     setPosition (x: number, y: number): this;
