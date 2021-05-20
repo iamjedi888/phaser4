@@ -1,6 +1,6 @@
 import { Types, defineComponent } from 'bitecs';
 
-const Matrix2DC = defineComponent({
+const WorldMatrix2D = defineComponent({
     a: Types.f32,
     b: Types.f32,
     c: Types.f32,
@@ -9,4 +9,4 @@ const Matrix2DC = defineComponent({
     ty: Types.f32
 });
 
-export const Matrix2DComponent = Matrix2DC;
+export const WorldMatrix2DComponent = WorldMatrix2D;

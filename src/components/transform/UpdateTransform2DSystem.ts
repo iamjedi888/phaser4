@@ -1,6 +1,6 @@
 import { Changed, defineQuery, defineSystem } from 'bitecs';
 
-import { Matrix2DComponent } from './Matrix2DComponent';
+import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
 import { Transform2DComponent } from './Transform2DComponent';
 
 const changedTransformQuery = defineQuery([ Changed(Transform2DComponent) ]);
@@ -21,12 +21,12 @@ const updateTransformSystem = defineSystem(world =>
         const skewX = Transform2DComponent.skewX[id];
         const skewY = Transform2DComponent.skewY[id];
 
-        Matrix2DComponent.a[id] = Math.cos(rotation + skewY) * scaleX;
-        Matrix2DComponent.b[id] = Math.sin(rotation + skewY) * scaleX;
-        Matrix2DComponent.c[id] = -Math.sin(rotation - skewX) * scaleY;
-        Matrix2DComponent.d[id] = Math.cos(rotation - skewX) * scaleY;
-        Matrix2DComponent.tx[id] = x;
-        Matrix2DComponent.ty[id] = y;
+        LocalMatrix2DComponent.a[id] = Math.cos(rotation + skewY) * scaleX;
+        LocalMatrix2DComponent.b[id] = Math.sin(rotation + skewY) * scaleX;
+        LocalMatrix2DComponent.c[id] = -Math.sin(rotation - skewX) * scaleY;
+        LocalMatrix2DComponent.d[id] = Math.cos(rotation - skewX) * scaleY;
+        LocalMatrix2DComponent.tx[id] = x;
+        LocalMatrix2DComponent.ty[id] = y;
     }
 });
 
