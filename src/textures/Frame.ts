@@ -1,5 +1,6 @@
+import { IContainer } from '../gameobjects/container/IContainer';
 import { IFrame } from './IFrame';
-import { IGameObject } from '../gameobjects/IGameObject';
+import { SetExtent } from '../components/transform/SetExtent';
 import { Texture } from './Texture';
 import { Vertex } from '../components';
 
@@ -114,7 +115,7 @@ export class Frame implements IFrame
         return { left, right, top, bottom };
     }
 
-    copyToExtent (child: IGameObject): this
+    copyToExtent (child: IContainer): this
     {
         const originX = child.originX;
         const originY = child.originY;
@@ -144,7 +145,7 @@ export class Frame implements IFrame
             height = sourceSizeHeight;
         }
 
-        child.setExtent(x, y, width, height);
+        SetExtent(child.id, x, y, width, height);
 
         return this;
     }
