@@ -1,4 +1,4 @@
-import { IGameObject } from '../gameobjects/IGameObject';
+import { IGameObject } from '../../gameobjects/IGameObject';
 import { PermissionsComponent } from './PermissionsComponent';
 
 export function SetWillRenderChildren (value: boolean, ...children: IGameObject[]): IGameObject[]

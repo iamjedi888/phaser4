@@ -1,4 +1,4 @@
-import { IGameObject } from '../gameobjects/IGameObject';
+import { IGameObject } from '../../gameobjects/IGameObject';
 import { PermissionsComponent } from './PermissionsComponent';
 
 export function SetWillCacheChildren (value: boolean, ...children: IGameObject[]): IGameObject[]

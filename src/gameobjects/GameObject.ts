@@ -1,5 +1,6 @@
+import { AddPermissionsComponent, WillRender } from '../components/permissions';
+
 import { AddDirtyComponent } from '../components/AddDirtyComponent';
-import { AddPermissionsComponent } from '../components/AddPermissionsComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
@@ -10,7 +11,6 @@ import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ReparentChildren } from '../display/ReparentChildren';
-import { WillRender } from '../components/WillRender';
 import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
