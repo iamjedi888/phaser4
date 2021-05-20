@@ -3,11 +3,11 @@ import { Changed, defineQuery, defineSystem } from 'bitecs';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
 import { Transform2DComponent } from './Transform2DComponent';
 
-const changedTransformQuery = defineQuery([ Changed(Transform2DComponent) ]);
+const changedLocalTransformQuery = defineQuery([ Changed(Transform2DComponent) ]);
 
-const updateTransformSystem = defineSystem(world =>
+const updateLocalTransformSystem = defineSystem(world =>
 {
-    const entities = changedTransformQuery(world);
+    const entities = changedLocalTransformQuery(world);
 
     for (let i = 0; i < entities.length; i++)
     {
@@ -30,4 +30,4 @@ const updateTransformSystem = defineSystem(world =>
     }
 });
 
-export const UpdateTransform2DSystem = updateTransformSystem;
+export const UpdateLocalTransform2DSystem = updateLocalTransformSystem;

@@ -9,9 +9,10 @@ import { PreRenderVertices } from './PreRenderVertices';
 import { SetExtent } from './SetExtent';
 import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateExtent } from './UpdateExtent';
-import { UpdateTransform2DSystem } from './UpdateTransform2DSystem';
+import { UpdateLocalTransform2DSystem } from './UpdateLocalTransform2DSystem';
 import { UpdateVertices } from './UpdateVertices';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
+import { UpdateWorldTransform2DSystem } from './UpdateWorldTransform2DSystem';
 import { WorldMatrix2DComponent } from './WorldMatrix2DComponent';
 
 export {
@@ -26,8 +27,9 @@ export {
     SetExtent,
     Transform2DComponent,
     UpdateExtent,
-    UpdateTransform2DSystem,
+    UpdateLocalTransform2DSystem,
     UpdateVertices,
     UpdateWorldTransform,
+    UpdateWorldTransform2DSystem,
     WorldMatrix2DComponent
 };
