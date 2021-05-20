@@ -1,4 +1,4 @@
-import { AddPermissionsComponent, WillRender } from '../components/permissions';
+import { AddPermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
@@ -51,7 +51,7 @@ export class GameObject implements IGameObject
 
     isRenderable (): boolean
     {
-        return (this.visible && WillRender(this));
+        return (this.visible && WillRender(this.id));
     }
 
     /*
@@ -89,7 +89,7 @@ export class GameObject implements IGameObject
 
     update (delta: number, time: number): void
     {
-        if (this.willUpdateChildren)
+        if (WillUpdateChildren(this.id))
         {
             const children = this.children;
 
@@ -97,7 +97,7 @@ export class GameObject implements IGameObject
             {
                 const child = children[i];
 
-                if (child && child.willUpdate)
+                if (child && WillUpdate(child.id))
                 {
                     child.update(delta, time);
                 }
@@ -161,7 +161,6 @@ export class GameObject implements IGameObject
         this.world = null;
         this.parent = null;
         this.children = null;
-
-        // this.vertices = [];
+        this.events = null;
     }
 }
