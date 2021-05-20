@@ -6,6 +6,7 @@ import { Emit, Off, On, Once } from '../events';
 
 import { BuildRenderList } from './BuildRenderList';
 import { GameObject } from '../gameobjects';
+import { GameObjectWorld } from '../components/GameObjectWorld';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
 import { IEventInstance } from '../events/IEventInstance';
@@ -19,6 +20,7 @@ import { MergeRenderData } from './MergeRenderData';
 import { RemoveChildren } from '../display';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SearchEntry } from '../display/SearchEntryType';
+import { UpdateLocalTransform2DSystem } from '../components/transform';
 import { WillUpdate } from '../components/permissions';
 
 export class BaseWorld extends GameObject implements IBaseWorld
@@ -62,6 +64,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
         {
             return;
         }
+
+        //  Go through and update all dirty LocalTransforms
+        UpdateLocalTransform2DSystem(GameObjectWorld);
 
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
 
