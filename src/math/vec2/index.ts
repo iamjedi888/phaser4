@@ -35,6 +35,7 @@ import { Vec2FuzzyEquals } from './Vec2FuzzyEquals';
 import { Vec2Hermite } from './Vec2Hermite';
 import { Vec2Inverse } from './Vec2Inverse';
 import { Vec2Lerp } from './Vec2Lerp';
+import { Vec2Limit } from './Vec2Limit';
 import { Vec2Max } from './Vec2Max';
 import { Vec2Min } from './Vec2Min';
 import { Vec2Multiply } from './Vec2Multiply';
@@ -95,6 +96,7 @@ export {
     Vec2Hermite,
     Vec2Inverse,
     Vec2Lerp,
+    Vec2Limit,
     Vec2Max,
     Vec2Min,
     Vec2Multiply,
