@@ -11,4 +11,5 @@ export function AddPermissionsComponent (id: number): void
     PermissionsComponent.willRender[id] = 1;
     PermissionsComponent.willRenderChildren[id] = 1;
     PermissionsComponent.willCacheChildren[id] = 0;
+    PermissionsComponent.willTransformChildren[id] = 1;
 }
