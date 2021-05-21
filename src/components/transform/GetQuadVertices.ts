@@ -1,8 +1,9 @@
 import { Extent2DComponent } from './Extent2DComponent';
-import { Vertices } from './Vertices';
+import { QuadVertexComponent } from '../vertices/QuadVertexComponent';
+import { VertexComponent } from '../vertices/VertexComponent';
 import { WorldMatrix2DComponent } from './WorldMatrix2DComponent';
 
-export function GetQuadVertices (id: number): Vertices
+export function GetQuadVertices (id: number): void
 {
     const a = WorldMatrix2DComponent.a[id];
     const b = WorldMatrix2DComponent.b[id];
@@ -16,17 +17,22 @@ export function GetQuadVertices (id: number): Vertices
     const right = Extent2DComponent.right[id];
     const bottom = Extent2DComponent.bottom[id];
 
-    const x0 = (x * a) + (y * c) + tx;
-    const y0 = (x * b) + (y * d) + ty;
+    const v1 = QuadVertexComponent.v1[id];
+    const v2 = QuadVertexComponent.v2[id];
+    const v3 = QuadVertexComponent.v3[id];
+    const v4 = QuadVertexComponent.v4[id];
 
-    const x1 = (x * a) + (bottom * c) + tx;
-    const y1 = (x * b) + (bottom * d) + ty;
+    //  TODO: Move to a system based on world or extent change only
 
-    const x2 = (right * a) + (bottom * c) + tx;
-    const y2 = (right * b) + (bottom * d) + ty;
+    VertexComponent.x[v1] = (x * a) + (y * c) + tx;
+    VertexComponent.y[v1] = (x * b) + (y * d) + ty;
 
-    const x3 = (right * a) + (y * c) + tx;
-    const y3 = (right * b) + (y * d) + ty;
+    VertexComponent.x[v2] = (x * a) + (bottom * c) + tx;
+    VertexComponent.y[v2] = (x * b) + (bottom * d) + ty;
 
-    return { x0, y0, x1, y1, x2, y2, x3, y3 };
+    VertexComponent.x[v3] = (right * a) + (bottom * c) + tx;
+    VertexComponent.y[v3] = (right * b) + (bottom * d) + ty;
+
+    VertexComponent.x[v4] = (right * a) + (y * c) + tx;
+    VertexComponent.y[v4] = (right * b) + (y * d) + ty;
 }
