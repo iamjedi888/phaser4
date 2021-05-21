@@ -27,7 +27,7 @@ export function SetFrame <T extends ISprite> (texture: Texture, key?: string | n
         frame.copyToExtent(child);
 
         //  This rarely changes, so we'll set it here, rather than every game step:
-        frame.copyToVertices(child.vertices);
+        frame.copyToVertices(child.id);
     });
 
     return children;

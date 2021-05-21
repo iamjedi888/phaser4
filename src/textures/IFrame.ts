@@ -28,7 +28,7 @@ export interface IFrame
     setTrim (width: number, height: number, x: number, y: number, w: number, h: number): void;
     getExtent (originX: number, originY: number): { left: number; right: number; top: number; bottom: number };
     copyToExtent (child: IGameObject): this;
-    copyToVertices (vertices: Vertex[], offset: number): this;
+    copyToVertices (id: number): this;
     updateUVs (): void;
     destroy (): void;
 }

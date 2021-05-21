@@ -1,7 +1,9 @@
+import { AddVertex } from '../../components/vertices/AddVertex';
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { Container } from '../container/Container';
 import { DrawImage } from '../../renderer/canvas/draw/DrawImage';
 import { Frame } from '../../textures/Frame';
+import { GameObjectWorld } from '../../components/GameObjectWorld';
 import { GetQuadVertices } from '../../components/transform/GetQuadVertices';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IFrame } from '../../textures/IFrame';
@@ -11,19 +13,19 @@ import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
 import { PackColors } from '../../renderer/webgl1/colors/PackColors';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
+import { QuadVertexComponent } from '../../components/vertices/QuadVertexComponent';
 import { SetDirtyVertexColors } from '../../components/dirty';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
-import { Vertex } from '../../components/Vertex';
 import { WillRender } from '../../components/permissions';
+import { addComponent } from 'bitecs';
 
 export class Sprite extends Container implements ISprite
 {
     texture: Texture;
     frame: Frame;
     hasTexture: boolean = false;
-    vertices: Vertex[];
 
     protected _tint: number = 0xffffff;
 
@@ -31,7 +33,14 @@ export class Sprite extends Container implements ISprite
     {
         super(x, y);
 
-        this.vertices = [ new Vertex(), new Vertex(), new Vertex(), new Vertex() ];
+        const id = this.id;
+
+        addComponent(GameObjectWorld, QuadVertexComponent, id);
+
+        QuadVertexComponent.v1[id] = AddVertex();
+        QuadVertexComponent.v2[id] = AddVertex();
+        QuadVertexComponent.v3[id] = AddVertex();
+        QuadVertexComponent.v4[id] = AddVertex();
 
         this.setTexture(texture, frame);
     }
@@ -57,20 +66,17 @@ export class Sprite extends Container implements ISprite
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
+        //  In World we need to run a system to pack all colors and
+        //  another to update all UVs that have changed
+
+        //  Also, move tint and alpha to component, so we can monitor them changing
+
         // PreRenderVertices(this);
+        // PackColors(vertices);
 
-        const vertices = this.vertices;
+        // GetQuadVertices(this.id);
 
-        PackColors(vertices);
-
-        const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetQuadVertices(this.id);
-
-        vertices[0].setPosition(x0, y0);
-        vertices[1].setPosition(x1, y1);
-        vertices[2].setPosition(x2, y2);
-        vertices[3].setPosition(x3, y3);
-
-        BatchTexturedQuad(this.texture, this.vertices, renderPass);
+        BatchTexturedQuad(this.texture, this.id, renderPass);
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
@@ -91,10 +97,10 @@ export class Sprite extends Container implements ISprite
         {
             this._tint = value;
 
-            this.vertices.forEach(vertex =>
-            {
-                vertex.setTint(value);
-            });
+            // this.vertices.forEach(vertex =>
+            // {
+            //     vertex.setTint(value);
+            // });
 
             SetDirtyVertexColors(this.id);
         }
@@ -104,7 +110,7 @@ export class Sprite extends Container implements ISprite
     {
         super.destroy(reparentChildren);
 
-        this.vertices.length = 0;
+        // this.vertices.length = 0;
         this.texture = null;
         this.frame = null;
         this.hasTexture = false;

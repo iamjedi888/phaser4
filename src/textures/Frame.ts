@@ -1,6 +1,8 @@
 import { IContainer } from '../gameobjects/container/IContainer';
 import { IFrame } from './IFrame';
+import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { SetExtent } from '../components/transform/SetExtent';
+import { SetUV } from '../components/vertices/SetUV';
 import { Texture } from './Texture';
 import { Vertex } from '../components';
 
@@ -150,14 +152,20 @@ export class Frame implements IFrame
         return this;
     }
 
-    copyToVertices (vertices: Vertex[], offset: number = 0): this
+    copyToVertices (id: number): this
     {
         const { u0, u1, v0, v1 } = this;
 
-        vertices[offset + 0].setUV(u0, v0);
-        vertices[offset + 1].setUV(u0, v1);
-        vertices[offset + 2].setUV(u1, v1);
-        vertices[offset + 3].setUV(u1, v0);
+        //  TODO: Move to a system based on frame change
+        SetUV(QuadVertexComponent.v1[id], u0, v0);
+        SetUV(QuadVertexComponent.v2[id], u0, v1);
+        SetUV(QuadVertexComponent.v3[id], u1, v1);
+        SetUV(QuadVertexComponent.v4[id], u1, v0);
+
+        // vertices[offset + 0].setUV(u0, v0);
+        // vertices[offset + 1].setUV(u0, v1);
+        // vertices[offset + 2].setUV(u1, v1);
+        // vertices[offset + 3].setUV(u1, v0);
 
         return this;
     }

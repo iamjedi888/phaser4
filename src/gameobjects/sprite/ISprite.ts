@@ -11,7 +11,7 @@ export interface ISprite extends IContainer
     frame: Frame;
     hasTexture: boolean;
     tint: number;
-    vertices: Vertex[];
+    // vertices: Uint32Array;
     setTexture (key: string | ITexture | IFrame, frame?: string | number | IFrame): this;
     setFrame (key?: string | number | IFrame): this;
 }
