@@ -150,10 +150,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
         entry.node.postRenderGL(renderPass);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
-        //  Emit event?
+        Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
     }
 
     shutdown (): void
