@@ -6,7 +6,6 @@ import { Emit, Off, On, Once } from '../events';
 
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BuildRenderList } from './BuildRenderList';
-import { CopyLocalToWorld } from '../components/transform/CopyLocalToWorld';
 import { GameObject } from '../gameobjects';
 import { GameObjectWorld } from '../components/GameObjectWorld';
 import { IBaseCamera } from '../camera/IBaseCamera';
@@ -22,7 +21,8 @@ import { MergeRenderData } from './MergeRenderData';
 import { RemoveChildren } from '../display';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SearchEntry } from '../display/SearchEntryType';
-import { UpdateLocalTransform2DSystem } from '../components/transform';
+import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
+import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { UpdateWorldTransform2DSystem } from '../components/transform/UpdateWorldTransform2DSystem';
 import { WillUpdate } from '../components/permissions';
 
@@ -74,6 +74,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         //  TODO - Make this return the updated IDs so we can then update their World Transforms properly?
         UpdateLocalTransform2DSystem(GameObjectWorld);
         UpdateWorldTransform2DSystem(GameObjectWorld);
+        UpdateVertexPositionSystem(GameObjectWorld);
 
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
 
