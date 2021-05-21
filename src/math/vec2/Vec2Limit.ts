@@ -8,7 +8,7 @@ export function Vec2Limit (a: Vec2, max: number, out: Vec2 = new Vec2()): Vec2
 
     if (length && length > max)
     {
-        Vec2Scale(out, max / length, out);
+        Vec2Scale(a, max / length, out);
     }
 
     return out;
