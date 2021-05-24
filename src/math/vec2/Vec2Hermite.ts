@@ -5,7 +5,7 @@ import { Vec2 } from './Vec2';
 export function Vec2Hermite (a: IVec2Like, b: IVec2Like, c: IVec2Like, d: IVec2Like, t: number, out: Vec2 = new Vec2()): Vec2
 {
     return out.set(
-        Hermite(t, a.x, b.x, c.x, d.x),
-        Hermite(t, a.y, b.y, c.y, d.y)
+        Hermite(a.x, b.x, c.x, d.x, t),
+        Hermite(a.y, b.y, c.y, d.y, t)
     );
 }
