@@ -14,6 +14,7 @@ export interface IVertexBuffer
     count: number;
     offset: number;
     elementsPerEntry: number;
+    isBound: boolean;
 
     indexSize?: number;
     entryElementSize?: number;

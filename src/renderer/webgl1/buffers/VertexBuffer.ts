@@ -113,6 +113,8 @@ export class VertexBuffer implements IVertexBuffer
 
     elementsPerEntry: number;
 
+    isBound: boolean = false;
+
     constructor (config: IVertexBufferConfig = {})
     {
         const {
@@ -168,6 +170,8 @@ export class VertexBuffer implements IVertexBuffer
         gl.bufferData(gl.ARRAY_BUFFER, data, type);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+        this.isBound = false;
     }
 
     add (count: number): void
