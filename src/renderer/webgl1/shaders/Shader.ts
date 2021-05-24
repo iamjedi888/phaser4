@@ -39,6 +39,8 @@ export class Shader implements IShader
 
     renderToDepthbuffer: boolean = false;
 
+    isActive: boolean = false;
+
     constructor (config?: IShaderConfig)
     {
         if (config)
@@ -122,6 +124,8 @@ export class Shader implements IShader
         this.attributes = CreateAttributes(program, attribs);
 
         gl.useProgram(currentProgram);
+
+        this.isActive = false;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -165,6 +169,8 @@ export class Shader implements IShader
         }
 
         gl.useProgram(this.program);
+
+        this.isActive = true;
 
         const uniforms = this.uniforms;
 

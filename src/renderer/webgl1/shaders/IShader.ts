@@ -10,6 +10,7 @@ export interface IShader
     program: WebGLProgram;
     renderToFramebuffer: boolean;
     renderToDepthbuffer: boolean;
+    isActive: boolean;
     texture: Texture;
     uniforms: Map<string, unknown>;
     fromConfig (config: IShaderConfig): void;
