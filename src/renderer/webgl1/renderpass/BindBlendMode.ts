@@ -9,11 +9,13 @@ export function BindBlendMode (renderPass: IRenderPass, entry?: BlendModeStackEn
         entry = renderPass.currentBlendMode;
     }
 
-    //  TODO - Only set if different
     if (entry.enable)
     {
-        gl.enable(gl.BLEND);
-        gl.blendFunc(entry.sfactor, entry.dfactor);
+        if (renderPass.currentBlendMode.sfactor !== entry.sfactor || renderPass.currentBlendMode.dfactor !== entry.dfactor)
+        {
+            gl.enable(gl.BLEND);
+            gl.blendFunc(entry.sfactor, entry.dfactor);
+        }
     }
     else
     {
