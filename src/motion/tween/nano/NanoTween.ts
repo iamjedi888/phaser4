@@ -308,6 +308,11 @@ export class NanoTween
     {
         const init = this.init;
 
+        if (repeatCount === -1)
+        {
+            repeatCount = Number.MAX_SAFE_INTEGER;
+        }
+
         this.state.repeat = (repeatCount > 0);
         this.counters.repeat = repeatCount;
 
