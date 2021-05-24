@@ -12,8 +12,10 @@ export function BindFramebuffer (renderPass: IRenderPass, clear: boolean = true,
 
     const { framebuffer, viewport } = entry;
 
-    //  TODO - Only bind if different
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    if (renderPass.currentFramebuffer.framebuffer !== framebuffer)
+    {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    }
 
     if (clear)
     {
