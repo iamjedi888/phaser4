@@ -9,7 +9,8 @@ const Vertex = defineComponent({
     texture: Types.ui8,
     tint: Types.ui32,
     alpha: Types.f32,
-    color: Types.ui32
+    color: Types.ui32,
+    offset: Types.f32
 });
 
 export const VertexComponent = Vertex;

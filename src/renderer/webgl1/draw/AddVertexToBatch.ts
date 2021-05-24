@@ -2,6 +2,8 @@ import { VertexComponent } from '../../../components/vertices/VertexComponent';
 
 export function AddVertexToBatch (id: number, offset: number, textureIndex: number, F32: WebGLBuffer, U32: WebGLBuffer): number
 {
+    VertexComponent.offset[id] = offset;
+
     F32[offset + 0] = VertexComponent.x[id];
     F32[offset + 1] = VertexComponent.y[id];
     F32[offset + 2] = VertexComponent.u[id];
