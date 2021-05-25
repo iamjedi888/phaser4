@@ -1,23 +1,22 @@
 import { Loader } from './Loader';
 
-export class File
+export class File <TData = any, TConfig = any>
 {
     key: string;
     url: string;
     responseType: XMLHttpRequestResponseType = 'text';
     crossOrigin: string | undefined = undefined;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any;
+    data: TData;
 
     error: ErrorEvent | undefined;
-    config: unknown;
+    config: TConfig;
     skipCache: boolean = false;
     hasLoaded: boolean = false;
     loader: Loader;
-    load: () => Promise<File>;
+    load: () => Promise<File<TData>>;
 
-    constructor (key: string, url: string, config?: unknown)
+    constructor (key: string, url: string, config?: TConfig)
     {
         this.key = key;
         this.url = url;
