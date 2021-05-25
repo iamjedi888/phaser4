@@ -10,5 +10,5 @@ export function Vec3ClampLength (a: Vec3, min: number, max: number, out: Vec3 = 
 
     Vec3DivideScalar(a, length || 1, out);
 
-    return Vec3Scale(out, Clamp(min, max, length), out);
+    return Vec3Scale(out, Clamp(length, min, max), out);
 }
