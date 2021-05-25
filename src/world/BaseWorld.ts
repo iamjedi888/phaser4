@@ -71,9 +71,16 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         //  Go through and update all dirty LocalTransforms
-        //  TODO - Make this return the updated IDs so we can then update their World Transforms properly?
-        UpdateLocalTransform2DSystem(GameObjectWorld);
+        const eids: number[] = UpdateLocalTransform2DSystem(GameObjectWorld);
+
+        if (eids.length)
+        {
+            console.log(eids);
+        }
+
+        //  TODO - Iterate children of entries in eids
         UpdateWorldTransform2DSystem(GameObjectWorld);
+
         UpdateVertexPositionSystem(GameObjectWorld);
 
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
