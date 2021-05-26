@@ -70,19 +70,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return;
         }
 
-        //  Go through and update all dirty LocalTransforms
-        const eids: number[] = UpdateLocalTransform2DSystem(GameObjectWorld);
-
-        if (eids.length)
-        {
-            console.log(eids);
-        }
-
-        //  TODO - Iterate children of entries in eids
-        UpdateWorldTransform2DSystem(GameObjectWorld);
-
-        UpdateVertexPositionSystem(GameObjectWorld);
-
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
 
         super.update(delta, time);
@@ -105,6 +92,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         BuildRenderList(this);
+
+        // Update World Transforms
+
+        UpdateVertexPositionSystem(GameObjectWorld);
 
         Emit(this, WorldEvents.WorldRenderEvent, renderData, this);
 
