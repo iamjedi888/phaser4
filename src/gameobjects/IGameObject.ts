@@ -8,7 +8,7 @@ export interface IGameObject
     id: number;
     name: string;
     world: IBaseWorld;
-    parent: IGameObject;
+    parentID: number;
     children: IGameObject[];
 
     numChildren: number;

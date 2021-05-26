@@ -23,25 +23,20 @@ export class GameObject implements IGameObject
     //  The World this Game Object belongs to. A Game Object can only belong to one World instance at any one time.
     world: IBaseWorld;
 
-    //  The direct parent of this Game Object in the scene graph (if any)
-    parent: IGameObject;
+    //  The ID of the parent of this Game Object in the World. Will be -1 if it doesn't have a parent.
+    parentID: number = -1;
 
     children: IGameObject[];
 
     events: Map<string, Set<IEventInstance>>;
-
-    // vertices: Vertex[];
 
     visible: boolean = true;
 
     constructor ()
     {
         this.children = [];
-        // this.vertices = [];
 
         this.events = new Map();
-
-        // const id = addEntity(GameObjectWorld);
 
         AddPermissionsComponent(this.id);
         AddDirtyComponent(this.id);
@@ -159,7 +154,6 @@ export class GameObject implements IGameObject
         this.events.clear();
 
         this.world = null;
-        this.parent = null;
         this.children = null;
         this.events = null;
     }
