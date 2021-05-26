@@ -70,12 +70,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return;
         }
 
-        //  Go through and update all dirty LocalTransforms
-        //  TODO - Make this return the updated IDs so we can then update their World Transforms properly?
-        UpdateLocalTransform2DSystem(GameObjectWorld);
-        UpdateWorldTransform2DSystem(GameObjectWorld);
-        UpdateVertexPositionSystem(GameObjectWorld);
-
         Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
 
         super.update(delta, time);
@@ -98,6 +92,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         BuildRenderList(this);
+
+        // Update World Transforms
+
+        UpdateVertexPositionSystem(GameObjectWorld);
 
         Emit(this, WorldEvents.WorldRenderEvent, renderData, this);
 

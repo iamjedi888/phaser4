@@ -6,6 +6,8 @@ import { IRenderPass } from './IRenderPass';
 
 export function Start (renderPass: IRenderPass): void
 {
+    //  Rather than doing Bind object comparisons each bind can store an integer that is checked
+
     renderPass.current2DCamera = renderPass.quadCamera;
     renderPass.cameraMatrix = renderPass.quadCamera.matrix;
 
