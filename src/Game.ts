@@ -2,6 +2,7 @@ import { AddToDOM, DOMContentLoaded } from './dom';
 import { Emit, EventEmitter } from './events';
 
 import { GameInstance } from './GameInstance';
+import { GameObjectWorld } from './GameObjectWorld';
 import { GetBanner } from './config/banner';
 import { GetGlobalVar } from './config/globalvar';
 import { GetParent } from './config/parent';
@@ -10,9 +11,12 @@ import { IRenderer } from './renderer/IRenderer';
 import { SceneManager } from './scenes/SceneManager';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
 import { TextureManager } from './textures/TextureManager';
+import { addEntity } from 'bitecs';
 
 export class Game extends EventEmitter
 {
+    readonly id: number = addEntity(GameObjectWorld);
+
     readonly VERSION: string = '4.0.0-beta1';
 
     isBooted: boolean = false;
