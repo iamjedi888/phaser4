@@ -1,5 +1,5 @@
 import { Extent2DComponent } from './Extent2DComponent';
-import { GameObjectWorld } from '../GameObjectWorld';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
 import { Transform2DComponent } from './Transform2DComponent';
 import { WorldMatrix2DComponent } from './WorldMatrix2DComponent';

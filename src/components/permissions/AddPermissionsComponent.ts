@@ -1,4 +1,4 @@
-import { GameObjectWorld } from '../GameObjectWorld';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { PermissionsComponent } from './PermissionsComponent';
 import { addComponent } from 'bitecs';
 

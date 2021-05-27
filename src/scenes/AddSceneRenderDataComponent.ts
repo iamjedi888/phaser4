@@ -1,4 +1,4 @@
-import { GameObjectWorld } from '../components/GameObjectWorld';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { SceneRenderDataComponent } from './SceneRenderDataComponent';
 import { addComponent } from 'bitecs';
 

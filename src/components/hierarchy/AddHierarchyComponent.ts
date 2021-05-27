@@ -1,4 +1,4 @@
-import { GameObjectWorld } from '../GameObjectWorld';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { HierarchyComponent } from './HierarchyComponent';
 import { addComponent } from 'bitecs';
 

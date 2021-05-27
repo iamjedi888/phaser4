@@ -3,7 +3,7 @@ import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad'
 import { Container } from '../container/Container';
 import { DrawImage } from '../../renderer/canvas/draw/DrawImage';
 import { Frame } from '../../textures/Frame';
-import { GameObjectWorld } from '../../components/GameObjectWorld';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetQuadVertices } from '../../components/transform/GetQuadVertices';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IFrame } from '../../textures/IFrame';

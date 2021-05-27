@@ -7,7 +7,7 @@ import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from './GameObjectCache';
 import { GameObjectTree } from './GameObjectTree';
-import { GameObjectWorld } from '../components/GameObjectWorld';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';

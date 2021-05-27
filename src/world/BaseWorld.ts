@@ -7,7 +7,7 @@ import { Emit, Off, On, Once } from '../events';
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BuildRenderList } from './BuildRenderList';
-import { GameObject } from '../gameobjects';
+import { GameObject } from '../ga../GameObjectWorld
 import { GameObjectWorld } from '../components/GameObjectWorld';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';

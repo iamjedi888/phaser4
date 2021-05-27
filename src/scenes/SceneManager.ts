@@ -3,7 +3,7 @@ import { Emit, Once } from '../events';
 import { AddSceneRenderDataComponent } from './AddSceneRenderDataComponent';
 import { CreateSceneRenderData } from './CreateSceneRenderData';
 import { Game } from '../Game';
-import { GameInstance } from '../GameInstance';
+import { GameInstance } from '../../GameObjectWorld
 import { GameObjectWorld } from '../components/GameObjectWorld';
 import { GetScenes } from '../config/scenes';
 import { IScene } from './IScene';
