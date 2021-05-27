@@ -1,10 +1,11 @@
-import { ISceneRenderData } from './ISceneRenderData';
+import { SceneRenderDataComponent } from './SceneRenderDataComponent';
 
-export function ResetSceneRenderData (renderData: ISceneRenderData, gameFrame: number = 0): void
+export function ResetSceneRenderData (id: number, gameFrame: number = 0): void
 {
-    renderData.gameFrame = gameFrame;
-    renderData.numTotalFrames = 0;
-    renderData.numDirtyFrames = 0;
-    renderData.numDirtyCameras = 0;
-    renderData.worldData.length = 0;
+    SceneRenderDataComponent.gameFrame[id] = gameFrame;
+    SceneRenderDataComponent.numTotalFrames[id] = 0;
+    SceneRenderDataComponent.numDirtyFrames[id] = 0;
+    SceneRenderDataComponent.numDirtyCameras[id] = 0;
+
+    // renderData.worldData.length = 0;
 }
