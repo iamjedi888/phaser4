@@ -1,5 +1,6 @@
 import { Emit, Once } from '../events';
 
+import { AddSceneRenderDataComponent } from './AddSceneRenderDataComponent';
 import { CreateSceneRenderData } from './CreateSceneRenderData';
 import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
@@ -9,10 +10,13 @@ import { IScene } from './IScene';
 import { ISceneRenderData } from './ISceneRenderData';
 import { ResetSceneRenderData } from './ResetSceneRenderData';
 import { SceneManagerInstance } from './SceneManagerInstance';
-import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
+import { SceneRenderDataComponent } from './SceneRenderDataComponent';
+import { addEntity } from 'bitecs';
 
 export class SceneManager
 {
+    readonly id: number = addEntity(GameObjectWorld);
+
     game: Game;
 
     scenes: Map<string, IScene>  = new Map();
@@ -23,13 +27,15 @@ export class SceneManager
     //  Flush the cache
     flush: boolean = false;
 
-    renderResult: ISceneRenderData = CreateSceneRenderData();
+    // renderResult: ISceneRenderData = CreateSceneRenderData();
 
     constructor ()
     {
         this.game = GameInstance.get();
 
         SceneManagerInstance.set(this);
+
+        AddSceneRenderDataComponent(this.id);
 
         Once(this.game, 'boot', () => this.boot());
     }
@@ -49,12 +55,9 @@ export class SceneManager
 
     render (gameFrame: number): ISceneRenderData
     {
-        const results = this.renderResult;
+        // const results = this.renderResult;
 
-        ResetSceneRenderData(results, gameFrame);
-
-        //  Go through and update all dirty LocalTransforms in all Worlds
-        UpdateLocalTransform2DSystem(GameObjectWorld);
+        ResetSceneRenderData(this.id, gameFrame);
 
         for (const scene of this.scenes.values())
         {
@@ -64,7 +67,7 @@ export class SceneManager
         if (this.flush)
         {
             //  Invalidate the renderer cache
-            results.numDirtyFrames++;
+            SceneRenderDataComponent.numDirtyFrames[this.id]++;
 
             //  And reset
             this.flush = false;
