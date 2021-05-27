@@ -1,1 +1,3 @@
-export const GameObjectCache = new Map();
+import { IGameObject } from './IGameObject';
+
+export const GameObjectCache: Map<number, IGameObject> = new Map();
