@@ -5,25 +5,23 @@ import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 
 export interface IGameObject
 {
-    id: number;
+    readonly id: number;
     name: string;
-    world: IBaseWorld;
-    parentID: number;
-    children: IGameObject[];
 
-    numChildren: number;
+    // world: IBaseWorld;
+    // parentID: number;
+    // children: IGameObject[];
+    // numChildren: number;
 
     visible: boolean;
 
     events: Map<string, Set<IEventInstance>>;
 
     isRenderable (): boolean;
-    // isDirty (flag: number): boolean;
-    // clearDirty (flag: number): this;
-    // setDirty (flag: number, flag2?: number): this;
 
+    beforeUpdate (delta: number, time: number): void;
     update (delta: number, time: number): void;
-    postUpdate (delta: number, time: number): void;
+    afterUpdate (delta: number, time: number): void;
 
     renderGL <T extends IRenderPass> (renderPass: T): void;
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void;

@@ -1,3 +1,4 @@
+import { AddGameObjectComponent, GameObjectComponent, GetChildren, GetNumChildren } from '../components/gameobject';
 import { AddPermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
@@ -5,8 +6,9 @@ import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from './GameObjectCache';
+import { GameObjectTree } from './GameObjectTree';
 import { GameObjectWorld } from '../components/GameObjectWorld';
-import { IBaseWorld } from '../world/IBaseWorld';
+import { GetParentGameObject } from '../components/gameobject/GetParentGameObject';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
@@ -18,15 +20,8 @@ export class GameObject implements IGameObject
 {
     readonly id: number = addEntity(GameObjectWorld);
 
+    //  User defined name. Never used internally.
     name: string = '';
-
-    //  The World this Game Object belongs to. A Game Object can only belong to one World instance at any one time.
-    world: IBaseWorld;
-
-    //  The ID of the parent of this Game Object in the World. Will be -1 if it doesn't have a parent.
-    parentID: number = -1;
-
-    children: IGameObject[];
 
     events: Map<string, Set<IEventInstance>>;
 
@@ -34,14 +29,16 @@ export class GameObject implements IGameObject
 
     constructor ()
     {
-        this.children = [];
+        const id = this.id;
+
+        AddGameObjectComponent(id);
+        AddPermissionsComponent(id);
+        AddDirtyComponent(id);
+
+        GameObjectCache.set(id, this);
+        GameObjectTree.set(id, []);
 
         this.events = new Map();
-
-        AddPermissionsComponent(this.id);
-        AddDirtyComponent(this.id);
-
-        GameObjectCache.set(this.id, this);
     }
 
     isRenderable (): boolean
@@ -49,61 +46,37 @@ export class GameObject implements IGameObject
         return (this.visible && WillRender(this.id));
     }
 
-    /*
-    isDirty (flag: number): boolean
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    beforeUpdate (delta: number, time: number): void
     {
-        return (this.dirty & flag) !== 0;
+        //  Empty for parent classes to use.
+        //  Called before this GameObject and all of its children have been updated.
     }
-
-    clearDirty (flag: number): this
-    {
-        if (this.isDirty(flag))
-        {
-            this.dirty ^= flag;
-        }
-
-        return this;
-    }
-
-    setDirty (flag: number, flag2?: number): this
-    {
-        if (!this.isDirty(flag))
-        {
-            this.dirty ^= flag;
-            this.dirtyFrame = GameInstance.getFrame();
-        }
-
-        if (!this.isDirty(flag2))
-        {
-            this.dirty ^= flag2;
-        }
-
-        return this;
-    }
-    */
 
     update (delta: number, time: number): void
     {
+        this.beforeUpdate(delta, time);
+
         if (WillUpdateChildren(this.id))
         {
-            const children = this.children;
+            const children = GameObjectTree.get(this.id);
 
             for (let i = 0; i < children.length; i++)
             {
-                const child = children[i];
+                const childID = children[i];
 
-                if (child && WillUpdate(child.id))
+                if (WillUpdate(childID))
                 {
-                    child.update(delta, time);
+                    GameObjectCache.get(childID).update(delta, time);
                 }
             }
         }
 
-        this.postUpdate(delta, time);
+        this.afterUpdate(delta, time);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    postUpdate (delta: number, time: number): void
+    afterUpdate (delta: number, time: number): void
     {
         //  Empty for parent classes to use.
         //  Called after this GameObject and all of its children have been updated.
@@ -133,9 +106,29 @@ export class GameObject implements IGameObject
         //  If it doesn't have any children, this method is never called.
     }
 
-    get numChildren (): number
+    set depth (value: number)
     {
-        return this.children.length;
+        GameObjectComponent.depth[this.id] = value;
+    }
+
+    get depth (): number
+    {
+        return GameObjectComponent.depth[this.id];
+    }
+
+    getParent (): IGameObject
+    {
+        return GetParentGameObject(this.id);
+    }
+
+    getChildren (): IGameObject[]
+    {
+        return GetChildren(this.id);
+    }
+
+    getNumChildren (): number
+    {
+        return GetNumChildren(this.id);
     }
 
     destroy (reparentChildren?: IGameObject): void
@@ -153,8 +146,8 @@ export class GameObject implements IGameObject
 
         this.events.clear();
 
-        this.world = null;
-        this.children = null;
         this.events = null;
+
+        //  TODO - Destroy process, remove from Cache, Tree, etc.
     }
 }
