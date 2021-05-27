@@ -1,4 +1,3 @@
-import { IBaseWorld } from '../world/IBaseWorld';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
@@ -6,16 +5,14 @@ import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 export interface IGameObject
 {
     readonly id: number;
-    name: string;
 
-    // world: IBaseWorld;
-    // parentID: number;
-    // children: IGameObject[];
-    // numChildren: number;
+    name: string;
 
     visible: boolean;
 
     events: Map<string, Set<IEventInstance>>;
+
+    depth: number;
 
     isRenderable (): boolean;
 
@@ -27,6 +24,10 @@ export interface IGameObject
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void;
     postRenderGL <T extends IRenderPass> (renderPass: T): void;
     postRenderCanvas <T extends ICanvasRenderer> (renderer: T): void;
+
+    getParent (): IGameObject;
+    getChildren (): IGameObject[];
+    getNumChildren (): number;
 
     destroy (reparentChildren?: IGameObject): void;
 }
