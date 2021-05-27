@@ -1,9 +1,9 @@
-import { IWorldRenderData } from './IWorldRenderData';
+import { RenderDataComponent } from './RenderDataComponent';
 
-export function ResetWorldRenderData (renderData: IWorldRenderData, gameFrame: number): void
+export function ResetWorldRenderData (id: number, gameFrame: number): void
 {
-    renderData.gameFrame = gameFrame;
-    renderData.dirtyFrame = 0;
-    renderData.numRendered = 0;
-    renderData.numRenderable = 0;
+    RenderDataComponent.gameFrame[id] = gameFrame;
+    RenderDataComponent.dirtyFrame[id] = 0;
+    RenderDataComponent.numRendered[id] = 0;
+    RenderDataComponent.numRenderable[id] = 0;
 }

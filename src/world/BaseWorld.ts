@@ -4,6 +4,7 @@ import * as WorldEvents from './events';
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Emit, Off, On, Once } from '../events';
 
+import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BuildRenderList } from './BuildRenderList';
 import { GameObject } from '../gameobjects';
@@ -50,17 +51,21 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.scene = scene;
 
-        this.world = this;
-
         this.renderList = [];
 
         this._updateListener = On(scene, 'update', (delta: number, time: number) => this.update(delta, time));
         this._renderListener = On(scene, 'render', (renderData: ISceneRenderData) => this.render(renderData));
         this._shutdownListener = On(scene, 'shutdown', () => this.shutdown());
 
+        AddRenderDataComponent(this.id);
         AddTransform2DComponent(this.id);
 
         Once(scene, 'destroy', () => this.destroy());
+    }
+
+    beforeUpdate (delta: number, time: number): void
+    {
+        Emit(this, GameObjectEvents.BeforeUpdateEvent, delta, time, this);
     }
 
     update (delta: number, time: number): void
@@ -75,16 +80,16 @@ export class BaseWorld extends GameObject implements IBaseWorld
         super.update(delta, time);
     }
 
-    postUpdate (delta: number, time: number): void
+    afterUpdate (delta: number, time: number): void
     {
-        Emit(this, GameObjectEvents.PostUpdateEvent, delta, time, this);
+        Emit(this, GameObjectEvents.AfterUpdateEvent, delta, time, this);
     }
 
     render (sceneRenderData: ISceneRenderData): void
     {
         const renderData = this.renderData;
 
-        ResetWorldRenderData(renderData, sceneRenderData.gameFrame);
+        ResetWorldRenderData(this.id, sceneRenderData.gameFrame);
 
         if (!this.isRenderable())
         {
@@ -169,7 +174,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         Emit(this, WorldEvents.WorldShutdownEvent, this);
 
-        ResetWorldRenderData(this.renderData, 0);
+        ResetWorldRenderData(this.id, 0);
 
         if (this.camera)
         {
@@ -181,7 +186,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     {
         super.destroy(reparentChildren);
 
-        ResetWorldRenderData(this.renderData, 0);
+        ResetWorldRenderData(this.id, 0);
 
         if (this.camera)
         {

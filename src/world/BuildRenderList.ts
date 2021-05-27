@@ -1,12 +1,14 @@
 import { CalculateTotalRenderable } from './CalculateTotalRenderable';
 import { IBaseWorld } from './IBaseWorld';
 import { IsDirtyFrame } from '../components/dirty';
+import { RenderDataComponent } from './RenderDataComponent';
 import { SearchEntry } from '../display/SearchEntryType';
 import { UpdateCachedLayers } from './UpdateCachedLayers';
 import { WorldDepthFirstSearch } from './WorldDepthFirstSearch';
 
 export function BuildRenderList (world: IBaseWorld): void
 {
+    const worldID = world.id;
     const cachedLayers: SearchEntry[] = [];
     const stack: SearchEntry[] = [];
 
@@ -24,6 +26,9 @@ export function BuildRenderList (world: IBaseWorld): void
     }
 
     //  TODO: numRenderable probably needs to move to the search function
+
+    const gameFrame = RenderDataComponent.gameFrame[worldID];
+
     entries.forEach(entry =>
     {
         if (entry.children.length > 0)
@@ -32,12 +37,12 @@ export function BuildRenderList (world: IBaseWorld): void
         }
         else
         {
-            renderData.numRendered++;
-            renderData.numRenderable++;
+            RenderDataComponent.numRendered[worldID]++;
+            RenderDataComponent.numRenderable[worldID]++;
 
-            if (IsDirtyFrame(entry.node.id, renderData.gameFrame))
+            if (IsDirtyFrame(entry.node.id, gameFrame))
             {
-                renderData.dirtyFrame++;
+                RenderDataComponent.dirtyFrame[worldID]++;
             }
         }
     });
@@ -46,7 +51,7 @@ export function BuildRenderList (world: IBaseWorld): void
 
     if (world.forceRefresh)
     {
-        renderData.dirtyFrame++;
+        RenderDataComponent.dirtyFrame[worldID]++;
 
         world.forceRefresh = false;
     }
