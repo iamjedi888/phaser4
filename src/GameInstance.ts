@@ -4,6 +4,8 @@ export let instance: Game;
 export let frame: number = 0;
 export let elapsed: number = 0;
 
+// TODO - Move to component
+
 export const GameInstance =
 {
     get: (): Game =>
