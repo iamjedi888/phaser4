@@ -1,4 +1,4 @@
-import { AddGameObjectComponent, GameObjectComponent, GetChildren, GetNumChildren } from '../components/gameobject';
+import { AddHierarchyComponent, GetChildren, GetNumChildren, GetParentGameObject, HierarchyComponent } from '../components/hierarchy';
 import { AddPermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
@@ -8,7 +8,6 @@ import { Emit } from '../events/Emit';
 import { GameObjectCache } from './GameObjectCache';
 import { GameObjectTree } from './GameObjectTree';
 import { GameObjectWorld } from '../components/GameObjectWorld';
-import { GetParentGameObject } from '../components/gameobject/GetParentGameObject';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
@@ -31,7 +30,7 @@ export class GameObject implements IGameObject
     {
         const id = this.id;
 
-        AddGameObjectComponent(id);
+        AddHierarchyComponent(id);
         AddPermissionsComponent(id);
         AddDirtyComponent(id);
 
@@ -108,12 +107,12 @@ export class GameObject implements IGameObject
 
     set depth (value: number)
     {
-        GameObjectComponent.depth[this.id] = value;
+        HierarchyComponent.depth[this.id] = value;
     }
 
     get depth (): number
     {
-        return GameObjectComponent.depth[this.id];
+        return HierarchyComponent.depth[this.id];
     }
 
     getParent (): IGameObject

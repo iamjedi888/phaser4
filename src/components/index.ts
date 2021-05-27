@@ -1,6 +1,6 @@
 import * as Bounds from './bounds';
 import * as Dirty from './dirty';
-import * as GameObject from './gameobject';
+import * as Hierarchy from './hierarchy';
 import * as Input from './input';
 import * as Permissions from './permissions';
 import * as Transform from './transform';
@@ -11,7 +11,7 @@ import { Vertex } from './Vertex';
 export {
     Bounds,
     Dirty,
-    GameObject,
+    Hierarchy,
     Input,
     Permissions,
     Transform,
