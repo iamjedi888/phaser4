@@ -96,6 +96,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return;
         }
 
+        UpdateLocalTransform2DSystem(GameObjectWorld);
+
         BuildRenderList(this);
 
         // Update World Transforms
