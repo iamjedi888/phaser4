@@ -7,8 +7,8 @@ import { Emit, Off, On, Once } from '../events';
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BuildRenderList } from './BuildRenderList';
-import { GameObject } from '../ga../GameObjectWorld
-import { GameObjectWorld } from '../components/GameObjectWorld';
+import { GameObject } from '../gameobjects';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
 import { IEventInstance } from '../events/IEventInstance';
@@ -26,6 +26,7 @@ import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLoca
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { UpdateWorldTransform2DSystem } from '../components/transform/UpdateWorldTransform2DSystem';
 import { WillUpdate } from '../components/permissions';
+import { WorldDepthFirstSearch } from './WorldDepthFirstSearch';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
@@ -96,9 +97,12 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return;
         }
 
+        //  Iterate World and populate our WorldRenderList
+        WorldDepthFirstSearch(this.id);
+
         UpdateLocalTransform2DSystem(GameObjectWorld);
 
-        BuildRenderList(this);
+        // BuildRenderList(this);
 
         // Update World Transforms
 
@@ -106,7 +110,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         Emit(this, WorldEvents.WorldRenderEvent, renderData, this);
 
-        MergeRenderData(sceneRenderData, renderData);
+        // MergeRenderData(sceneRenderData, renderData);
 
         this.camera.dirtyRender = false;
     }

@@ -1,33 +1,35 @@
-import { WillCacheChildren, WillRenderChildren } from '../components/permissions';
+import { GameObjectCache, GameObjectTree } from '../gameobjects';
+import { WillCacheChildren, WillRender, WillRenderChildren } from '../components/permissions';
 
-import { IGameObject } from '../gameobjects/IGameObject';
-import { SearchEntry } from '../display/SearchEntryType';
+import { GetNumChildren } from '../components/hierarchy';
+import { WorldRenderList } from './WorldRenderList';
 
-export function WorldDepthFirstSearch (cachedLayers: SearchEntry[], parent: IGameObject, output: SearchEntry[] = []): SearchEntry[]
+export function WorldDepthFirstSearch (parent: number): void
 {
-    for (let i = 0; i < parent.numChildren; i++)
+    if (WillRender(parent))
     {
-        const node = parent.children[i];
+        WorldRenderList.add(GameObjectCache.get(parent));
 
-        if (node.isRenderable())
+        const children = GameObjectTree.get(parent);
+
+        for (let i = 0; i < children.length; i++)
         {
-            const children: SearchEntry[] = [];
+            const nodeID = children[i];
 
-            const entry = { node, children };
-
-            output.push(entry);
-
-            if (node.numChildren > 0 && WillRenderChildren(node.id))
+            if (WillRender(nodeID))
             {
-                if (WillCacheChildren(node.id))
-                {
-                    cachedLayers.push(entry);
-                }
+                WorldRenderList.add(GameObjectCache.get(nodeID));
 
-                WorldDepthFirstSearch(cachedLayers, node, children);
+                if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID))
+                {
+                    if (WillCacheChildren(nodeID))
+                    {
+                        // cachedLayers.push(entry);
+                    }
+
+                    WorldDepthFirstSearch(nodeID);
+                }
             }
         }
     }
-
-    return output;
 }

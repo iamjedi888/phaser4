@@ -1,13 +1,11 @@
 import { Emit, Once } from '../events';
 
 import { AddSceneRenderDataComponent } from './AddSceneRenderDataComponent';
-import { CreateSceneRenderData } from './CreateSceneRenderData';
 import { Game } from '../Game';
-import { GameInstance } from '../../GameObjectWorld
-import { GameObjectWorld } from '../components/GameObjectWorld';
+import { GameInstance } from '../GameInstance';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes';
 import { IScene } from './IScene';
-import { ISceneRenderData } from './ISceneRenderData';
 import { ResetSceneRenderData } from './ResetSceneRenderData';
 import { SceneManagerInstance } from './SceneManagerInstance';
 import { SceneRenderDataComponent } from './SceneRenderDataComponent';
@@ -26,8 +24,6 @@ export class SceneManager
 
     //  Flush the cache
     flush: boolean = false;
-
-    // renderResult: ISceneRenderData = CreateSceneRenderData();
 
     constructor ()
     {
@@ -53,15 +49,14 @@ export class SceneManager
         }
     }
 
-    render (gameFrame: number): ISceneRenderData
+    //  Prepare the render data
+    render (gameFrame: number): void
     {
-        // const results = this.renderResult;
-
         ResetSceneRenderData(this.id, gameFrame);
 
         for (const scene of this.scenes.values())
         {
-            Emit(scene, 'render', results);
+            Emit(scene, 'render');
         }
 
         if (this.flush)
@@ -72,7 +67,5 @@ export class SceneManager
             //  And reset
             this.flush = false;
         }
-
-        return results;
     }
 }
