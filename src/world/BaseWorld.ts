@@ -40,7 +40,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     is3D: boolean = false;
 
-    renderList: SearchEntry[];
+    renderList: Set<IGameObject>;
 
     private _updateListener: IEventInstance;
     private _renderListener: IEventInstance;
@@ -52,10 +52,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.scene = scene;
 
-        this.renderList = [];
+        this.renderList = new Set();
 
         this._updateListener = On(scene, 'update', (delta: number, time: number) => this.update(delta, time));
-        this._renderListener = On(scene, 'render', (renderData: ISceneRenderData) => this.render(renderData));
+        this._renderListener = On(scene, 'render', (gameFrame: number) => this.render(gameFrame));
         this._shutdownListener = On(scene, 'shutdown', () => this.shutdown());
 
         AddRenderDataComponent(this.id);
@@ -86,25 +86,21 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, GameObjectEvents.AfterUpdateEvent, delta, time, this);
     }
 
-    render (sceneRenderData: ISceneRenderData): void
+    render (gameFrame: number): void
     {
         const renderData = this.renderData;
 
-        ResetWorldRenderData(this.id, sceneRenderData.gameFrame);
+        ResetWorldRenderData(this.id, gameFrame);
 
         if (!this.isRenderable())
         {
             return;
         }
 
-        //  Iterate World and populate our WorldRenderList
-        WorldDepthFirstSearch(this.id);
-
         UpdateLocalTransform2DSystem(GameObjectWorld);
 
-        // BuildRenderList(this);
-
-        // Update World Transforms
+        //  Iterate World and populate our WorldRenderList, also updates World Transforms
+        WorldDepthFirstSearch(this, this.id);
 
         UpdateVertexPositionSystem(GameObjectWorld);
 
@@ -127,17 +123,27 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         Begin(renderPass, camera);
 
-        this.renderList.forEach(entry =>
+        for (const entry of this.renderList)
         {
-            if (entry.children.length > 0)
+            entry.renderGL(renderPass);
+
+            if (entry.getNumChildren() > 0)
             {
-                this.renderNode(entry, renderPass);
+
             }
-            else
-            {
-                entry.node.renderGL(renderPass);
-            }
-        });
+        }
+
+        // this.renderList.forEach(entry =>
+        // {
+        //     if (entry.children.length > 0)
+        //     {
+        //         this.renderNode(entry, renderPass);
+        //     }
+        //     else
+        //     {
+        //         entry.node.renderGL(renderPass);
+        //     }
+        // });
     }
 
     renderNode (entry: SearchEntry, renderPass: IRenderPass): void
