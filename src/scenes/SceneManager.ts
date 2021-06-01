@@ -1,4 +1,5 @@
 import { Emit, Once } from '../events';
+import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneRenderEvent, SceneUpdateEvent } from './events';
 
 import { AddSceneRenderDataComponent } from './AddSceneRenderDataComponent';
 import { Game } from '../Game';
@@ -45,7 +46,9 @@ export class SceneManager
     {
         for (const scene of this.scenes.values())
         {
-            Emit(scene, 'update', delta, time);
+            Emit(scene, SceneBeforeUpdateEvent, delta, time);
+            Emit(scene, SceneUpdateEvent, delta, time);
+            Emit(scene, SceneAfterUpdateEvent, delta, time);
         }
     }
 
@@ -56,7 +59,7 @@ export class SceneManager
 
         for (const scene of this.scenes.values())
         {
-            Emit(scene, 'render');
+            Emit(scene, SceneRenderEvent);
         }
 
         if (this.flush)
