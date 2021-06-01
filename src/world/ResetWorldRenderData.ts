@@ -9,5 +9,5 @@ export function ResetWorldRenderData (id: number, gameFrame: number): void
     RenderDataComponent.numRenderable[id] = 0;
 
     //  Only do this if World is dirty
-    WorldRenderList.clear();
+    // WorldRenderList.clear();
 }

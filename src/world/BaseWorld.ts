@@ -3,6 +3,7 @@ import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Emit, Off, On, Once } from '../events';
+import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneDestroyEvent, ScenePostRenderGLEvent, ScenePreRenderEvent, SceneRenderGLEvent, SceneShutdownEvent, SceneUpdateEvent } from '../scenes/events';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
@@ -20,7 +21,10 @@ import { IWorldRenderData } from './IWorldRenderData';
 import { Mat2dEquals } from '../math/mat2d/Mat2dEquals';
 import { MergeRenderData } from './MergeRenderData';
 import { RemoveChildren } from '../display';
+import { RenderDataComponent } from './RenderDataComponent';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
+import { SceneManager } from '../scenes/SceneManager';
+import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SearchEntry } from '../display/SearchEntryType';
 import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
@@ -32,18 +36,27 @@ export class BaseWorld extends GameObject implements IBaseWorld
 {
     scene: IScene;
 
+    sceneManager: SceneManager;
+
     camera: IBaseCamera;
 
-    renderData: IWorldRenderData;
+    // renderData: IWorldRenderData;
 
     forceRefresh: boolean = false;
 
     is3D: boolean = false;
 
-    renderList: Set<IGameObject>;
+    renderList: number[];
+    renderType: number[];
 
+    private _beforeUpdateListener: IEventInstance;
     private _updateListener: IEventInstance;
-    private _renderListener: IEventInstance;
+    private _afterUpdateListener: IEventInstance;
+
+    private _preRenderListener: IEventInstance;
+    private _renderGLListener: IEventInstance;
+    private _postRenderGLListener: IEventInstance;
+
     private _shutdownListener: IEventInstance;
 
     constructor (scene: IScene)
@@ -51,17 +64,23 @@ export class BaseWorld extends GameObject implements IBaseWorld
         super();
 
         this.scene = scene;
+        this.sceneManager = SceneManagerInstance.get();
 
-        this.renderList = new Set();
+        this.renderList = [];
+        this.renderType = [];
 
-        this._updateListener = On(scene, 'update', (delta: number, time: number) => this.update(delta, time));
-        this._renderListener = On(scene, 'render', (gameFrame: number) => this.render(gameFrame));
-        this._shutdownListener = On(scene, 'shutdown', () => this.shutdown());
+        this._beforeUpdateListener = On(scene, SceneBeforeUpdateEvent, (delta: number, time: number) => this.beforeUpdate(delta, time));
+        this._updateListener = On(scene, SceneUpdateEvent, (delta: number, time: number) => this.update(delta, time));
+        this._afterUpdateListener = On(scene, SceneAfterUpdateEvent, (delta: number, time: number) => this.afterUpdate(delta, time));
+        this._preRenderListener = On(scene, ScenePreRenderEvent, (gameFrame: number) => this.preRender(gameFrame));
+        this._renderGLListener = On(scene, SceneRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.renderGL(renderPass));
+        this._postRenderGLListener = On(scene, ScenePostRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.postRenderGL(renderPass));
+        this._shutdownListener = On(scene, SceneShutdownEvent, () => this.shutdown());
 
         AddRenderDataComponent(this.id);
         AddTransform2DComponent(this.id);
 
-        Once(scene, 'destroy', () => this.destroy());
+        Once(scene, SceneDestroyEvent, () => this.destroy());
     }
 
     beforeUpdate (delta: number, time: number): void
@@ -86,27 +105,23 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, GameObjectEvents.AfterUpdateEvent, delta, time, this);
     }
 
-    render (gameFrame: number): void
+    preRender (gameFrame: number): void
     {
-        const renderData = this.renderData;
+        const id = this.id;
 
-        ResetWorldRenderData(this.id, gameFrame);
+        ResetWorldRenderData(id, gameFrame);
 
         if (!this.isRenderable())
         {
             return;
         }
 
-        UpdateLocalTransform2DSystem(GameObjectWorld);
-
         //  Iterate World and populate our WorldRenderList, also updates World Transforms
-        WorldDepthFirstSearch(this, this.id);
+        WorldDepthFirstSearch(this, id);
 
-        UpdateVertexPositionSystem(GameObjectWorld);
+        // Emit(this, WorldEvents.WorldRenderEvent, this);
 
-        Emit(this, WorldEvents.WorldRenderEvent, renderData, this);
-
-        // MergeRenderData(sceneRenderData, renderData);
+        // this.sceneManager.updateRenderData(this, RenderDataComponent.numRendered[id], RenderDataComponent.dirtyFrame[id], 0);
 
         this.camera.dirtyRender = false;
     }
@@ -125,25 +140,34 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         for (const entry of this.renderList)
         {
-            entry.renderGL(renderPass);
-
             if (entry.getNumChildren() > 0)
             {
-
+                this.renderEntry(entry, renderPass);
+            }
+            else
+            {
+                entry.renderGL(renderPass);
             }
         }
+    }
 
-        // this.renderList.forEach(entry =>
-        // {
-        //     if (entry.children.length > 0)
-        //     {
-        //         this.renderNode(entry, renderPass);
-        //     }
-        //     else
-        //     {
-        //         entry.node.renderGL(renderPass);
-        //     }
-        // });
+    renderEntry (entry: IGameObject, renderPass: IRenderPass): void
+    {
+        entry.renderGL(renderPass);
+
+        entry.children.forEach(child =>
+        {
+            if (child.children.length > 0)
+            {
+                this.renderNode(child, renderPass);
+            }
+            else
+            {
+                child.node.renderGL(renderPass);
+            }
+        });
+
+        entry.postRenderGL(renderPass);
     }
 
     renderNode (entry: SearchEntry, renderPass: IRenderPass): void
@@ -174,9 +198,15 @@ export class BaseWorld extends GameObject implements IBaseWorld
     {
         const scene = this.scene;
 
-        Off(scene, 'update', this._updateListener);
-        Off(scene, 'render', this._renderListener);
-        Off(scene, 'shutdown', this._shutdownListener);
+        Off(scene, SceneBeforeUpdateEvent, this._beforeUpdateListener);
+        Off(scene, SceneUpdateEvent, this._updateListener);
+        Off(scene, SceneAfterUpdateEvent, this._afterUpdateListener);
+
+        Off(scene, ScenePreRenderEvent, this._preRenderListener);
+        Off(scene, SceneRenderGLEvent, this._renderGLListener);
+        Off(scene, ScenePostRenderGLEvent, this._postRenderGLListener);
+
+        Off(scene, SceneShutdownEvent, this._shutdownListener);
 
         //  Clear the display list and reset the camera, but leave
         //  everything in place so we can return to this World again
@@ -198,7 +228,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     {
         super.destroy(reparentChildren);
 
-        ResetWorldRenderData(this.id, 0);
+        this.shutdown();
 
         if (this.camera)
         {

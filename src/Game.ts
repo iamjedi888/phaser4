@@ -110,12 +110,14 @@ export class Game extends EventEmitter
             {
                 this.sceneManager.update(delta, time);
 
-                Emit(this, 'update', delta, time);
+                // Emit(this, 'update', delta, time);
             }
 
             if (this.willRender)
             {
-                this.renderer.render(this.sceneManager.render(this.frame));
+                this.sceneManager.preRender(this.frame);
+
+                this.renderer.render();
             }
         }
 

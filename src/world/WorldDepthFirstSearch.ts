@@ -1,16 +1,17 @@
-import { GameObjectCache, GameObjectTree } from '../gameobjects';
 import { WillCacheChildren, WillRender, WillRenderChildren } from '../components/permissions';
 
+import { GameObjectTree } from '../gameobjects';
 import { GetNumChildren } from '../components/hierarchy';
 import { IBaseWorld } from './IBaseWorld';
 import { UpdateWorldTransform } from '../components/transform';
 
 export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
 {
+    const renderList = world.renderList;
+    const renderType = world.renderType;
+
     if (WillRender(parent))
     {
-        world.renderList.add(GameObjectCache.get(parent));
-
         UpdateWorldTransform(parent);
 
         const children = GameObjectTree.get(parent);
@@ -23,20 +24,28 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
             {
                 if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID))
                 {
-                    if (WillCacheChildren(nodeID))
-                    {
-                        // cachedLayers.push(entry);
-                    }
+                    //  TODO
+                    // if (WillCacheChildren(nodeID))
+                    // {
+                    //     cachedLayers.push(entry);
+                    // }
+
+                    renderList.push(nodeID);
+                    renderType.push(0);
 
                     WorldDepthFirstSearch(world, nodeID);
                 }
                 else
                 {
-                    world.renderList.add(GameObjectCache.get(nodeID));
+                    renderList.push(nodeID);
+                    renderType.push(0);
 
                     UpdateWorldTransform(nodeID);
                 }
             }
         }
+
+        renderList.push(nodeID);
+        renderType.push(1);
     }
 }
