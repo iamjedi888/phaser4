@@ -25,6 +25,7 @@ export interface IGameObject
     postRenderGL <T extends IRenderPass> (renderPass: T): void;
     postRenderCanvas <T extends ICanvasRenderer> (renderer: T): void;
 
+    hasParent (): boolean;
     getParent (): IGameObject;
     getChildren (): IGameObject[];
     getNumChildren (): number;
