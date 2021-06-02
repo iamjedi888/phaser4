@@ -11,7 +11,7 @@ export function BindBlendMode (renderPass: IRenderPass, entry?: BlendModeStackEn
 
     if (entry.enable)
     {
-        if (renderPass.currentBlendMode.sfactor !== entry.sfactor || renderPass.currentBlendMode.dfactor !== entry.dfactor)
+        if (!gl.isEnabled(gl.BLEND) || (renderPass.currentBlendMode.sfactor !== entry.sfactor || renderPass.currentBlendMode.dfactor !== entry.dfactor))
         {
             gl.enable(gl.BLEND);
             gl.blendFunc(entry.sfactor, entry.dfactor);
