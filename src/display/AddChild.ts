@@ -5,7 +5,7 @@ import { IGameObject } from '../gameobjects/IGameObject';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
 
-export function AddChild <T extends IGameObject> (parent: T, child: T): T
+export function AddChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
     const childID = child.id;
     const parentID = parent.id;

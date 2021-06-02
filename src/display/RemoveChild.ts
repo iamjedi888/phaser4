@@ -2,9 +2,12 @@ import { GetChildIndex } from './GetChildIndex';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { RemoveChildAt } from './RemoveChildAt';
 
-export function RemoveChild <T extends IGameObject> (parent: T, child: T): T
+export function RemoveChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
-    RemoveChildAt(parent, GetChildIndex(parent, child));
+    if (child.hasParent())
+    {
+        RemoveChildAt(parent, GetChildIndex(parent, child));
+    }
 
     return child;
 }
