@@ -8,6 +8,7 @@ import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IScene } from './IScene';
+import { ISceneRenderData } from './ISceneRenderData';
 import { ResetSceneRenderData } from './ResetSceneRenderData';
 import { SceneManagerInstance } from './SceneManagerInstance';
 import { SceneRenderDataComponent } from './SceneRenderDataComponent';
@@ -101,5 +102,18 @@ export class SceneManager
         SceneRenderDataComponent.numDirtyCameras[id] += dirtyCameras;
 
         this._worldList.add(world);
+    }
+
+    getRenderData (): ISceneRenderData
+    {
+        const id = this.id;
+
+        return {
+            gameFrame: SceneRenderDataComponent.gameFrame[id],
+            numTotalFrames: SceneRenderDataComponent.numTotalFrames[id],
+            numDirtyFrames: SceneRenderDataComponent.numDirtyFrames[id],
+            numDirtyCameras: SceneRenderDataComponent.numDirtyCameras[id],
+            worlds: this._worldList
+        };
     }
 }

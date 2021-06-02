@@ -1,5 +1,4 @@
-import { IWorld3DRenderData } from '../world3d/IWorld3DRenderData';
-import { IWorldRenderData } from '../world/IWorldRenderData';
+import { IBaseWorld } from '../world/IBaseWorld';
 
 export interface ISceneRenderData
 {
@@ -15,6 +14,6 @@ export interface ISceneRenderData
     //  How many Game Objects were processed this frame across all Scenes?
     numTotalFrames: number;
 
-    //  An array of all the Worlds due to be rendered - safe to clear this every frame as it's such a tiny array
-    worldData: (IWorldRenderData | IWorld3DRenderData)[];
+    //  A Set of all the Worlds due to be rendered - safe to clear this every frame as it's tiny
+    worlds: Set<IBaseWorld>;
 }

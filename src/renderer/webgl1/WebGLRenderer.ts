@@ -137,7 +137,7 @@ export class WebGLRenderer
         //  Nothing dirty? Display the previous frame
         if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0)
         {
-            return;
+            // return;
         }
 
         if (this.clearBeforeRender)
@@ -148,14 +148,10 @@ export class WebGLRenderer
             gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
-        const worlds = renderData.worldData;
-
         Start(renderPass);
 
-        for (let i: number = 0; i < worlds.length; i++)
+        for (const world of renderData.worlds)
         {
-            const { world } = worlds[i];
-
             world.renderGL(renderPass);
 
             //  Stats sweep
