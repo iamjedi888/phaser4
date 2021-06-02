@@ -135,7 +135,7 @@ export class GameObject implements IGameObject
         return GetNumChildren(this.id);
     }
 
-    destroy (reparentChildren?: IGameObject): void
+    destroy <P extends IGameObject> (reparentChildren?: P): void
     {
         if (reparentChildren)
         {
