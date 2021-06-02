@@ -1,24 +1,23 @@
 import { CopyLocalToWorld } from './CopyLocalToWorld';
 import { CopyWorldToWorld } from './CopyWorldToWorld';
-import { GameObjectCache } from '../../gameobjects/GameObjectCache';
+import { GetParentID } from '../hierarchy';
 import { MultiplyLocalWithWorld } from './MultiplyLocalWithWorld';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
 export function UpdateWorldTransform (id: number): void
 {
-    const gameObject = GameObjectCache.get(id);
-    const parent = gameObject.getParent();
+    const parentID = GetParentID(id);
 
-    if (!parent)
+    if (parentID === 0)
     {
         CopyLocalToWorld(id, id);
     }
     else if (!WillTransformChildren(id))
     {
-        CopyWorldToWorld(parent.id, id);
+        CopyWorldToWorld(parentID, id);
     }
     else
     {
-        MultiplyLocalWithWorld(parent.id, id);
+        MultiplyLocalWithWorld(parentID, id);
     }
 }

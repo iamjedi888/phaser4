@@ -4,6 +4,7 @@ import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
+import { SetDirtyDisplayList } from '../components/dirty';
 
 export function AddChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
@@ -18,6 +19,8 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
 
         //  SetParent
         HierarchyComponent.parentID[childID] = parentID;
+
+        SetDirtyDisplayList(parentID);
 
         //  Emit add event?
 

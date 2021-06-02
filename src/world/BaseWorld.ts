@@ -2,6 +2,7 @@ import * as GameObjectEvents from '../gameobjects/events';
 import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
+import { ClearDirtyDisplayList, HasDirtyDisplayList } from '../components/dirty';
 import { Emit, Off, On, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
 import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneDestroyEvent, ScenePostRenderGLEvent, ScenePreRenderEvent, SceneRenderGLEvent, SceneShutdownEvent, SceneUpdateEvent } from '../scenes/events';
@@ -112,18 +113,22 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return;
         }
 
-        //  TODO: Only needs doing again if the World Display List has changed,
-        //  otherwise we can use the same list as previously
-
         const id = this.id;
 
-        ResetWorldRenderData(id, gameFrame);
+        if (HasDirtyDisplayList(id))
+        {
+            console.log('World reset');
 
-        this.renderList = [];
-        this.renderType = [];
+            ResetWorldRenderData(id, gameFrame);
 
-        //  Iterate World and populate our WorldRenderList, also updates World Transforms
-        WorldDepthFirstSearch(this, id);
+            this.renderList = [];
+            this.renderType = [];
+
+            //  Iterate World and populate our WorldRenderList, also updates World Transforms
+            WorldDepthFirstSearch(this, id);
+
+            ClearDirtyDisplayList(id);
+        }
 
         this.sceneManager.updateRenderData(this, RenderDataComponent.numRendered[id], RenderDataComponent.dirtyFrame[id], 0);
 

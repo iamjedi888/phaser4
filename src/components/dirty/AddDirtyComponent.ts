@@ -17,4 +17,5 @@ export function AddDirtyComponent (id: number): void
     DirtyComponent.textureFrame[id] = 0;
     DirtyComponent.alpha[id] = 0;
     DirtyComponent.child[id] = 0;
+    DirtyComponent.displayList[id] = 0;
 }

@@ -11,7 +11,8 @@ const Dirty = defineComponent({
     texture: Types.ui32,
     textureFrame: Types.ui32,
     alpha: Types.ui32,
-    child: Types.ui32
+    child: Types.ui32,
+    displayList: Types.ui32
 });
 
 export const DirtyComponent = Dirty;
