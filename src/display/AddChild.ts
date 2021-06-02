@@ -1,4 +1,4 @@
-import { HierarchyComponent, UpdateNumChildren } from '../components/hierarchy';
+import { GetWorldID, HierarchyComponent, SetWorldAndParentID, UpdateNumChildren } from '../components/hierarchy';
 
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
@@ -10,6 +10,7 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
 {
     const childID = child.id;
     const parentID = parent.id;
+    const worldID = GetWorldID(parentID);
 
     if (IsValidParent(parent, child))
     {
@@ -17,10 +18,9 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
 
         GameObjectTree.get(parentID).push(childID);
 
-        //  SetParent
-        HierarchyComponent.parentID[childID] = parentID;
+        SetWorldAndParentID(childID, worldID, parentID);
 
-        SetDirtyDisplayList(parentID);
+        SetDirtyDisplayList(worldID);
 
         //  Emit add event?
 

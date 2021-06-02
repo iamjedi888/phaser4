@@ -27,6 +27,7 @@ import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SearchEntry } from '../display/SearchEntryType';
+import { SetWorldID } from '../components/hierarchy';
 import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { UpdateWorldTransform2DSystem } from '../components/transform/UpdateWorldTransform2DSystem';
@@ -78,8 +79,12 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this._shutdownListener = On(scene, SceneShutdownEvent, () => this.shutdown());
 
-        AddRenderDataComponent(this.id);
-        AddTransform2DComponent(this.id);
+        const id = this.id;
+
+        AddRenderDataComponent(id);
+        AddTransform2DComponent(id);
+
+        SetWorldID(id, id);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }

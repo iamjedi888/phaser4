@@ -9,6 +9,7 @@ import { HierarchyComponent } from './HierarchyComponent';
 import { SetDepth } from './SetDepth';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
+import { SetWorldAndParentID } from './SetWorldAndParentID';
 import { SetWorldID } from './SetWorldID';
 import { UpdateNumChildren } from './UpdateNumChildren';
 
@@ -24,6 +25,7 @@ export {
     SetDepth,
     SetNumChildren,
     SetParentID,
+    SetWorldAndParentID,
     SetWorldID,
     UpdateNumChildren
 };
