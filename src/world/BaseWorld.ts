@@ -149,11 +149,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         for (let i = 0; i < list.length; i++)
         {
-            if (list[i] === this.id)
-            {
-                continue;
-            }
-
             const entry = GameObjectCache.get(list[i]);
 
             if (types[i] === 1)

@@ -12,8 +12,11 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
 
     if (WillRender(parent))
     {
-        renderList.push(parent);
-        renderType.push(0);
+        if (world.id !== parent)
+        {
+            renderList.push(parent);
+            renderType.push(0);
+        }
 
         UpdateWorldTransform(parent);
 
@@ -33,9 +36,6 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
                     //     cachedLayers.push(entry);
                     // }
 
-                    // renderList.push(nodeID);
-                    // renderType.push(0);
-
                     WorldDepthFirstSearch(world, nodeID);
                 }
                 else
@@ -51,7 +51,10 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
             }
         }
 
-        renderList.push(parent);
-        renderType.push(1);
+        if (world.id !== parent)
+        {
+            renderList.push(parent);
+            renderType.push(1);
+        }
     }
 }
