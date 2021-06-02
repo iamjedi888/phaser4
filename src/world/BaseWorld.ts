@@ -3,12 +3,12 @@ import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Emit, Off, On, Once } from '../events';
+import { GameObject, GameObjectCache } from '../gameobjects';
 import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneDestroyEvent, ScenePostRenderGLEvent, ScenePreRenderEvent, SceneRenderGLEvent, SceneShutdownEvent, SceneUpdateEvent } from '../scenes/events';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BuildRenderList } from './BuildRenderList';
-import { GameObject } from '../gameobjects';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
@@ -40,8 +40,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     camera: IBaseCamera;
 
-    // renderData: IWorldRenderData;
-
     forceRefresh: boolean = false;
 
     is3D: boolean = false;
@@ -72,9 +70,11 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this._beforeUpdateListener = On(scene, SceneBeforeUpdateEvent, (delta: number, time: number) => this.beforeUpdate(delta, time));
         this._updateListener = On(scene, SceneUpdateEvent, (delta: number, time: number) => this.update(delta, time));
         this._afterUpdateListener = On(scene, SceneAfterUpdateEvent, (delta: number, time: number) => this.afterUpdate(delta, time));
+
         this._preRenderListener = On(scene, ScenePreRenderEvent, (gameFrame: number) => this.preRender(gameFrame));
         this._renderGLListener = On(scene, SceneRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.renderGL(renderPass));
         this._postRenderGLListener = On(scene, ScenePostRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.postRenderGL(renderPass));
+
         this._shutdownListener = On(scene, SceneShutdownEvent, () => this.shutdown());
 
         AddRenderDataComponent(this.id);
@@ -107,27 +107,33 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     preRender (gameFrame: number): void
     {
-        const id = this.id;
-
-        ResetWorldRenderData(id, gameFrame);
-
         if (!this.isRenderable())
         {
             return;
         }
 
+        //  TODO: Only needs doing again if the World Display List has changed,
+        //  otherwise we can use the same list as previously
+
+        const id = this.id;
+
+        ResetWorldRenderData(id, gameFrame);
+
+        this.renderList = [];
+        this.renderType = [];
+
         //  Iterate World and populate our WorldRenderList, also updates World Transforms
         WorldDepthFirstSearch(this, id);
 
-        // Emit(this, WorldEvents.WorldRenderEvent, this);
-
-        // this.sceneManager.updateRenderData(this, RenderDataComponent.numRendered[id], RenderDataComponent.dirtyFrame[id], 0);
+        this.sceneManager.updateRenderData(this, RenderDataComponent.numRendered[id], RenderDataComponent.dirtyFrame[id], 0);
 
         this.camera.dirtyRender = false;
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
+        Emit(this, WorldEvents.WorldRenderEvent, this);
+
         const currentCamera = renderPass.current2DCamera;
         const camera = this.camera;
 
@@ -138,55 +144,27 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         Begin(renderPass, camera);
 
-        for (const entry of this.renderList)
+        const list = this.renderList;
+        const types = this.renderType;
+
+        for (let i = 0; i < list.length; i++)
         {
-            if (entry.getNumChildren() > 0)
+            if (list[i] === this.id)
             {
-                this.renderEntry(entry, renderPass);
+                continue;
+            }
+
+            const entry = GameObjectCache.get(list[i]);
+
+            if (types[i] === 1)
+            {
+                entry.postRenderGL(renderPass);
             }
             else
             {
                 entry.renderGL(renderPass);
             }
         }
-    }
-
-    renderEntry (entry: IGameObject, renderPass: IRenderPass): void
-    {
-        entry.renderGL(renderPass);
-
-        entry.children.forEach(child =>
-        {
-            if (child.children.length > 0)
-            {
-                this.renderNode(child, renderPass);
-            }
-            else
-            {
-                child.node.renderGL(renderPass);
-            }
-        });
-
-        entry.postRenderGL(renderPass);
-    }
-
-    renderNode (entry: SearchEntry, renderPass: IRenderPass): void
-    {
-        entry.node.renderGL(renderPass);
-
-        entry.children.forEach(child =>
-        {
-            if (child.children.length > 0)
-            {
-                this.renderNode(child, renderPass);
-            }
-            else
-            {
-                child.node.renderGL(renderPass);
-            }
-        });
-
-        entry.node.postRenderGL(renderPass);
     }
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
@@ -236,6 +214,5 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         this.camera = null;
-        this.renderData = null;
     }
 }

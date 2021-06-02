@@ -12,6 +12,9 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
 
     if (WillRender(parent))
     {
+        renderList.push(parent);
+        renderType.push(0);
+
         UpdateWorldTransform(parent);
 
         const children = GameObjectTree.get(parent);
@@ -30,8 +33,8 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
                     //     cachedLayers.push(entry);
                     // }
 
-                    renderList.push(nodeID);
-                    renderType.push(0);
+                    // renderList.push(nodeID);
+                    // renderType.push(0);
 
                     WorldDepthFirstSearch(world, nodeID);
                 }
@@ -41,11 +44,14 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
                     renderType.push(0);
 
                     UpdateWorldTransform(nodeID);
+
+                    renderList.push(nodeID);
+                    renderType.push(1);
                 }
             }
         }
 
-        renderList.push(nodeID);
+        renderList.push(parent);
         renderType.push(1);
     }
 }
