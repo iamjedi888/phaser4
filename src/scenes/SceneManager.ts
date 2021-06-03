@@ -1,21 +1,20 @@
 import { Changed, addEntity, defineQuery } from 'bitecs';
-import { Emit, Once } from '../events';
-import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, ScenePreRenderEvent, SceneUpdateEvent } from './events';
 
 import { AddSceneRenderDataComponent } from './AddSceneRenderDataComponent';
 import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes';
-import { IBaseWorld } from '../world/IBaseWorld';
 import { IScene } from './IScene';
 import { ISceneRenderData } from './ISceneRenderData';
 import { LocalMatrix2DComponent } from '../components/transform';
+import { Once } from '../events';
 import { ResetSceneRenderData } from './ResetSceneRenderData';
 import { SceneManagerInstance } from './SceneManagerInstance';
 import { SceneRenderDataComponent } from './SceneRenderDataComponent';
 import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
+import { WorldList } from '../world/WorldList';
 
 export class SceneManager
 {
@@ -23,7 +22,7 @@ export class SceneManager
 
     game: Game;
 
-    scenes: Map<string, IScene>  = new Map();
+    scenes: Map<string, IScene> = new Map();
 
     //  Used by Install to assign default scene keys when not specified
     sceneIndex: number = 0;
@@ -31,10 +30,9 @@ export class SceneManager
     //  Flush the cache
     flush: boolean = false;
 
-    //  List of worlds going to be rendered this frame (reset every step)
-    private _worldList: Set<IBaseWorld> = new Set();
-
     changedMatrixQuery = defineQuery([ Changed(LocalMatrix2DComponent) ]);
+
+    private renderData: ISceneRenderData;
 
     constructor ()
     {
@@ -43,6 +41,14 @@ export class SceneManager
         SceneManagerInstance.set(this);
 
         AddSceneRenderDataComponent(this.id);
+
+        this.renderData = {
+            gameFrame: 0,
+            numTotalFrames: 0,
+            numDirtyFrames: 0,
+            numDirtyCameras: 0,
+            scenes: this.scenes
+        };
 
         Once(this.game, 'boot', () => this.boot());
     }
@@ -56,17 +62,18 @@ export class SceneManager
     {
         for (const scene of this.scenes.values())
         {
-            Emit(scene, SceneBeforeUpdateEvent, delta, time);
-            Emit(scene, SceneUpdateEvent, delta, time);
+            const worlds = WorldList.get(scene);
+
+            for (const world of worlds)
+            {
+                world.beforeUpdate(delta, time);
+                world.update(delta, time);
+                world.afterUpdate(delta, time);
+            }
         }
 
         //  Process all dirty 2D transforms and update the local matrix across all Worlds and Scenes
         UpdateLocalTransform2DSystem(GameObjectWorld);
-
-        for (const scene of this.scenes.values())
-        {
-            Emit(scene, SceneAfterUpdateEvent, delta, time);
-        }
     }
 
     //  Run through all Scenes and Worlds within them, telling them to prepare to render
@@ -75,15 +82,16 @@ export class SceneManager
     {
         ResetSceneRenderData(this.id, gameFrame);
 
-        //  TODO - This doesn't need resetting every frame, only when a World changes
-        this._worldList.clear();
-
-        //  TODO - Rather than pass this in, we could run the query with `false` flag in each World?
         const dirtyTransforms: number[] = this.changedMatrixQuery(GameObjectWorld);
 
         for (const scene of this.scenes.values())
         {
-            Emit(scene, ScenePreRenderEvent, gameFrame, dirtyTransforms);
+            const worlds = WorldList.get(scene);
+
+            for (const world of worlds)
+            {
+                world.preRender(gameFrame, dirtyTransforms);
+            }
         }
 
         //  Update all vertices across the whole game, ready for rendering
@@ -99,27 +107,26 @@ export class SceneManager
         }
     }
 
-    updateRenderData (world: IBaseWorld, totalFrames: number, dirtyFrames: number, dirtyCameras: number): void
-    {
-        const id = this.id;
+    // updateRenderData (world: IBaseWorld, totalFrames: number, dirtyFrames: number, dirtyCameras: number): void
+    // {
+    //     const id = this.id;
 
-        SceneRenderDataComponent.numTotalFrames[id] += totalFrames;
-        SceneRenderDataComponent.numDirtyFrames[id] += dirtyFrames;
-        SceneRenderDataComponent.numDirtyCameras[id] += dirtyCameras;
-
-        this._worldList.add(world);
-    }
+    //     SceneRenderDataComponent.numTotalFrames[id] += totalFrames;
+    //     SceneRenderDataComponent.numDirtyFrames[id] += dirtyFrames;
+    //     SceneRenderDataComponent.numDirtyCameras[id] += dirtyCameras;
+    // }
 
     getRenderData (): ISceneRenderData
     {
         const id = this.id;
 
-        return {
-            gameFrame: SceneRenderDataComponent.gameFrame[id],
-            numTotalFrames: SceneRenderDataComponent.numTotalFrames[id],
-            numDirtyFrames: SceneRenderDataComponent.numDirtyFrames[id],
-            numDirtyCameras: SceneRenderDataComponent.numDirtyCameras[id],
-            worlds: this._worldList
-        };
+        const data = this.renderData;
+
+        data.gameFrame = SceneRenderDataComponent.gameFrame[id];
+        data.numTotalFrames = SceneRenderDataComponent.numTotalFrames[id];
+        data.numDirtyFrames = SceneRenderDataComponent.numDirtyFrames[id];
+        data.numDirtyCameras = SceneRenderDataComponent.numDirtyCameras[id];
+
+        return data;
     }
 }

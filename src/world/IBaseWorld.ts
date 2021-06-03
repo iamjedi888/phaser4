@@ -10,9 +10,7 @@ export interface IBaseWorld extends IGameObject
 
     forceRefresh: boolean;
     is3D: boolean;
-
-    renderList: Uint32Array;
-    listLength: number;
+    runRender: boolean;
 
     addToRenderList (id: number, renderType: number): void;
 

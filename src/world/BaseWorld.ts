@@ -3,9 +3,8 @@ import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { ClearDirtyDisplayList, HasDirtyDisplayList } from '../components/dirty';
-import { Emit, Off, On, Once } from '../events';
+import { Emit, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
-import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneDestroyEvent, ScenePostRenderGLEvent, ScenePreRenderEvent, SceneRenderGLEvent, SceneShutdownEvent, SceneUpdateEvent } from '../scenes/events';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
@@ -13,7 +12,6 @@ import { CheckDirtyTransforms } from './CheckDirtyTransforms';
 import { GetWorldSize } from '../config/worldsize';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
-import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
@@ -22,10 +20,12 @@ import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RemoveChildren } from '../display';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
+import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetWorldID } from '../components/hierarchy';
 import { WillUpdate } from '../components/permissions';
+import { WorldList } from './WorldList';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
@@ -39,18 +39,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     is3D: boolean = false;
 
-    renderList: Uint32Array;
-    listLength: number;
+    private renderList: Uint32Array;
+    private listLength: number;
 
-    private _beforeUpdateListener: IEventInstance;
-    private _updateListener: IEventInstance;
-    private _afterUpdateListener: IEventInstance;
-
-    private _preRenderListener: IEventInstance;
-    private _renderGLListener: IEventInstance;
-    private _postRenderGLListener: IEventInstance;
-
-    private _shutdownListener: IEventInstance;
+    runRender: boolean = false;
 
     constructor (scene: IScene)
     {
@@ -63,22 +55,14 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.renderList = new Uint32Array(GetWorldSize() * 4);
         this.listLength = 0;
 
-        this._beforeUpdateListener = On(scene, SceneBeforeUpdateEvent, (delta: number, time: number) => this.beforeUpdate(delta, time));
-        this._updateListener = On(scene, SceneUpdateEvent, (delta: number, time: number) => this.update(delta, time));
-        this._afterUpdateListener = On(scene, SceneAfterUpdateEvent, (delta: number, time: number) => this.afterUpdate(delta, time));
-
-        this._preRenderListener = On(scene, ScenePreRenderEvent, (gameFrame: number, transformList: number[]) => this.preRender(gameFrame, transformList));
-        this._renderGLListener = On(scene, SceneRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.renderGL(renderPass));
-        this._postRenderGLListener = On(scene, ScenePostRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.postRenderGL(renderPass));
-
-        this._shutdownListener = On(scene, SceneShutdownEvent, () => this.shutdown());
-
         const id = this.id;
 
         AddRenderDataComponent(id);
         AddTransform2DComponent(id);
 
         SetWorldID(id, id);
+
+        WorldList.get(scene).push(this);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
@@ -107,17 +91,32 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     addToRenderList (id: number, renderType: number): void
     {
-        //  TODO - If this is going to take us over the array limit, it needs resizing
-        this.renderList[this.listLength] = id;
-        this.renderList[this.listLength + 1] = renderType;
+        let len = this.listLength;
+        const list = this.renderList;
+
+        list[len] = id;
+        list[len + 1] = renderType;
 
         this.listLength += 2;
+
+        len += 2;
+
+        if (len === list.length)
+        {
+            const newList = new Uint32Array(len + (GetWorldSize() * 4));
+
+            newList.set(list, 0);
+
+            this.renderList = newList;
+        }
     }
 
     preRender (gameFrame: number, transformList: number[]): void
     {
         if (!this.isRenderable())
         {
+            this.runRender = false;
+
             return;
         }
 
@@ -136,7 +135,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         if (dirtyDisplayList)
         {
-            this.renderList.fill(0);
             this.listLength = 0;
 
             RebuildWorldList(this, id);
@@ -149,10 +147,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
             RebuildWorldTransforms(this, id, transformList, false);
         }
 
-        //  TODO - Replace?
-        this.sceneManager.updateRenderData(this, 0, 0, 0);
-
         this.camera.dirtyRender = false;
+
+        this.runRender = (this.listLength > 0);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
@@ -196,18 +193,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     shutdown (): void
     {
-        const scene = this.scene;
-
-        Off(scene, SceneBeforeUpdateEvent, this._beforeUpdateListener);
-        Off(scene, SceneUpdateEvent, this._updateListener);
-        Off(scene, SceneAfterUpdateEvent, this._afterUpdateListener);
-
-        Off(scene, ScenePreRenderEvent, this._preRenderListener);
-        Off(scene, SceneRenderGLEvent, this._renderGLListener);
-        Off(scene, ScenePostRenderGLEvent, this._postRenderGLListener);
-
-        Off(scene, SceneShutdownEvent, this._shutdownListener);
-
         //  Clear the display list and reset the camera, but leave
         //  everything in place so we can return to this World again
         //  at a later stage
