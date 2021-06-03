@@ -6,15 +6,11 @@ import { IBaseWorld } from './IBaseWorld';
 
 export function RebuildWorldList (world: IBaseWorld, parent: number): void
 {
-    const renderList = world.renderList;
-    const renderType = world.renderType;
-
     if (WillRender(parent))
     {
         if (world.id !== parent)
         {
-            renderList.push(parent);
-            renderType.push(0);
+            world.addToRenderList(parent, 0);
         }
 
         const children = GameObjectTree.get(parent);
@@ -37,16 +33,15 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
                 }
                 else
                 {
-                    renderList.push(nodeID, nodeID);
-                    renderType.push(0, 1);
+                    world.addToRenderList(nodeID, 0);
+                    world.addToRenderList(nodeID, 1);
                 }
             }
         }
 
         if (world.id !== parent)
         {
-            renderList.push(parent);
-            renderType.push(1);
+            world.addToRenderList(parent, 1);
         }
     }
 }

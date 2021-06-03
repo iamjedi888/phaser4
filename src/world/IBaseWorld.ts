@@ -8,13 +8,13 @@ export interface IBaseWorld extends IGameObject
     scene: IScene;
     camera: IBaseCamera;
 
-    // renderData: IWorldRenderData;
-
     forceRefresh: boolean;
     is3D: boolean;
 
-    renderList: number[];
-    renderType: number[];
+    renderList: Uint32Array;
+    listLength: number;
+
+    addToRenderList (id: number, renderType: number): void;
 
     beforeUpdate (delta: number, time: number): void;
     update (delta: number, time: number): void;

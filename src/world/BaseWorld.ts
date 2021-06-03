@@ -10,6 +10,7 @@ import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneDestroyEvent, Scene
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
+import { GetWorldSize } from '../config/worldsize';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
 import { IEventInstance } from '../events/IEventInstance';
@@ -38,8 +39,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     is3D: boolean = false;
 
-    renderList: number[];
-    renderType: number[];
+    renderList: Uint32Array;
+    listLength: number;
 
     private _beforeUpdateListener: IEventInstance;
     private _updateListener: IEventInstance;
@@ -58,8 +59,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.scene = scene;
         this.sceneManager = SceneManagerInstance.get();
 
-        this.renderList = [];
-        this.renderType = [];
+        this.renderList = new Uint32Array(GetWorldSize() * 2);
+        this.listLength = 0;
 
         this._beforeUpdateListener = On(scene, SceneBeforeUpdateEvent, (delta: number, time: number) => this.beforeUpdate(delta, time));
         this._updateListener = On(scene, SceneUpdateEvent, (delta: number, time: number) => this.update(delta, time));
@@ -103,6 +104,14 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, GameObjectEvents.AfterUpdateEvent, delta, time, this);
     }
 
+    addToRenderList (id: number, renderType: number): void
+    {
+        this.renderList[this.listLength] = id;
+        this.renderList[this.listLength + 1] = renderType;
+
+        this.listLength += 2;
+    }
+
     preRender (gameFrame: number, transformList: number[]): void
     {
         if (!this.isRenderable())
@@ -125,8 +134,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         if (dirtyDisplayList)
         {
-            this.renderList = [];
-            this.renderType = [];
+            this.renderList.fill(0);
+            this.listLength = 0;
 
             RebuildWorldList(this, id);
 
@@ -159,15 +168,15 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Begin(renderPass, camera);
 
         const list = this.renderList;
-        const types = this.renderType;
 
-        for (let i = 0; i < list.length; i++)
+        for (let i = 0; i < this.listLength; i += 2)
         {
             const eid = list[i];
+            const type = list[i + 1];
 
             const entry = GameObjectCache.get(eid);
 
-            if (types[i] === 1)
+            if (type === 1)
             {
                 entry.postRenderGL(renderPass);
             }
