@@ -5,7 +5,7 @@ import { GetNumChildren } from '../components/hierarchy';
 import { IBaseWorld } from './IBaseWorld';
 import { UpdateWorldTransform } from '../components/transform';
 
-export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
+export function WorldDepthFirstSearch (world: IBaseWorld, parent: number, transformList: number[], forceUpdate: boolean): void
 {
     const renderList = world.renderList;
     const renderType = world.renderType;
@@ -18,7 +18,15 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
             renderType.push(0);
         }
 
-        UpdateWorldTransform(parent);
+        if (!forceUpdate && transformList.indexOf(parent) > -1)
+        {
+            forceUpdate = true;
+        }
+
+        if (forceUpdate)
+        {
+            UpdateWorldTransform(parent);
+        }
 
         const children = GameObjectTree.get(parent);
 
@@ -36,14 +44,17 @@ export function WorldDepthFirstSearch (world: IBaseWorld, parent: number): void
                     //     cachedLayers.push(entry);
                     // }
 
-                    WorldDepthFirstSearch(world, nodeID);
+                    WorldDepthFirstSearch(world, nodeID, transformList, forceUpdate);
                 }
                 else
                 {
                     renderList.push(nodeID);
                     renderType.push(0);
 
-                    UpdateWorldTransform(nodeID);
+                    if (forceUpdate || transformList.indexOf(nodeID) > -1)
+                    {
+                        UpdateWorldTransform(nodeID);
+                    }
 
                     renderList.push(nodeID);
                     renderType.push(1);
