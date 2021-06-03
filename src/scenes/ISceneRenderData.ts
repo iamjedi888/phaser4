@@ -1,4 +1,4 @@
-import { IBaseWorld } from '../world/IBaseWorld';
+import { IScene } from './IScene';
 
 export interface ISceneRenderData
 {
@@ -14,6 +14,6 @@ export interface ISceneRenderData
     //  How many Game Objects were processed this frame across all Scenes?
     numTotalFrames: number;
 
-    //  A Set of all the Worlds due to be rendered - safe to clear this every frame as it's tiny
-    worlds: Set<IBaseWorld>;
+    //  A reference to all of the Scenes in the Scene Manager from which we can get the Worlds to render
+    scenes: Map<string, IScene>;
 }
