@@ -6,6 +6,8 @@ export function AddPermissionsComponent (id: number): void
 {
     addComponent(GameObjectWorld, PermissionsComponent, id);
 
+    PermissionsComponent.visible[id] = 1;
+    PermissionsComponent.visibleChildren[id] = 1;
     PermissionsComponent.willUpdate[id] = 1;
     PermissionsComponent.willUpdateChildren[id] = 1;
     PermissionsComponent.willRender[id] = 1;

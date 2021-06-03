@@ -9,6 +9,7 @@ export interface IGameObject
     name: string;
 
     visible: boolean;
+    visibleChildren: boolean;
 
     events: Map<string, Set<IEventInstance>>;
 

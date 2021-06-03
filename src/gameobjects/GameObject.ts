@@ -1,5 +1,5 @@
 import { AddHierarchyComponent, GetChildren, GetNumChildren, GetParentGameObject, HierarchyComponent } from '../components/hierarchy';
-import { AddPermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
+import { AddPermissionsComponent, PermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
@@ -24,8 +24,6 @@ export class GameObject implements IGameObject
 
     events: Map<string, Set<IEventInstance>>;
 
-    visible: boolean = true;
-
     constructor ()
     {
         const id = this.id;
@@ -42,7 +40,7 @@ export class GameObject implements IGameObject
 
     isRenderable (): boolean
     {
-        return (this.visible && WillRender(this.id));
+        return WillRender(this.id);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -103,6 +101,26 @@ export class GameObject implements IGameObject
     {
         //  Called after this GameObject and all of its children have been rendered.
         //  If it doesn't have any children, this method is never called.
+    }
+
+    set visible (value: boolean)
+    {
+        PermissionsComponent.visible[this.id] = Number(value);
+    }
+
+    get visible (): boolean
+    {
+        return Boolean(PermissionsComponent.visible[this.id]);
+    }
+
+    set visibleChildren (value: boolean)
+    {
+        PermissionsComponent.visibleChildren[this.id] = Number(value);
+    }
+
+    get visibleChildren (): boolean
+    {
+        return Boolean(PermissionsComponent.visibleChildren[this.id]);
     }
 
     set depth (value: number)
