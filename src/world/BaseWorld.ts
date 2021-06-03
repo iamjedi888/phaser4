@@ -1,4 +1,3 @@
-import * as GameObjectEvents from '../gameobjects/events';
 import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
@@ -69,7 +68,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     beforeUpdate (delta: number, time: number): void
     {
-        Emit(this, GameObjectEvents.BeforeUpdateEvent, delta, time, this);
+        Emit(this, WorldEvents.WorldBeforeUpdateEvent, delta, time, this);
     }
 
     update (delta: number, time: number): void
@@ -79,14 +78,14 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return;
         }
 
-        Emit(this, GameObjectEvents.UpdateEvent, delta, time, this);
+        Emit(this, WorldEvents.WorldUpdateEvent, delta, time, this);
 
         super.update(delta, time);
     }
 
     afterUpdate (delta: number, time: number): void
     {
-        Emit(this, GameObjectEvents.AfterUpdateEvent, delta, time, this);
+        Emit(this, WorldEvents.WorldAfterUpdateEvent, delta, time, this);
     }
 
     addToRenderList (id: number, renderType: number): void
