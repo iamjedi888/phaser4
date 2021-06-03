@@ -11,6 +11,7 @@ import { ProcessBindingQueue } from './renderpass/ProcessBindingQueue';
 import { RenderPass } from './renderpass/RenderPass';
 import { Start } from './renderpass';
 import { WebGLRendererInstance } from './WebGLRendererInstance';
+import { WorldList } from '../../world/WorldList';
 
 export class WebGLRenderer
 {
@@ -150,13 +151,21 @@ export class WebGLRenderer
 
         Start(renderPass);
 
-        for (const world of renderData.worlds)
+        for (const scene of renderData.scenes.values())
         {
-            world.renderGL(renderPass);
+            const worlds = WorldList.get(scene);
 
-            //  Stats sweep
+            for (const world of worlds)
+            {
+                if (world.runRender)
+                {
+                    world.renderGL(renderPass);
 
-            world.postRenderGL(renderPass);
+                    //  Stats sweep
+
+                    world.postRenderGL(renderPass);
+                }
+            }
         }
 
         End(renderPass);
