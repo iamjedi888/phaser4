@@ -11,6 +11,7 @@ import { Scenes } from './scenes/Scenes';
 import { Size } from './size/Size';
 import { WebGL } from './webgl/WebGL';
 import { WebGLContext } from './webglcontext/WebGLContext';
+import { WorldSize } from './worldsize/WorldSize';
 
 export {
     BackgroundColor,
@@ -25,5 +26,6 @@ export {
     Scenes,
     Size,
     WebGL,
-    WebGLContext
+    WebGLContext,
+    WorldSize
 };

@@ -5,6 +5,7 @@ import { SetDefaultOrigin } from './defaultorigin/SetDefaultOrigin';
 import { SetMaxTextures } from './maxtextures/SetMaxTextures';
 import { SetSize } from './size/SetSize';
 import { SetWebGLContext } from './webglcontext';
+import { SetWorldSize } from './worldsize/SetWorldSize';
 
 //  Phaser 4 defaults
 
@@ -21,4 +22,5 @@ export function SetConfigDefaults (): void
         desynchronized: true,
         preserveDrawingBuffer: true
     });
+    SetWorldSize(1024);
 }

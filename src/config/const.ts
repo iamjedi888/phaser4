@@ -13,5 +13,6 @@ export const CONFIG_DEFAULTS = {
     SCENES: 'Scenes',
     SIZE: 'Size',
     WEBGL_CONTEXT: 'WebGLContext',
-    WEBGL: 'WebGL'
+    WEBGL: 'WebGL',
+    WORLD_SIZE: 'WorldSize'
 };
