@@ -78,6 +78,7 @@ export class SceneManager
         //  TODO - This doesn't need resetting every frame, only when a World changes
         this._worldList.clear();
 
+        //  TODO - Rather than pass this in, we could run the query with `false` flag in each World?
         const dirtyTransforms: number[] = this.changedMatrixQuery(GameObjectWorld);
 
         for (const scene of this.scenes.values())
