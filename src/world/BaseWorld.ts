@@ -59,7 +59,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.scene = scene;
         this.sceneManager = SceneManagerInstance.get();
 
-        this.renderList = new Uint32Array(GetWorldSize() * 2);
+        //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
+        this.renderList = new Uint32Array(GetWorldSize() * 4);
         this.listLength = 0;
 
         this._beforeUpdateListener = On(scene, SceneBeforeUpdateEvent, (delta: number, time: number) => this.beforeUpdate(delta, time));
