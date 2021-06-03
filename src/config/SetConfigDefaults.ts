@@ -22,5 +22,5 @@ export function SetConfigDefaults (): void
         desynchronized: true,
         preserveDrawingBuffer: true
     });
-    SetWorldSize(1024);
+    SetWorldSize(512);
 }
