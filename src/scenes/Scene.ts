@@ -1,5 +1,3 @@
-// import { Emit } from '../events/Emit';
-
 import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
 import { IEventEmitter } from '../events/IEventEmitter';
@@ -21,19 +19,4 @@ export class Scene implements IScene, IEventEmitter
 
         Install(this, config);
     }
-
-    // shutdown (): void
-    // {
-    //     Emit(this, 'shutdown');
-    // }
-
-    // destroy (): void
-    // {
-    //     Emit(this, 'destroy');
-
-    //     this.events.clear();
-
-    //     this.game = null;
-    //     this.events = null;
-    // }
 }
