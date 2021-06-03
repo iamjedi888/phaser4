@@ -6,6 +6,7 @@ import { GetBackgroundColor } from '../../config/backgroundcolor/GetBackgroundCo
 import { GetRGBArray } from './colors/GetRGBArray';
 import { GetWebGLContext } from '../../config/webglcontext/GetWebGLContext';
 import { IRenderPass } from './renderpass/IRenderPass';
+import { IScene } from '../../scenes/IScene';
 import { ISceneRenderData } from '../../scenes/ISceneRenderData';
 import { ProcessBindingQueue } from './renderpass/ProcessBindingQueue';
 import { RenderPass } from './renderpass/RenderPass';
@@ -27,7 +28,7 @@ export class WebGLRenderer
     resolution: number;
 
     clearBeforeRender: boolean = true;
-    optimizeRedraw: boolean = false;
+    optimizeRedraw: boolean = true;
     autoResize: boolean = true;
 
     contextLost: boolean = false;
@@ -119,7 +120,7 @@ export class WebGLRenderer
         // this.renderPass.reset();
     }
 
-    render (renderData: ISceneRenderData): void
+    render (willRedraw: boolean, scenes: Map<string, IScene>): void
     {
         if (this.contextLost)
         {
@@ -136,9 +137,9 @@ export class WebGLRenderer
         ProcessBindingQueue();
 
         //  Nothing dirty? Display the previous frame
-        if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0)
+        if (this.optimizeRedraw && !willRedraw)
         {
-            // return;
+            return;
         }
 
         if (this.clearBeforeRender)
@@ -151,7 +152,7 @@ export class WebGLRenderer
 
         Start(renderPass);
 
-        for (const scene of renderData.scenes.values())
+        for (const scene of scenes.values())
         {
             const worlds = WorldList.get(scene);
 

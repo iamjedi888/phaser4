@@ -18,7 +18,7 @@ export interface IBaseWorld extends IGameObject
     update (delta: number, time: number): void;
     afterUpdate (delta: number, time: number): void;
 
-    preRender (gameFrame: number, transformList: number[]): void;
+    preRender (gameFrame: number, transformList: number[]): boolean;
     renderGL <T extends IRenderPass> (renderPass: T): void;
     postRenderGL <T extends IRenderPass> (renderPass: T): void;
 

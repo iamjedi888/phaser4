@@ -27,12 +27,10 @@ export class SceneManager
     //  Used by Install to assign default scene keys when not specified
     sceneIndex: number = 0;
 
-    //  Flush the cache
-    flush: boolean = false;
+    //  Force the renderer to fully redraw
+    flush: boolean;
 
     changedMatrixQuery = defineQuery([ Changed(LocalMatrix2DComponent) ]);
-
-    private renderData: ISceneRenderData;
 
     constructor ()
     {
@@ -41,14 +39,6 @@ export class SceneManager
         SceneManagerInstance.set(this);
 
         AddSceneRenderDataComponent(this.id);
-
-        this.renderData = {
-            gameFrame: 0,
-            numTotalFrames: 0,
-            numDirtyFrames: 0,
-            numDirtyCameras: 0,
-            scenes: this.scenes
-        };
 
         Once(this.game, 'boot', () => this.boot());
     }
@@ -84,49 +74,29 @@ export class SceneManager
 
         const dirtyTransforms: number[] = this.changedMatrixQuery(GameObjectWorld);
 
+        let dirtyWorld = false;
+
         for (const scene of this.scenes.values())
         {
             const worlds = WorldList.get(scene);
 
             for (const world of worlds)
             {
-                world.preRender(gameFrame, dirtyTransforms);
+                if (world.preRender(gameFrame, dirtyTransforms))
+                {
+                    dirtyWorld = true;
+
+                    console.log('dirty world');
+                }
             }
         }
 
         //  Update all vertices across the whole game, ready for rendering
         UpdateVertexPositionSystem(GameObjectWorld);
 
-        if (this.flush)
+        if (dirtyWorld)
         {
-            //  Invalidate the renderer cache
-            SceneRenderDataComponent.numDirtyFrames[this.id]++;
-
-            //  And reset
-            this.flush = false;
+            this.flush = true;
         }
-    }
-
-    // updateRenderData (world: IBaseWorld, totalFrames: number, dirtyFrames: number, dirtyCameras: number): void
-    // {
-    //     const id = this.id;
-
-    //     SceneRenderDataComponent.numTotalFrames[id] += totalFrames;
-    //     SceneRenderDataComponent.numDirtyFrames[id] += dirtyFrames;
-    //     SceneRenderDataComponent.numDirtyCameras[id] += dirtyCameras;
-    // }
-
-    getRenderData (): ISceneRenderData
-    {
-        const id = this.id;
-
-        const data = this.renderData;
-
-        data.gameFrame = SceneRenderDataComponent.gameFrame[id];
-        data.numTotalFrames = SceneRenderDataComponent.numTotalFrames[id];
-        data.numDirtyFrames = SceneRenderDataComponent.numDirtyFrames[id];
-        data.numDirtyCameras = SceneRenderDataComponent.numDirtyCameras[id];
-
-        return data;
     }
 }

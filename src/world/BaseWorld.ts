@@ -110,13 +110,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
     }
 
-    preRender (gameFrame: number, transformList: number[]): void
+    preRender (gameFrame: number, transformList: number[]): boolean
     {
         if (!this.isRenderable())
         {
             this.runRender = false;
 
-            return;
+            return false;
         }
 
         //  Any modification of the display list makes this world dirty ✅
@@ -130,7 +130,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
-        // ResetWorldRenderData(id, gameFrame);
+        ResetWorldRenderData(id, gameFrame);
+
+        let isDirty = false;
 
         if (dirtyDisplayList)
         {
@@ -139,16 +141,22 @@ export class BaseWorld extends GameObject implements IBaseWorld
             RebuildWorldList(this, id);
 
             ClearDirtyDisplayList(id);
+
+            isDirty = true;
         }
 
         if (dirtyDisplayList || CheckDirtyTransforms(id, transformList))
         {
             RebuildWorldTransforms(this, id, transformList, false);
+
+            isDirty = true;
         }
 
         this.camera.dirtyRender = false;
 
         this.runRender = (this.listLength > 0);
+
+        return isDirty;
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void

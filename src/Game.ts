@@ -118,7 +118,9 @@ export class Game extends EventEmitter
             {
                 sceneManager.preRender(this.frame);
 
-                renderer.render(sceneManager.getRenderData());
+                renderer.render(sceneManager.flush, sceneManager.scenes);
+
+                sceneManager.flush = false;
             }
         }
 

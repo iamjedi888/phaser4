@@ -1,4 +1,4 @@
-import { ISceneRenderData } from '../scenes/ISceneRenderData';
+import { IScene } from '../scenes/IScene';
 
 export interface IRenderer
 {
@@ -15,6 +15,6 @@ export interface IRenderer
     initContext (): void;
     resize (width: number, height: number, resolution?: number): void;
     setBackgroundColor (color: number): this;
-    render (renderData: ISceneRenderData): void;
+    render (willRedraw: boolean, scenes: Map<string, IScene>): void;
     destroy (): void;
 }
