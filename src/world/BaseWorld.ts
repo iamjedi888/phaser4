@@ -107,6 +107,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     addToRenderList (id: number, renderType: number): void
     {
+        //  TODO - If this is going to take us over the array limit, it needs resizing
         this.renderList[this.listLength] = id;
         this.renderList[this.listLength + 1] = renderType;
 
@@ -148,7 +149,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
             RebuildWorldTransforms(this, id, transformList, false);
         }
 
-        //  TODO - Replace
+        //  TODO - Replace?
         this.sceneManager.updateRenderData(this, 0, 0, 0);
 
         this.camera.dirtyRender = false;
