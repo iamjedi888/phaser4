@@ -41,13 +41,13 @@
         "esbuild": "^0.12.5",
         "eslint": "^7.27.0",
         "fs-extra": "^10.0.0",
-        "rollup": "^2.50.5",
+        "rollup": "^2.50.6",
         "rollup-plugin-filesize": "9.1.1",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.30.0",
         "tslib": "^2.2.0",
         "typescript": "^4.3.2",
-        "uplot": "^1.6.10"
+        "uplot": "^1.6.11"
     },
     "dependencies": {
         "sloc": "^0.2.1"
