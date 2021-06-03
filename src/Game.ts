@@ -104,18 +104,21 @@ export class Game extends EventEmitter
         this.lastTick = time;
         this.elapsed += delta;
 
+        const renderer = this.renderer;
+        const sceneManager = this.sceneManager;
+
         if (!this.isPaused)
         {
             if (this.willUpdate)
             {
-                this.sceneManager.update(delta, time);
+                sceneManager.update(delta, time);
             }
 
             if (this.willRender)
             {
-                this.sceneManager.preRender(this.frame);
+                sceneManager.preRender(this.frame);
 
-                this.renderer.render(this.sceneManager.getRenderData());
+                renderer.render(sceneManager.getRenderData());
             }
         }
 
