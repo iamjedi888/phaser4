@@ -2,6 +2,7 @@ import { GetConfigValue } from './GetConfigValue';
 import { IScene } from './IScene';
 import { ISceneConfig } from './ISceneConfig';
 import { SceneManagerInstance } from './SceneManagerInstance';
+import { WorldList } from '../world/WorldList';
 
 export function Install (scene: IScene, config: string | ISceneConfig = {}): void
 {
@@ -32,4 +33,6 @@ export function Install (scene: IScene, config: string | ISceneConfig = {}): voi
 
         sceneManager.sceneIndex++;
     }
+
+    WorldList.set(scene, []);
 }
