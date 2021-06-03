@@ -9,30 +9,22 @@ import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, SceneDestroyEvent, Scene
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
-import { BuildRenderList } from './BuildRenderList';
-import { GameObjectWorld } from '../GameObjectWorld';
+import { CheckDirtyTransforms } from './CheckDirtyTransforms';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
-import { ISceneRenderData } from '../scenes/ISceneRenderData';
-import { IWorldRenderData } from './IWorldRenderData';
 import { Mat2dEquals } from '../math/mat2d/Mat2dEquals';
-import { MergeRenderData } from './MergeRenderData';
+import { RebuildWorldList } from './RebuildWorldList';
+import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RemoveChildren } from '../display';
-import { RenderDataComponent } from './RenderDataComponent';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
-import { SearchEntry } from '../display/SearchEntryType';
 import { SetWorldID } from '../components/hierarchy';
-import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
-import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
-import { UpdateWorldTransform2DSystem } from '../components/transform/UpdateWorldTransform2DSystem';
 import { WillUpdate } from '../components/permissions';
-import { WorldDepthFirstSearch } from './WorldDepthFirstSearch';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
@@ -73,7 +65,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this._updateListener = On(scene, SceneUpdateEvent, (delta: number, time: number) => this.update(delta, time));
         this._afterUpdateListener = On(scene, SceneAfterUpdateEvent, (delta: number, time: number) => this.afterUpdate(delta, time));
 
-        this._preRenderListener = On(scene, ScenePreRenderEvent, (gameFrame: number) => this.preRender(gameFrame));
+        this._preRenderListener = On(scene, ScenePreRenderEvent, (gameFrame: number, transformList: number[]) => this.preRender(gameFrame, transformList));
         this._renderGLListener = On(scene, SceneRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.renderGL(renderPass));
         this._postRenderGLListener = On(scene, ScenePostRenderGLEvent, <T extends IRenderPass> (renderPass: T) => this.postRenderGL(renderPass));
 
@@ -111,31 +103,43 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, GameObjectEvents.AfterUpdateEvent, delta, time, this);
     }
 
-    preRender (gameFrame: number): void
+    preRender (gameFrame: number, transformList: number[]): void
     {
         if (!this.isRenderable())
         {
             return;
         }
 
+        //  Any modification of the display list makes this world dirty ✅
+        //  Any modification of any transform for any member of this world, makes it dirty ✅
+        //  Any modification of the visibility of a child makes it dirty
+
+        //  When dirty, the renderer needs to be told so it knows not to use the cached version
+        //  Otherwise, it doesn't need to re-render
+
         const id = this.id;
 
-        if (HasDirtyDisplayList(id))
+        const dirtyDisplayList = HasDirtyDisplayList(id);
+
+        // ResetWorldRenderData(id, gameFrame);
+
+        if (dirtyDisplayList)
         {
-            console.log('World reset');
-
-            ResetWorldRenderData(id, gameFrame);
-
             this.renderList = [];
             this.renderType = [];
 
-            //  Iterate World and populate our WorldRenderList, also updates World Transforms
-            WorldDepthFirstSearch(this, id);
+            RebuildWorldList(this, id);
 
             ClearDirtyDisplayList(id);
         }
 
-        this.sceneManager.updateRenderData(this, RenderDataComponent.numRendered[id], RenderDataComponent.dirtyFrame[id], 0);
+        if (dirtyDisplayList || CheckDirtyTransforms(id, transformList))
+        {
+            RebuildWorldTransforms(this, id, transformList, false);
+        }
+
+        //  TODO - Replace
+        this.sceneManager.updateRenderData(this, 0, 0, 0);
 
         this.camera.dirtyRender = false;
     }
@@ -159,7 +163,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         for (let i = 0; i < list.length; i++)
         {
-            const entry = GameObjectCache.get(list[i]);
+            const eid = list[i];
+
+            const entry = GameObjectCache.get(eid);
 
             if (types[i] === 1)
             {

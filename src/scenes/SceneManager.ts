@@ -1,3 +1,4 @@
+import { Changed, addEntity, defineQuery } from 'bitecs';
 import { Emit, Once } from '../events';
 import { SceneAfterUpdateEvent, SceneBeforeUpdateEvent, ScenePreRenderEvent, SceneUpdateEvent } from './events';
 
@@ -9,12 +10,12 @@ import { GetScenes } from '../config/scenes';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IScene } from './IScene';
 import { ISceneRenderData } from './ISceneRenderData';
+import { LocalMatrix2DComponent } from '../components/transform';
 import { ResetSceneRenderData } from './ResetSceneRenderData';
 import { SceneManagerInstance } from './SceneManagerInstance';
 import { SceneRenderDataComponent } from './SceneRenderDataComponent';
 import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
-import { addEntity } from 'bitecs';
 
 export class SceneManager
 {
@@ -32,6 +33,8 @@ export class SceneManager
 
     //  List of worlds going to be rendered this frame (reset every step)
     private _worldList: Set<IBaseWorld> = new Set();
+
+    changedMatrixQuery = defineQuery([ Changed(LocalMatrix2DComponent) ]);
 
     constructor ()
     {
@@ -58,7 +61,6 @@ export class SceneManager
         }
 
         //  Process all dirty 2D transforms and update the local matrix across all Worlds and Scenes
-        //  This will also allow the 'Changed WorldSystem' query to run (across all game objects)
         UpdateLocalTransform2DSystem(GameObjectWorld);
 
         for (const scene of this.scenes.values())
@@ -73,11 +75,14 @@ export class SceneManager
     {
         ResetSceneRenderData(this.id, gameFrame);
 
+        //  TODO - This doesn't need resetting every frame, only when a World changes
         this._worldList.clear();
+
+        const dirtyTransforms: number[] = this.changedMatrixQuery(GameObjectWorld);
 
         for (const scene of this.scenes.values())
         {
-            Emit(scene, ScenePreRenderEvent);
+            Emit(scene, ScenePreRenderEvent, gameFrame, dirtyTransforms);
         }
 
         //  Update all vertices across the whole game, ready for rendering

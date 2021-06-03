@@ -2,7 +2,6 @@ import { IBaseCamera } from '../camera/IBaseCamera';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
-import { IWorldRenderData } from './IWorldRenderData';
 
 export interface IBaseWorld extends IGameObject
 {
@@ -21,7 +20,7 @@ export interface IBaseWorld extends IGameObject
     update (delta: number, time: number): void;
     afterUpdate (delta: number, time: number): void;
 
-    preRender (gameFrame: number): void;
+    preRender (gameFrame: number, transformList: number[]): void;
     renderGL <T extends IRenderPass> (renderPass: T): void;
     postRenderGL <T extends IRenderPass> (renderPass: T): void;
 
