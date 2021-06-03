@@ -38,10 +38,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     is3D: boolean = false;
 
+    runRender: boolean = false;
+
     private renderList: Uint32Array;
     private listLength: number;
-
-    runRender: boolean = false;
 
     constructor (scene: IScene)
     {
@@ -122,9 +122,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
         //  Any modification of the display list makes this world dirty ✅
         //  Any modification of any transform for any member of this world, makes it dirty ✅
         //  Any modification of the visibility of a child makes it dirty
-
-        //  When dirty, the renderer needs to be told so it knows not to use the cached version
-        //  Otherwise, it doesn't need to re-render
 
         const id = this.id;
 

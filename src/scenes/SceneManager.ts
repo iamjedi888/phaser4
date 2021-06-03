@@ -6,12 +6,10 @@ import { GameInstance } from '../GameInstance';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes';
 import { IScene } from './IScene';
-import { ISceneRenderData } from './ISceneRenderData';
 import { LocalMatrix2DComponent } from '../components/transform';
 import { Once } from '../events';
 import { ResetSceneRenderData } from './ResetSceneRenderData';
 import { SceneManagerInstance } from './SceneManagerInstance';
-import { SceneRenderDataComponent } from './SceneRenderDataComponent';
 import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WorldList } from '../world/WorldList';
@@ -85,8 +83,6 @@ export class SceneManager
                 if (world.preRender(gameFrame, dirtyTransforms))
                 {
                     dirtyWorld = true;
-
-                    console.log('dirty world');
                 }
             }
         }
