@@ -7,7 +7,7 @@ const changedLocalTransformQuery = defineQuery([ Changed(Transform2DComponent) ]
 
 let entities: number[];
 
-const updateLocalTransformSystem = defineSystem(() =>
+const updateLocalTransformSystem = defineSystem(world =>
 {
     for (let i = 0; i < entities.length; i++)
     {
@@ -28,6 +28,8 @@ const updateLocalTransformSystem = defineSystem(() =>
         LocalMatrix2DComponent.tx[id] = x;
         LocalMatrix2DComponent.ty[id] = y;
     }
+
+    return world;
 });
 
 export const UpdateLocalTransform2DSystem = (world: IWorld): number[] =>

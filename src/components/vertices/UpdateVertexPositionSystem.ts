@@ -1,4 +1,4 @@
-import { Changed, defineQuery, defineSystem } from 'bitecs';
+import { Changed, IWorld, defineQuery, defineSystem } from 'bitecs';
 
 import { Extent2DComponent } from '../transform/Extent2DComponent';
 import { QuadVertexComponent } from './QuadVertexComponent';
@@ -10,10 +10,10 @@ const changedWorldExtentQuery = defineQuery([
     Changed(Extent2DComponent)
 ]);
 
+let entities: number[];
+
 const updateVertexPositionSystem = defineSystem(world =>
 {
-    const entities = changedWorldExtentQuery(world);
-
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
@@ -47,6 +47,16 @@ const updateVertexPositionSystem = defineSystem(world =>
         VertexComponent.x[v4] = (right * a) + (y * c) + tx;
         VertexComponent.y[v4] = (right * b) + (y * d) + ty;
     }
+
+    return world;
 });
 
-export const UpdateVertexPositionSystem = updateVertexPositionSystem;
+export const UpdateVertexPositionSystem = (world: IWorld): number[] =>
+{
+    entities = changedWorldExtentQuery(world);
+
+    updateVertexPositionSystem(world);
+
+    return entities;
+};
+
