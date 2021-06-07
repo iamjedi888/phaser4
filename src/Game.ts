@@ -111,7 +111,7 @@ export class Game extends EventEmitter
         {
             if (this.willUpdate)
             {
-                sceneManager.update(delta, time);
+                sceneManager.update(delta, time, this.frame);
             }
 
             if (this.willRender)
@@ -123,6 +123,8 @@ export class Game extends EventEmitter
                 sceneManager.flush = false;
             }
         }
+
+        Emit(this, 'step');
 
         //  The frame always advances by 1 each step (even when paused)
         this.frame++;
