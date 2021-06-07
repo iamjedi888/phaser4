@@ -2,6 +2,7 @@ import { CopyLocalToWorld } from './CopyLocalToWorld';
 import { CopyWorldToWorld } from './CopyWorldToWorld';
 import { GetParentID } from '../hierarchy';
 import { MultiplyLocalWithWorld } from './MultiplyLocalWithWorld';
+import { UpdateNumWorldTransforms } from '../../world/ResetWorldRenderData';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
 export function UpdateWorldTransform (id: number): void
@@ -20,4 +21,6 @@ export function UpdateWorldTransform (id: number): void
     {
         MultiplyLocalWithWorld(parentID, id);
     }
+
+    UpdateNumWorldTransforms();
 }
