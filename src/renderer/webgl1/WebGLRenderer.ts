@@ -7,7 +7,6 @@ import { GetRGBArray } from './colors/GetRGBArray';
 import { GetWebGLContext } from '../../config/webglcontext/GetWebGLContext';
 import { IRenderPass } from './renderpass/IRenderPass';
 import { IScene } from '../../scenes/IScene';
-import { ISceneRenderData } from '../../scenes/ISceneRenderData';
 import { ProcessBindingQueue } from './renderpass/ProcessBindingQueue';
 import { RenderPass } from './renderpass/RenderPass';
 import { Start } from './renderpass';
@@ -139,7 +138,7 @@ export class WebGLRenderer
         //  Nothing dirty? Display the previous frame
         if (this.optimizeRedraw && !willRedraw)
         {
-            return;
+            // return;
         }
 
         if (this.clearBeforeRender)
