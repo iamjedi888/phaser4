@@ -1,3 +1,5 @@
+import { ComponentType, ISchema } from 'bitecs';
+
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
@@ -5,6 +7,7 @@ import { IScene } from '../scenes/IScene';
 
 export interface IBaseWorld extends IGameObject
 {
+    tag: ComponentType<ISchema>;
     scene: IScene;
     camera: IBaseCamera;
 

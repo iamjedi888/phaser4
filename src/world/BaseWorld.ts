@@ -1,13 +1,16 @@
 import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
+import { Changed, defineComponent, defineQuery } from 'bitecs';
 import { ClearDirtyDisplayList, HasDirtyDisplayList } from '../components/dirty';
 import { Emit, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
+import { GetNumWorldTransforms, ResetWorldRenderData } from './ResetWorldRenderData';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { GetWorldSize } from '../config/worldsize';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
@@ -18,16 +21,18 @@ import { Mat2dEquals } from '../math/mat2d/Mat2dEquals';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RemoveChildren } from '../display';
-import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetWorldID } from '../components/hierarchy';
 import { WillUpdate } from '../components/permissions';
 import { WorldList } from './WorldList';
+import { WorldMatrix2DComponent } from '../components/transform';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
+    tag = defineComponent();
+
     scene: IScene;
 
     sceneManager: SceneManager;
@@ -43,12 +48,21 @@ export class BaseWorld extends GameObject implements IBaseWorld
     private renderList: Uint32Array;
     private listLength: number;
 
+    private totalChildren: number;
+    private totalChildrenQuery;
+    private dirtyWorldQuery;
+
     constructor (scene: IScene)
     {
         super();
 
         this.scene = scene;
         this.sceneManager = SceneManagerInstance.get();
+
+        this.totalChildren = 0;
+        this.totalChildrenQuery = defineQuery([ this.tag ]);
+
+        // this.dirtyWorldQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -112,9 +126,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     preRender (gameFrame: number, transformList: number[]): boolean
     {
+        const sceneManager = this.sceneManager;
+
         if (!this.isRenderable())
         {
             this.runRender = false;
+
+            sceneManager.updateWorldStats(this.totalChildren, 0, 0, 0);
 
             return false;
         }
@@ -140,6 +158,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
             ClearDirtyDisplayList(id);
 
             isDirty = true;
+
+            this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
         }
 
         if (dirtyDisplayList || CheckDirtyTransforms(id, transformList))
@@ -153,7 +173,23 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.runRender = (this.listLength > 0);
 
+        // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld, false).length;
+        // console.log('dirtyworld', dirtyWorld);
+        // sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
+
+        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), GetNumWorldTransforms());
+
         return isDirty;
+    }
+
+    getTotalChildren (): number
+    {
+        if (HasDirtyDisplayList(this.id))
+        {
+            this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
+        }
+
+        return this.totalChildren;
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
