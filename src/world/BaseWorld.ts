@@ -61,8 +61,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.totalChildren = 0;
         this.totalChildrenQuery = defineQuery([ this.tag ]);
-
-        // this.dirtyWorldQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent) ]);
+        this.dirtyWorldQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -173,7 +172,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.runRender = (this.listLength > 0);
 
-        // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld, false).length;
+        // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld).length;
         // console.log('dirtyworld', dirtyWorld);
         // sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
 

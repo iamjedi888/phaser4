@@ -31,10 +31,10 @@
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.0",
         "@swc/cli": "^0.1.45",
-        "@swc/core": "^1.2.59",
+        "@swc/core": "^1.2.60",
         "@types/jest": "^26.0.23",
-        "@typescript-eslint/eslint-plugin": "4.26.0",
-        "@typescript-eslint/parser": "4.26.0",
+        "@typescript-eslint/eslint-plugin": "4.26.1",
+        "@typescript-eslint/parser": "4.26.1",
         "bitecs": "^0.3.8",
         "boxen": "^5.0.1",
         "directory-tree": "^2.2.9",
