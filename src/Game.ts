@@ -21,17 +21,23 @@ export class Game extends EventEmitter
 
     readonly VERSION: string = '4.0.0-beta1';
 
+    //  TODO - Consider moving all of these to RenderStats Component
     isBooted: boolean = false;
     isPaused: boolean = false;
 
+    //  TODO - Allow update to run on different tick to render
+    //  TODO - Allow update and render to be called directly
     willUpdate: boolean = true;
     willRender: boolean = true;
 
     lastTick: number = 0;
     elapsed: number = 0;
-
-    //  The current game frame
+    delta: number = 0;
+    fps: number = 0;
     frame: number = 0;
+
+    private frames: number = 0;
+    private prevFrame: number = 0;
 
     renderStats: IRenderStats;
 
@@ -84,6 +90,7 @@ export class Game extends EventEmitter
         Emit(this, 'boot');
 
         this.lastTick = performance.now();
+        this.prevFrame = performance.now();
 
         this.renderStats = GetRenderStatsAsObject();
 
@@ -104,12 +111,6 @@ export class Game extends EventEmitter
 
     step (time: number): void
     {
-        //  Note that privacy.resistFingerprinting can round this value to 100ms or more!
-        const delta = time - this.lastTick;
-
-        this.lastTick = time;
-        this.elapsed += delta;
-
         const renderer = this.renderer;
         const sceneManager = this.sceneManager;
 
@@ -117,7 +118,7 @@ export class Game extends EventEmitter
         {
             if (this.willUpdate)
             {
-                sceneManager.update(delta, time, this.frame);
+                sceneManager.update(this.delta, time, this.frame);
             }
 
             if (this.willRender)
@@ -130,7 +131,29 @@ export class Game extends EventEmitter
             }
         }
 
+        //  Note that privacy.resistFingerprinting can round this value to 100ms or more!
+        const now = performance.now();
+
+        //  How long it took to process this frame
+        const delta = now - time;
+
+        this.frames++;
+
+        if (now >= this.prevFrame + 1000)
+        {
+            this.fps = (this.frames * 1000) / (now - this.prevFrame);
+            this.prevFrame = now;
+            this.frames = 0;
+        }
+
+        this.lastTick = now;
+        this.elapsed += delta;
+        this.delta = delta;
+
         GetRenderStatsAsObject(this.renderStats);
+
+        this.renderStats.fps = this.fps;
+        this.renderStats.delta = delta;
 
         Emit(this, 'step');
 

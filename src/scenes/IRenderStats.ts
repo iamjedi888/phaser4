@@ -1,5 +1,7 @@
 export interface IRenderStats
 {
+    fps: number;
+    delta: number;
     gameFrame: number;
     numScenes: number;
     numWorlds: number;
