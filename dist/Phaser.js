@@ -13180,7 +13180,7 @@ __export(circle_exports, {
   TranslateCirclePoint: () => TranslateCirclePoint
 });
 
-// src/geom/Circle/CircleContains.ts
+// src/geom/circle/CircleContains.ts
 function CircleContains(circle, x, y) {
   if (circle.radius > 0 && x >= circle.left && x <= circle.right && y >= circle.top && y <= circle.bottom) {
     const dx = (circle.x - x) * (circle.x - x);
@@ -13191,7 +13191,7 @@ function CircleContains(circle, x, y) {
   }
 }
 
-// src/geom/Circle/Circle.ts
+// src/geom/circle/Circle.ts
 var Circle = class {
   x;
   y;
