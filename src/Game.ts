@@ -6,7 +6,9 @@ import { GameObjectWorld } from './GameObjectWorld';
 import { GetBanner } from './config/banner';
 import { GetGlobalVar } from './config/globalvar';
 import { GetParent } from './config/parent';
+import { GetRenderStatsAsObject } from './scenes';
 import { GetRenderer } from './config/renderer';
+import { IRenderStats } from './scenes/IRenderStats';
 import { IRenderer } from './renderer/IRenderer';
 import { SceneManager } from './scenes/SceneManager';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
@@ -30,6 +32,8 @@ export class Game extends EventEmitter
 
     //  The current game frame
     frame: number = 0;
+
+    renderStats: IRenderStats;
 
     renderer: IRenderer;
     textureManager: TextureManager;
@@ -81,6 +85,8 @@ export class Game extends EventEmitter
 
         this.lastTick = performance.now();
 
+        this.renderStats = GetRenderStatsAsObject();
+
         this.step(this.lastTick);
     }
 
@@ -123,6 +129,8 @@ export class Game extends EventEmitter
                 sceneManager.flush = false;
             }
         }
+
+        GetRenderStatsAsObject(this.renderStats);
 
         Emit(this, 'step');
 
