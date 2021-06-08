@@ -16,6 +16,7 @@ import * as Input from './input/';
 import * as Loader from './loader/';
 import * as Materials3D from './materials3d/';
 import * as Math from './math/';
+import * as Scenes from './scenes/';
 import * as Textures from './textures/';
 import * as Time from './time/';
 import * as WebGL1 from './renderer/webgl1/';
@@ -46,6 +47,7 @@ export {
     Loader,
     Materials3D,
     Math,
+    Scenes,
     Textures,
     Time,
     WebGL1,
