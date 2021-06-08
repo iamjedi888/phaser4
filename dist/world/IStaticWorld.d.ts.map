@@ -1,1 +1,0 @@
-{"version":3,"file":"IStaticWorld.d.ts","sourceRoot":"","sources":["../../src/world/IStaticWorld.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAE,aAAa,EAAE,MAAM,yBAAyB,CAAC;AAExD,MAAM,WAAW,YAAa,SAAQ,UAAU;IAE5C,MAAM,EAAE,aAAa,CAAC;CACzB"}

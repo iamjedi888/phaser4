@@ -1,1 +1,0 @@
-{"version":3,"file":"Sphere.d.ts","sourceRoot":"","sources":["../../../src/gameobjects3d/sphere/Sphere.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AAGpC,qBAAa,MAAO,SAAQ,IAAI;gBAEf,CAAC,GAAE,MAAU,EAAE,CAAC,GAAE,MAAU,EAAE,CAAC,GAAE,MAAU,EAAE,MAAM,SAAI,EAAE,aAAa,SAAI,EAAE,cAAc,SAAI,EAAE,QAAQ,SAAI,EAAE,SAAS,SAAc,EAAE,UAAU,SAAI,EAAE,WAAW,SAAU;CAQ5L"}

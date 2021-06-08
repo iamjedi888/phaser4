@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Triangle} from "./Triangle";
+import { Triangle } from "./Triangle";
 export function BuildEquilateralTriangle(x, y, length) {
   const height = length * (Math.sqrt(3) / 2);
   const x1 = x;

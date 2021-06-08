@@ -1,1 +1,0 @@
-{"version":3,"file":"World3DRenderEvent.d.ts","sourceRoot":"","sources":["../../../src/world3d/events/World3DRenderEvent.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,iBAAiB,CAAC;AAC/C,OAAO,EAAE,kBAAkB,EAAE,MAAM,uBAAuB,CAAC;AAE3D,eAAO,MAAM,kBAAkB,EAAE,MAAsB,CAAC;AAExD,oBAAY,yBAAyB,GAAG,CAAC,UAAU,EAAE,kBAAkB,EAAE,KAAK,EAAE,YAAY,KAAK,IAAI,CAAC"}

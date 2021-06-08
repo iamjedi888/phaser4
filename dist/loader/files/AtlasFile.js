@@ -1,9 +1,9 @@
-import {AtlasParser} from "../../textures/parsers/AtlasParser";
-import {File} from "../File";
-import {GetURL} from "../GetURL";
-import {ImageFile} from "./ImageFile";
-import {JSONFile} from "./JSONFile";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
+import { AtlasParser } from "../../textures/parsers/AtlasParser";
+import { File } from "../File";
+import { GetURL } from "../GetURL";
+import { ImageFile } from "./ImageFile";
+import { JSONFile } from "./JSONFile";
+import { TextureManagerInstance } from "../../textures/TextureManagerInstance";
 export function AtlasFile(key, textureURL, atlasURL, glConfig) {
   const json = JSONFile(key, atlasURL);
   const image = ImageFile(key, textureURL, glConfig);

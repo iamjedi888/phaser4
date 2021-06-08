@@ -1,7 +1,7 @@
-import {Vec3Dot} from "./Vec3Dot";
+import { Vec3Dot } from "./Vec3Dot";
 export function GetVec3Angle(a, b) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   const mag1 = Math.sqrt(ax * ax + ay * ay + az * az);
   const mag2 = Math.sqrt(bx * bx + by * by + bz * bz);
   const mag = mag1 * mag2;

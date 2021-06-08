@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function SetGLTextureFilterMode(texture, linear = true) {
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, texture);

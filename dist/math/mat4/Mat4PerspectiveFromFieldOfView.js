@@ -1,4 +1,4 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4PerspectiveFromFieldOfView(fov, near, far, out = new Matrix4()) {
   const upTan = Math.tan(fov.upDegrees * Math.PI / 180);
   const downTan = Math.tan(fov.downDegrees * Math.PI / 180);

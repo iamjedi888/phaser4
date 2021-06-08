@@ -1,9 +1,9 @@
-import {BitmapTextParser} from "../../textures/parsers/BitmapTextParser";
-import {File} from "../File";
-import {GetURL} from "../GetURL";
-import {ImageFile} from "./ImageFile";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
-import {XMLFile} from "./XMLFile";
+import { BitmapTextParser } from "../../textures/parsers/BitmapTextParser";
+import { File } from "../File";
+import { GetURL } from "../GetURL";
+import { ImageFile } from "./ImageFile";
+import { TextureManagerInstance } from "../../textures/TextureManagerInstance";
+import { XMLFile } from "./XMLFile";
 export function BitmapTextFile(key, textureURL, fontDataURL, glConfig) {
   const xml = XMLFile(key, fontDataURL);
   const image = ImageFile(key, textureURL, glConfig);

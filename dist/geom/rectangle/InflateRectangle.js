@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CenterRectangleOn} from "./CenterRectangleOn";
-import {GetRectangleCenterX} from "./GetRectangleCenterX";
-import {GetRectangleCenterY} from "./GetRectangleCenterY";
+import { CenterRectangleOn } from "./CenterRectangleOn";
+import { GetRectangleCenterX } from "./GetRectangleCenterX";
+import { GetRectangleCenterY } from "./GetRectangleCenterY";
 export function InflateRectangle(rect, x, y) {
   const cx = GetRectangleCenterX(rect);
   const cy = GetRectangleCenterY(rect);

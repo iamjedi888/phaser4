@@ -1,6 +1,6 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function CreateGLTexture(binding) {
-  const {parent, flipY, unpackPremultiplyAlpha, minFilter, magFilter, wrapS, wrapT, generateMipmap, isPOT} = binding;
+  const { parent, flipY, unpackPremultiplyAlpha, minFilter, magFilter, wrapS, wrapT, generateMipmap, isPOT } = binding;
   const source = parent.image;
   let width = parent.width;
   let height = parent.height;

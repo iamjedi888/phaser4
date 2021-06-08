@@ -3,8 +3,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {MATH_CONST} from "../../math/const";
-import {Rectangle} from "./Rectangle";
+import { MATH_CONST } from "../../math/const";
+import { Rectangle } from "./Rectangle";
 export function RectangleFromPoints(points, out = new Rectangle()) {
   if (points.length === 0) {
     return out;

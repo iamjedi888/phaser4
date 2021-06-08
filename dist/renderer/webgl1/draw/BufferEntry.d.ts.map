@@ -1,1 +1,0 @@
-{"version":3,"file":"BufferEntry.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/draw/BufferEntry.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,0BAA0B,CAAC;AAEzD,oBAAY,WAAW,GAAG;IACtB,MAAM,EAAE,aAAa,CAAC;IACtB,GAAG,EAAE,WAAW,CAAC;IACjB,GAAG,EAAE,WAAW,CAAC;IACjB,MAAM,EAAE,MAAM,CAAC;CAClB,CAAC"}

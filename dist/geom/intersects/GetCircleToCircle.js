@@ -4,8 +4,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CircleToCircle} from "./CircleToCircle";
-import {Vec2} from "../../math/vec2/Vec2";
+import { CircleToCircle } from "./CircleToCircle";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetCircleToCircle(circleA, circleB, out = []) {
   if (CircleToCircle(circleA, circleB)) {
     const x0 = circleA.x;

@@ -1,1 +1,0 @@
-{"version":3,"file":"IRenderLayer3D.d.ts","sourceRoot":"","sources":["../../../src/gameobjects3d/renderlayer3d/IRenderLayer3D.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,+BAA+B,CAAC;AAC5D,OAAO,EAAE,OAAO,EAAE,MAAM,wBAAwB,CAAC;AAEjD,MAAM,WAAW,cAAe,SAAQ,WAAW;IAE/C,OAAO,EAAE,OAAO,CAAC;IACjB,WAAW,EAAE,gBAAgB,CAAC;CACjC"}

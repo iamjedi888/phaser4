@@ -1,7 +1,7 @@
-import {Vec3} from "./Vec3";
+import { Vec3 } from "./Vec3";
 export function Vec3RotateZ(a, origin, angle, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = origin;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = origin;
   const px = ax - bx;
   const py = ay - by;
   const pz = az - bz;

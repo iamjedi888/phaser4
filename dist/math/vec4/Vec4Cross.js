@@ -1,8 +1,8 @@
-import {Vec4} from "./Vec4";
+import { Vec4 } from "./Vec4";
 export function Vec4Cross(u, v, w, out = new Vec4()) {
-  const {x: ux, y: uy, z: uz, w: uw} = u;
-  const {x: vx, y: vy, z: vz, w: vw} = v;
-  const {x: wx, y: wy, z: wz, w: ww} = w;
+  const { x: ux, y: uy, z: uz, w: uw } = u;
+  const { x: vx, y: vy, z: vz, w: vw } = v;
+  const { x: wx, y: wy, z: wz, w: ww } = w;
   const A = vx * wy - vy * wx;
   const B = vx * wz - vz * wx;
   const C = vx * ww - vw * wx;

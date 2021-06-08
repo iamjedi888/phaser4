@@ -1,4 +1,4 @@
-import {Quaternion} from "./Quaternion";
+import { Quaternion } from "./Quaternion";
 export function QuatRotationYawPitchRoll(yaw, pitch, roll, out = new Quaternion()) {
   const halfRoll = roll * 0.5;
   const halfPitch = pitch * 0.5;

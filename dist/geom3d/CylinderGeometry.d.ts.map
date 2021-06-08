@@ -1,1 +1,0 @@
-{"version":3,"file":"CylinderGeometry.d.ts","sourceRoot":"","sources":["../../src/geom3d/CylinderGeometry.ts"],"names":[],"mappings":"AAIA,OAAO,EAAE,SAAS,EAAE,MAAM,qCAAqC,CAAC;AA8FhE,wBAAgB,gBAAgB,CAAE,SAAS,GAAE,MAAU,EAAE,YAAY,GAAE,MAAU,EAAE,MAAM,GAAE,MAAU,EAAE,cAAc,GAAE,MAAU,EAAE,cAAc,GAAE,MAAU,EAAE,SAAS,GAAE,OAAe,EAAE,UAAU,GAAE,MAAU,EAAE,WAAW,GAAE,MAAoB,GAAG,SAAS,CA4G/P"}

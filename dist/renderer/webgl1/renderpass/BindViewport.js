@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function BindViewport(renderPass, viewport) {
   if (!viewport) {
     viewport = renderPass.currentViewport;

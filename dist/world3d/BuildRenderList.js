@@ -1,6 +1,6 @@
-import {CalculateTotalRenderable} from "./CalculateTotalRenderable";
-import {UpdateCachedLayers} from "./UpdateCachedLayers";
-import {WorldDepthFirstSearch} from "./WorldDepthFirstSearch";
+import { CalculateTotalRenderable } from "./CalculateTotalRenderable";
+import { UpdateCachedLayers } from "./UpdateCachedLayers";
+import { WorldDepthFirstSearch } from "./WorldDepthFirstSearch";
 export function BuildRenderList(world) {
   const cachedLayers = [];
   const stack = [];

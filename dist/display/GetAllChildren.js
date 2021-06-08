@@ -1,4 +1,4 @@
-import {DepthFirstSearch} from "./DepthFirstSearch";
+import { DepthFirstSearch } from "./DepthFirstSearch";
 export function GetAllChildren(parent, property, value) {
   const children = DepthFirstSearch(parent);
   if (!property) {

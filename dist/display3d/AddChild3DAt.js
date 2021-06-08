@@ -1,4 +1,4 @@
-import {SetParent3D} from "./SetParent3D";
+import { SetParent3D } from "./SetParent3D";
 export function AddChild3DAt(parent, index, child) {
   const children = parent.children;
   if (index >= 0 && index <= children.length) {

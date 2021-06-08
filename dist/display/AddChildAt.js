@@ -1,4 +1,4 @@
-import {SetParent} from "./SetParent";
+import { SetParent } from "./SetParent";
 export function AddChildAt(parent, index, child) {
   const children = parent.children;
   if (index >= 0 && index <= children.length) {

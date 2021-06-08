@@ -1,5 +1,5 @@
-import {Mat4GetScaling} from "./Mat4GetScaling";
-import {Quaternion} from "../quaternion/Quaternion";
+import { Mat4GetScaling } from "./Mat4GetScaling";
+import { Quaternion } from "../quaternion/Quaternion";
 export function Mat4GetRotation(matrix, out = new Quaternion()) {
   const scaling = Mat4GetScaling(matrix);
   const is1 = 1 / scaling.x;

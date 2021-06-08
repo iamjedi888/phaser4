@@ -1,7 +1,10 @@
-import {CalculateTotalRenderable} from "./CalculateTotalRenderable";
-import {UpdateCachedLayers} from "./UpdateCachedLayers";
-import {WorldDepthFirstSearch} from "./WorldDepthFirstSearch";
+import { CalculateTotalRenderable } from "./CalculateTotalRenderable";
+import { IsDirtyFrame } from "../components/dirty";
+import { RenderDataComponent } from "./RenderDataComponent";
+import { UpdateCachedLayers } from "./UpdateCachedLayers";
+import { WorldDepthFirstSearch } from "./WorldDepthFirstSearch";
 export function BuildRenderList(world) {
+  const worldID = world.id;
   const cachedLayers = [];
   const stack = [];
   const entries = WorldDepthFirstSearch(cachedLayers, world, stack);
@@ -9,20 +12,21 @@ export function BuildRenderList(world) {
   if (cachedLayers.length > 0) {
     UpdateCachedLayers(cachedLayers, world.camera.dirtyRender);
   }
+  const gameFrame = RenderDataComponent.gameFrame[worldID];
   entries.forEach((entry) => {
     if (entry.children.length > 0) {
       CalculateTotalRenderable(entry, renderData);
     } else {
-      renderData.numRendered++;
-      renderData.numRenderable++;
-      if (entry.node.dirtyFrame >= renderData.gameFrame) {
-        renderData.dirtyFrame++;
+      RenderDataComponent.numRendered[worldID]++;
+      RenderDataComponent.numRenderable[worldID]++;
+      if (IsDirtyFrame(entry.node.id, gameFrame)) {
+        RenderDataComponent.dirtyFrame[worldID]++;
       }
     }
   });
   world.renderList = entries;
   if (world.forceRefresh) {
-    renderData.dirtyFrame++;
+    RenderDataComponent.dirtyFrame[worldID]++;
     world.forceRefresh = false;
   }
 }

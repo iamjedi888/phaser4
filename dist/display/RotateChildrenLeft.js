@@ -1,4 +1,4 @@
-import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
+import { DIRTY_CONST } from "../gameobjects/DIRTY_CONST";
 export function RotateChildrenLeft(parent, total = 1) {
   const parentChildren = parent.children;
   let child = null;

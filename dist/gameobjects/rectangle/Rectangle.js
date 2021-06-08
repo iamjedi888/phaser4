@@ -1,15 +1,22 @@
-import {BatchTexturedQuad} from "../../renderer/webgl1/draw/BatchTexturedQuad";
-import {Container} from "../container/Container";
-import {DIRTY_CONST} from "../DIRTY_CONST";
-import {DrawTexturedQuad} from "../../renderer/canvas/draw/DrawTexturedQuad";
-import {PreRenderVertices} from "../../components/transform/PreRenderVertices";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
-import {Vertex} from "../../components/Vertex";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { BatchTexturedQuad } from "../../renderer/webgl1/draw/BatchTexturedQuad";
+import { Container } from "../container/Container";
+import { DIRTY_CONST } from "../DIRTY_CONST";
+import { DrawImage } from "../../renderer/canvas/draw/DrawImage";
+import { PreRenderVertices } from "../../components/transform/PreRenderVertices";
+import { TextureManagerInstance } from "../../textures/TextureManagerInstance";
+import { Vertex } from "../../components/Vertex";
 export class Rectangle extends Container {
   constructor(x, y, width = 64, height = 64, color = 16777215) {
     super(x, y);
-    this._color = 16777215;
-    this.type = "Rectangle";
+    __publicField(this, "texture");
+    __publicField(this, "frame");
+    __publicField(this, "_color", 16777215);
     this.vertices = [new Vertex(), new Vertex(), new Vertex(), new Vertex()];
     this.color = color;
     this.setWhiteTexture();
@@ -34,7 +41,7 @@ export class Rectangle extends Container {
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+    DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get color() {
     return this._color;

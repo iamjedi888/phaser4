@@ -1,24 +1,36 @@
-import {AddToDOM, DOMContentLoaded} from "./dom";
-import {Emit, EventEmitter} from "./events";
-import {GameInstance} from "./GameInstance";
-import {GetBanner} from "./config/banner";
-import {GetGlobalVar} from "./config/globalvar";
-import {GetParent} from "./config/parent";
-import {GetRenderer} from "./config/renderer";
-import {SceneManager} from "./scenes/SceneManager";
-import {SetConfigDefaults} from "./config/SetConfigDefaults";
-import {TextureManager} from "./textures/TextureManager";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { AddToDOM, DOMContentLoaded } from "./dom";
+import { Emit, EventEmitter } from "./events";
+import { GameInstance } from "./GameInstance";
+import { GameObjectWorld } from "./GameObjectWorld";
+import { GetBanner } from "./config/banner";
+import { GetGlobalVar } from "./config/globalvar";
+import { GetParent } from "./config/parent";
+import { GetRenderer } from "./config/renderer";
+import { SceneManager } from "./scenes/SceneManager";
+import { SetConfigDefaults } from "./config/SetConfigDefaults";
+import { TextureManager } from "./textures/TextureManager";
+import { addEntity } from "bitecs";
 export class Game extends EventEmitter {
   constructor(...settings) {
     super();
-    this.VERSION = "4.0.0-beta1";
-    this.isBooted = false;
-    this.isPaused = false;
-    this.willUpdate = true;
-    this.willRender = true;
-    this.lastTick = 0;
-    this.elapsed = 0;
-    this.frame = 0;
+    __publicField(this, "id", addEntity(GameObjectWorld));
+    __publicField(this, "VERSION", "4.0.0-beta1");
+    __publicField(this, "isBooted", false);
+    __publicField(this, "isPaused", false);
+    __publicField(this, "willUpdate", true);
+    __publicField(this, "willRender", true);
+    __publicField(this, "lastTick", 0);
+    __publicField(this, "elapsed", 0);
+    __publicField(this, "frame", 0);
+    __publicField(this, "renderer");
+    __publicField(this, "textureManager");
+    __publicField(this, "sceneManager");
     GameInstance.set(this);
     SetConfigDefaults();
     DOMContentLoaded(() => this.boot(settings));
@@ -54,15 +66,19 @@ export class Game extends EventEmitter {
     const delta = time - this.lastTick;
     this.lastTick = time;
     this.elapsed += delta;
+    const renderer = this.renderer;
+    const sceneManager = this.sceneManager;
     if (!this.isPaused) {
       if (this.willUpdate) {
-        this.sceneManager.update(delta, time);
-        Emit(this, "update", delta, time);
+        sceneManager.update(delta, time, this.frame);
       }
       if (this.willRender) {
-        this.renderer.render(this.sceneManager.render(this.frame));
+        sceneManager.preRender(this.frame);
+        renderer.render(sceneManager.flush, sceneManager.scenes);
+        sceneManager.flush = false;
       }
     }
+    Emit(this, "step");
     this.frame++;
     GameInstance.setFrame(this.frame);
     GameInstance.setElapsed(this.elapsed);

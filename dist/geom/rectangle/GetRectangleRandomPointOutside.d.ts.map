@@ -1,1 +1,0 @@
-{"version":3,"file":"GetRectangleRandomPointOutside.d.ts","sourceRoot":"","sources":["../../../src/geom/rectangle/GetRectangleRandomPointOutside.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAM5C,wBAAgB,8BAA8B,CAAE,KAAK,EAAE,UAAU,EAAE,KAAK,EAAE,UAAU,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAmClH"}

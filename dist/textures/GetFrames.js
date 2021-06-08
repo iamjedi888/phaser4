@@ -1,4 +1,4 @@
-import {GetTexture} from "./GetTexture";
+import { GetTexture } from "./GetTexture";
 export function GetFrames(texture, frames) {
   if (typeof texture === "string") {
     texture = GetTexture(texture);

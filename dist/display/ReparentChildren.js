@@ -1,5 +1,5 @@
-import {RemoveChildrenBetween} from "./RemoveChildrenBetween";
-import {SetParent} from "./SetParent";
+import { RemoveChildrenBetween } from "./RemoveChildrenBetween";
+import { SetParent } from "./SetParent";
 export function ReparentChildren(parent, newParent, beginIndex = 0, endIndex) {
   const moved = RemoveChildrenBetween(parent, beginIndex, endIndex);
   SetParent(newParent, ...moved);

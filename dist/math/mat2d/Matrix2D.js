@@ -1,5 +1,17 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 export class Matrix2D {
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
+    __publicField(this, "a");
+    __publicField(this, "b");
+    __publicField(this, "c");
+    __publicField(this, "d");
+    __publicField(this, "tx");
+    __publicField(this, "ty");
     this.set(a, b, c, d, tx, ty);
   }
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
@@ -15,7 +27,7 @@ export class Matrix2D {
     return this.set();
   }
   toArray() {
-    const {a, b, c, d, tx, ty} = this;
+    const { a, b, c, d, tx, ty } = this;
     return [a, b, c, d, tx, ty];
   }
   fromArray(src) {

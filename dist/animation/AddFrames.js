@@ -1,5 +1,5 @@
-import {CalculateDuration} from "./CalculateDuration";
-import {LinkFrames} from "./LinkFrames";
+import { CalculateDuration } from "./CalculateDuration";
+import { LinkFrames } from "./LinkFrames";
 export function AddFrames(animation, ...frames) {
   frames.forEach((frame) => {
     animation.frames.add(frame);

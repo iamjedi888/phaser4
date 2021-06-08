@@ -1,5 +1,5 @@
-import {AddedToWorldEvent, RemovedFromWorldEvent} from "../gameobjects/events";
-import {Emit} from "../events/Emit";
+import { AddedToWorldEvent, RemovedFromWorldEvent } from "../gameobjects/events";
+import { Emit } from "../events/Emit";
 export function SetWorld3D(world, ...children) {
   children.forEach((child) => {
     if (child.world) {

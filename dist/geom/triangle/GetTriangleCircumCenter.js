@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Vec2} from "../../math/vec2/Vec2";
+import { Vec2 } from "../../math/vec2/Vec2";
 function Det(m00, m01, m10, m11) {
   return m00 * m11 - m01 * m10;
 }

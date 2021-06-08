@@ -1,1 +1,0 @@
-{"version":3,"file":"GetRectangleIntersection.d.ts","sourceRoot":"","sources":["../../../src/geom/intersects/GetRectangleIntersection.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AACrD,OAAO,EAAE,SAAS,EAAE,MAAM,wBAAwB,CAAC;AAqBnD,wBAAgB,wBAAwB,CAAE,KAAK,EAAE,UAAU,EAAE,KAAK,EAAE,UAAU,EAAE,GAAG,GAAE,SAA2B,GAAG,SAAS,CAc3H"}

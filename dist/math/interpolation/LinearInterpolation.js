@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Linear} from "../Linear";
+import { Linear } from "../Linear";
 export function LinearInterpolation(v, k) {
   const m = v.length - 1;
   const f = m * k;

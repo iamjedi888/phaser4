@@ -1,7 +1,7 @@
-import {BindBlendMode} from "./BindBlendMode";
-import {BindFramebuffer} from "./BindFramebuffer";
-import {BindVertexBuffer} from "./BindVertexBuffer";
-import {BindViewport} from "./BindViewport";
+import { BindBlendMode } from "./BindBlendMode";
+import { BindFramebuffer } from "./BindFramebuffer";
+import { BindVertexBuffer } from "./BindVertexBuffer";
+import { BindViewport } from "./BindViewport";
 export function Start(renderPass) {
   renderPass.current2DCamera = renderPass.quadCamera;
   renderPass.cameraMatrix = renderPass.quadCamera.matrix;

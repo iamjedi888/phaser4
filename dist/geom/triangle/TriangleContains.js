@@ -4,7 +4,7 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 export function TriangleContains(triangle, x, y) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const v0x = x3 - x1;
   const v0y = y3 - y1;
   const v1x = x2 - x1;

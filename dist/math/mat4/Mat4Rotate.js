@@ -1,6 +1,6 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4Rotate(matrix, angle, axis, out = new Matrix4()) {
-  let {x, y, z} = axis;
+  let { x, y, z } = axis;
   let len = Math.hypot(x, y, z);
   if (len < 1e-5) {
     return null;

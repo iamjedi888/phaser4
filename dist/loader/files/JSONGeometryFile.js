@@ -1,8 +1,8 @@
-import {Cache} from "../../cache/Cache";
-import {File} from "../File";
-import {Geometry} from "../../gameobjects3d/geometry/Geometry";
-import {GetURL} from "../GetURL";
-import {XHRLoader} from "../XHRLoader";
+import { Cache } from "../../cache/Cache";
+import { File } from "../File";
+import { Geometry } from "../../gameobjects3d/geometry/Geometry";
+import { GetURL } from "../GetURL";
+import { XHRLoader } from "../XHRLoader";
 export function JSONGeometryFile(key, url, mappingConfig) {
   const file = new File(key, url);
   const {

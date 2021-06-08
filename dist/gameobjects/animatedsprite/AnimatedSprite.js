@@ -1,21 +1,29 @@
-import {CreateAnimData} from "../../animation/CreateAnimData";
-import {Sprite} from "../sprite/Sprite";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { CreateAnimData } from "../../animation/CreateAnimData";
+import { Sprite } from "../sprite/Sprite";
 export class AnimatedSprite extends Sprite {
   constructor(x, y, texture, frame) {
     super(x, y, texture, frame);
-    this.hasStarted = false;
-    this.forward = true;
-    this.inReverse = false;
-    this.accumulator = 0;
-    this.nextTick = 0;
-    this.delayCounter = 0;
-    this.repeatCounter = 0;
-    this.pendingRepeat = false;
-    this.paused = false;
-    this.wasPlaying = false;
-    this.pendingStop = 0;
-    this.pendingStopValue = 0;
-    this.type = "AnimatedSprite";
+    __publicField(this, "currentAnimation");
+    __publicField(this, "currentFrame");
+    __publicField(this, "animData");
+    __publicField(this, "hasStarted", false);
+    __publicField(this, "forward", true);
+    __publicField(this, "inReverse", false);
+    __publicField(this, "accumulator", 0);
+    __publicField(this, "nextTick", 0);
+    __publicField(this, "delayCounter", 0);
+    __publicField(this, "repeatCounter", 0);
+    __publicField(this, "pendingRepeat", false);
+    __publicField(this, "paused", false);
+    __publicField(this, "wasPlaying", false);
+    __publicField(this, "pendingStop", 0);
+    __publicField(this, "pendingStopValue", 0);
     this.currentAnimation;
     this.animData = CreateAnimData();
   }

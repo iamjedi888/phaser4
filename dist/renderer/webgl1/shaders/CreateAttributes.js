@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function CreateAttributes(program, config) {
   const attributes = new Map();
   const defaultSettings = {
@@ -25,7 +25,7 @@ export function CreateAttributes(program, config) {
       stride = defaultSettings.stride,
       offset = defaultSettings.offset
     } = setting;
-    attributes.set(name, {index, size, type, normalized, stride, offset});
+    attributes.set(name, { index, size, type, normalized, stride, offset });
   }
   return attributes;
 }

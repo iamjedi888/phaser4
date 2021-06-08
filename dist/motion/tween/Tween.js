@@ -1,15 +1,29 @@
-import {Linear} from "../../math/easing/Linear";
-import {TweenProperty} from "./TweenProperty";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Linear } from "../../math/easing/Linear";
+import { TweenProperty } from "./TweenProperty";
 export class Tween {
   constructor(target, autoStart = true) {
-    this.progress = 0;
-    this.isDead = false;
-    this._delay = 0;
-    this.duration = 0;
-    this.elapsed = 0;
-    this._delayElapsed = 0;
-    this._durationElapsed = 0;
-    this.properties = [];
+    __publicField(this, "target");
+    __publicField(this, "progress", 0);
+    __publicField(this, "isRunning");
+    __publicField(this, "isDead", false);
+    __publicField(this, "reversed");
+    __publicField(this, "overwrite");
+    __publicField(this, "autoStart");
+    __publicField(this, "_delay", 0);
+    __publicField(this, "duration", 0);
+    __publicField(this, "elapsed", 0);
+    __publicField(this, "_delayElapsed", 0);
+    __publicField(this, "_durationElapsed", 0);
+    __publicField(this, "ease");
+    __publicField(this, "properties", []);
+    __publicField(this, "autoVisible");
+    __publicField(this, "_yoyo");
     this.target = target;
     this.autoStart = autoStart;
     this.ease = Linear;

@@ -1,4 +1,4 @@
-import {RemoveChild3DAt} from "./RemoveChild3DAt";
+import { RemoveChild3DAt } from "./RemoveChild3DAt";
 export function RemoveChildren3DAt(parent, ...index) {
   const removed = [];
   index.sort((a, b) => a - b);

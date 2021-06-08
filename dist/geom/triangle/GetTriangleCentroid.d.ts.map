@@ -1,1 +1,0 @@
-{"version":3,"file":"GetTriangleCentroid.d.ts","sourceRoot":"","sources":["../../../src/geom/triangle/GetTriangleCentroid.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AACxC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAW5C,wBAAgB,mBAAmB,CAAE,QAAQ,EAAE,SAAS,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAMtF"}

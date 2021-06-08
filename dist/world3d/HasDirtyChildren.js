@@ -1,4 +1,4 @@
-import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
+import { DIRTY_CONST } from "../gameobjects/DIRTY_CONST";
 export function HasDirtyChildren(parent) {
   if (parent.node.isDirty(DIRTY_CONST.CHILD_CACHE)) {
     return true;

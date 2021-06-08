@@ -1,4 +1,4 @@
-import {GetChild3DIndex} from "./GetChild3DIndex";
+import { GetChild3DIndex } from "./GetChild3DIndex";
 export function SwapChildren3D(child1, child2) {
   if (child1.parent === child2.parent) {
     const children = child1.parent.children;

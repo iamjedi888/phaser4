@@ -1,1 +1,0 @@
-{"version":3,"file":"AmbientLightShader.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/AmbientLightShader.ts"],"names":[],"mappings":"AAIA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AACpC,OAAO,EAAE,MAAM,EAAE,MAAM,UAAU,CAAC;AAElC,qBAAa,kBAAmB,SAAQ,MAAO,YAAW,OAAO;;CAuChE"}

@@ -1,16 +1,32 @@
-import {Emit, EventEmitter} from "../../events";
-import {GameInstance} from "../../GameInstance";
-import {Mat2dAppend} from "../../math/mat2d/Mat2dAppend";
-import {Mat2dGlobalToLocal} from "../../math/mat2d/Mat2dGlobalToLocal";
-import {Vec2} from "../../math/vec2/Vec2";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Emit, EventEmitter } from "../../events";
+import { GameInstance } from "../../GameInstance";
+import { Mat2dAppend } from "../../math/mat2d/Mat2dAppend";
+import { Mat2dGlobalToLocal } from "../../math/mat2d/Mat2dGlobalToLocal";
+import { Vec2 } from "../../math/vec2/Vec2";
 export class Mouse extends EventEmitter {
   constructor(target) {
     super();
-    this.primaryDown = false;
-    this.auxDown = false;
-    this.secondaryDown = false;
-    this.blockContextMenu = true;
-    this.resolution = 1;
+    __publicField(this, "primaryDown", false);
+    __publicField(this, "auxDown", false);
+    __publicField(this, "secondaryDown", false);
+    __publicField(this, "blockContextMenu", true);
+    __publicField(this, "localPoint");
+    __publicField(this, "hitPoint");
+    __publicField(this, "target");
+    __publicField(this, "resolution", 1);
+    __publicField(this, "mousedownHandler");
+    __publicField(this, "mouseupHandler");
+    __publicField(this, "mousemoveHandler");
+    __publicField(this, "mousewheelHandler");
+    __publicField(this, "contextmenuHandler");
+    __publicField(this, "blurHandler");
+    __publicField(this, "transPoint");
     this.mousedownHandler = (event) => this.onMouseDown(event);
     this.mouseupHandler = (event) => this.onMouseUp(event);
     this.mousemoveHandler = (event) => this.onMouseMove(event);
@@ -25,7 +41,7 @@ export class Mouse extends EventEmitter {
     }
     target.addEventListener("mousedown", this.mousedownHandler);
     target.addEventListener("mouseup", this.mouseupHandler);
-    target.addEventListener("wheel", this.mousewheelHandler, {passive: false});
+    target.addEventListener("wheel", this.mousewheelHandler, { passive: false });
     target.addEventListener("contextmenu", this.contextmenuHandler);
     window.addEventListener("mouseup", this.mouseupHandler);
     window.addEventListener("mousemove", this.mousemoveHandler);

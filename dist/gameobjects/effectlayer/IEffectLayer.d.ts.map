@@ -1,1 +1,0 @@
-{"version":3,"file":"IEffectLayer.d.ts","sourceRoot":"","sources":["../../../src/gameobjects/effectlayer/IEffectLayer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,6BAA6B,CAAC;AAC3D,OAAO,EAAE,OAAO,EAAE,MAAM,uCAAuC,CAAC;AAEhE,MAAM,WAAW,YAAa,SAAQ,YAAY;IAE9C,OAAO,EAAE,OAAO,EAAE,CAAC;CACtB"}

@@ -1,3 +1,4 @@
+import { GameObjectTree } from "../gameobjects/GameObjectTree";
 export function GetChildIndex(parent, child) {
-  return parent.children.indexOf(child);
+  return GameObjectTree.get(parent.id).indexOf(child.id);
 }

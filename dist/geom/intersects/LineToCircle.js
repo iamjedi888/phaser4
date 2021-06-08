@@ -3,14 +3,14 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CircleContains} from "../circle/CircleContains";
-import {Vec2} from "../../math/vec2/Vec2";
+import { CircleContains } from "../circle/CircleContains";
+import { Vec2 } from "../../math/vec2/Vec2";
 const tmp = new Vec2();
 export function LineToCircle(line, circle, nearest) {
   if (!nearest) {
     nearest = tmp;
   }
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   if (CircleContains(circle, x1, y1)) {
     nearest.set(x1, y1);
     return true;

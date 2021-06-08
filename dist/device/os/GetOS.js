@@ -1,20 +1,20 @@
-import {IsAndroid} from "./IsAndroid";
-import {IsChromeOS} from "./IsChromeOS";
-import {IsCordova} from "./IsCordova";
-import {IsCrosswalk} from "./IsCrosswalk";
-import {IsEjecta} from "./IsEjecta";
-import {IsKindle} from "./IsKindle";
-import {IsLinux} from "./IsLinux";
-import {IsMacOS} from "./IsMacOS";
-import {IsNode} from "./IsNode";
-import {IsNodeWebkit} from "./IsNodeWebkit";
-import {IsWebApp} from "./IsWebApp";
-import {IsWindows} from "./IsWindows";
-import {IsWindowsPhone} from "./IsWindowsPhone";
-import {IsiOS} from "./IsiOS";
+import { IsAndroid } from "./IsAndroid";
+import { IsChromeOS } from "./IsChromeOS";
+import { IsCordova } from "./IsCordova";
+import { IsCrosswalk } from "./IsCrosswalk";
+import { IsEjecta } from "./IsEjecta";
+import { IsKindle } from "./IsKindle";
+import { IsLinux } from "./IsLinux";
+import { IsMacOS } from "./IsMacOS";
+import { IsNode } from "./IsNode";
+import { IsNodeWebkit } from "./IsNodeWebkit";
+import { IsWebApp } from "./IsWebApp";
+import { IsWindows } from "./IsWindows";
+import { IsWindowsPhone } from "./IsWindowsPhone";
+import { IsiOS } from "./IsiOS";
 export function GetOS() {
   const ua = navigator.userAgent;
-  const {iOS, iOSVersion, iPad, iPhone} = IsiOS();
+  const { iOS, iOSVersion, iPad, iPhone } = IsiOS();
   const result = {
     android: IsAndroid(),
     chromeOS: IsChromeOS(),

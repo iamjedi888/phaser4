@@ -1,12 +1,32 @@
-import {Mat4LookAt, Mat4Perspective, Mat4TranslateFromFloats, Matrix4} from "../math/mat4";
-import {QuatSetAxisAngle, Quaternion} from "../math/quaternion";
-import {UP, Vec3, Vec3Add, Vec3Callback, Vec3CrossNormalize, Vec3Left, Vec3Normalize, Vec3Subtract, Vec3TransformQuat, Vec3Up} from "../math/vec3";
-import {DegToRad} from "../math";
-import {GameInstance} from "../GameInstance";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Mat4LookAt, Mat4Perspective, Mat4TranslateFromFloats, Matrix4 } from "../math/mat4";
+import { QuatSetAxisAngle, Quaternion } from "../math/quaternion";
+import { UP, Vec3, Vec3Add, Vec3Callback, Vec3CrossNormalize, Vec3Left, Vec3Normalize, Vec3Subtract, Vec3TransformQuat, Vec3Up } from "../math/vec3";
+import { DegToRad } from "../math";
+import { GameInstance } from "../GameInstance";
 export class Camera3D {
   constructor(x = 0, y = 0, z = 0, fov = 45, near = 0.1, far = 1e3) {
-    this.dirtyRender = true;
-    this.type = "Camera3D";
+    __publicField(this, "type");
+    __publicField(this, "renderer");
+    __publicField(this, "position");
+    __publicField(this, "direction");
+    __publicField(this, "up");
+    __publicField(this, "left");
+    __publicField(this, "aspectRatio");
+    __publicField(this, "viewMatrix");
+    __publicField(this, "projectionMatrix");
+    __publicField(this, "dirtyRender", true);
+    __publicField(this, "_lookAtPosition");
+    __publicField(this, "_lookAtView");
+    __publicField(this, "_axis");
+    __publicField(this, "_fov");
+    __publicField(this, "_near");
+    __publicField(this, "_far");
     const game = GameInstance.get();
     this.renderer = game.renderer;
     this.position = new Vec3Callback(() => this.update(), x, y, z);
@@ -62,8 +82,8 @@ export class Camera3D {
   }
   forward(s) {
     const pos = this.position;
-    const {x: px, y: py, z: pz} = pos;
-    const {x: dx, y: dy, z: dz} = this.direction;
+    const { x: px, y: py, z: pz } = pos;
+    const { x: dx, y: dy, z: dz } = this.direction;
     pos.set(px - s * dx, py - s * dy, pz - s * dz);
     return this.update();
   }

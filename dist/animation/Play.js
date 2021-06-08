@@ -1,4 +1,4 @@
-import {CreateAnimData} from "./CreateAnimData";
+import { CreateAnimData } from "./CreateAnimData";
 export function Play(animation, config = {}, ...sprites) {
   const data = CreateAnimData(animation.key, animation.frameRate, animation.duration, animation.delay, animation.repeat, animation.repeatDelay, animation.yoyo, animation.hold, animation.showOnStart, animation.hideOnComplete);
   Object.assign(data, config);

@@ -1,4 +1,4 @@
-import {BindShader} from "./BindShader";
+import { BindShader } from "./BindShader";
 export function PopShader(renderPass) {
   const stack = renderPass.shaderStack;
   if (stack.length > 1) {

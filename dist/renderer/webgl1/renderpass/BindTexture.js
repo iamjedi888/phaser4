@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function BindTexture(texture, index = 0) {
   const binding = texture.binding;
   binding.setIndex(index);

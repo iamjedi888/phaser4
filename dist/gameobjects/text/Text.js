@@ -1,25 +1,38 @@
-import {CanvasTexture} from "../../textures/types/CanvasTexture";
-import {DIRTY_CONST} from "../DIRTY_CONST";
-import {GameInstance} from "../../GameInstance";
-import {Sprite} from "../sprite/Sprite";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { CanvasTexture } from "../../textures/types/CanvasTexture";
+import { DIRTY_CONST } from "../DIRTY_CONST";
+import { GameInstance } from "../../GameInstance";
+import { Sprite } from "../sprite/Sprite";
 export class Text extends Sprite {
   constructor(x, y, text = "", font, fillStyle) {
     super(x, y, CanvasTexture());
-    this.splitRegExp = /(?:\r\n|\r|\n)/;
-    this.padding = {left: 0, right: 0, top: 0, bottom: 0};
-    this.verticalAlign = "ascent";
-    this.lineSpacing = 0;
-    this.font = "16px monospace";
-    this.fillStyle = "#fff";
-    this.strokeStyle = "";
-    this.backgroundStyle = "";
-    this.cornerRadius = 0;
-    this.textAlign = "left";
-    this.textBaseline = "alphabetic";
-    this.lineWidth = 0;
-    this.lineDash = [];
-    this.antialias = false;
-    this.type = "Text";
+    __publicField(this, "_text");
+    __publicField(this, "preRenderCallback");
+    __publicField(this, "wordWrapCallback");
+    __publicField(this, "canvas");
+    __publicField(this, "context");
+    __publicField(this, "splitRegExp", /(?:\r\n|\r|\n)/);
+    __publicField(this, "padding", { left: 0, right: 0, top: 0, bottom: 0 });
+    __publicField(this, "verticalAlign", "ascent");
+    __publicField(this, "lineSpacing", 0);
+    __publicField(this, "resolution");
+    __publicField(this, "font", "16px monospace");
+    __publicField(this, "fillStyle", "#fff");
+    __publicField(this, "strokeStyle", "");
+    __publicField(this, "backgroundStyle", "");
+    __publicField(this, "cornerRadius", 0);
+    __publicField(this, "textAlign", "left");
+    __publicField(this, "textBaseline", "alphabetic");
+    __publicField(this, "lineWidth", 0);
+    __publicField(this, "lineDash", []);
+    __publicField(this, "fixedWidth");
+    __publicField(this, "fixedHeight");
+    __publicField(this, "antialias", false);
     const game = GameInstance.get();
     this.resolution = game.renderer.resolution;
     this.canvas = this.texture.image;
@@ -94,7 +107,7 @@ export class Text extends Sprite {
         }
       }
       maxWidth = Math.max(maxWidth, lineWidth);
-      lineMetrics.push({lineWidth, lineHeight, ascent, descent, left, right, y});
+      lineMetrics.push({ lineWidth, lineHeight, ascent, descent, left, right, y });
     }
     maxWidth += padding.left + padding.right;
     maxHeight += padding.top + padding.bottom;

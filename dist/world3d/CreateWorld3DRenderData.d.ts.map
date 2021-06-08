@@ -1,1 +1,0 @@
-{"version":3,"file":"CreateWorld3DRenderData.d.ts","sourceRoot":"","sources":["../../src/world3d/CreateWorld3DRenderData.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,uBAAuB,CAAC;AAClD,OAAO,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AACtC,OAAO,EAAE,kBAAkB,EAAE,MAAM,sBAAsB,CAAC;AAE1D,wBAAgB,uBAAuB,CAAE,KAAK,EAAE,QAAQ,EAAE,MAAM,EAAE,SAAS,GAAG,kBAAkB,CAU/F"}

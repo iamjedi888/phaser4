@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Triangle} from "./Triangle";
+import { Triangle } from "./Triangle";
 export function BuildRightTriangle(x, y, width, height = width) {
   const x1 = x;
   const y1 = y;

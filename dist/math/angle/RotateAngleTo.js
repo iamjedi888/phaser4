@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {MATH_CONST} from "../const";
+import { MATH_CONST } from "../const";
 export function RotateAngleTo(currentAngle, targetAngle, lerp = 0.05) {
   if (currentAngle === targetAngle) {
     return currentAngle;

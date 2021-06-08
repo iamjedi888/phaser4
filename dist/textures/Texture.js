@@ -1,8 +1,21 @@
-import {BindingQueue} from "../renderer/BindingQueue";
-import {Frame} from "./Frame";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { BindingQueue } from "../renderer/BindingQueue";
+import { Frame } from "./Frame";
 export class Texture {
   constructor(image, width, height, glConfig) {
-    this.key = "";
+    __publicField(this, "key", "");
+    __publicField(this, "width");
+    __publicField(this, "height");
+    __publicField(this, "image");
+    __publicField(this, "binding");
+    __publicField(this, "firstFrame");
+    __publicField(this, "frames");
+    __publicField(this, "data");
     if (image) {
       width = image.width;
       height = image.height;

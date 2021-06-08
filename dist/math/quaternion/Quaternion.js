@@ -1,6 +1,17 @@
-import {NOOP} from "../../utils";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { NOOP } from "../../utils";
 export class Quaternion {
   constructor(x = 0, y = 0, z = 0, w = 1) {
+    __publicField(this, "_x");
+    __publicField(this, "_y");
+    __publicField(this, "_z");
+    __publicField(this, "_w");
+    __publicField(this, "onChange");
     this._x = x;
     this._y = y;
     this._z = z;
@@ -56,7 +67,7 @@ export class Quaternion {
     return this._w;
   }
   toArray(dst = [], index = 0) {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     dst[index] = x;
     dst[index + 1] = y;
     dst[index + 2] = z;
@@ -70,7 +81,7 @@ export class Quaternion {
     this.onChange = NOOP;
   }
   toString() {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     return `{ x=${x}, y=${y}, z=${z}, w=${w} }`;
   }
 }

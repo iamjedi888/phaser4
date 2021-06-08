@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Bernstein} from "../Bernstein";
+import { Bernstein } from "../Bernstein";
 export function BezierInterpolation(v, k) {
   let b = 0;
   const n = v.length - 1;

@@ -1,9 +1,9 @@
-import {Cache} from "../../cache/Cache";
-import {File} from "../File";
-import {Geometry} from "../../gameobjects3d/geometry/Geometry";
-import {GetBufferFromObj} from "../../gameobjects3d/geometry/GetBufferFromObj";
-import {GetURL} from "../GetURL";
-import {XHRLoader} from "../XHRLoader";
+import { Cache } from "../../cache/Cache";
+import { File } from "../File";
+import { Geometry } from "../../gameobjects3d/geometry/Geometry";
+import { GetBufferFromObj } from "../../gameobjects3d/geometry/GetBufferFromObj";
+import { GetURL } from "../GetURL";
+import { XHRLoader } from "../XHRLoader";
 export function OBJGeometryFile(key, url, flipUVs = true) {
   const file = new File(key, url);
   file.load = () => {

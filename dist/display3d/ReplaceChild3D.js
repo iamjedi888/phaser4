@@ -1,7 +1,7 @@
-import {AddChild3DAt} from "./AddChild3DAt";
-import {GetChild3DIndex} from "./GetChild3DIndex";
-import {MoveChild3DTo} from "./MoveChild3DTo";
-import {RemoveChild3D} from "./RemoveChild3D";
+import { AddChild3DAt } from "./AddChild3DAt";
+import { GetChild3DIndex } from "./GetChild3DIndex";
+import { MoveChild3DTo } from "./MoveChild3DTo";
+import { RemoveChild3D } from "./RemoveChild3D";
 export function ReplaceChild3D(target, source) {
   const targetParent = target.parent;
   const sourceParent = source.parent;

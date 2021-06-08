@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function ResetTextures(renderPass) {
   const temp = renderPass.tempTextures;
   for (let i = 0; i < temp.length; i++) {

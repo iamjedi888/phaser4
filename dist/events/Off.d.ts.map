@@ -1,1 +1,0 @@
-{"version":3,"file":"Off.d.ts","sourceRoot":"","sources":["../../src/events/Off.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAChD,OAAO,EAAE,cAAc,EAAE,MAAM,kBAAkB,CAAC;AAElD,wBAAgB,GAAG,CAAE,OAAO,EAAE,aAAa,EAAE,KAAK,EAAE,MAAM,EAAE,QAAQ,CAAC,EAAE,QAAQ,GAAG,cAAc,EAAE,OAAO,CAAC,EAAE,OAAO,EAAE,IAAI,CAAC,EAAE,OAAO,GAAG,aAAa,CAsClJ"}

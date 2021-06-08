@@ -1,4 +1,4 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4FromXRotation(angle, out = new Matrix4()) {
   const c = Math.cos(angle);
   const s = Math.sin(angle);

@@ -1,7 +1,7 @@
-import {AddChildAt} from "./AddChildAt";
-import {GetChildIndex} from "./GetChildIndex";
-import {MoveChildTo} from "./MoveChildTo";
-import {RemoveChild} from "./RemoveChild";
+import { AddChildAt } from "./AddChildAt";
+import { GetChildIndex } from "./GetChildIndex";
+import { MoveChildTo } from "./MoveChildTo";
+import { RemoveChild } from "./RemoveChild";
 export function ReplaceChild(target, source) {
   const targetParent = target.parent;
   const sourceParent = source.parent;

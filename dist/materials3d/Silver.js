@@ -1,4 +1,4 @@
-import {Material} from "../gameobjects3d/material/Material";
+import { Material } from "../gameobjects3d/material/Material";
 export const Silver = new Material({
   ambient: [0.19225, 0.19225, 0.19225],
   diffuse: [0.50754, 0.50754, 0.50754],

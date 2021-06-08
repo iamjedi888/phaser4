@@ -1,4 +1,4 @@
-import {GetChildIndex} from "./GetChildIndex";
+import { GetChildIndex } from "./GetChildIndex";
 export function SwapChildren(child1, child2) {
   if (child1.parent === child2.parent) {
     const children = child1.parent.children;

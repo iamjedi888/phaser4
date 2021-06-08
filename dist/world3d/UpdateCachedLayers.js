@@ -1,5 +1,5 @@
-import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
-import {HasDirtyChildren} from "./HasDirtyChildren";
+import { DIRTY_CONST } from "../gameobjects/DIRTY_CONST";
+import { HasDirtyChildren } from "./HasDirtyChildren";
 export function UpdateCachedLayers(cachedLayers, dirtyCamera) {
   cachedLayers.forEach((layer) => {
     if (dirtyCamera || HasDirtyChildren(layer)) {

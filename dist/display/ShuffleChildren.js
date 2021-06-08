@@ -1,4 +1,4 @@
-import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
+import { DIRTY_CONST } from "../gameobjects/DIRTY_CONST";
 export function ShuffleChildren(parent) {
   const children = parent.children;
   for (let i = children.length - 1; i > 0; i--) {

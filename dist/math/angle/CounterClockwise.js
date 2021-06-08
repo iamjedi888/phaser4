@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {MATH_CONST as CONST} from "../const";
+import { MATH_CONST as CONST } from "../const";
 export function CounterClockwise(angle) {
   if (angle > Math.PI) {
     angle -= CONST.PI2;

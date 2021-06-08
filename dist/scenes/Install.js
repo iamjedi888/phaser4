@@ -1,5 +1,6 @@
-import {GetConfigValue} from "./GetConfigValue";
-import {SceneManagerInstance} from "./SceneManagerInstance";
+import { GetConfigValue } from "./GetConfigValue";
+import { SceneManagerInstance } from "./SceneManagerInstance";
+import { WorldList } from "../world/WorldList";
 export function Install(scene, config = {}) {
   const sceneManager = SceneManagerInstance.get();
   const size = sceneManager.scenes.size;
@@ -17,4 +18,5 @@ export function Install(scene, config = {}) {
     sceneManager.flush = true;
     sceneManager.sceneIndex++;
   }
+  WorldList.set(scene, []);
 }

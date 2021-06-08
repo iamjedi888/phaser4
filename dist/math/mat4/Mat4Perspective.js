@@ -1,4 +1,4 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4Perspective(fovY, aspect, near, far, out = new Matrix4()) {
   const f = 1 / Math.tan(fovY / 2);
   let m22 = -1;

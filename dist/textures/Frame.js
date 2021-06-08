@@ -1,6 +1,32 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { QuadVertexComponent } from "../components/vertices/QuadVertexComponent";
+import { SetExtent } from "../components/transform/SetExtent";
+import { SetUV } from "../components/vertices/SetUV";
 export class Frame {
   constructor(texture, key, x, y, width, height) {
-    this.trimmed = false;
+    __publicField(this, "texture");
+    __publicField(this, "key");
+    __publicField(this, "x");
+    __publicField(this, "y");
+    __publicField(this, "width");
+    __publicField(this, "height");
+    __publicField(this, "trimmed", false);
+    __publicField(this, "sourceSizeWidth");
+    __publicField(this, "sourceSizeHeight");
+    __publicField(this, "spriteSourceSizeX");
+    __publicField(this, "spriteSourceSizeY");
+    __publicField(this, "spriteSourceSizeWidth");
+    __publicField(this, "spriteSourceSizeHeight");
+    __publicField(this, "pivot");
+    __publicField(this, "u0");
+    __publicField(this, "v0");
+    __publicField(this, "u1");
+    __publicField(this, "v1");
     this.texture = texture;
     this.key = key;
     this.x = x;
@@ -12,7 +38,7 @@ export class Frame {
     this.updateUVs();
   }
   setPivot(x, y) {
-    this.pivot = {x, y};
+    this.pivot = { x, y };
   }
   setSize(width, height) {
     this.width = width;
@@ -52,7 +78,7 @@ export class Frame {
       top = -originY * sourceSizeHeight;
       bottom = top + sourceSizeHeight;
     }
-    return {left, right, top, bottom};
+    return { left, right, top, bottom };
   }
   copyToExtent(child) {
     const originX = child.originX;
@@ -74,19 +100,19 @@ export class Frame {
       width = sourceSizeWidth;
       height = sourceSizeHeight;
     }
-    child.setExtent(x, y, width, height);
+    SetExtent(child.id, x, y, width, height);
     return this;
   }
-  copyToVertices(vertices, offset = 0) {
-    const {u0, u1, v0, v1} = this;
-    vertices[offset + 0].setUV(u0, v0);
-    vertices[offset + 1].setUV(u0, v1);
-    vertices[offset + 2].setUV(u1, v1);
-    vertices[offset + 3].setUV(u1, v0);
+  copyToVertices(id) {
+    const { u0, u1, v0, v1 } = this;
+    SetUV(QuadVertexComponent.v1[id], u0, v0);
+    SetUV(QuadVertexComponent.v2[id], u0, v1);
+    SetUV(QuadVertexComponent.v3[id], u1, v1);
+    SetUV(QuadVertexComponent.v4[id], u1, v0);
     return this;
   }
   updateUVs() {
-    const {x, y, width, height} = this;
+    const { x, y, width, height } = this;
     const baseTextureWidth = this.texture.width;
     const baseTextureHeight = this.texture.height;
     this.u0 = x / baseTextureWidth;

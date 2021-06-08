@@ -1,10 +1,23 @@
-import {PackColor} from "../../renderer/webgl1";
-import {Vertex} from "../../components";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { PackColor } from "../../renderer/webgl1";
+import { Vertex } from "../../components";
 export class FaceUVNormalTexture {
   constructor(v1, v2, v3, n1, n2, n3, uv1, uv2, uv3, scale = 1) {
-    this.color = 16777215;
-    this.alpha = 1;
-    this.size = 30;
+    __publicField(this, "vertex1");
+    __publicField(this, "vertex2");
+    __publicField(this, "vertex3");
+    __publicField(this, "normal1");
+    __publicField(this, "normal2");
+    __publicField(this, "normal3");
+    __publicField(this, "color", 16777215);
+    __publicField(this, "alpha", 1);
+    __publicField(this, "size", 30);
+    __publicField(this, "_packedColor");
     this.vertex1 = new Vertex(v1.x * scale, v1.y * scale, v1.z * scale);
     this.vertex2 = new Vertex(v2.x * scale, v2.y * scale, v2.z * scale);
     this.vertex3 = new Vertex(v3.x * scale, v3.y * scale, v3.z * scale);

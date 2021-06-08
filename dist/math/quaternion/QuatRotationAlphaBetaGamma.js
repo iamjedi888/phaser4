@@ -1,4 +1,4 @@
-import {Quaternion} from "./Quaternion";
+import { Quaternion } from "./Quaternion";
 export function QuatRotationAlphaBetaGamma(alpha, beta, gamma, out = new Quaternion()) {
   const halfGammaPlusAlpha = (gamma + alpha) * 0.5;
   const halfGammaMinusAlpha = (gamma - alpha) * 0.5;

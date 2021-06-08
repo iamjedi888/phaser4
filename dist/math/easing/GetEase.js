@@ -8,8 +8,8 @@ import * as Quadratic from "./quadratic";
 import * as Quartic from "./quartic";
 import * as Quintic from "./quintic";
 import * as Sine from "./sine";
-import {Linear} from "./Linear";
-import {Stepped} from "./Stepped";
+import { Linear } from "./Linear";
+import { Stepped } from "./Stepped";
 const EaseMap = new Map([
   ["power0", Linear],
   ["power1", Quadratic.Out],

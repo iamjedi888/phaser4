@@ -1,1 +1,0 @@
-{"version":3,"file":"RectangleContainsPoint.d.ts","sourceRoot":"","sources":["../../../src/geom/rectangle/RectangleContainsPoint.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAK5C,wBAAgB,sBAAsB,CAAE,IAAI,EAAE,UAAU,EAAE,KAAK,EAAE,IAAI,GAAG,OAAO,CAG9E"}

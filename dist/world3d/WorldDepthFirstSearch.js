@@ -3,7 +3,7 @@ export function WorldDepthFirstSearch(cachedLayers, parent, output = []) {
     const node = parent.children[i];
     if (node.isRenderable()) {
       const children = [];
-      const entry = {node, children};
+      const entry = { node, children };
       output.push(entry);
       if (node.willRenderChildren && node.numChildren > 0) {
         if (node.willCacheChildren) {

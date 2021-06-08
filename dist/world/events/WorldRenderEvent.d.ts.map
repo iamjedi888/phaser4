@@ -1,1 +1,0 @@
-{"version":3,"file":"WorldRenderEvent.d.ts","sourceRoot":"","sources":["../../../src/world/events/WorldRenderEvent.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAC3C,OAAO,EAAE,gBAAgB,EAAE,MAAM,qBAAqB,CAAC;AAEvD,eAAO,MAAM,gBAAgB,EAAE,MAAsB,CAAC;AAEtD,oBAAY,uBAAuB,GAAG,CAAC,UAAU,EAAE,gBAAgB,EAAE,KAAK,EAAE,UAAU,KAAK,IAAI,CAAC"}

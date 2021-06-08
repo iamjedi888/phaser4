@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Rectangle} from "./Rectangle";
+import { Rectangle } from "./Rectangle";
 export function GetRectangleUnion(rectA, rectB, out = new Rectangle()) {
   const x = Math.min(rectA.x, rectB.x);
   const y = Math.min(rectA.y, rectB.y);

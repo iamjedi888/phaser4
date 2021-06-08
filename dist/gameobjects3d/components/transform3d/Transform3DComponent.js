@@ -1,10 +1,27 @@
-import {Mat4FromRotationTranslationScale, Mat4Invert, Mat4Transpose, Matrix4} from "../../../math/mat4";
-import {QuatRotateX, QuatRotateY, QuatRotateZ, Quaternion} from "../../../math/quaternion";
-import {Vec3Callback, Vec3Forward, Vec3Right, Vec3Up} from "../../../math/vec3";
-import {DIRTY_CONST} from "../../../gameobjects/DIRTY_CONST";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Mat4FromRotationTranslationScale, Mat4Invert, Mat4Transpose, Matrix4 } from "../../../math/mat4";
+import { QuatRotateX, QuatRotateY, QuatRotateZ, Quaternion } from "../../../math/quaternion";
+import { Vec3Callback, Vec3Forward, Vec3Right, Vec3Up } from "../../../math/vec3";
+import { DIRTY_CONST } from "../../../gameobjects/DIRTY_CONST";
 export class Transform3DComponent {
   constructor(entity, x = 0, y = 0, z = 0) {
-    this.passthru = false;
+    __publicField(this, "entity");
+    __publicField(this, "local");
+    __publicField(this, "world");
+    __publicField(this, "normal");
+    __publicField(this, "position");
+    __publicField(this, "scale");
+    __publicField(this, "origin");
+    __publicField(this, "rotation");
+    __publicField(this, "forward");
+    __publicField(this, "up");
+    __publicField(this, "right");
+    __publicField(this, "passthru", false);
     this.entity = entity;
     this.local = new Matrix4();
     this.world = new Matrix4();

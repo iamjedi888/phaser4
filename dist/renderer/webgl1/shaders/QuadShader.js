@@ -1,5 +1,5 @@
-import {DefaultQuadAttributes} from "./DefaultQuadAttributes";
-import {Shader} from "./Shader";
+import { DefaultQuadAttributes } from "./DefaultQuadAttributes";
+import { Shader } from "./Shader";
 export class QuadShader extends Shader {
   constructor(config = {}) {
     const shaderConfig = config;

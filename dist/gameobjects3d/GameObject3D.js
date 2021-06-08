@@ -1,20 +1,31 @@
-import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
-import {DestroyEvent} from "../gameobjects/events";
-import {Emit} from "../events";
-import {GameInstance} from "../GameInstance";
-import {Transform3DComponent} from "./components/transform3d/Transform3DComponent";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { DIRTY_CONST } from "../gameobjects/DIRTY_CONST";
+import { DestroyEvent } from "../gameobjects/events";
+import { Emit } from "../events";
+import { GameInstance } from "../GameInstance";
+import { Transform3DComponent } from "./components/transform3d/Transform3DComponent";
 export class GameObject3D {
   constructor(x = 0, y = 0, z = 0) {
-    this.type = "GameObject3D";
-    this.name = "";
-    this.willUpdate = true;
-    this.willUpdateChildren = true;
-    this.willRender = true;
-    this.willRenderChildren = true;
-    this.willCacheChildren = false;
-    this.dirty = 0;
-    this.dirtyFrame = 0;
-    this.visible = true;
+    __publicField(this, "type", "GameObject3D");
+    __publicField(this, "name", "");
+    __publicField(this, "world");
+    __publicField(this, "parent");
+    __publicField(this, "children");
+    __publicField(this, "events");
+    __publicField(this, "willUpdate", true);
+    __publicField(this, "willUpdateChildren", true);
+    __publicField(this, "willRender", true);
+    __publicField(this, "willRenderChildren", true);
+    __publicField(this, "willCacheChildren", false);
+    __publicField(this, "dirty", 0);
+    __publicField(this, "dirtyFrame", 0);
+    __publicField(this, "transform");
+    __publicField(this, "visible", true);
     this.children = [];
     this.events = new Map();
     this.transform = new Transform3DComponent(this, x, y, z);

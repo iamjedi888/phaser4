@@ -1,4 +1,4 @@
-import {Quaternion} from "./Quaternion";
+import { Quaternion } from "./Quaternion";
 export function QuatFromRotationMatrix(matrix, out = new Quaternion()) {
   const [m11, m21, m31, m41, m12, m22, m32, m42, m13, m23, m33] = matrix.data;
   const trace = m11 + m22 + m33;

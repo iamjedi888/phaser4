@@ -1,6 +1,6 @@
-import {SetFrame} from "./SetFrame";
-import {Texture} from "../../textures/Texture";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
+import { SetFrame } from "./SetFrame";
+import { Texture } from "../../textures/Texture";
+import { TextureManagerInstance } from "../../textures/TextureManagerInstance";
 export function SetTexture(key, frame, ...children) {
   if (!key) {
     children.forEach((child) => {

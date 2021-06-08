@@ -1,4 +1,4 @@
-import {RemoveChildAt} from "./RemoveChildAt";
+import { RemoveChildAt } from "./RemoveChildAt";
 export function RemoveChildrenAt(parent, ...index) {
   const removed = [];
   index.sort((a, b) => a - b);

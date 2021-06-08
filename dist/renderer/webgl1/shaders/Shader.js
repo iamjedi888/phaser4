@@ -1,24 +1,37 @@
-import {GetHeight, GetResolution, GetWidth} from "../../../config/size/";
-import {CreateAttributes} from "./CreateAttributes";
-import {CreateDepthBuffer} from "../fbo/CreateDepthBuffer";
-import {CreateFramebuffer} from "../fbo/CreateFramebuffer";
-import {CreateProgram} from "./CreateProgram";
-import {CreateShader} from "./CreateShader";
-import {CreateUniforms} from "./CreateUniforms";
-import {DefaultQuadAttributes} from "./DefaultQuadAttributes";
-import {DefaultQuadUniforms} from "./DefaultQuadUniforms";
-import {DeleteFramebuffer} from "../fbo/DeleteFramebuffer";
-import {DeleteGLTexture} from "../textures/DeleteGLTexture";
-import {DeleteShaders} from "./DeleteShaders";
-import {GLTextureBinding} from "../textures/GLTextureBinding";
-import {SINGLE_QUAD_FRAG} from "../glsl/SINGLE_QUAD_FRAG";
-import {SINGLE_QUAD_VERT} from "../glsl/SINGLE_QUAD_VERT";
-import {Texture} from "../../../textures/Texture";
-import {gl} from "../GL";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { GetHeight, GetResolution, GetWidth } from "../../../config/size/";
+import { CreateAttributes } from "./CreateAttributes";
+import { CreateDepthBuffer } from "../fbo/CreateDepthBuffer";
+import { CreateFramebuffer } from "../fbo/CreateFramebuffer";
+import { CreateProgram } from "./CreateProgram";
+import { CreateShader } from "./CreateShader";
+import { CreateUniforms } from "./CreateUniforms";
+import { DefaultQuadAttributes } from "./DefaultQuadAttributes";
+import { DefaultQuadUniforms } from "./DefaultQuadUniforms";
+import { DeleteFramebuffer } from "../fbo/DeleteFramebuffer";
+import { DeleteGLTexture } from "../textures/DeleteGLTexture";
+import { DeleteShaders } from "./DeleteShaders";
+import { GLTextureBinding } from "../textures/GLTextureBinding";
+import { SINGLE_QUAD_FRAG } from "../glsl/SINGLE_QUAD_FRAG";
+import { SINGLE_QUAD_VERT } from "../glsl/SINGLE_QUAD_VERT";
+import { Texture } from "../../../textures/Texture";
+import { gl } from "../GL";
 export class Shader {
   constructor(config) {
-    this.renderToFramebuffer = false;
-    this.renderToDepthbuffer = false;
+    __publicField(this, "program");
+    __publicField(this, "attributes");
+    __publicField(this, "uniforms");
+    __publicField(this, "uniformSetters");
+    __publicField(this, "texture");
+    __publicField(this, "framebuffer");
+    __publicField(this, "renderToFramebuffer", false);
+    __publicField(this, "renderToDepthbuffer", false);
+    __publicField(this, "isActive", false);
     if (config) {
       this.fromConfig(config);
     }
@@ -70,10 +83,14 @@ export class Shader {
     }
     this.attributes = CreateAttributes(program, attribs);
     gl.useProgram(currentProgram);
+    this.isActive = false;
   }
   updateUniforms(renderPass) {
   }
   bind(renderPass) {
+    const uniforms = this.uniforms;
+    uniforms.set("uProjectionMatrix", renderPass.projectionMatrix.data);
+    uniforms.set("uCameraMatrix", renderPass.cameraMatrix.data);
     this.updateUniforms(renderPass);
     return this.setUniforms(renderPass);
   }
@@ -90,6 +107,7 @@ export class Shader {
       return false;
     }
     gl.useProgram(this.program);
+    this.isActive = true;
     const uniforms = this.uniforms;
     for (const [name, setter] of this.uniformSetters.entries()) {
       setter(uniforms.get(name));

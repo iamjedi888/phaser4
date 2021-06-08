@@ -1,6 +1,6 @@
 import * as Files from "./files";
-import {File} from "./File";
-import {Loader} from "./Loader";
+import { File } from "./File";
+import { Loader } from "./Loader";
 export {
   File,
   Files,

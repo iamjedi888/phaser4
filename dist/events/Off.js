@@ -1,4 +1,4 @@
-import {EventInstance} from "./EventInstance";
+import { EventInstance } from "./EventInstance";
 export function Off(emitter, event, callback, context, once) {
   const events = emitter.events;
   const listeners = events.get(event);

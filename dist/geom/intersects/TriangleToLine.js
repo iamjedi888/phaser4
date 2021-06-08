@@ -3,11 +3,11 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetTriangleEdges} from "../triangle/GetTriangleEdges";
-import {LineToLine} from "./LineToLine";
-import {TriangleContains} from "../triangle/TriangleContains";
+import { GetTriangleEdges } from "../triangle/GetTriangleEdges";
+import { LineToLine } from "./LineToLine";
+import { TriangleContains } from "../triangle/TriangleContains";
 export function TriangleToLine(triangle, line) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   if (TriangleContains(triangle, x1, y1) || TriangleContains(triangle, x2, y2)) {
     return true;
   }

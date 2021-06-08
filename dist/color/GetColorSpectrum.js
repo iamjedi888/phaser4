@@ -1,4 +1,4 @@
-import {GetColorFromRGB} from "./GetColorFromRGB";
+import { GetColorFromRGB } from "./GetColorFromRGB";
 export function GetColorSpectrum(limit = 1024) {
   const colors = [];
   const range = 255;

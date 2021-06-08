@@ -1,5 +1,5 @@
-import {CreateUniformSetter} from "./CreateUniformSetter";
-import {gl} from "../GL";
+import { CreateUniformSetter } from "./CreateUniformSetter";
+import { gl } from "../GL";
 export function CreateUniforms(program) {
   const uniforms = new Map();
   const total = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);

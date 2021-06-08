@@ -1,4 +1,4 @@
-import {Vec2} from "./Vec2";
+import { Vec2 } from "./Vec2";
 export function Vec2FromGridIndex(index, width, height, out = new Vec2()) {
   let x = 0;
   let y = 0;

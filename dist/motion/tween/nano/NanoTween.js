@@ -1,15 +1,24 @@
-import {Off, On} from "../../../events";
-import {GameInstance} from "../../../GameInstance";
-import {Linear} from "../../../math/easing/Linear";
-import {TweenProperty} from "../TweenProperty";
-import {UpdateEvent} from "../../../gameobjects/events";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Off, On } from "../../../events";
+import { GameInstance } from "../../../GameInstance";
+import { Linear } from "../../../math/easing/Linear";
+import { TweenProperty } from "../TweenProperty";
+import { UpdateEvent } from "../../../gameobjects/events";
 export class NanoTween {
   constructor(target, emitter, autoStart = true) {
-    this.state = {running: false, repeat: false, hold: false, delay: false, yoyo: false, yoyoing: false, autoStart: true, reversed: false};
-    this.init = {duration: 0, repeat: 0, repeatDelay: 0, hold: 0, delay: 0};
-    this.counters = {repeat: 0, delay: 0, progress: 0, elapsed: 0};
-    this.ease = Linear;
-    this.properties = [];
+    __publicField(this, "target");
+    __publicField(this, "state", { running: false, repeat: false, hold: false, delay: false, yoyo: false, yoyoing: false, autoStart: true, reversed: false });
+    __publicField(this, "init", { duration: 0, repeat: 0, repeatDelay: 0, hold: 0, delay: 0 });
+    __publicField(this, "counters", { repeat: 0, delay: 0, progress: 0, elapsed: 0 });
+    __publicField(this, "ease", Linear);
+    __publicField(this, "listener");
+    __publicField(this, "emitter");
+    __publicField(this, "properties", []);
     if (!emitter) {
       emitter = GameInstance.get();
     }
@@ -134,6 +143,9 @@ export class NanoTween {
   }
   repeat(repeatCount = 1, delay = 0) {
     const init = this.init;
+    if (repeatCount === -1) {
+      repeatCount = Number.MAX_SAFE_INTEGER;
+    }
     this.state.repeat = repeatCount > 0;
     this.counters.repeat = repeatCount;
     init.repeat = repeatCount;

@@ -1,1 +1,0 @@
-{"version":3,"file":"QuatFromEulerVector.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatFromEulerVector.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,mBAAmB,CAAC;AAE9C,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,wBAAgB,mBAAmB,CAAE,CAAC,EAAE,SAAS,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CAGjG"}

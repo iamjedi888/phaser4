@@ -1,6 +1,6 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4FromRotationXYTranslation(rotation, position, translateFirst = true, out = new Matrix4()) {
-  const {x, y, z} = position;
+  const { x, y, z } = position;
   const sx = Math.sin(rotation.x);
   const cx = Math.cos(rotation.x);
   const sy = Math.sin(rotation.y);

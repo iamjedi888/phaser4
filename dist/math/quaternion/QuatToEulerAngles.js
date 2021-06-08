@@ -1,6 +1,6 @@
-import {Vec3} from "../vec3";
+import { Vec3 } from "../vec3";
 export function QuatToEulerAngles(q, out = new Vec3()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const sqw = w * w;
   const sqz = z * z;
   const sqx = x * x;

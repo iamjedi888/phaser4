@@ -3,8 +3,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetRectanglePerimeter} from "./GetRectanglePerimeter";
-import {Vec2} from "../../math/vec2/Vec2";
+import { GetRectanglePerimeter } from "./GetRectanglePerimeter";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetRectangleMarchingAnts(rect, step, quantity, out = []) {
   if (!step && !quantity) {
     return out;

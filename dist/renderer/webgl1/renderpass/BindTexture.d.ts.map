@@ -1,1 +1,0 @@
-{"version":3,"file":"BindTexture.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/BindTexture.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,mBAAmB,CAAC;AAI5C,wBAAgB,WAAW,CAAE,OAAO,EAAE,OAAO,EAAE,KAAK,GAAE,MAAU,GAAG,IAAI,CAQtE"}

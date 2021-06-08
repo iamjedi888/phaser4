@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Vec2} from "../../math/vec2/Vec2";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetLineBresenhamPoints(line, stepRate = 1, results = []) {
   let x1 = Math.round(line.x1);
   let y1 = Math.round(line.y1);

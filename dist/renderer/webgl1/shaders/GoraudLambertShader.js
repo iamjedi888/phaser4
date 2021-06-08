@@ -1,7 +1,7 @@
 import * as GL_CONST from "../GL_CONST";
-import {AMBIENT_LIGHT_FRAG} from "../glsl/AMBIENT_LIGHT_FRAG";
-import {AMBIENT_LIGHT_VERT} from "../glsl/AMBIENT_LIGHT_VERT";
-import {Shader} from "./Shader";
+import { AMBIENT_LIGHT_FRAG } from "../glsl/AMBIENT_LIGHT_FRAG";
+import { AMBIENT_LIGHT_VERT } from "../glsl/AMBIENT_LIGHT_VERT";
+import { Shader } from "./Shader";
 export class GoraudLambertShader extends Shader {
   constructor() {
     super();
@@ -9,9 +9,9 @@ export class GoraudLambertShader extends Shader {
       fragmentShader: AMBIENT_LIGHT_FRAG,
       vertexShader: AMBIENT_LIGHT_VERT,
       attributes: {
-        aVertexPosition: {size: 3, type: GL_CONST.FLOAT, normalized: false, offset: 0},
-        aVertexNormal: {size: 3, type: GL_CONST.FLOAT, normalized: false, offset: 12},
-        aTextureCoord: {size: 2, type: GL_CONST.FLOAT, normalized: false, offset: 24}
+        aVertexPosition: { size: 3, type: GL_CONST.FLOAT, normalized: false, offset: 0 },
+        aVertexNormal: { size: 3, type: GL_CONST.FLOAT, normalized: false, offset: 12 },
+        aTextureCoord: { size: 2, type: GL_CONST.FLOAT, normalized: false, offset: 24 }
       },
       uniforms: {
         uViewProjectionMatrix: new Float32Array(16),

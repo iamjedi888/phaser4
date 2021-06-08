@@ -1,4 +1,4 @@
-import {Vec4} from "./Vec4";
+import { Vec4 } from "./Vec4";
 export function Vec4Random(a, scale = 1, out = new Vec4()) {
   let v1;
   let v2;

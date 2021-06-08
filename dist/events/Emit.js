@@ -3,7 +3,8 @@ export function Emit(emitter, event, ...args) {
     return false;
   }
   const listeners = emitter.events.get(event);
-  for (const ee of listeners) {
+  const handlers = [...listeners];
+  for (const ee of handlers) {
     ee.callback.apply(ee.context, args);
     if (ee.once) {
       listeners.delete(ee);

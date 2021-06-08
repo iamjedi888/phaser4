@@ -1,4 +1,4 @@
-import {Material} from "../gameobjects3d/material/Material";
+import { Material } from "../gameobjects3d/material/Material";
 export const WhitePlastic = new Material({
   ambient: [0, 0, 0],
   diffuse: [0.55, 0.55, 0.55],

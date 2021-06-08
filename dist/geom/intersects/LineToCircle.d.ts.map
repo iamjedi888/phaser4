@@ -1,1 +1,0 @@
-{"version":3,"file":"LineToCircle.d.ts","sourceRoot":"","sources":["../../../src/geom/intersects/LineToCircle.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,OAAO,EAAE,MAAM,mBAAmB,CAAC;AAC5C,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AACtC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAS5C,wBAAgB,YAAY,CAAE,IAAI,EAAE,KAAK,EAAE,MAAM,EAAE,OAAO,EAAE,OAAO,CAAC,EAAE,IAAI,GAAG,OAAO,CAoDnF"}

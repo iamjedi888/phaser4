@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function UpdateGLTexture(binding) {
   const source = binding.parent.image;
   const width = source.width;

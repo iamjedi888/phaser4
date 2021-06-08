@@ -1,1 +1,0 @@
-{"version":3,"file":"QuatHermite.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatHermite.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AACpD,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,wBAAgB,WAAW,CAAE,CAAC,EAAE,eAAe,EAAE,CAAC,EAAE,eAAe,EAAE,CAAC,EAAE,eAAe,EAAE,CAAC,EAAE,eAAe,EAAE,CAAC,EAAE,MAAM,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CAQtK"}

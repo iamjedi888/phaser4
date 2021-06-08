@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function CreateDepthBuffer(framebuffer, textureWidth, textureHeight) {
   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
   const depthBuffer = gl.createRenderbuffer();

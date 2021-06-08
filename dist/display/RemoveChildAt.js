@@ -1,12 +1,17 @@
+import { ClearWorldAndParentID, GetWorldID, UpdateNumChildren } from "../components/hierarchy";
+import { GameObjectCache } from "../gameobjects/GameObjectCache";
+import { GameObjectTree } from "../gameobjects/GameObjectTree";
+import { SetDirtyDisplayList } from "../components/dirty/SetDirtyDisplayList";
 export function RemoveChildAt(parent, index) {
-  const children = parent.children;
-  let child;
+  const children = GameObjectTree.get(parent.id);
   if (index >= 0 && index < children.length) {
-    const removed = children.splice(index, 1);
-    if (removed[0]) {
-      child = removed[0];
-      child.parent = null;
+    const removedID = children.splice(index, 1)[0];
+    if (removedID) {
+      const worldID = GetWorldID(removedID);
+      SetDirtyDisplayList(worldID);
+      ClearWorldAndParentID(removedID);
+      UpdateNumChildren(parent.id);
+      return GameObjectCache.get(removedID);
     }
   }
-  return child;
 }

@@ -1,5 +1,5 @@
-import {DIRTY_CONST} from "../gameobjects/DIRTY_CONST";
-import {GetChildIndex} from "./GetChildIndex";
+import { DIRTY_CONST } from "../gameobjects/DIRTY_CONST";
+import { GetChildIndex } from "./GetChildIndex";
 export function MoveChildTo(parent, child, index) {
   const parentChildren = parent.children;
   const currentIndex = GetChildIndex(parent, child);

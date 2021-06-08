@@ -1,9 +1,8 @@
-import {GetChildIndex} from "./GetChildIndex";
-import {RemoveChildAt} from "./RemoveChildAt";
+import { GetChildIndex } from "./GetChildIndex";
+import { RemoveChildAt } from "./RemoveChildAt";
 export function RemoveChild(parent, child) {
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex > -1) {
-    RemoveChildAt(parent, currentIndex);
+  if (child.hasParent()) {
+    RemoveChildAt(parent, GetChildIndex(parent, child));
   }
   return child;
 }

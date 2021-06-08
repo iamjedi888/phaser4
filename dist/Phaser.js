@@ -1,7 +1,9 @@
 var __defProp = Object.defineProperty;
+var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __export = (target, all) => {
+  __markAsModule(target);
   for (var name in all)
-    __defProp(target, name, {get: all[name], enumerable: true});
+    __defProp(target, name, { get: all[name], enumerable: true });
 };
 
 // src/animation/index.ts
@@ -86,6 +88,21 @@ function AddFrames(animation, ...frames) {
 
 // src/animation/Animation.ts
 var Animation = class {
+  key;
+  frames;
+  firstFrame;
+  msPerFrame;
+  frameRate;
+  duration;
+  skipMissedFrames;
+  delay;
+  hold;
+  repeat;
+  repeatDelay;
+  yoyo;
+  showOnStart;
+  hideOnComplete;
+  paused;
   constructor(config) {
     const {
       key,
@@ -124,12 +141,16 @@ var Animation = class {
 
 // src/animation/AnimationFrame.ts
 var AnimationFrame = class {
+  texture;
+  frame;
+  isFirst = false;
+  isLast = false;
+  isKeyFrame = false;
+  nextFrame;
+  prevFrame;
+  duration = 0;
+  progress = 0;
   constructor(texture, frame2) {
-    this.isFirst = false;
-    this.isLast = false;
-    this.isKeyFrame = false;
-    this.duration = 0;
-    this.progress = 0;
     this.texture = texture;
     this.frame = frame2;
   }
@@ -179,9 +200,9 @@ function GetFramesInRange(texture, config) {
   } = config;
   let end = config.end;
   const output = [];
-  const diff = start < end ? 1 : -1;
-  end += diff;
-  for (let i = start; i !== end; i += diff) {
+  const diff2 = start < end ? 1 : -1;
+  end += diff2;
+  for (let i = start; i !== end; i += diff2) {
     const frameKey = prefix + i.toString().padStart(zeroPad, "0") + suffix;
     output.push(texture.getFrame(frameKey));
   }
@@ -515,7 +536,7 @@ function CreateCanvas(width, height) {
 var queue = [];
 var BindingQueue = {
   add: (texture, glConfig) => {
-    queue.push({texture, glConfig});
+    queue.push({ texture, glConfig });
   },
   get: () => {
     return queue;
@@ -525,10 +546,894 @@ var BindingQueue = {
   }
 };
 
+// node_modules/bitecs/dist/index.es.js
+var TYPES_ENUM = {
+  i8: "i8",
+  ui8: "ui8",
+  ui8c: "ui8c",
+  i16: "i16",
+  ui16: "ui16",
+  i32: "i32",
+  ui32: "ui32",
+  f32: "f32",
+  f64: "f64"
+};
+var TYPES_NAMES = {
+  i8: "Int8",
+  ui8: "Uint8",
+  ui8c: "Uint8Clamped",
+  i16: "Int16",
+  ui16: "Uint16",
+  i32: "Int32",
+  ui32: "Uint32",
+  f32: "Float32",
+  f64: "Float64"
+};
+var TYPES = {
+  i8: Int8Array,
+  ui8: Uint8Array,
+  ui8c: Uint8ClampedArray,
+  i16: Int16Array,
+  ui16: Uint16Array,
+  i32: Int32Array,
+  ui32: Uint32Array,
+  f32: Float32Array,
+  f64: Float64Array
+};
+var UNSIGNED_MAX = {
+  uint8: 2 ** 8,
+  uint16: 2 ** 16,
+  uint32: 2 ** 32
+};
+var $storeRef = Symbol("storeRef");
+var $storeSize = Symbol("storeSize");
+var $storeMaps = Symbol("storeMaps");
+var $storeFlattened = Symbol("storeFlattened");
+var $storeBase = Symbol("storeBase");
+var $storeType = Symbol("storeType");
+var $storeArrayCounts = Symbol("storeArrayCount");
+var $storeSubarrays = Symbol("storeSubarrays");
+var $storeCursor = Symbol("storeCursor");
+var $subarrayCursors = Symbol("subarrayCursors");
+var $subarray = Symbol("subarray");
+var $parentArray = Symbol("subStore");
+var $tagStore = Symbol("tagStore");
+var $queryShadow = Symbol("queryShadow");
+var $serializeShadow = Symbol("serializeShadow");
+var $indexType = Symbol("indexType");
+var $indexBytes = Symbol("indexBytes");
+var stores = {};
+var resize = (ta, size) => {
+  const newBuffer = new ArrayBuffer(size * ta.BYTES_PER_ELEMENT);
+  const newTa = new ta.constructor(newBuffer);
+  newTa.set(ta, 0);
+  return newTa;
+};
+var resizeSubarray = (metadata, store, size) => {
+  const cursors = metadata[$subarrayCursors];
+  const type = store[$storeType];
+  const length = store[0].length;
+  const indexType = length <= UNSIGNED_MAX.uint8 ? "ui8" : length <= UNSIGNED_MAX.uint16 ? "ui16" : "ui32";
+  const arrayCount = metadata[$storeArrayCounts][type];
+  const summedLength = Array(arrayCount).fill(0).reduce((a, p) => a + length, 0);
+  const array = new TYPES[type](summedLength * size);
+  array.set(metadata[$storeSubarrays][type]);
+  metadata[$storeSubarrays][type] = array;
+  metadata[$storeSubarrays][type][$queryShadow] = array.slice(0);
+  metadata[$storeSubarrays][type][$serializeShadow] = array.slice(0);
+  array[$indexType] = TYPES_NAMES[indexType];
+  array[$indexBytes] = TYPES[indexType].BYTES_PER_ELEMENT;
+  const start = cursors[type];
+  let end = 0;
+  for (let eid = 0; eid < size; eid++) {
+    const from = cursors[type] + eid * length;
+    const to = from + length;
+    store[eid] = metadata[$storeSubarrays][type].subarray(from, to);
+    store[eid].from = from;
+    store[eid].to = to;
+    store[eid][$queryShadow] = metadata[$storeSubarrays][type][$queryShadow].subarray(from, to);
+    store[eid][$serializeShadow] = metadata[$storeSubarrays][type][$serializeShadow].subarray(from, to);
+    store[eid][$subarray] = true;
+    store[eid][$indexType] = array[$indexType];
+    store[eid][$indexBytes] = array[$indexBytes];
+    end = to;
+  }
+  cursors[type] = end;
+  store[$parentArray] = metadata[$storeSubarrays][type].subarray(start, end);
+};
+var resizeRecursive = (metadata, store, size) => {
+  Object.keys(store).forEach((key) => {
+    const ta = store[key];
+    if (Array.isArray(ta)) {
+      resizeSubarray(metadata, ta, size);
+      store[$storeFlattened].push(ta);
+    } else if (ArrayBuffer.isView(ta)) {
+      store[key] = resize(ta, size);
+      store[$storeFlattened].push(store[key]);
+      store[key][$queryShadow] = resize(ta[$queryShadow], size);
+      store[key][$serializeShadow] = resize(ta[$serializeShadow], size);
+    } else if (typeof ta === "object") {
+      resizeRecursive(metadata, store[key], size);
+    }
+  });
+};
+var resizeStore = (store, size) => {
+  if (store[$tagStore])
+    return;
+  store[$storeSize] = size;
+  store[$storeFlattened].length = 0;
+  Object.keys(store[$subarrayCursors]).forEach((k) => {
+    store[$subarrayCursors][k] = 0;
+  });
+  resizeRecursive(store, store, size);
+};
+var resetStoreFor = (store, eid) => {
+  if (store[$storeFlattened]) {
+    store[$storeFlattened].forEach((ta) => {
+      if (ArrayBuffer.isView(ta))
+        ta[eid] = 0;
+      else
+        ta[eid].fill(0);
+    });
+  }
+};
+var createTypeStore = (type, length) => {
+  const totalBytes = length * TYPES[type].BYTES_PER_ELEMENT;
+  const buffer = new ArrayBuffer(totalBytes);
+  return new TYPES[type](buffer);
+};
+var createArrayStore = (metadata, type, length) => {
+  const size = metadata[$storeSize];
+  const store = Array(size).fill(0);
+  store[$storeType] = type;
+  const cursors = metadata[$subarrayCursors];
+  const indexType = length < UNSIGNED_MAX.uint8 ? "ui8" : length < UNSIGNED_MAX.uint16 ? "ui16" : "ui32";
+  if (!length)
+    throw new Error("\u274C Must define a length for component array.");
+  if (!TYPES[type])
+    throw new Error(`\u274C Invalid component array property type ${type}.`);
+  if (!metadata[$storeSubarrays][type]) {
+    const arrayCount = metadata[$storeArrayCounts][type];
+    const summedLength = Array(arrayCount).fill(0).reduce((a, p) => a + length, 0);
+    const array = new TYPES[type](summedLength * size);
+    metadata[$storeSubarrays][type] = array;
+    metadata[$storeSubarrays][type][$queryShadow] = array.slice(0);
+    metadata[$storeSubarrays][type][$serializeShadow] = array.slice(0);
+    array[$indexType] = TYPES_NAMES[indexType];
+    array[$indexBytes] = TYPES[indexType].BYTES_PER_ELEMENT;
+  }
+  const start = cursors[type];
+  let end = 0;
+  for (let eid = 0; eid < size; eid++) {
+    const from = cursors[type] + eid * length;
+    const to = from + length;
+    store[eid] = metadata[$storeSubarrays][type].subarray(from, to);
+    store[eid].from = from;
+    store[eid].to = to;
+    store[eid][$queryShadow] = metadata[$storeSubarrays][type][$queryShadow].subarray(from, to);
+    store[eid][$serializeShadow] = metadata[$storeSubarrays][type][$serializeShadow].subarray(from, to);
+    store[eid][$subarray] = true;
+    store[eid][$indexType] = TYPES_NAMES[indexType];
+    store[eid][$indexBytes] = TYPES[indexType].BYTES_PER_ELEMENT;
+    end = to;
+  }
+  cursors[type] = end;
+  store[$parentArray] = metadata[$storeSubarrays][type].subarray(start, end);
+  return store;
+};
+var createShadows = (store) => {
+  store[$queryShadow] = store.slice(0);
+  store[$serializeShadow] = store.slice(0);
+};
+var isArrayType = (x) => Array.isArray(x) && typeof x[0] === "string" && typeof x[1] === "number";
+var createStore = (schema, size) => {
+  const $store = Symbol("store");
+  if (!schema || !Object.keys(schema).length) {
+    stores[$store] = {
+      [$storeSize]: size,
+      [$tagStore]: true,
+      [$storeBase]: () => stores[$store]
+    };
+    return stores[$store];
+  }
+  schema = JSON.parse(JSON.stringify(schema));
+  const arrayCounts = {};
+  const collectArrayCounts = (s) => {
+    const keys = Object.keys(s);
+    for (const k of keys) {
+      if (isArrayType(s[k])) {
+        if (!arrayCounts[s[k][0]])
+          arrayCounts[s[k][0]] = 0;
+        arrayCounts[s[k][0]]++;
+      } else if (s[k] instanceof Object) {
+        collectArrayCounts(s[k]);
+      }
+    }
+  };
+  collectArrayCounts(schema);
+  const metadata = {
+    [$storeSize]: size,
+    [$storeMaps]: {},
+    [$storeSubarrays]: {},
+    [$storeRef]: $store,
+    [$storeCursor]: 0,
+    [$subarrayCursors]: Object.keys(TYPES).reduce((a, type) => ({
+      ...a,
+      [type]: 0
+    }), {}),
+    [$storeFlattened]: [],
+    [$storeArrayCounts]: arrayCounts
+  };
+  if (schema instanceof Object && Object.keys(schema).length) {
+    const recursiveTransform = (a, k) => {
+      if (typeof a[k] === "string") {
+        a[k] = createTypeStore(a[k], size);
+        createShadows(a[k]);
+        a[k][$storeBase] = () => stores[$store];
+        metadata[$storeFlattened].push(a[k]);
+      } else if (isArrayType(a[k])) {
+        const [type, length] = a[k];
+        a[k] = createArrayStore(metadata, type, length);
+        a[k][$storeBase] = () => stores[$store];
+        metadata[$storeFlattened].push(a[k]);
+      } else if (a[k] instanceof Object) {
+        a[k] = Object.keys(a[k]).reduce(recursiveTransform, a[k]);
+      }
+      return a;
+    };
+    stores[$store] = Object.assign(Object.keys(schema).reduce(recursiveTransform, schema), metadata);
+    stores[$store][$storeBase] = () => stores[$store];
+    return stores[$store];
+  }
+};
+var resized = false;
+var setSerializationResized = (v) => {
+  resized = v;
+};
+var newEntities = new Map();
+var $entityMasks = Symbol("entityMasks");
+var $entityEnabled = Symbol("entityEnabled");
+var $entityArray = Symbol("entityArray");
+var $entityIndices = Symbol("entityIndices");
+var NONE$1 = 2 ** 32 - 1;
+var defaultSize = 1e5;
+var globalEntityCursor = 0;
+var globalSize = defaultSize;
+var resizeThreshold = () => globalSize - globalSize / 5;
+var getGlobalSize = () => globalSize;
+var removed = [];
+var getDefaultSize = () => defaultSize;
+var getEntityCursor = () => globalEntityCursor;
+var eidToWorld = new Map();
+var addEntity = (world3) => {
+  const enabled = world3[$entityEnabled];
+  const eid = removed.length > 0 ? removed.shift() : globalEntityCursor++;
+  enabled[eid] = 1;
+  world3[$entityIndices][eid] = world3[$entityArray].push(eid) - 1;
+  eidToWorld.set(eid, world3);
+  if (globalEntityCursor >= resizeThreshold()) {
+    const size = globalSize;
+    const amount = Math.ceil(size / 2 / 4) * 4;
+    const newSize = size + amount;
+    globalSize = newSize;
+    resizeWorlds(newSize);
+    resizeComponents(newSize);
+    setSerializationResized(true);
+    console.info(`\u{1F47E} bitECS - resizing all worlds from ${size} to ${size + amount}`);
+  }
+  return eid;
+};
+function Changed(c) {
+  return function QueryChanged() {
+    return c;
+  };
+}
+var $queries = Symbol("queries");
+var $queryMap = Symbol("queryMap");
+var $dirtyQueries = Symbol("$dirtyQueries");
+var $queryComponents = Symbol("queryComponents");
+var NONE = 2 ** 32 - 1;
+var registerQuery = (world3, query) => {
+  let components2 = [];
+  let notComponents = [];
+  let changedComponents = [];
+  query[$queryComponents].forEach((c) => {
+    if (typeof c === "function") {
+      if (c.name === "QueryNot") {
+        notComponents.push(c());
+      }
+      if (c.name === "QueryChanged") {
+        changedComponents.push(c());
+        components2.push(c());
+      }
+    } else {
+      components2.push(c);
+    }
+  });
+  const mapComponents = (c) => world3[$componentMap].get(c);
+  const size = components2.concat(notComponents).reduce((a, c) => c[$storeSize] > a ? c[$storeSize] : a, 0);
+  const entities3 = [];
+  const changed = [];
+  const indices = new Uint32Array(size).fill(NONE);
+  const enabled = new Uint8Array(size);
+  const generations = components2.concat(notComponents).map((c) => {
+    if (!world3[$componentMap].has(c))
+      registerComponent(world3, c);
+    return c;
+  }).map(mapComponents).map((c) => c.generationId).reduce((a, v) => {
+    if (a.includes(v))
+      return a;
+    a.push(v);
+    return a;
+  }, []);
+  const reduceBitmasks = (a, c) => {
+    if (!a[c.generationId])
+      a[c.generationId] = 0;
+    a[c.generationId] |= c.bitflag;
+    return a;
+  };
+  const masks = components2.map(mapComponents).reduce(reduceBitmasks, {});
+  const notMasks = notComponents.map(mapComponents).reduce((a, c) => {
+    if (!a[c.generationId]) {
+      a[c.generationId] = 0;
+      a[c.generationId] |= c.bitflag;
+    }
+    return a;
+  }, {});
+  const flatProps = components2.map((c) => Object.getOwnPropertySymbols(c).includes($storeFlattened) ? c[$storeFlattened] : [c]).reduce((a, v) => a.concat(v), []);
+  const toRemove = [];
+  const entered = [];
+  const exited = [];
+  world3[$queryMap].set(query, {
+    entities: entities3,
+    changed,
+    enabled,
+    components: components2,
+    notComponents,
+    changedComponents,
+    masks,
+    notMasks,
+    generations,
+    indices,
+    flatProps,
+    toRemove,
+    entered,
+    exited
+  });
+  world3[$queries].add(query);
+  for (let eid = 0; eid < getEntityCursor(); eid++) {
+    if (!world3[$entityEnabled][eid])
+      continue;
+    if (queryCheckEntity(world3, query, eid)) {
+      queryAddEntity(world3, query, eid);
+    }
+  }
+};
+var diff = (q, clearDiff) => {
+  if (clearDiff)
+    q.changed.length = 0;
+  const flat = q.flatProps;
+  for (let i = 0; i < q.entities.length; i++) {
+    const eid = q.entities[i];
+    let dirty = false;
+    for (let pid = 0; pid < flat.length; pid++) {
+      const prop = flat[pid];
+      if (ArrayBuffer.isView(prop[eid])) {
+        for (let i2 = 0; i2 < prop[eid].length; i2++) {
+          if (prop[eid][i2] !== prop[eid][$queryShadow][i2]) {
+            dirty = true;
+            prop[eid][$queryShadow][i2] = prop[eid][i2];
+          }
+        }
+      } else {
+        if (prop[eid] !== prop[$queryShadow][eid]) {
+          dirty = true;
+          prop[$queryShadow][eid] = prop[eid];
+        }
+      }
+    }
+    if (dirty)
+      q.changed.push(eid);
+  }
+  return q.changed;
+};
+var defineQuery = (components2) => {
+  if (components2 === void 0 || components2[$componentMap] !== void 0) {
+    return (world3) => world3 ? world3[$entityArray] : components2[$entityArray];
+  }
+  const query = function(world3, clearDiff = true) {
+    if (!world3[$queryMap].has(query))
+      registerQuery(world3, query);
+    const q = world3[$queryMap].get(query);
+    queryCommitRemovals(world3, q);
+    if (q.changedComponents.length)
+      return diff(q, clearDiff);
+    return q.entities;
+  };
+  query[$queryComponents] = components2;
+  return query;
+};
+var queryCheckEntity = (world3, query, eid) => {
+  const {
+    masks,
+    notMasks,
+    generations
+  } = world3[$queryMap].get(query);
+  for (let i = 0; i < generations.length; i++) {
+    const generationId = generations[i];
+    const qMask = masks[generationId];
+    const qNotMask = notMasks[generationId];
+    const eMask = world3[$entityMasks][generationId][eid];
+    if (qNotMask && (eMask & qNotMask) !== 0) {
+      return false;
+    }
+    if (qMask && (eMask & qMask) !== qMask) {
+      return false;
+    }
+  }
+  return true;
+};
+var queryCheckComponent = (world3, query, component) => {
+  const {
+    generationId,
+    bitflag
+  } = world3[$componentMap].get(component);
+  const {
+    masks
+  } = world3[$queryMap].get(query);
+  const mask = masks[generationId];
+  return (mask & bitflag) === bitflag;
+};
+var queryAddEntity = (world3, query, eid) => {
+  const q = world3[$queryMap].get(query);
+  if (q.enabled[eid])
+    return;
+  q.enabled[eid] = true;
+  q.entities.push(eid);
+  q.indices[eid] = q.entities.length - 1;
+  q.entered.push(eid);
+};
+var queryCommitRemovals = (world3, q) => {
+  while (q.toRemove.length) {
+    const eid = q.toRemove.pop();
+    const index = q.indices[eid];
+    if (index === NONE)
+      continue;
+    const swapped = q.entities.pop();
+    if (swapped !== eid) {
+      q.entities[index] = swapped;
+      q.indices[swapped] = index;
+    }
+    q.indices[eid] = NONE;
+  }
+  world3[$dirtyQueries].delete(q);
+};
+var commitRemovals = (world3) => {
+  world3[$dirtyQueries].forEach((q) => {
+    queryCommitRemovals(world3, q);
+  });
+};
+var $componentMap = Symbol("componentMap");
+var components = [];
+var resizeComponents = (size) => {
+  components.forEach((component) => resizeStore(component, size));
+};
+var defineComponent = (schema) => {
+  const component = createStore(schema, getDefaultSize());
+  if (schema && Object.keys(schema).length)
+    components.push(component);
+  return component;
+};
+var incrementBitflag = (world3) => {
+  world3[$bitflag] *= 2;
+  if (world3[$bitflag] >= 2 ** 32) {
+    world3[$bitflag] = 1;
+    world3[$entityMasks].push(new Uint32Array(world3[$size]));
+  }
+};
+var registerComponent = (world3, component) => {
+  world3[$componentMap].set(component, {
+    generationId: world3[$entityMasks].length - 1,
+    bitflag: world3[$bitflag],
+    store: component
+  });
+  if (component[$storeSize] < world3[$size]) {
+    resizeStore(component, world3[$size]);
+  }
+  incrementBitflag(world3);
+};
+var hasComponent = (world3, component, eid) => {
+  const registeredComponent = world3[$componentMap].get(component);
+  if (!registeredComponent)
+    return;
+  const {
+    generationId,
+    bitflag
+  } = registeredComponent;
+  const mask = world3[$entityMasks][generationId][eid];
+  return (mask & bitflag) === bitflag;
+};
+var addComponent = (world3, component, eid, reset = false) => {
+  if (!Number.isInteger(eid)) {
+    component = world3;
+    world3 = eidToWorld.get(eid);
+    reset = eid || reset;
+  }
+  if (!world3[$componentMap].has(component))
+    registerComponent(world3, component);
+  if (hasComponent(world3, component, eid))
+    return;
+  const {
+    generationId,
+    bitflag
+  } = world3[$componentMap].get(component);
+  world3[$entityMasks][generationId][eid] |= bitflag;
+  world3[$queries].forEach((query) => {
+    if (!queryCheckComponent(world3, query, component))
+      return;
+    const match = queryCheckEntity(world3, query, eid);
+    if (match)
+      queryAddEntity(world3, query, eid);
+  });
+  if (reset)
+    resetStoreFor(component, eid);
+};
+var $size = Symbol("size");
+var $resizeThreshold = Symbol("resizeThreshold");
+var $bitflag = Symbol("bitflag");
+var worlds = [];
+var resizeWorlds = (size) => {
+  worlds.forEach((world3) => {
+    world3[$size] = size;
+    world3[$queryMap].forEach((q) => {
+      q.indices = resize(q.indices, size);
+      q.enabled = resize(q.enabled, size);
+    });
+    world3[$entityEnabled] = resize(world3[$entityEnabled], size);
+    world3[$entityIndices] = resize(world3[$entityIndices], size);
+    for (let i = 0; i < world3[$entityMasks].length; i++) {
+      const masks = world3[$entityMasks][i];
+      world3[$entityMasks][i] = resize(masks, size);
+    }
+    world3[$resizeThreshold] = world3[$size] - world3[$size] / 5;
+  });
+};
+var createWorld = () => {
+  const world3 = {};
+  const size = getGlobalSize();
+  world3[$size] = size;
+  world3[$entityEnabled] = new Uint8Array(size);
+  world3[$entityMasks] = [new Uint32Array(size)];
+  world3[$entityArray] = [];
+  world3[$entityIndices] = new Uint32Array(size);
+  world3[$bitflag] = 1;
+  world3[$componentMap] = new Map();
+  world3[$queryMap] = new Map();
+  world3[$queries] = new Set();
+  world3[$dirtyQueries] = new Set();
+  worlds.push(world3);
+  return world3;
+};
+var defineSystem = (fn1, fn2) => {
+  const update = fn2 !== void 0 ? fn2 : fn1;
+  const create = fn2 !== void 0 ? fn1 : void 0;
+  const init = new Set();
+  const system = (world3, ...args) => {
+    if (create && !init.has(world3)) {
+      create(world3, ...args);
+      init.add(world3);
+    }
+    update(world3, ...args);
+    commitRemovals(world3);
+    return world3;
+  };
+  Object.defineProperty(system, "name", {
+    value: (update.name || "AnonymousSystem") + "_internal",
+    configurable: true
+  });
+  return system;
+};
+var Types = TYPES_ENUM;
+
+// src/components/vertices/QuadVertexComponent.ts
+var QuadVertex = defineComponent({
+  v1: Types.ui32,
+  v2: Types.ui32,
+  v3: Types.ui32,
+  v4: Types.ui32
+});
+var QuadVertexComponent = QuadVertex;
+
+// src/components/transform/Extent2DComponent.ts
+var Extent2D = defineComponent({
+  x: Types.f32,
+  y: Types.f32,
+  width: Types.f32,
+  height: Types.f32,
+  right: Types.f32,
+  bottom: Types.f32
+});
+var Extent2DComponent = Extent2D;
+
+// src/components/dirty/index.ts
+var dirty_exports = {};
+__export(dirty_exports, {
+  AddDirtyComponent: () => AddDirtyComponent,
+  ClearDirtyDisplayList: () => ClearDirtyDisplayList,
+  DirtyComponent: () => DirtyComponent,
+  GetDirtyFrame: () => GetDirtyFrame,
+  HasDirtyAlpha: () => HasDirtyAlpha,
+  HasDirtyBounds: () => HasDirtyBounds,
+  HasDirtyChild: () => HasDirtyChild,
+  HasDirtyChildCache: () => HasDirtyChildCache,
+  HasDirtyDisplayList: () => HasDirtyDisplayList,
+  HasDirtyPostRender: () => HasDirtyPostRender,
+  HasDirtyTexture: () => HasDirtyTexture,
+  HasDirtyTextureFrame: () => HasDirtyTextureFrame,
+  HasDirtyTransform: () => HasDirtyTransform,
+  HasDirtyUpdate: () => HasDirtyUpdate,
+  HasDirtyVertexColors: () => HasDirtyVertexColors,
+  IsDirtyFrame: () => IsDirtyFrame,
+  SetDirtyAlpha: () => SetDirtyAlpha,
+  SetDirtyBounds: () => SetDirtyBounds,
+  SetDirtyChild: () => SetDirtyChild,
+  SetDirtyChildCache: () => SetDirtyChildCache,
+  SetDirtyDisplayList: () => SetDirtyDisplayList,
+  SetDirtyFrame: () => SetDirtyFrame,
+  SetDirtyPostRender: () => SetDirtyPostRender,
+  SetDirtyTexture: () => SetDirtyTexture,
+  SetDirtyTextureFrame: () => SetDirtyTextureFrame,
+  SetDirtyTransform: () => SetDirtyTransform,
+  SetDirtyUpdate: () => SetDirtyUpdate,
+  SetDirtyVertexColors: () => SetDirtyVertexColors
+});
+
+// src/components/dirty/DirtyComponent.ts
+var Dirty = defineComponent({
+  frame: Types.ui32,
+  transform: Types.ui32,
+  update: Types.ui32,
+  childCache: Types.ui32,
+  postRender: Types.ui32,
+  vertexColors: Types.ui32,
+  bounds: Types.ui32,
+  texture: Types.ui32,
+  textureFrame: Types.ui32,
+  alpha: Types.ui32,
+  child: Types.ui32,
+  displayList: Types.ui32
+});
+var DirtyComponent = Dirty;
+
+// src/GameObjectWorld.ts
+var world = createWorld();
+var GameObjectWorld = world;
+
+// src/components/dirty/AddDirtyComponent.ts
+function AddDirtyComponent(id) {
+  addComponent(GameObjectWorld, DirtyComponent, id);
+  DirtyComponent.frame[id] = 0;
+  DirtyComponent.transform[id] = 1;
+  DirtyComponent.update[id] = 1;
+  DirtyComponent.childCache[id] = 0;
+  DirtyComponent.postRender[id] = 0;
+  DirtyComponent.vertexColors[id] = 1;
+  DirtyComponent.bounds[id] = 1;
+  DirtyComponent.texture[id] = 0;
+  DirtyComponent.textureFrame[id] = 0;
+  DirtyComponent.alpha[id] = 0;
+  DirtyComponent.child[id] = 0;
+  DirtyComponent.displayList[id] = 0;
+}
+
+// src/components/dirty/ClearDirtyDisplayList.ts
+function ClearDirtyDisplayList(id) {
+  DirtyComponent.displayList[id] = 0;
+}
+
+// src/components/dirty/GetDirtyFrame.ts
+function GetDirtyFrame(id) {
+  return DirtyComponent.frame[id];
+}
+
+// src/components/dirty/HasDirtyAlpha.ts
+function HasDirtyAlpha(id) {
+  return Boolean(DirtyComponent.alpha[id]);
+}
+
+// src/components/dirty/HasDirtyBounds.ts
+function HasDirtyBounds(id) {
+  return Boolean(DirtyComponent.bounds[id]);
+}
+
+// src/components/dirty/HasDirtyChild.ts
+function HasDirtyChild(id) {
+  return Boolean(DirtyComponent.child[id]);
+}
+
+// src/components/dirty/HasDirtyChildCache.ts
+function HasDirtyChildCache(id) {
+  return Boolean(DirtyComponent.childCache[id]);
+}
+
+// src/components/dirty/HasDirtyDisplayList.ts
+function HasDirtyDisplayList(id) {
+  return Boolean(DirtyComponent.displayList[id]);
+}
+
+// src/components/dirty/HasDirtyPostRender.ts
+function HasDirtyPostRender(id) {
+  return Boolean(DirtyComponent.postRender[id]);
+}
+
+// src/components/dirty/HasDirtyTexture.ts
+function HasDirtyTexture(id) {
+  return Boolean(DirtyComponent.texture[id]);
+}
+
+// src/components/dirty/HasDirtyTextureFrame.ts
+function HasDirtyTextureFrame(id) {
+  return Boolean(DirtyComponent.textureFrame[id]);
+}
+
+// src/components/dirty/HasDirtyTransform.ts
+function HasDirtyTransform(id) {
+  return Boolean(DirtyComponent.transform[id]);
+}
+
+// src/components/dirty/HasDirtyUpdate.ts
+function HasDirtyUpdate(id) {
+  return Boolean(DirtyComponent.update[id]);
+}
+
+// src/components/dirty/HasDirtyVertexColors.ts
+function HasDirtyVertexColors(id) {
+  return Boolean(DirtyComponent.vertexColors[id]);
+}
+
+// src/components/dirty/IsDirtyFrame.ts
+function IsDirtyFrame(id, gameFrame) {
+  return DirtyComponent.frame[id] >= gameFrame;
+}
+
+// src/components/dirty/SetDirtyAlpha.ts
+function SetDirtyAlpha(id) {
+  DirtyComponent.alpha[id] = 1;
+}
+
+// src/components/dirty/SetDirtyBounds.ts
+function SetDirtyBounds(id) {
+  DirtyComponent.bounds[id] = 1;
+}
+
+// src/components/dirty/SetDirtyChild.ts
+function SetDirtyChild(id) {
+  DirtyComponent.child[id] = 1;
+}
+
+// src/components/dirty/SetDirtyChildCache.ts
+function SetDirtyChildCache(id) {
+  DirtyComponent.childCache[id] = 1;
+}
+
+// src/components/dirty/SetDirtyDisplayList.ts
+function SetDirtyDisplayList(id) {
+  DirtyComponent.displayList[id] = 1;
+}
+
+// src/GameInstance.ts
+var instance2;
+var frame = 0;
+var elapsed = 0;
+var GameInstance = {
+  get: () => {
+    return instance2;
+  },
+  set: (game) => {
+    instance2 = game;
+  },
+  getFrame: () => {
+    return frame;
+  },
+  setFrame: (current) => {
+    frame = current;
+  },
+  getElapsed: () => {
+    return elapsed;
+  },
+  setElapsed: (current) => {
+    elapsed = current;
+  }
+};
+
+// src/components/dirty/SetDirtyFrame.ts
+function SetDirtyFrame(id) {
+  DirtyComponent.frame[id] = GameInstance.getFrame();
+}
+
+// src/components/dirty/SetDirtyPostRender.ts
+function SetDirtyPostRender(id) {
+  DirtyComponent.postRender[id] = 1;
+}
+
+// src/components/dirty/SetDirtyTexture.ts
+function SetDirtyTexture(id) {
+  DirtyComponent.texture[id] = 1;
+}
+
+// src/components/dirty/SetDirtyTextureFrame.ts
+function SetDirtyTextureFrame(id) {
+  DirtyComponent.textureFrame[id] = 1;
+}
+
+// src/components/dirty/SetDirtyTransform.ts
+function SetDirtyTransform(id) {
+  DirtyComponent.transform[id] = 1;
+}
+
+// src/components/dirty/SetDirtyUpdate.ts
+function SetDirtyUpdate(id) {
+  DirtyComponent.update[id] = 1;
+}
+
+// src/components/dirty/SetDirtyVertexColors.ts
+function SetDirtyVertexColors(id) {
+  DirtyComponent.vertexColors[id] = 1;
+}
+
+// src/components/transform/SetExtent.ts
+function SetExtent(id, x, y, width, height) {
+  Extent2DComponent.x[id] = x;
+  Extent2DComponent.y[id] = y;
+  Extent2DComponent.width[id] = width;
+  Extent2DComponent.height[id] = height;
+  Extent2DComponent.right[id] = x + width;
+  Extent2DComponent.bottom[id] = y + height;
+  SetDirtyTransform(id);
+}
+
+// src/components/vertices/VertexComponent.ts
+var Vertex = defineComponent({
+  x: Types.f32,
+  y: Types.f32,
+  z: Types.f32,
+  u: Types.f32,
+  v: Types.f32,
+  texture: Types.ui8,
+  tint: Types.ui32,
+  alpha: Types.f32,
+  color: Types.ui32,
+  offset: Types.f32
+});
+var VertexComponent = Vertex;
+
+// src/components/vertices/SetUV.ts
+function SetUV(id, u, v) {
+  VertexComponent.u[id] = u;
+  VertexComponent.v[id] = v;
+}
+
 // src/textures/Frame.ts
 var Frame = class {
+  texture;
+  key;
+  x;
+  y;
+  width;
+  height;
+  trimmed = false;
+  sourceSizeWidth;
+  sourceSizeHeight;
+  spriteSourceSizeX;
+  spriteSourceSizeY;
+  spriteSourceSizeWidth;
+  spriteSourceSizeHeight;
+  pivot;
+  u0;
+  v0;
+  u1;
+  v1;
   constructor(texture, key, x, y, width, height) {
-    this.trimmed = false;
     this.texture = texture;
     this.key = key;
     this.x = x;
@@ -540,7 +1445,7 @@ var Frame = class {
     this.updateUVs();
   }
   setPivot(x, y) {
-    this.pivot = {x, y};
+    this.pivot = { x, y };
   }
   setSize(width, height) {
     this.width = width;
@@ -580,7 +1485,7 @@ var Frame = class {
       top = -originY * sourceSizeHeight;
       bottom = top + sourceSizeHeight;
     }
-    return {left, right, top, bottom};
+    return { left, right, top, bottom };
   }
   copyToExtent(child) {
     const originX = child.originX;
@@ -602,19 +1507,19 @@ var Frame = class {
       width = sourceSizeWidth;
       height = sourceSizeHeight;
     }
-    child.setExtent(x, y, width, height);
+    SetExtent(child.id, x, y, width, height);
     return this;
   }
-  copyToVertices(vertices, offset = 0) {
-    const {u0, u1, v0, v1} = this;
-    vertices[offset + 0].setUV(u0, v0);
-    vertices[offset + 1].setUV(u0, v1);
-    vertices[offset + 2].setUV(u1, v1);
-    vertices[offset + 3].setUV(u1, v0);
+  copyToVertices(id) {
+    const { u0, u1, v0, v1 } = this;
+    SetUV(QuadVertexComponent.v1[id], u0, v0);
+    SetUV(QuadVertexComponent.v2[id], u0, v1);
+    SetUV(QuadVertexComponent.v3[id], u1, v1);
+    SetUV(QuadVertexComponent.v4[id], u1, v0);
     return this;
   }
   updateUVs() {
-    const {x, y, width, height} = this;
+    const { x, y, width, height } = this;
     const baseTextureWidth = this.texture.width;
     const baseTextureHeight = this.texture.height;
     this.u0 = x / baseTextureWidth;
@@ -629,8 +1534,15 @@ var Frame = class {
 
 // src/textures/Texture.ts
 var Texture = class {
+  key = "";
+  width;
+  height;
+  image;
+  binding;
+  firstFrame;
+  frames;
+  data;
   constructor(image, width, height, glConfig) {
-    this.key = "";
     if (image) {
       width = image.width;
       height = image.height;
@@ -717,7 +1629,7 @@ function LinearGradientTexture(config) {
     y0 = 0,
     x1 = horizontal ? width : 0,
     y1 = horizontal ? 0 : height,
-    colorStops = [{offset: 0, color: "red"}]
+    colorStops = [{ offset: 0, color: "red" }]
   } = config;
   const ctx = CreateCanvas(width, height);
   const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
@@ -780,6 +1692,9 @@ function PixelTexture(config) {
 
 // src/textures/types/RenderTexture.ts
 var RenderTexture = class extends Texture {
+  renderer;
+  cameraMatrix;
+  projectionMatrix;
   constructor(renderer, width = 256, height = width) {
     super(null, width, height);
     this.renderer = renderer;
@@ -845,6 +1760,7 @@ function SetFilter(linear, ...textures) {
 
 // src/textures/TextureManager.ts
 var TextureManager = class {
+  textures;
   constructor() {
     this.textures = new Map();
     this.createDefaultTextures();
@@ -898,7 +1814,7 @@ function CreateAnimationFromAtlas(config) {
   GetFramesInRange(texture, config).forEach((frame2) => {
     frames.push(new AnimationFrame(texture, frame2));
   });
-  return new Animation({frames, ...config});
+  return new Animation({ frames, ...config });
 }
 
 // src/animation/Play.ts
@@ -951,31 +1867,6 @@ __export(camera_exports, {
   Camera: () => Camera,
   StaticCamera: () => StaticCamera
 });
-
-// src/GameInstance.ts
-var instance2;
-var frame = 0;
-var elapsed = 0;
-var GameInstance = {
-  get: () => {
-    return instance2;
-  },
-  set: (game) => {
-    instance2 = game;
-  },
-  getFrame: () => {
-    return frame;
-  },
-  setFrame: (current) => {
-    frame = current;
-  },
-  getElapsed: () => {
-    return elapsed;
-  },
-  setElapsed: (current) => {
-    elapsed = current;
-  }
-};
 
 // src/math/mat4/index.ts
 var mat4_exports = {};
@@ -1069,6 +1960,8 @@ function NOOP() {
 
 // src/math/mat4/Matrix4.ts
 var Matrix4 = class {
+  data;
+  onChange;
   constructor(src) {
     const data = new Float32Array(16);
     this.data = data;
@@ -1196,7 +2089,7 @@ function Mat4Equals(a, b) {
 
 // src/math/mat4/Mat4FromQuat.ts
 function Mat4FromQuat(q, out = new Matrix4()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const x2 = x + x;
   const y2 = y + y;
   const z2 = z + z;
@@ -1214,7 +2107,7 @@ function Mat4FromQuat(q, out = new Matrix4()) {
 
 // src/math/mat4/Mat4FromRotation.ts
 function Mat4FromRotation(angle, axis, out = new Matrix4()) {
-  let {x, y, z} = axis;
+  let { x, y, z } = axis;
   let len = Math.hypot(x, y, z);
   if (len < 1e-5) {
     return null;
@@ -1231,7 +2124,7 @@ function Mat4FromRotation(angle, axis, out = new Matrix4()) {
 
 // src/math/mat4/Mat4FromRotationTranslation.ts
 function Mat4FromRotationTranslation(q, v, out = new Matrix4()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const x2 = x + x;
   const y2 = y + y;
   const z2 = z + z;
@@ -1244,13 +2137,13 @@ function Mat4FromRotationTranslation(q, v, out = new Matrix4()) {
   const wx = w * x2;
   const wy = w * y2;
   const wz = w * z2;
-  const {x: vx, y: vy, z: vz} = v;
+  const { x: vx, y: vy, z: vz } = v;
   return out.set(1 - (yy + zz), xy + wz, xz - wy, 0, xy - wz, 1 - (xx + zz), yz + wx, 0, xz + wy, yz - wx, 1 - (xx + yy), 0, vx, vy, vz, 1);
 }
 
 // src/math/mat4/Mat4FromRotationTranslationScale.ts
 function Mat4FromRotationTranslationScale(q, v, s, out = new Matrix4()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const x2 = x + x;
   const y2 = y + y;
   const z2 = z + z;
@@ -1263,14 +2156,14 @@ function Mat4FromRotationTranslationScale(q, v, s, out = new Matrix4()) {
   const wx = w * x2;
   const wy = w * y2;
   const wz = w * z2;
-  const {x: sx, y: sy, z: sz} = s;
-  const {x: vx, y: vy, z: vz} = v;
+  const { x: sx, y: sy, z: sz } = s;
+  const { x: vx, y: vy, z: vz } = v;
   return out.set((1 - (yy + zz)) * sx, (xy + wz) * sx, (xz - wy) * sx, 0, (xy - wz) * sy, (1 - (xx + zz)) * sy, (yz + wx) * sy, 0, (xz + wy) * sz, (yz - wx) * sz, (1 - (xx + yy)) * sz, 0, vx, vy, vz, 1);
 }
 
 // src/math/mat4/Mat4FromRotationTranslationScaleOrigin.ts
 function Mat4FromRotationTranslationScaleOrigin(q, v, s, o, out = new Matrix4()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const x2 = x + x;
   const y2 = y + y;
   const z2 = z + z;
@@ -1283,9 +2176,9 @@ function Mat4FromRotationTranslationScaleOrigin(q, v, s, o, out = new Matrix4())
   const wx = w * x2;
   const wy = w * y2;
   const wz = w * z2;
-  const {x: sx, y: sy, z: sz} = s;
-  const {x: ox, y: oy, z: oz} = o;
-  const {x: vx, y: vy, z: vz} = v;
+  const { x: sx, y: sy, z: sz } = s;
+  const { x: ox, y: oy, z: oz } = o;
+  const { x: vx, y: vy, z: vz } = v;
   const out0 = (1 - (yy + zz)) * sx;
   const out1 = (xy + wz) * sx;
   const out2 = (xz - wy) * sx;
@@ -1300,7 +2193,7 @@ function Mat4FromRotationTranslationScaleOrigin(q, v, s, o, out = new Matrix4())
 
 // src/math/mat4/Mat4FromRotationXYTranslation.ts
 function Mat4FromRotationXYTranslation(rotation, position, translateFirst = true, out = new Matrix4()) {
-  const {x, y, z} = position;
+  const { x, y, z } = position;
   const sx = Math.sin(rotation.x);
   const cx = Math.cos(rotation.x);
   const sy = Math.sin(rotation.y);
@@ -1323,13 +2216,13 @@ function Mat4FromRotationXYTranslation(rotation, position, translateFirst = true
 
 // src/math/mat4/Mat4FromScaling.ts
 function Mat4FromScaling(vec3, out = new Matrix4()) {
-  const {x, y, z} = vec3;
+  const { x, y, z } = vec3;
   return out.set(x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1);
 }
 
 // src/math/mat4/Mat4FromTranslation.ts
 function Mat4FromTranslation(vec3, out = new Matrix4()) {
-  const {x, y, z} = vec3;
+  const { x, y, z } = vec3;
   return out.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1);
 }
 
@@ -1364,6 +2257,9 @@ function Mat4Frustum(left, right, bottom, top, near, far, out = new Matrix4()) {
 
 // src/math/vec3/Vec3.ts
 var Vec3 = class {
+  x;
+  y;
+  z;
   constructor(x = 0, y = 0, z = 0) {
     this.set(x, y, z);
   }
@@ -1374,7 +2270,7 @@ var Vec3 = class {
     return this;
   }
   toArray(dst = [], index = 0) {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     dst[index] = x;
     dst[index + 1] = y;
     dst[index + 2] = z;
@@ -1384,7 +2280,7 @@ var Vec3 = class {
     return this.set(src[index], src[index + 1], src[index + 2]);
   }
   toString() {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     return `{ x=${x}, y=${y}, z=${z} }`;
   }
 };
@@ -1397,6 +2293,11 @@ function Mat4GetScaling(matrix2, out = new Vec3()) {
 
 // src/math/quaternion/Quaternion.ts
 var Quaternion = class {
+  _x;
+  _y;
+  _z;
+  _w;
+  onChange;
   constructor(x = 0, y = 0, z = 0, w = 1) {
     this._x = x;
     this._y = y;
@@ -1453,7 +2354,7 @@ var Quaternion = class {
     return this._w;
   }
   toArray(dst = [], index = 0) {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     dst[index] = x;
     dst[index + 1] = y;
     dst[index + 2] = z;
@@ -1467,7 +2368,7 @@ var Quaternion = class {
     this.onChange = NOOP;
   }
   toString() {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     return `{ x=${x}, y=${y}, z=${z}, w=${w} }`;
   }
 };
@@ -1563,9 +2464,9 @@ function Mat4Invert(matrix2, out = new Matrix4()) {
 
 // src/math/mat4/Mat4LookAt.ts
 function Mat4LookAt(eye, center, up, out = new Matrix4()) {
-  const {x: eyex, y: eyey, z: eyez} = eye;
-  const {x: upx, y: upy, z: upz} = up;
-  const {x: centerx, y: centery, z: centerz} = center;
+  const { x: eyex, y: eyey, z: eyez } = eye;
+  const { x: upx, y: upy, z: upz } = up;
+  const { x: centerx, y: centery, z: centerz } = center;
   if (Math.abs(eyex - centerx) < 1e-5 && Math.abs(eyey - centery) < 1e-5 && Math.abs(eyez - centerz) < 1e-5) {
     return Mat4Identity(out);
   }
@@ -1661,7 +2562,7 @@ function Mat4PerspectiveFromFieldOfView(fov, near, far, out = new Matrix4()) {
 
 // src/math/mat4/Mat4Rotate.ts
 function Mat4Rotate(matrix2, angle, axis, out = new Matrix4()) {
-  let {x, y, z} = axis;
+  let { x, y, z } = axis;
   let len = Math.hypot(x, y, z);
   if (len < 1e-5) {
     return null;
@@ -1713,14 +2614,14 @@ function Mat4RotateZ(matrix2, angle, out = new Matrix4()) {
 // src/math/mat4/Mat4Scale.ts
 function Mat4Scale(matrix2, v, out = new Matrix4()) {
   const [m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33] = matrix2.data;
-  const {x, y, z} = v;
+  const { x, y, z } = v;
   return out.set(m00 * x, m01 * x, m02 * x, m03 * x, m10 * y, m11 * y, m12 * y, m13 * y, m20 * z, m21 * z, m22 * z, m23 * z, m30, m31, m32, m33);
 }
 
 // src/math/mat4/Mat4SetTranslation.ts
 function Mat4SetTranslation(matrix2, vec3) {
   const data = matrix2.data;
-  const {x, y, z} = vec3;
+  const { x, y, z } = vec3;
   data[12] = x;
   data[13] = y;
   data[14] = z;
@@ -1747,9 +2648,9 @@ function Mat4Subtract(a, b, out = new Matrix4()) {
 
 // src/math/mat4/Mat4TargetTo.ts
 function Mat4TargetTo(eye, target, up, out = new Matrix4()) {
-  const {x: eyex, y: eyey, z: eyez} = eye;
-  const {x: upx, y: upy, z: upz} = up;
-  const {x: targetx, y: targety, z: targetz} = target;
+  const { x: eyex, y: eyey, z: eyez } = eye;
+  const { x: upx, y: upy, z: upz } = up;
+  const { x: targetx, y: targety, z: targetz } = target;
   let z0 = eyex - targetx;
   let z1 = eyey - targety;
   let z2 = eyez - targetz;
@@ -1775,7 +2676,7 @@ function Mat4TargetTo(eye, target, up, out = new Matrix4()) {
 
 // src/math/mat4/Mat4Translate.ts
 function Mat4Translate(matrix2, vec3, out = new Matrix4()) {
-  const {x, y, z} = vec3;
+  const { x, y, z } = vec3;
   const data = matrix2.data;
   const [a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33] = data;
   if (matrix2 === out) {
@@ -1817,6 +2718,12 @@ function Mat4Zero(matrix2) {
 
 // src/math/mat2d/Matrix2D.ts
 var Matrix2D = class {
+  a;
+  b;
+  c;
+  d;
+  tx;
+  ty;
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     this.set(a, b, c, d, tx, ty);
   }
@@ -1833,7 +2740,7 @@ var Matrix2D = class {
     return this.set();
   }
   toArray() {
-    const {a, b, c, d, tx, ty} = this;
+    const { a, b, c, d, tx, ty } = this;
     return [a, b, c, d, tx, ty];
   }
   fromArray(src) {
@@ -1851,6 +2758,10 @@ function RectangleContains(rect, x, y) {
 
 // src/geom/rectangle/Rectangle.ts
 var Rectangle = class {
+  x;
+  y;
+  width;
+  height;
   constructor(x = 0, y = 0, width = 0, height = 0) {
     this.set(x, y, width, height);
   }
@@ -1888,6 +2799,9 @@ var Rectangle = class {
 
 // src/math/vec2/Vec2Callback.ts
 var Vec2Callback = class {
+  _x;
+  _y;
+  onChange;
   constructor(onChange, x = 0, y = 0) {
     this._x = x;
     this._y = y;
@@ -1925,7 +2839,7 @@ var Vec2Callback = class {
     }
   }
   toArray(dst = [], index = 0) {
-    const {x, y} = this;
+    const { x, y } = this;
     dst[index] = x;
     dst[index + 1] = y;
     return dst;
@@ -1934,7 +2848,7 @@ var Vec2Callback = class {
     return this.set(src[index], src[index + 1]);
   }
   toString() {
-    const {x, y} = this;
+    const { x, y } = this;
     return `{ x=${x}, y=${y} }`;
   }
 };
@@ -2049,9 +2963,20 @@ function WrapAngleDegrees(angle) {
 
 // src/camera/Camera.ts
 var Camera = class {
+  world;
+  matrix;
+  renderer;
+  type;
+  width;
+  height;
+  bounds;
+  dirtyRender;
+  worldTransform;
+  position;
+  scale;
+  origin;
+  _rotation = 0;
   constructor() {
-    this._rotation = 0;
-    this.type = "Camera";
     this.dirtyRender = true;
     const game = GameInstance.get();
     this.renderer = game.renderer;
@@ -2122,8 +3047,16 @@ var Camera = class {
 
 // src/camera/StaticCamera.ts
 var StaticCamera = class {
+  world;
+  matrix;
+  renderer;
+  type;
+  width;
+  height;
+  bounds;
+  dirtyRender;
+  worldTransform;
   constructor() {
-    this.type = "StaticCamera";
     this.dirtyRender = true;
     const game = GameInstance.get();
     this.renderer = game.renderer;
@@ -2242,13 +3175,13 @@ function GetQuatAxisAngle(a, out = new Quaternion()) {
 
 // src/math/quaternion/GetQuatLength.ts
 function GetQuatLength(a) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return Math.sqrt(x * x + y * y + z * z + w * w);
 }
 
 // src/math/quaternion/GetQuatLengthSquared.ts
 function GetQuatLengthSquared(a) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return x * x + y * y + z * z + w * w;
 }
 
@@ -2264,19 +3197,19 @@ function QuatAddScalar(a, scalar, out = new Quaternion()) {
 
 // src/math/quaternion/QuatClone.ts
 function QuatClone(source) {
-  const {x, y, z, w} = source;
+  const { x, y, z, w } = source;
   return new Quaternion(x, y, z, w);
 }
 
 // src/math/quaternion/QuatConjugate.ts
 function QuatConjugate(a, out = new Quaternion()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x * -1, y * -1, z * -1, w);
 }
 
 // src/math/quaternion/QuatCopyFrom.ts
 function QuatCopyFrom(source, dest) {
-  const {x, y, z, w} = source;
+  const { x, y, z, w } = source;
   return dest.set(x, y, z, w);
 }
 
@@ -2440,8 +3373,8 @@ function Vec3Dot(a, b) {
 
 // src/math/vec3/GetVec3Angle.ts
 function GetVec3Angle(a, b) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   const mag1 = Math.sqrt(ax * ax + ay * ay + az * az);
   const mag2 = Math.sqrt(bx * bx + by * by + bz * bz);
   const mag = mag1 * mag2;
@@ -2464,13 +3397,13 @@ function GetVec3Distance(a, b) {
 
 // src/math/vec3/GetVec3Length.ts
 function GetVec3Length(a) {
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   return Math.sqrt(x * x + y * y + z * z);
 }
 
 // src/math/vec3/GetVec3LengthSquared.ts
 function GetVec3LengthSquared(a) {
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   return x * x + y * y + z * z;
 }
 
@@ -2486,6 +3419,10 @@ function GetVec3ManhattanLength(a) {
 
 // src/math/vec3/Vec3Callback.ts
 var Vec3Callback = class {
+  _x;
+  _y;
+  _z;
+  onChange;
   constructor(onChange, x = 0, y = 0, z = 0) {
     this._x = x;
     this._y = y;
@@ -2535,7 +3472,7 @@ var Vec3Callback = class {
     }
   }
   toArray(dst = [], index = 0) {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     dst[index] = x;
     dst[index + 1] = y;
     dst[index + 2] = z;
@@ -2545,7 +3482,7 @@ var Vec3Callback = class {
     return this.set(src[index], src[index + 1], src[index + 2]);
   }
   toString() {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     return `{ x=${x}, y=${y}, z=${z} }`;
   }
 };
@@ -2574,7 +3511,7 @@ var RGBCallback = class extends Vec3Callback {
     return this.z;
   }
   toString() {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     return `[ r=${x}, g=${y}, b=${z} ]`;
   }
 };
@@ -2608,7 +3545,7 @@ function Bezier(a, b, c, d, t) {
 
 // src/math/vec3/Vec3Bezier.ts
 function Vec3Bezier(a, b, c, d, t, out = new Vec3()) {
-  return out.set(Bezier(t, a.x, b.x, c.x, d.x), Bezier(t, a.y, b.y, c.y, d.y), Bezier(t, a.z, b.z, c.z, d.z));
+  return out.set(Bezier(a.x, b.x, c.x, d.x, t), Bezier(a.y, b.y, c.y, d.y, t), Bezier(a.z, b.z, c.z, d.z, t));
 }
 
 // src/math/CatmullRom.ts
@@ -2648,7 +3585,7 @@ function Vec3Clamp(a, min, max, out = new Vec3()) {
 
 // src/math/vec3/Vec3DivideScalar.ts
 function Vec3DivideScalar(a, scalar, out = new Vec3()) {
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   return out.set(x / scalar, y / scalar, z / scalar);
 }
 
@@ -2656,7 +3593,7 @@ function Vec3DivideScalar(a, scalar, out = new Vec3()) {
 function Vec3ClampLength(a, min, max, out = new Vec3()) {
   const length = GetVec3Length(a);
   Vec3DivideScalar(a, length || 1, out);
-  return Vec3Scale(out, Clamp(min, max, length), out);
+  return Vec3Scale(out, Clamp(length, min, max), out);
 }
 
 // src/math/vec3/Vec3ClampScalar.ts
@@ -2666,27 +3603,27 @@ function Vec3ClampScalar(a, min, max, out = new Vec3()) {
 
 // src/math/vec3/Vec3Clone.ts
 function Vec3Clone(source) {
-  const {x, y, z} = source;
+  const { x, y, z } = source;
   return new Vec3(x, y, z);
 }
 
 // src/math/vec3/Vec3CopyFrom.ts
 function Vec3CopyFrom(source, dest) {
-  const {x, y, z} = source;
+  const { x, y, z } = source;
   return dest.set(x, y, z);
 }
 
 // src/math/vec3/Vec3Cross.ts
 function Vec3Cross(a, b, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   return out.set(ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx);
 }
 
 // src/math/vec3/Vec3CrossNormalize.ts
 function Vec3CrossNormalize(a, b, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   const x = ay * bz - az * by;
   const y = az * bx - ax * bz;
   const z = ax * by - ay * bx;
@@ -2750,7 +3687,7 @@ function Hermite(a, b, c, d, t) {
 
 // src/math/vec3/Vec3Hermite.ts
 function Vec3Hermite(a, b, c, d, t, out = new Vec3()) {
-  return out.set(Hermite(t, a.x, b.x, c.x, d.x), Hermite(t, a.y, b.y, c.y, d.y), Hermite(t, a.z, b.z, c.z, d.z));
+  return out.set(Hermite(a.x, b.x, c.x, d.x, t), Hermite(a.y, b.y, c.y, d.y, t), Hermite(a.z, b.z, c.z, d.z, t));
 }
 
 // src/math/vec3/Vec3Inverse.ts
@@ -2768,21 +3705,21 @@ function Vec3IsNonUniform(a) {
 
 // src/math/vec3/Vec3Lerp.ts
 function Vec3Lerp(a, b, t, out = new Vec3()) {
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   return out.set(x + t * (b.x - x), y + t * (b.y - y), z + t * (b.z - z));
 }
 
 // src/math/vec3/Vec3Max.ts
 function Vec3Max(a, b, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   return out.set(Math.max(ax, bx), Math.max(ay, by), Math.max(az, bz));
 }
 
 // src/math/vec3/Vec3Min.ts
 function Vec3Min(a, b, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   return out.set(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz));
 }
 
@@ -2803,7 +3740,7 @@ function Vec3Negate(a, out = new Vec3()) {
 
 // src/math/vec3/Vec3Normalize.ts
 function Vec3Normalize(a, out = new Vec3()) {
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   let len = x * x + y * y + z * z;
   if (len > 0) {
     len = 1 / Math.sqrt(len);
@@ -2819,7 +3756,7 @@ function Vec3One() {
 // src/math/vec3/Vec3TransformMat4.ts
 function Vec3TransformMat4(a, m, out = new Vec3()) {
   const [m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33] = m.data;
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   let w = m03 * x + m13 * y + m23 * z + m33;
   w = w || 1;
   return out.set((m00 * x + m10 * y + m20 * z + m30) / w, (m01 * x + m11 * y + m21 * z + m31) / w, (m02 * x + m12 * y + m22 * z + m32) / w);
@@ -2828,10 +3765,10 @@ function Vec3TransformMat4(a, m, out = new Vec3()) {
 // src/math/vec3/Vec3Project.ts
 var tempMatrix1 = new Matrix4();
 var tempMatrix2 = new Matrix4();
-function Vec3Project(v, world, transform, viewport, out = new Vec3()) {
-  const {x, y, width, height} = viewport;
+function Vec3Project(v, world3, transform, viewport, out = new Vec3()) {
+  const { x, y, width, height } = viewport;
   tempMatrix1.set(width / 2, 0, 0, 0, 0, -height / 2, 0, 0, 0, 0, 0.5, 0, x + width / 2, height / 2 + y, 0.5, 1);
-  Mat4Multiply(world, transform, tempMatrix2);
+  Mat4Multiply(world3, transform, tempMatrix2);
   Mat4Multiply(tempMatrix2, tempMatrix1, tempMatrix2);
   return Vec3TransformMat4(v, tempMatrix2, out);
 }
@@ -2857,8 +3794,8 @@ function Vec3Reflect(a, normal, out = new Vec3()) {
 
 // src/math/vec3/Vec3RotateX.ts
 function Vec3RotateX(a, origin, angle, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = origin;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = origin;
   const px = ax - bx;
   const py = ay - by;
   const pz = az - bz;
@@ -2870,8 +3807,8 @@ function Vec3RotateX(a, origin, angle, out = new Vec3()) {
 
 // src/math/vec3/Vec3RotateY.ts
 function Vec3RotateY(a, origin, angle, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = origin;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = origin;
   const px = ax - bx;
   const py = ay - by;
   const pz = az - bz;
@@ -2883,8 +3820,8 @@ function Vec3RotateY(a, origin, angle, out = new Vec3()) {
 
 // src/math/vec3/Vec3RotateZ.ts
 function Vec3RotateZ(a, origin, angle, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = origin;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = origin;
   const px = ax - bx;
   const py = ay - by;
   const pz = az - bz;
@@ -2923,14 +3860,14 @@ function Vec3SubtractScalar(a, scalar, out = new Vec3()) {
 // src/math/vec3/Vec3TransformMat4Zero.ts
 function Vec3TransformMat4Zero(a, m, out = new Vec3()) {
   const [m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22] = m.data;
-  const {x, y, z} = a;
+  const { x, y, z } = a;
   return out.set(m00 * x + m10 * y + m20 * z, m01 * x + m11 * y + m21 * z, m02 * x + m12 * y + m22 * z);
 }
 
 // src/math/vec3/Vec3TransformQuat.ts
 function Vec3TransformQuat(a, q, out = new Vec3()) {
-  const {x: qx, y: qy, z: qz, w: qw} = q;
-  const {x, y, z} = a;
+  const { x: qx, y: qy, z: qz, w: qw } = q;
+  const { x, y, z } = a;
   let uvx = qy * z - qz * y;
   let uvy = qz * x - qx * z;
   let uvz = qx * y - qy * x;
@@ -2950,11 +3887,11 @@ function Vec3TransformQuat(a, q, out = new Vec3()) {
 // src/math/vec3/Vec3Unproject.ts
 var matrix = new Matrix4();
 var screenSource = new Vec3();
-function Vec3Unproject(v, viewportWidth, viewportHeight, world, view, projection, out = new Vec3()) {
-  Mat4Multiply(world, view, matrix);
+function Vec3Unproject(v, viewportWidth, viewportHeight, world3, view, projection, out = new Vec3()) {
+  Mat4Multiply(world3, view, matrix);
   Mat4Multiply(matrix, projection, matrix);
   Mat4Invert(matrix, matrix);
-  const {x, y, z} = v;
+  const { x, y, z } = v;
   screenSource.set(x / viewportWidth * 2 - 1, -(y / viewportHeight * 2 - 1), 2 * z - 1);
   Vec3TransformMat4(screenSource, matrix, out);
   const data = matrix.data;
@@ -2966,7 +3903,7 @@ function Vec3Unproject(v, viewportWidth, viewportHeight, world, view, projection
 function QuatFromRotationAxis(axis, angle, out = new Quaternion()) {
   const sin = Math.sin(angle / 2);
   Vec3Normalize(axis, axis);
-  const {x, y, z} = axis;
+  const { x, y, z } = axis;
   return out.set(x * sin, y * sin, z * sin, Math.cos(angle / 2));
 }
 
@@ -3002,7 +3939,7 @@ function QuatHermite(a, b, c, d, t, out = new Quaternion()) {
 
 // src/math/quaternion/QuatInvert.ts
 function QuatInvert(a, out = new Quaternion()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   const dot = x * x + y * y + z * z + w * w;
   const invDot = dot ? 1 / dot : 0;
   return out.set(-x * invDot, -y * invDot, -z * invDot, w * invDot);
@@ -3010,8 +3947,8 @@ function QuatInvert(a, out = new Quaternion()) {
 
 // src/math/quaternion/QuatMultiply.ts
 function QuatMultiply(a, b, out = new Quaternion()) {
-  const {x: ax, y: ay, z: az, w: aw} = a;
-  const {x: bx, y: by, z: bz, w: bw} = b;
+  const { x: ax, y: ay, z: az, w: aw } = a;
+  const { x: bx, y: by, z: bz, w: bw } = b;
   return out.set(ax * bw + aw * bx + ay * bz - az * by, ay * bw + aw * by + az * bx - ax * bz, az * bw + aw * bz + ax * by - ay * bx, aw * bw - ax * bx - ay * by - az * bz);
 }
 
@@ -3022,7 +3959,7 @@ function QuatMultiplyByFloats(a, x, y, z, w, out = new Quaternion()) {
 
 // src/math/quaternion/QuatScale.ts
 function QuatScale(a, scalar, out = new Quaternion()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x * scalar, y * scalar, z * scalar, w * scalar);
 }
 
@@ -3043,8 +3980,8 @@ function QuatSlerp(a, b, t, out = new Quaternion()) {
   } else if (t === 1) {
     return QuatCopyFrom(b, out);
   }
-  const {x, y, z, w} = a;
-  const {x: bx, y: by, z: bz, w: bw} = b;
+  const { x, y, z, w } = a;
+  const { x: bx, y: by, z: bz, w: bw } = b;
   let cosHalfTheta = w * bw + x * bx + y * by + z * bz;
   if (cosHalfTheta < 0) {
     out.set(-bx, -by, -bz, -bw);
@@ -3081,7 +4018,7 @@ function QuatRotateTowards(a, b, step, out = new Quaternion()) {
 // src/math/quaternion/QuatRotateX.ts
 function QuatRotateX(a, angle, out = new Quaternion()) {
   angle *= 0.5;
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   const bx = Math.sin(angle);
   const bw = Math.cos(angle);
   return out.set(x * bw + w * bx, y * bw + z * bx, z * bw - y * bx, w * bw - x * bx);
@@ -3090,7 +4027,7 @@ function QuatRotateX(a, angle, out = new Quaternion()) {
 // src/math/quaternion/QuatRotateY.ts
 function QuatRotateY(a, angle, out = new Quaternion()) {
   angle *= 0.5;
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   const by = Math.sin(angle);
   const bw = Math.cos(angle);
   return out.set(x * bw - z * by, y * bw + w * by, z * bw + x * by, w * bw - y * by);
@@ -3099,7 +4036,7 @@ function QuatRotateY(a, angle, out = new Quaternion()) {
 // src/math/quaternion/QuatRotateZ.ts
 function QuatRotateZ(a, angle, out = new Quaternion()) {
   angle *= 0.5;
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   const bz = Math.sin(angle);
   const bw = Math.cos(angle);
   return out.set(x * bw + y * bz, y * bw - x * bz, z * bw + w * bz, w * bw - z * bz);
@@ -3120,7 +4057,7 @@ function QuatScaleAndAdd(a, b, scalar, out = new Quaternion()) {
 
 // src/math/quaternion/QuatSetAxisAngle.ts
 function QuatSetAxisAngle(axis, angle, out = new Quaternion()) {
-  const {x, y, z} = axis;
+  const { x, y, z } = axis;
   angle *= 0.5;
   const s = Math.sin(angle);
   return out.set(x * s, y * s, z * s, Math.cos(angle));
@@ -3128,8 +4065,8 @@ function QuatSetAxisAngle(axis, angle, out = new Quaternion()) {
 
 // src/math/quaternion/QuatSetFromUnitVectors.ts
 function QuatSetFromUnitVectors(a, from, to, out = new Quaternion()) {
-  const {x: fx, y: fy, z: fz} = from;
-  const {x: tx, y: ty, z: tz} = to;
+  const { x: fx, y: fy, z: fz } = from;
+  const { x: tx, y: ty, z: tz } = to;
   const epsilon = 1e-6;
   let r = Vec3Dot(from, to) + 1;
   if (r < epsilon) {
@@ -3151,13 +4088,13 @@ function QuatSubtract(a, b, out = new Quaternion()) {
 
 // src/math/quaternion/QuatSubtractScalar.ts
 function QuatSubtractScalar(a, scalar, out = new Quaternion()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x - scalar, y - scalar, z - scalar, w - scalar);
 }
 
 // src/math/quaternion/QuatToEulerAngles.ts
 function QuatToEulerAngles(q, out = new Vec3()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const sqw = w * w;
   const sqz = z * z;
   const sqx = x * x;
@@ -3898,7 +4835,7 @@ __export(mat2d_exports, {
 
 // src/math/mat2d/GetMat2dDeterminant.ts
 function GetMat2dDeterminant(src) {
-  const {a, b, c, d} = src;
+  const { a, b, c, d } = src;
   return a * d - b * c;
 }
 
@@ -3914,8 +4851,8 @@ function Mat2dAdd(a, b, out = new Matrix2D()) {
 
 // src/math/mat2d/Mat2dAppend.ts
 function Mat2dAppend(mat1, mat2, out = new Matrix2D()) {
-  const {a: a1, b: b1, c: c1, d: d1, tx: tx1, ty: ty1} = mat1;
-  const {a: a2, b: b2, c: c2, d: d2, tx: tx2, ty: ty2} = mat2;
+  const { a: a1, b: b1, c: c1, d: d1, tx: tx1, ty: ty1 } = mat1;
+  const { a: a2, b: b2, c: c2, d: d2, tx: tx2, ty: ty2 } = mat2;
   return out.set(a2 * a1 + b2 * c1, a2 * b1 + b2 * d1, c2 * a1 + d2 * c1, c2 * b1 + d2 * d1, tx2 * a1 + ty2 * c1 + tx1, tx2 * b1 + ty2 * d1 + ty1);
 }
 
@@ -3926,13 +4863,13 @@ function Mat2dClone(src) {
 
 // src/math/mat2d/Mat2dCopyFrom.ts
 function Mat2dCopyFrom(src, target) {
-  const {a, b, c, d, tx, ty} = src;
+  const { a, b, c, d, tx, ty } = src;
   return target.set(a, b, c, d, tx, ty);
 }
 
 // src/math/mat2d/Mat2dCopyToContext.ts
 function Mat2dCopyToContext(src, context) {
-  const {a, b, c, d, tx, ty} = src;
+  const { a, b, c, d, tx, ty } = src;
   context.transform(a, b, c, d, tx, ty);
   return context;
 }
@@ -3944,7 +4881,7 @@ function Mat2dEquals(a, b) {
 
 // src/math/mat2d/Mat2dRotate.ts
 function Mat2dRotate(target, angle, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   const sin = Math.sin(angle);
   const cos = Math.cos(angle);
   return out.set(a * cos + c * sin, b * cos + d * sin, a * -sin + c * cos, b * -sin + d * cos, tx, ty);
@@ -3958,7 +4895,7 @@ function Mat2dFromRotation(angle) {
 
 // src/math/mat2d/Mat2dScale.ts
 function Mat2dScale(target, scaleX, scaleY, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   return out.set(a * scaleX, b * scaleX, c * scaleY, d * scaleY, tx, ty);
 }
 
@@ -3970,7 +4907,7 @@ function Mat2dFromScaling(scaleX, scaleY = scaleX) {
 
 // src/math/mat2d/Mat2dTranslate.ts
 function Mat2dTranslate(target, x, y, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   out.tx = a * x + c * y + tx;
   out.ty = b * x + d * y + ty;
   return out;
@@ -3984,13 +4921,15 @@ function Mat2dFromTranslation(x, y) {
 
 // src/math/mat2d/Mat2dFuzzyEquals.ts
 function Mat2dFuzzyEquals(a, b, epsilon = 1e-6) {
-  const {a: a0, b: b0, c: c0, d: d0, tx: tx0, ty: ty0} = a;
-  const {a: a1, b: b1, c: c1, d: d1, tx: tx1, ty: ty1} = b;
+  const { a: a0, b: b0, c: c0, d: d0, tx: tx0, ty: ty0 } = a;
+  const { a: a1, b: b1, c: c1, d: d1, tx: tx1, ty: ty1 } = b;
   return Math.abs(a0 - a1) <= epsilon * Math.max(1, Math.abs(a0), Math.abs(a1)) && Math.abs(b0 - b1) <= epsilon * Math.max(1, Math.abs(b0), Math.abs(b1)) && Math.abs(c0 - c1) <= epsilon * Math.max(1, Math.abs(c0), Math.abs(c1)) && Math.abs(d0 - d1) <= epsilon * Math.max(1, Math.abs(d0), Math.abs(d1)) && Math.abs(tx0 - tx1) <= epsilon * Math.max(1, Math.abs(tx0), Math.abs(tx1)) && Math.abs(ty0 - ty1) <= epsilon * Math.max(1, Math.abs(ty0), Math.abs(ty1));
 }
 
 // src/math/vec2/Vec2.ts
 var Vec2 = class {
+  x;
+  y;
   constructor(x = 0, y = 0) {
     this.set(x, y);
   }
@@ -4000,7 +4939,7 @@ var Vec2 = class {
     return this;
   }
   toArray(dst = [], index = 0) {
-    const {x, y} = this;
+    const { x, y } = this;
     dst[index] = x;
     dst[index + 1] = y;
     return dst;
@@ -4009,14 +4948,14 @@ var Vec2 = class {
     return this.set(src[index], src[index + 1]);
   }
   toString() {
-    const {x, y} = this;
+    const { x, y } = this;
     return `{ x=${x}, y=${y} }`;
   }
 };
 
 // src/math/mat2d/Mat2dGlobalToLocal.ts
 function Mat2dGlobalToLocal(mat, x, y, out = new Vec2()) {
-  const {a, b, c, d, tx, ty} = mat;
+  const { a, b, c, d, tx, ty } = mat;
   const id = 1 / (a * d + c * -b);
   return out.set(d * id * x + -c * id * y + (ty * c - tx * d) * id, a * id * y + -b * id * x + (-ty * a + tx * b) * id);
 }
@@ -4048,7 +4987,7 @@ function Mat2dIdentity() {
 
 // src/math/mat2d/Mat2dInvert.ts
 function Mat2dInvert(target, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   let determinant = a * d - b * c;
   if (determinant) {
     determinant = 1 / determinant;
@@ -4059,40 +4998,40 @@ function Mat2dInvert(target, out = new Matrix2D()) {
 
 // src/math/mat2d/Mat2dLocalToGlobal.ts
 function Mat2dLocalToGlobal(mat, x, y, out = new Vec2()) {
-  const {a, b, c, d, tx, ty} = mat;
+  const { a, b, c, d, tx, ty } = mat;
   return out.set(a * x + c * y + tx, b * x + d * y + ty);
 }
 
 // src/math/mat2d/Mat2dMultiply.ts
 function Mat2dMultiply(target, src, out = new Matrix2D()) {
-  const {a: a0, b: b0, c: c0, d: d0, tx: tx0, ty: ty0} = target;
-  const {a: a1, b: b1, c: c1, d: d1, tx: tx1, ty: ty1} = src;
+  const { a: a0, b: b0, c: c0, d: d0, tx: tx0, ty: ty0 } = target;
+  const { a: a1, b: b1, c: c1, d: d1, tx: tx1, ty: ty1 } = src;
   return out.set(a0 * a1 + c0 * b1, b0 * a1 + d0 * b1, a0 * c1 + c0 * d1, b0 * c1 + d0 * d1, a0 * tx1 + c0 * ty1 + tx0, b0 * tx1 + d0 * ty1 + ty0);
 }
 
 // src/math/mat2d/Mat2dMultiplyScalar.ts
 function Mat2dMultiplyScalar(target, scalar, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   return out.set(a * scalar, b * scalar, c * scalar, d * scalar, tx * scalar, ty * scalar);
 }
 
 // src/math/mat2d/Mat2dMultiplyScalarAndAdd.ts
 function Mat2dMultiplyScalarAndAdd(target, src, scalar, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = src;
-  const {a: ta, b: tb, c: tc, d: td, tx: ttx, ty: tty} = target;
+  const { a, b, c, d, tx, ty } = src;
+  const { a: ta, b: tb, c: tc, d: td, tx: ttx, ty: tty } = target;
   return out.set(ta + a * scalar, tb + b * scalar, tc + c * scalar, td + d * scalar, ttx + tx * scalar, tty + ty * scalar);
 }
 
 // src/math/mat2d/Mat2dSetToContext.ts
 function Mat2dSetToContext(src, context) {
-  const {a, b, c, d, tx, ty} = src;
+  const { a, b, c, d, tx, ty } = src;
   context.setTransform(a, b, c, d, tx, ty);
   return context;
 }
 
 // src/math/mat2d/Mat2dSkew.ts
 function Mat2dSkew(target, angleX, angleY, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   return out.set(a, b + Math.tan(angleX), c + Math.tan(angleY), d, tx, ty);
 }
 
@@ -4211,6 +5150,7 @@ __export(vec2_exports, {
   Vec2Hermite: () => Vec2Hermite,
   Vec2Inverse: () => Vec2Inverse,
   Vec2Lerp: () => Vec2Lerp,
+  Vec2Limit: () => Vec2Limit,
   Vec2Max: () => Vec2Max,
   Vec2Min: () => Vec2Min,
   Vec2Multiply: () => Vec2Multiply,
@@ -4331,7 +5271,7 @@ function Vec2AddScalar(a, scalar, out = new Vec2()) {
 
 // src/math/vec2/Vec2Bezier.ts
 function Vec2Bezier(a, b, c, d, t, out = new Vec2()) {
-  return out.set(Bezier(t, a.x, b.x, c.x, d.x), Bezier(t, a.y, b.y, c.y, d.y));
+  return out.set(Bezier(a.x, b.x, c.x, d.x, t), Bezier(a.y, b.y, c.y, d.y, t));
 }
 
 // src/math/vec2/Vec2CatmullRom.ts
@@ -4441,7 +5381,7 @@ function Vec2FuzzyEquals(a, b, epsilon = 1e-4) {
 
 // src/math/vec2/Vec2Hermite.ts
 function Vec2Hermite(a, b, c, d, t, out = new Vec2()) {
-  return out.set(Hermite(t, a.x, b.x, c.x, d.x), Hermite(t, a.y, b.y, c.y, d.y));
+  return out.set(Hermite(a.x, b.x, c.x, d.x, t), Hermite(a.y, b.y, c.y, d.y, t));
 }
 
 // src/math/vec2/Vec2Inverse.ts
@@ -4456,17 +5396,26 @@ function Vec2Lerp(a, b, t, out = new Vec2()) {
   return out.set(x + t * (b.x - x), y + t * (b.y - y));
 }
 
+// src/math/vec2/Vec2Limit.ts
+function Vec2Limit(a, max, out = new Vec2()) {
+  const length = GetVec2Length(a);
+  if (length && length > max) {
+    Vec2Scale(a, max / length, out);
+  }
+  return out;
+}
+
 // src/math/vec2/Vec2Max.ts
 function Vec2Max(a, b, out = new Vec2()) {
-  const {x: ax, y: ay} = a;
-  const {x: bx, y: by} = b;
+  const { x: ax, y: ay } = a;
+  const { x: bx, y: by } = b;
   return out.set(Math.max(ax, bx), Math.max(ay, by));
 }
 
 // src/math/vec2/Vec2Min.ts
 function Vec2Min(a, b, out = new Vec2()) {
-  const {x: ax, y: ay} = a;
-  const {x: bx, y: by} = b;
+  const { x: ax, y: ay } = a;
+  const { x: bx, y: by } = b;
   return out.set(Math.min(ax, bx), Math.min(ay, by));
 }
 
@@ -4543,7 +5492,7 @@ function Vec2Transform(v, positionX, positionY, rotation, scaleX, scaleY, out = 
 
 // src/math/vec2/Vec2TransformMat2d.ts
 function Vec2TransformMat2d(v, m, out = new Vec2()) {
-  const {a, b, c, d, tx, ty} = m;
+  const { a, b, c, d, tx, ty } = m;
   return out.set(a * v.x + c * v.y + tx, b * v.x + d * v.y + ty);
 }
 
@@ -4627,13 +5576,13 @@ function GetVec4Distance(a, b) {
 
 // src/math/vec4/GetVec4Length.ts
 function GetVec4Length(a) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return Math.sqrt(x * x + y * y + z * z + w * w);
 }
 
 // src/math/vec4/GetVec4LengthSquared.ts
 function GetVec4LengthSquared(a) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return x * x + y * y + z * z + w * w;
 }
 
@@ -4644,12 +5593,17 @@ function GetVec4ManhattanDistance(a, b) {
 
 // src/math/vec4/GetVec4ManhattanLength.ts
 function GetVec4ManhattanLength(a) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return Math.abs(x) + Math.abs(y) + Math.abs(z) + Math.abs(w);
 }
 
 // src/math/vec4/Vec4Callback.ts
 var Vec4Callback = class {
+  _x;
+  _y;
+  _z;
+  _w;
+  onChange;
   constructor(onChange, x = 0, y = 0, z = 0, w = 0) {
     this._x = x;
     this._y = y;
@@ -4711,7 +5665,7 @@ var Vec4Callback = class {
     }
   }
   toArray(dst = [], index = 0) {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     dst[index] = x;
     dst[index + 1] = y;
     dst[index + 2] = z;
@@ -4722,7 +5676,7 @@ var Vec4Callback = class {
     return this.set(src[index], src[index + 1], src[index + 2], src[index + 3]);
   }
   toString() {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     return `{ x=${x}, y=${y}, z=${z}, w=${w} }`;
   }
 };
@@ -4757,13 +5711,17 @@ var RGBACallback = class extends Vec4Callback {
     return this.w;
   }
   toString() {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     return `[ r=${x}, g=${y}, b=${z}, a=${w} ]`;
   }
 };
 
 // src/math/vec4/Vec4.ts
 var Vec4 = class {
+  x;
+  y;
+  z;
+  w;
   constructor(x = 0, y = 0, z = 0, w = 1) {
     this.set(x, y, z, w);
   }
@@ -4775,7 +5733,7 @@ var Vec4 = class {
     return this;
   }
   toArray(dst = [], index = 0) {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     dst[index] = x;
     dst[index + 1] = y;
     dst[index + 2] = z;
@@ -4786,7 +5744,7 @@ var Vec4 = class {
     return this.set(src[index], src[index + 1], src[index + 2], src[index + 3]);
   }
   toString() {
-    const {x, y, z, w} = this;
+    const { x, y, z, w } = this;
     return `{ x=${x}, y=${y}, z=${z}, w=${w} }`;
   }
 };
@@ -4818,13 +5776,13 @@ function Vec4CatmullRom(p1, p2, p3, p4, t, out = new Vec4()) {
 
 // src/math/vec4/Vec4Ceil.ts
 function Vec4Ceil(a, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(Math.ceil(x), Math.ceil(y), Math.ceil(z), Math.ceil(w));
 }
 
 // src/math/vec4/Vec4Scale.ts
 function Vec4Scale(a, scalar, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x * scalar, y * scalar, z * scalar, w * scalar);
 }
 
@@ -4841,7 +5799,7 @@ function Vec4Clamp(a, min, max, out = new Vec4()) {
 
 // src/math/vec4/Vec4DivideScalar.ts
 function Vec4DivideScalar(a, scalar, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x / scalar, y / scalar, z / scalar, w / scalar);
 }
 
@@ -4859,21 +5817,21 @@ function Vec4ClampScalar(a, min, max, out = new Vec4()) {
 
 // src/math/vec4/Vec4Clone.ts
 function Vec4Clone(source) {
-  const {x, y, z, w} = source;
+  const { x, y, z, w } = source;
   return new Vec4(x, y, z, w);
 }
 
 // src/math/vec4/Vec4CopyFrom.ts
 function Vec4CopyFrom(source, dest) {
-  const {x, y, z, w} = source;
+  const { x, y, z, w } = source;
   return dest.set(x, y, z, w);
 }
 
 // src/math/vec4/Vec4Cross.ts
 function Vec4Cross(u, v, w, out = new Vec4()) {
-  const {x: ux, y: uy, z: uz, w: uw} = u;
-  const {x: vx, y: vy, z: vz, w: vw} = v;
-  const {x: wx, y: wy, z: wz, w: ww} = w;
+  const { x: ux, y: uy, z: uz, w: uw } = u;
+  const { x: vx, y: vy, z: vz, w: vw } = v;
+  const { x: wx, y: wy, z: wz, w: ww } = w;
   const A = vx * wy - vy * wx;
   const B = vx * wz - vz * wx;
   const C = vx * ww - vw * wx;
@@ -4904,7 +5862,7 @@ function Vec4Equals(a, b) {
 
 // src/math/vec4/Vec4Floor.ts
 function Vec4Floor(a, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(Math.floor(x), Math.floor(y), Math.floor(z), Math.floor(w));
 }
 
@@ -4925,21 +5883,21 @@ function Vec4Hermite(a, b, c, d, t, out = new Vec4()) {
 
 // src/math/vec4/Vec4Lerp.ts
 function Vec4Lerp(a, b, t, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x + t * (b.x - x), y + t * (b.y - y), z + t * (b.z - z), w + t * (b.w - w));
 }
 
 // src/math/vec4/Vec4Max.ts
 function Vec4Max(a, b, out = new Vec4()) {
-  const {x: ax, y: ay, z: az, w: aw} = a;
-  const {x: bx, y: by, z: bz, w: bw} = b;
+  const { x: ax, y: ay, z: az, w: aw } = a;
+  const { x: bx, y: by, z: bz, w: bw } = b;
   return out.set(Math.max(ax, bx), Math.max(ay, by), Math.max(az, bz), Math.max(aw, bw));
 }
 
 // src/math/vec4/Vec4Min.ts
 function Vec4Min(a, b, out = new Vec4()) {
-  const {x: ax, y: ay, z: az, w: aw} = a;
-  const {x: bx, y: by, z: bz, w: bw} = b;
+  const { x: ax, y: ay, z: az, w: aw } = a;
+  const { x: bx, y: by, z: bz, w: bw } = b;
   return out.set(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz), Math.min(aw, bw));
 }
 
@@ -4992,13 +5950,13 @@ function Vec4Random(a, scale = 1, out = new Vec4()) {
 
 // src/math/vec4/Vec4Round.ts
 function Vec4Round(a, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(Math.round(x), Math.round(y), Math.round(z), Math.round(w));
 }
 
 // src/math/vec4/Vec4RoundToZero.ts
 function Vec4RoundToZero(a, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x < 0 ? Math.ceil(x) : Math.floor(x), y < 0 ? Math.ceil(y) : Math.floor(y), z < 0 ? Math.ceil(z) : Math.floor(z), w < 0 ? Math.ceil(w) : Math.floor(w));
 }
 
@@ -5020,14 +5978,14 @@ function Vec4Subtract(a, b, out = new Vec4()) {
 
 // src/math/vec4/Vec4SubtractScalar.ts
 function Vec4SubtractScalar(a, scalar, out = new Vec4()) {
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(x - scalar, y - scalar, z - scalar, w - scalar);
 }
 
 // src/math/vec4/Vec4TransformMat4.ts
 function Vec4TransformMat4(a, m, out = new Vec4()) {
   const [m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33] = m.data;
-  const {x, y, z, w} = a;
+  const { x, y, z, w } = a;
   return out.set(m00 * x + m10 * y + m20 * z + m30 * w, m01 * x + m11 * y + m21 * z + m31 * w, m02 * x + m12 * y + m22 * z + m32 * w, m03 * x + m13 * y + m23 * z + m33 * w);
 }
 
@@ -5155,9 +6113,23 @@ function Within(a, b, tolerance) {
 
 // src/camera3d/Camera3D.ts
 var Camera3D = class {
+  type;
+  renderer;
+  position;
+  direction;
+  up;
+  left;
+  aspectRatio;
+  viewMatrix;
+  projectionMatrix;
+  dirtyRender = true;
+  _lookAtPosition;
+  _lookAtView;
+  _axis;
+  _fov;
+  _near;
+  _far;
   constructor(x = 0, y = 0, z = 0, fov = 45, near = 0.1, far = 1e3) {
-    this.dirtyRender = true;
-    this.type = "Camera3D";
     const game = GameInstance.get();
     this.renderer = game.renderer;
     this.position = new Vec3Callback(() => this.update(), x, y, z);
@@ -5213,8 +6185,8 @@ var Camera3D = class {
   }
   forward(s) {
     const pos = this.position;
-    const {x: px, y: py, z: pz} = pos;
-    const {x: dx, y: dy, z: dz} = this.direction;
+    const { x: px, y: py, z: pz } = pos;
+    const { x: dx, y: dy, z: dz } = this.direction;
     pos.set(px - s * dx, py - s * dy, pz - s * dz);
     return this.update();
   }
@@ -5285,6 +6257,7 @@ __export(color_exports, {
 
 // src/color/Color.ts
 var Color = class {
+  rgba;
   constructor(red = 0, green = 0, blue = 0, alpha = 1) {
     this.rgba = new Uint8ClampedArray([red, green, blue, alpha]);
   }
@@ -5433,7 +6406,8 @@ __export(config_exports, {
   Scenes: () => Scenes,
   Size: () => Size,
   WebGL: () => WebGL,
-  WebGLContext: () => WebGLContext
+  WebGLContext: () => WebGLContext,
+  WorldSize: () => WorldSize
 });
 
 // src/config/const.ts
@@ -5452,7 +6426,8 @@ var CONFIG_DEFAULTS = {
   SCENES: "Scenes",
   SIZE: "Size",
   WEBGL_CONTEXT: "WebGLContext",
-  WEBGL: "WebGL"
+  WEBGL: "WebGL",
+  WORLD_SIZE: "WorldSize"
 };
 
 // src/config/ConfigStore.ts
@@ -5472,7 +6447,7 @@ function BackgroundColor(color) {
 
 // src/config/banner/SetBanner.ts
 function SetBanner(title = "", version = "", url = "", color = "#fff", background = "linear-gradient(#3e0081 40%, #00bcc3)") {
-  ConfigStore.set(CONFIG_DEFAULTS.BANNER, {title, version, url, color, background});
+  ConfigStore.set(CONFIG_DEFAULTS.BANNER, { title, version, url, color, background });
 }
 
 // src/config/banner/Banner.ts
@@ -5514,7 +6489,7 @@ function SetSize(width = 800, height = 600, resolution = 1) {
   if (resolution === 0) {
     resolution = window.devicePixelRatio;
   }
-  ConfigStore.set(CONFIG_DEFAULTS.SIZE, {width, height, resolution});
+  ConfigStore.set(CONFIG_DEFAULTS.SIZE, { width, height, resolution });
 }
 
 // src/config/size/Size.ts
@@ -5536,10 +6511,18 @@ function GetCanvasContext() {
 
 // src/renderer/canvas/CanvasRenderer.ts
 var CanvasRenderer = class {
+  canvas;
+  ctx;
+  clearColor;
+  width;
+  height;
+  resolution;
+  textureIndex;
+  flushTotal;
+  clearBeforeRender = true;
+  optimizeRedraw = true;
+  autoResize = true;
   constructor() {
-    this.clearBeforeRender = true;
-    this.optimizeRedraw = true;
-    this.autoResize = true;
     this.width = GetWidth();
     this.height = GetHeight();
     this.resolution = GetResolution();
@@ -5591,6 +6574,18 @@ var CanvasRenderer = class {
       ctx.fillStyle = this.clearColor;
       ctx.fillRect(0, 0, this.width, this.height);
     }
+    const worlds2 = renderData.worldData;
+    for (let i = 0; i < worlds2.length; i++) {
+      const { numRendered, world: world3 } = worlds2[i];
+      const camera = worlds2[i].camera;
+      const { a, b, c, d, tx, ty } = camera.worldTransform;
+      ctx.setTransform(a, b, c, d, tx, ty);
+      for (let s = 0; s < numRendered; s++) {
+        const entry = world3.renderList[s];
+        entry.node.renderCanvas(this);
+        entry.node.postRenderCanvas(this);
+      }
+    }
   }
   destroy() {
   }
@@ -5622,7 +6617,7 @@ function CanvasContext(contextAttributes) {
 
 // src/config/defaultorigin/SetDefaultOrigin.ts
 function SetDefaultOrigin(x = 0.5, y = x) {
-  ConfigStore.set(CONFIG_DEFAULTS.DEFAULT_ORIGIN, {x, y});
+  ConfigStore.set(CONFIG_DEFAULTS.DEFAULT_ORIGIN, { x, y });
 }
 
 // src/config/defaultorigin/DefaultOrigin.ts
@@ -5742,8 +6737,10 @@ function BindFramebuffer(renderPass, clear = true, entry) {
   if (!entry) {
     entry = renderPass.currentFramebuffer;
   }
-  const {framebuffer, viewport} = entry;
-  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  const { framebuffer, viewport } = entry;
+  if (renderPass.currentFramebuffer.framebuffer !== framebuffer) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  }
   if (clear) {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -5778,7 +6775,7 @@ function PopFramebuffer(renderPass) {
 
 // src/renderer/webgl1/renderpass/AddFramebuffer.ts
 function AddFramebuffer(renderPass, framebuffer, viewport) {
-  const entry = {framebuffer, viewport};
+  const entry = { framebuffer, viewport };
   renderPass.framebufferStack.push(entry);
   return entry;
 }
@@ -5861,7 +6858,7 @@ function GetWebGLContext() {
 
 // src/renderer/webgl1/textures/CreateGLTexture.ts
 function CreateGLTexture(binding) {
-  const {parent, flipY, unpackPremultiplyAlpha, minFilter, magFilter, wrapS, wrapT, generateMipmap, isPOT} = binding;
+  const { parent, flipY, unpackPremultiplyAlpha, minFilter, magFilter, wrapS, wrapT, generateMipmap, isPOT } = binding;
   const source = parent.image;
   let width = parent.width;
   let height = parent.height;
@@ -5927,14 +6924,22 @@ function UpdateGLTexture(binding) {
 
 // src/renderer/webgl1/textures/GLTextureBinding.ts
 var GLTextureBinding = class {
+  parent;
+  texture;
+  framebuffer;
+  depthbuffer;
+  index = 0;
+  indexCounter = -1;
+  dirtyIndex = true;
+  unpackPremultiplyAlpha = true;
+  minFilter;
+  magFilter;
+  wrapS;
+  wrapT;
+  flipY = false;
+  isPOT = false;
+  generateMipmap = false;
   constructor(parent, config = {}) {
-    this.index = 0;
-    this.indexCounter = -1;
-    this.dirtyIndex = true;
-    this.unpackPremultiplyAlpha = true;
-    this.flipY = false;
-    this.isPOT = false;
-    this.generateMipmap = false;
     this.parent = parent;
     this.isPOT = IsSizePowerOfTwo(parent.width, parent.height);
     const {
@@ -6005,7 +7010,7 @@ var GLTextureBinding = class {
 function ProcessBindingQueue() {
   const queue2 = BindingQueue.get();
   queue2.forEach((entry) => {
-    const {texture, glConfig} = entry;
+    const { texture, glConfig } = entry;
     if (!texture.binding) {
       texture.binding = new GLTextureBinding(texture, glConfig);
     }
@@ -6097,11 +7102,23 @@ function DeleteGLBuffer(buffer) {
 
 // src/renderer/webgl1/buffers/VertexBuffer.ts
 var VertexBuffer = class {
+  batchSize;
+  dataSize;
+  vertexElementSize;
+  vertexByteSize;
+  entryByteSize;
+  bufferByteSize;
+  data;
+  vertexViewF32;
+  vertexViewU32;
+  vertexBuffer;
+  indexed = false;
+  isDynamic = false;
+  count = 0;
+  offset = 0;
+  elementsPerEntry;
+  isBound = false;
   constructor(config = {}) {
-    this.indexed = false;
-    this.isDynamic = false;
-    this.count = 0;
-    this.offset = 0;
     const {
       batchSize = 1,
       dataSize = 4,
@@ -6137,6 +7154,7 @@ var VertexBuffer = class {
     const type = this.isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
     gl.bufferData(gl.ARRAY_BUFFER, data, type);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    this.isBound = false;
   }
   add(count) {
     this.count += count;
@@ -6167,6 +7185,12 @@ var VertexBuffer = class {
 
 // src/renderer/webgl1/buffers/IndexedVertexBuffer.ts
 var IndexedVertexBuffer = class extends VertexBuffer {
+  indexSize;
+  entryElementSize;
+  entryIndexSize;
+  index;
+  indexBuffer;
+  indexLayout;
   constructor(config = {}) {
     super(config);
     const {
@@ -6238,7 +7262,7 @@ function CreateAttributes(program, config) {
       stride = defaultSettings.stride,
       offset = defaultSettings.offset
     } = setting;
-    attributes.set(name, {index, size, type, normalized, stride, offset});
+    attributes.set(name, { index, size, type, normalized, stride, offset });
   }
   return attributes;
 }
@@ -6404,10 +7428,10 @@ var FLOAT = 5126;
 
 // src/renderer/webgl1/shaders/DefaultQuadAttributes.ts
 var DefaultQuadAttributes = {
-  aVertexPosition: {size: 2, type: FLOAT, normalized: false, offset: 0},
-  aTextureCoord: {size: 2, type: FLOAT, normalized: false, offset: 8},
-  aTextureId: {size: 1, type: FLOAT, normalized: false, offset: 16},
-  aTintColor: {size: 4, type: UNSIGNED_BYTE, normalized: true, offset: 20}
+  aVertexPosition: { size: 2, type: FLOAT, normalized: false, offset: 0 },
+  aTextureCoord: { size: 2, type: FLOAT, normalized: false, offset: 8 },
+  aTextureId: { size: 1, type: FLOAT, normalized: false, offset: 16 },
+  aTintColor: { size: 4, type: UNSIGNED_BYTE, normalized: true, offset: 20 }
 };
 
 // src/renderer/webgl1/shaders/DefaultQuadUniforms.ts
@@ -6486,9 +7510,16 @@ void main (void)
 
 // src/renderer/webgl1/shaders/Shader.ts
 var Shader = class {
+  program;
+  attributes;
+  uniforms;
+  uniformSetters;
+  texture;
+  framebuffer;
+  renderToFramebuffer = false;
+  renderToDepthbuffer = false;
+  isActive = false;
   constructor(config) {
-    this.renderToFramebuffer = false;
-    this.renderToDepthbuffer = false;
     if (config) {
       this.fromConfig(config);
     }
@@ -6540,10 +7571,14 @@ var Shader = class {
     }
     this.attributes = CreateAttributes(program, attribs);
     gl.useProgram(currentProgram);
+    this.isActive = false;
   }
   updateUniforms(renderPass) {
   }
   bind(renderPass) {
+    const uniforms = this.uniforms;
+    uniforms.set("uProjectionMatrix", renderPass.projectionMatrix.data);
+    uniforms.set("uCameraMatrix", renderPass.cameraMatrix.data);
     this.updateUniforms(renderPass);
     return this.setUniforms(renderPass);
   }
@@ -6560,6 +7595,7 @@ var Shader = class {
       return false;
     }
     gl.useProgram(this.program);
+    this.isActive = true;
     const uniforms = this.uniforms;
     for (const [name, setter] of this.uniformSetters.entries()) {
       setter(uniforms.get(name));
@@ -6657,7 +7693,7 @@ var MultiTextureQuadShader = class extends QuadShader {
 
 // src/renderer/webgl1/renderpass/SetDefaultBlendMode.ts
 function SetDefaultBlendMode(renderPass, enable, sfactor, dfactor) {
-  const entry = {enable, sfactor, dfactor};
+  const entry = { enable, sfactor, dfactor };
   renderPass.blendModeStack[0] = entry;
   renderPass.currentBlendMode = entry;
   renderPass.defaultBlendMode = entry;
@@ -6665,7 +7701,7 @@ function SetDefaultBlendMode(renderPass, enable, sfactor, dfactor) {
 
 // src/renderer/webgl1/renderpass/SetDefaultFramebuffer.ts
 function SetDefaultFramebuffer(renderPass, framebuffer = null, viewport) {
-  const entry = {framebuffer, viewport};
+  const entry = { framebuffer, viewport };
   renderPass.framebufferStack[0] = entry;
   renderPass.currentFramebuffer = entry;
   renderPass.defaultFramebuffer = entry;
@@ -6673,7 +7709,7 @@ function SetDefaultFramebuffer(renderPass, framebuffer = null, viewport) {
 
 // src/renderer/webgl1/renderpass/SetDefaultShader.ts
 function SetDefaultShader(renderPass, shader, textureID) {
-  const entry = {shader, textureID};
+  const entry = { shader, textureID };
   renderPass.shaderStack[0] = entry;
   renderPass.currentShader = entry;
   renderPass.defaultShader = entry;
@@ -6696,30 +7732,37 @@ function SetDefaultViewport(renderPass, x = 0, y = 0, width = 0, height = 0) {
 
 // src/renderer/webgl1/renderpass/RenderPass.ts
 var RenderPass = class {
+  renderer;
+  projectionMatrix;
+  cameraMatrix;
+  count = 0;
+  prevCount = 0;
+  flushTotal = 0;
+  maxTextures = 0;
+  currentActiveTexture = 0;
+  startActiveTexture = 0;
+  tempTextures = [];
+  textureIndex = [];
+  framebufferStack = [];
+  currentFramebuffer = null;
+  defaultFramebuffer = null;
+  vertexBufferStack = [];
+  currentVertexBuffer = null;
+  defaultVertexBuffer = null;
+  shaderStack = [];
+  currentShader = null;
+  defaultShader = null;
+  viewportStack = [];
+  currentViewport = null;
+  defaultViewport = null;
+  blendModeStack = [];
+  currentBlendMode = null;
+  defaultBlendMode = null;
+  quadShader;
+  quadBuffer;
+  quadCamera;
+  current2DCamera;
   constructor(renderer) {
-    this.count = 0;
-    this.prevCount = 0;
-    this.flushTotal = 0;
-    this.maxTextures = 0;
-    this.currentActiveTexture = 0;
-    this.startActiveTexture = 0;
-    this.tempTextures = [];
-    this.textureIndex = [];
-    this.framebufferStack = [];
-    this.currentFramebuffer = null;
-    this.defaultFramebuffer = null;
-    this.vertexBufferStack = [];
-    this.currentVertexBuffer = null;
-    this.defaultVertexBuffer = null;
-    this.shaderStack = [];
-    this.currentShader = null;
-    this.defaultShader = null;
-    this.viewportStack = [];
-    this.currentViewport = null;
-    this.defaultViewport = null;
-    this.blendModeStack = [];
-    this.currentBlendMode = null;
-    this.defaultBlendMode = null;
     this.renderer = renderer;
     this.projectionMatrix = new Matrix4();
     this.reset();
@@ -6728,12 +7771,12 @@ var RenderPass = class {
     const gl2 = this.renderer.gl;
     const indexLayout = [0, 1, 2, 2, 3, 0];
     this.quadShader = new QuadShader();
-    this.quadBuffer = new IndexedVertexBuffer({isDynamic: false, indexLayout});
+    this.quadBuffer = new IndexedVertexBuffer({ isDynamic: false, indexLayout });
     this.quadCamera = new StaticCamera();
     CreateTempTextures(this);
     SetDefaultFramebuffer(this);
     SetDefaultBlendMode(this, true, gl2.ONE, gl2.ONE_MINUS_SRC_ALPHA);
-    SetDefaultVertexBuffer(this, new IndexedVertexBuffer({batchSize: GetBatchSize(), indexLayout}));
+    SetDefaultVertexBuffer(this, new IndexedVertexBuffer({ batchSize: GetBatchSize(), indexLayout }));
     SetDefaultShader(this, new MultiTextureQuadShader());
   }
   resize(width, height) {
@@ -6745,7 +7788,7 @@ var RenderPass = class {
 
 // src/renderer/webgl1/renderpass/AddShader.ts
 function AddShader(renderPass, shader, textureID) {
-  const stackEntry = {shader, textureID};
+  const stackEntry = { shader, textureID };
   renderPass.shaderStack.push(stackEntry);
   return stackEntry;
 }
@@ -6758,12 +7801,20 @@ function AddVertexBuffer(renderPass, buffer) {
 
 // src/renderer/webgl1/renderpass/BindShader.ts
 function BindShader(renderPass, entry) {
+  let prevShader;
   if (!entry) {
     entry = renderPass.currentShader;
+  } else {
+    prevShader = renderPass.currentShader.shader;
   }
-  const success = entry.shader.bind(renderPass, entry.textureID);
-  if (success) {
-    entry.shader.setAttributes(renderPass);
+  if (!entry.shader.isActive) {
+    const success = entry.shader.bind(renderPass, entry.textureID);
+    if (success) {
+      entry.shader.setAttributes(renderPass);
+      if (prevShader && prevShader !== entry.shader) {
+        prevShader.isActive = false;
+      }
+    }
   }
 }
 
@@ -6780,8 +7831,10 @@ function BindBlendMode(renderPass, entry) {
     entry = renderPass.currentBlendMode;
   }
   if (entry.enable) {
-    gl.enable(gl.BLEND);
-    gl.blendFunc(entry.sfactor, entry.dfactor);
+    if (!gl.isEnabled(gl.BLEND) || (renderPass.currentBlendMode.sfactor !== entry.sfactor || renderPass.currentBlendMode.dfactor !== entry.dfactor)) {
+      gl.enable(gl.BLEND);
+      gl.blendFunc(entry.sfactor, entry.dfactor);
+    }
   } else {
     gl.disable(gl.BLEND);
   }
@@ -6797,12 +7850,17 @@ function BindTexture(texture, index = 0) {
 
 // src/renderer/webgl1/renderpass/BindVertexBuffer.ts
 function BindVertexBuffer(renderPass, buffer) {
-  if (!buffer) {
+  if (buffer) {
+    buffer.isBound = false;
+  } else {
     buffer = renderPass.currentVertexBuffer;
   }
-  const indexBuffer = buffer.indexed ? buffer.indexBuffer : null;
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertexBuffer);
+  if (!buffer.isBound) {
+    const indexBuffer = buffer.indexed ? buffer.indexBuffer : null;
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertexBuffer);
+    buffer.isBound = true;
+  }
 }
 
 // src/renderer/webgl1/renderpass/PopVertexBuffer.ts
@@ -6920,14 +7978,23 @@ var WebGLRendererInstance = {
   }
 };
 
+// src/world/WorldList.ts
+var WorldList = new Map();
+
 // src/renderer/webgl1/WebGLRenderer.ts
 var WebGLRenderer = class {
+  canvas;
+  gl;
+  renderPass;
+  clearColor = [0, 0, 0, 1];
+  width;
+  height;
+  resolution;
+  clearBeforeRender = true;
+  optimizeRedraw = true;
+  autoResize = true;
+  contextLost = false;
   constructor() {
-    this.clearColor = [0, 0, 0, 1];
-    this.clearBeforeRender = true;
-    this.optimizeRedraw = false;
-    this.autoResize = true;
-    this.contextLost = false;
     this.width = GetWidth();
     this.height = GetHeight();
     this.resolution = GetResolution();
@@ -6977,27 +8044,30 @@ var WebGLRenderer = class {
   }
   reset() {
   }
-  render(renderData) {
+  render(willRedraw, scenes) {
     if (this.contextLost) {
       return;
     }
     const gl2 = this.gl;
     const renderPass = this.renderPass;
+    gl2.getContextAttributes();
     ProcessBindingQueue();
-    if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0) {
-      return;
+    if (this.optimizeRedraw && !willRedraw) {
     }
     if (this.clearBeforeRender) {
       const cls = this.clearColor;
       gl2.clearColor(cls[0], cls[1], cls[2], cls[3]);
       gl2.clear(gl2.COLOR_BUFFER_BIT);
     }
-    const worlds = renderData.worldData;
     Start(renderPass);
-    for (let i = 0; i < worlds.length; i++) {
-      const {world} = worlds[i];
-      world.renderGL(renderPass);
-      world.postRenderGL(renderPass);
+    for (const scene of scenes.values()) {
+      const worlds2 = WorldList.get(scene);
+      for (const world3 of worlds2) {
+        if (world3.runRender) {
+          world3.renderGL(renderPass);
+          world3.postRenderGL(renderPass);
+        }
+      }
     }
     End(renderPass);
   }
@@ -7022,6 +8092,18 @@ function SetWebGLContext(contextAttributes) {
 function WebGLContext(contextAttributes) {
   return () => {
     SetWebGLContext(contextAttributes);
+  };
+}
+
+// src/config/worldsize/SetWorldSize.ts
+function SetWorldSize(size) {
+  ConfigStore.set(CONFIG_DEFAULTS.WORLD_SIZE, size);
+}
+
+// src/config/worldsize/WorldSize.ts
+function WorldSize(size) {
+  return () => {
+    SetWorldSize(size);
   };
 }
 
@@ -7303,7 +8385,7 @@ function IsiOS() {
 
 // src/device/browser/IsMobileSafari.ts
 function IsMobileSafari() {
-  const {iOS} = IsiOS();
+  const { iOS } = IsiOS();
   const mobileSafari = navigator.userAgent.includes("AppleWebKit") && iOS;
   return {
     mobileSafari
@@ -7357,15 +8439,15 @@ function IsTrident() {
 
 // src/device/browser/GetBrowser.ts
 function GetBrowser() {
-  const {chrome, chromeVersion} = IsChrome();
-  const {edge} = IsEdge();
-  const {firefox, firefoxVersion} = IsFirefox();
-  let {ie, ieVersion} = IsMSIE();
-  const {mobileSafari} = IsMobileSafari();
-  const {opera} = IsOpera();
-  const {safari, safariVersion} = IsSafari();
-  const {silk} = IsSilk();
-  const {trident, tridentVersion, tridentIEVersion} = IsTrident();
+  const { chrome, chromeVersion } = IsChrome();
+  const { edge } = IsEdge();
+  const { firefox, firefoxVersion } = IsFirefox();
+  let { ie, ieVersion } = IsMSIE();
+  const { mobileSafari } = IsMobileSafari();
+  const { opera } = IsOpera();
+  const { safari, safariVersion } = IsSafari();
+  const { silk } = IsSilk();
+  const { trident, tridentVersion, tridentIEVersion } = IsTrident();
   if (trident) {
     ie = true;
     ieVersion = tridentIEVersion;
@@ -7474,7 +8556,7 @@ function IsWindows() {
 // src/device/os/GetOS.ts
 function GetOS() {
   const ua = navigator.userAgent;
-  const {iOS, iOSVersion, iPad, iPhone} = IsiOS();
+  const { iOS, iOSVersion, iPad, iPhone } = IsiOS();
   const result = {
     android: IsAndroid(),
     chromeOS: IsChromeOS(),
@@ -7596,7 +8678,7 @@ __export(display_exports, {
   GetBounds: () => GetBounds,
   GetChildAt: () => GetChildAt,
   GetChildIndex: () => GetChildIndex,
-  GetChildren: () => GetChildren,
+  GetChildren: () => GetChildren2,
   GetClosestChild: () => GetClosestChild,
   GetFirstChild: () => GetFirstChild,
   GetFurthestChild: () => GetFurthestChild,
@@ -7626,7 +8708,6 @@ __export(display_exports, {
   SetScale: () => SetScale,
   SetSize: () => SetSize2,
   SetSkew: () => SetSkew,
-  SetType: () => SetType,
   SetValue: () => SetValue,
   SetVisible: () => SetVisible,
   SetWorld: () => SetWorld,
@@ -7634,188 +8715,153 @@ __export(display_exports, {
   SwapChildren: () => SwapChildren
 });
 
-// src/display/DepthFirstSearch.ts
-function DepthFirstSearch(parent) {
-  const stack = [parent];
-  const output = [];
-  while (stack.length > 0) {
-    const node = stack.shift();
-    output.push(node);
-    const numChildren = node.numChildren;
-    if (numChildren > 0) {
-      for (let i = numChildren - 1; i >= 0; i--) {
-        stack.unshift(node.children[i]);
-      }
-    }
-  }
-  output.shift();
-  return output;
+// src/components/hierarchy/index.ts
+var hierarchy_exports = {};
+__export(hierarchy_exports, {
+  AddHierarchyComponent: () => AddHierarchyComponent,
+  ClearWorldAndParentID: () => ClearWorldAndParentID,
+  GetChildren: () => GetChildren,
+  GetDepth: () => GetDepth,
+  GetNumChildren: () => GetNumChildren,
+  GetParentGameObject: () => GetParentGameObject,
+  GetParentID: () => GetParentID,
+  GetWorldID: () => GetWorldID,
+  HierarchyComponent: () => HierarchyComponent,
+  SetDepth: () => SetDepth,
+  SetNumChildren: () => SetNumChildren,
+  SetParentID: () => SetParentID,
+  SetWorldAndParentID: () => SetWorldAndParentID,
+  SetWorldID: () => SetWorldID,
+  UpdateNumChildren: () => UpdateNumChildren
+});
+
+// src/components/hierarchy/HierarchyComponent.ts
+var Hierarchy = defineComponent({
+  worldID: Types.ui32,
+  parentID: Types.ui32,
+  numChildren: Types.ui32,
+  depth: Types.ui32
+});
+var HierarchyComponent = Hierarchy;
+
+// src/components/hierarchy/AddHierarchyComponent.ts
+function AddHierarchyComponent(id) {
+  addComponent(GameObjectWorld, HierarchyComponent, id);
 }
 
-// src/display/GetChildIndex.ts
-function GetChildIndex(parent, child) {
-  return parent.children.indexOf(child);
+// src/components/hierarchy/ClearWorldAndParentID.ts
+function ClearWorldAndParentID(id) {
+  HierarchyComponent.worldID[id] = 0;
+  HierarchyComponent.parentID[id] = 0;
 }
 
-// src/display/RemoveChildAt.ts
-function RemoveChildAt(parent, index) {
-  const children = parent.children;
-  let child;
-  if (index >= 0 && index < children.length) {
-    const removed = children.splice(index, 1);
-    if (removed[0]) {
-      child = removed[0];
-      child.parent = null;
-    }
-  }
-  return child;
-}
+// src/gameobjects/GameObjectCache.ts
+var GameObjectCache = new Map();
 
-// src/display/RemoveChild.ts
-function RemoveChild(parent, child) {
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex > -1) {
-    RemoveChildAt(parent, currentIndex);
-  }
-  return child;
-}
+// src/gameobjects/GameObjectTree.ts
+var GameObjectTree = new Map();
 
-// src/gameobjects/events/AddedToWorldEvent.ts
-var AddedToWorldEvent = "addedtoworld";
-
-// src/gameobjects/events/DestroyEvent.ts
-var DestroyEvent = "destroy";
-
-// src/gameobjects/events/PostUpdateEvent.ts
-var PostUpdateEvent = "postupdate";
-
-// src/gameobjects/events/RemovedFromWorldEvent.ts
-var RemovedFromWorldEvent = "removedfromworld";
-
-// src/gameobjects/events/UpdateEvent.ts
-var UpdateEvent = "update";
-
-// src/events/Emit.ts
-function Emit(emitter, event, ...args) {
-  if (emitter.events.size === 0 || !emitter.events.has(event)) {
-    return false;
-  }
-  const listeners = emitter.events.get(event);
-  for (const ee of listeners) {
-    ee.callback.apply(ee.context, args);
-    if (ee.once) {
-      listeners.delete(ee);
-    }
-  }
-  if (listeners.size === 0) {
-    emitter.events.delete(event);
-  }
-  return true;
-}
-
-// src/display/SetWorld.ts
-function SetWorld(world, ...children) {
-  children.forEach((child) => {
-    if (child.world) {
-      Emit(child.world, RemovedFromWorldEvent, child, child.world);
-      Emit(child, RemovedFromWorldEvent, child, child.world);
-    }
-    child.world = world;
-    Emit(world, AddedToWorldEvent, child, world);
-    Emit(child, AddedToWorldEvent, child, world);
+// src/components/hierarchy/GetChildren.ts
+function GetChildren(id) {
+  const out = [];
+  GameObjectTree.get(id).forEach((childID) => {
+    out.push(GameObjectCache.get(childID));
   });
-  return children;
+  return out;
 }
 
-// src/display/SetParent.ts
-function SetParent2(parent, ...children) {
-  children.forEach((child) => {
-    if (child.parent) {
-      RemoveChild(child.parent, child);
-    }
-    child.parent = parent;
-  });
-  const parentWorld = parent.world;
-  if (parentWorld) {
-    SetWorld(parentWorld, ...DepthFirstSearch(parent));
-  }
-  return children;
+// src/components/hierarchy/GetDepth.ts
+function GetDepth(id) {
+  return HierarchyComponent.depth[id];
 }
 
-// src/display/AddChild.ts
-function AddChild(parent, child) {
-  parent.children.push(child);
-  SetParent2(parent, child);
-  child.updateWorldTransform();
-  return child;
+// src/components/hierarchy/GetNumChildren.ts
+function GetNumChildren(id) {
+  return HierarchyComponent.numChildren[id];
 }
 
-// src/display/AddChildAt.ts
-function AddChildAt(parent, index, child) {
-  const children = parent.children;
-  if (index >= 0 && index <= children.length) {
-    SetParent2(parent, child);
-    children.splice(index, 0, child);
-    child.updateWorldTransform();
-  }
-  return child;
+// src/components/hierarchy/GetParentGameObject.ts
+function GetParentGameObject(id) {
+  return GameObjectCache.get(HierarchyComponent.parentID[id]);
 }
 
-// src/display/AddChildren.ts
-function AddChildren(parent, ...children) {
-  children.forEach((child) => {
-    AddChild(parent, child);
-  });
-  return children;
+// src/components/hierarchy/GetParentID.ts
+function GetParentID(id) {
+  return HierarchyComponent.parentID[id];
 }
 
-// src/display/AddChildrenAt.ts
-function AddChildrenAt(parent, index, ...children) {
-  const parentChildren = parent.children;
-  if (index >= 0 && index <= parentChildren.length) {
-    children.reverse().forEach((child) => {
-      children.splice(index, 0, child);
-      SetParent2(parent, child);
-      child.updateWorldTransform();
-    });
-  }
-  return children;
+// src/components/hierarchy/GetWorldID.ts
+function GetWorldID(id) {
+  return HierarchyComponent.worldID[id];
 }
 
-// src/display/AddPosition.ts
-function AddPosition(x, y, ...children) {
-  children.forEach((child) => {
-    child.x += x;
-    child.y += y;
-  });
-  return children;
+// src/components/hierarchy/SetDepth.ts
+function SetDepth(id, depth) {
+  HierarchyComponent.depth[id] = depth;
 }
 
-// src/display/AddRotation.ts
-function AddRotation(rotation, ...children) {
-  children.forEach((child) => {
-    child.rotation += rotation;
-  });
-  return children;
+// src/components/hierarchy/SetNumChildren.ts
+function SetNumChildren(id) {
+  HierarchyComponent.numChildren[id] = GameObjectTree.get(id).length;
 }
 
-// src/display/AddScale.ts
-function AddScale(scaleX, scaleY, ...children) {
-  children.forEach((child) => {
-    child.scaleX += scaleX;
-    child.scaleY += scaleY;
-  });
-  return children;
+// src/components/hierarchy/SetParentID.ts
+function SetParentID(childID, parentID) {
+  HierarchyComponent.parentID[childID] = parentID;
 }
 
-// src/display/AddSkew.ts
-function AddSkew(skewX, skewY, ...children) {
-  children.forEach((child) => {
-    child.skewX += skewX;
-    child.skewY += skewY;
-  });
-  return children;
+// src/components/hierarchy/SetWorldAndParentID.ts
+function SetWorldAndParentID(id, worldID, parentID) {
+  HierarchyComponent.worldID[id] = worldID;
+  HierarchyComponent.parentID[id] = parentID;
 }
+
+// src/components/hierarchy/SetWorldID.ts
+function SetWorldID(id, worldID) {
+  HierarchyComponent.worldID[id] = worldID;
+}
+
+// src/components/hierarchy/UpdateNumChildren.ts
+function UpdateNumChildren(id) {
+  HierarchyComponent.numChildren[id] = GameObjectTree.get(id).length;
+}
+
+// src/gameobjects/index.ts
+var gameobjects_exports = {};
+__export(gameobjects_exports, {
+  AnimatedSprite: () => AnimatedSprite,
+  Components: () => components_exports,
+  Container: () => Container,
+  EffectLayer: () => EffectLayer,
+  GameObject: () => GameObject,
+  GameObjectCache: () => GameObjectCache,
+  GameObjectTree: () => GameObjectTree,
+  Layer: () => Layer,
+  Rectangle: () => Rectangle2,
+  RenderLayer: () => RenderLayer,
+  Sprite: () => Sprite,
+  SpriteBatch: () => SpriteBatch,
+  Text: () => Text
+});
+
+// src/components/index.ts
+var components_exports = {};
+__export(components_exports, {
+  Bounds: () => bounds_exports,
+  Dirty: () => dirty_exports,
+  Hierarchy: () => hierarchy_exports,
+  Input: () => input_exports,
+  Permissions: () => permissions_exports,
+  Transform: () => transform_exports,
+  Vertex: () => Vertex2,
+  Vertices: () => vertices_exports
+});
+
+// src/components/bounds/index.ts
+var bounds_exports = {};
+__export(bounds_exports, {
+  BoundsComponent: () => BoundsComponent
+});
 
 // src/gameobjects/DIRTY_CONST.ts
 var DIRTY_CONST = {
@@ -7837,1131 +8883,10 @@ var DIRTY_CONST = {
   USER4: 4294967296
 };
 
-// src/display/BringChildToTop.ts
-function BringChildToTop(parent, child) {
-  const parentChildren = parent.children;
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex !== -1 && currentIndex < parentChildren.length) {
-    parentChildren.splice(currentIndex, 1);
-    parentChildren.push(child);
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display/DepthFirstSearchRecursiveNested.ts
-function DepthFirstSearchRecursiveNested(parent, output = []) {
-  for (let i = 0; i < parent.numChildren; i++) {
-    const node = parent.children[i];
-    const children = [];
-    output.push({node, children});
-    if (node.numChildren > 0) {
-      DepthFirstSearchRecursiveNested(node, children);
-    }
-  }
-  return output;
-}
-
-// src/display/ConsoleTreeChildren.ts
-function GetInfo(entry) {
-  const legend = entry.numChildren > 0 ? "Parent" : "Child";
-  return `${legend} [ type=${entry.type}, name=${entry.name} ]`;
-}
-function LogChildren(entry) {
-  console.group(GetInfo(entry.node));
-  entry.children.forEach((child) => {
-    if (child.children.length > 0) {
-      LogChildren(child);
-    } else {
-      console.log(GetInfo(child.node));
-    }
-  });
-  console.groupEnd();
-}
-function ConsoleTreeChildren(parent) {
-  const entries = DepthFirstSearchRecursiveNested(parent);
-  if (parent.world === parent) {
-    console.group("World");
-  } else {
-    console.group(GetInfo(parent));
-  }
-  entries.forEach((entry) => {
-    if (entry.children.length) {
-      LogChildren(entry);
-    } else {
-      console.log(GetInfo(entry.node));
-    }
-  });
-  console.groupEnd();
-}
-
-// src/display/CountMatchingChildren.ts
-function CountMatchingChildren(parent, property, value) {
-  const children = parent.children;
-  let total = 0;
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      total++;
-    }
-  });
-  return total;
-}
-
-// src/display/DepthFirstSearchRecursive.ts
-function DepthFirstSearchRecursive(parent, output = []) {
-  for (let i = 0; i < parent.numChildren; i++) {
-    const child = parent.children[i];
-    output.push(child);
-    if (child.numChildren > 0) {
-      DepthFirstSearchRecursive(child, output);
-    }
-  }
-  return output;
-}
-
-// src/display/RemoveChildrenBetween.ts
-function RemoveChildrenBetween(parent, beginIndex = 0, endIndex) {
-  const children = parent.children;
-  if (endIndex === void 0) {
-    endIndex = children.length;
-  }
-  const range = endIndex - beginIndex;
-  if (range > 0 && range <= endIndex) {
-    const removed = children.splice(beginIndex, range);
-    removed.forEach((child) => {
-      child.parent = null;
-    });
-    return removed;
-  } else {
-    return [];
-  }
-}
-
-// src/display/DestroyChildren.ts
-function DestroyChildren(parent, beginIndex = 0, endIndex) {
-  const removed = RemoveChildrenBetween(parent, beginIndex, endIndex);
-  removed.forEach((child) => {
-    child.destroy();
-  });
-}
-
-// src/display/FindChildByName.ts
-function FindChildByName(parent, searchString) {
-  const children = DepthFirstSearch(parent);
-  const regex = RegExp(searchString);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (regex.test(child.name)) {
-      return child;
-    }
-  }
-}
-
-// src/display/FindChildrenByName.ts
-function FindChildrenByName(parent, searchString) {
-  const children = DepthFirstSearch(parent);
-  const regex = RegExp(searchString);
-  const results = [];
-  children.forEach((child) => {
-    if (regex.test(child.name)) {
-      results.push(child);
-    }
-  });
-  return results;
-}
-
-// src/display/GetAllChildren.ts
-function GetAllChildren(parent, property, value) {
-  const children = DepthFirstSearch(parent);
-  if (!property) {
-    return children;
-  }
-  const results = [];
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      results.push(child);
-    }
-  });
-  return results;
-}
-
-// src/display/GetBounds.ts
-function GetBounds(...children) {
-  let minX = Number.MAX_SAFE_INTEGER;
-  let minY = Number.MAX_SAFE_INTEGER;
-  let maxX = Number.MIN_SAFE_INTEGER;
-  let maxY = Number.MIN_SAFE_INTEGER;
-  children.forEach((child) => {
-    const {x, y, right, bottom} = child.bounds.get();
-    if (x < minX) {
-      minX = x;
-    }
-    if (y < minY) {
-      minY = y;
-    }
-    if (right > maxX) {
-      maxX = right;
-    }
-    if (bottom > maxY) {
-      maxY = bottom;
-    }
-  });
-  return new Rectangle(minX, minY, maxX, maxY);
-}
-
-// src/display/GetChildAt.ts
-function GetChildAt(parent, index) {
-  const children = parent.children;
-  if (index < 0 || index > children.length) {
-    throw new Error(`Index out of bounds: ${index}`);
-  }
-  return children[index];
-}
-
-// src/display/GetChildren.ts
-function GetChildren(parent, property, value) {
-  const children = parent.children;
-  if (!property) {
-    return [...children];
-  }
-  const results = [];
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      results.push(child);
-    }
-  });
-  return results;
-}
-
-// src/display/GetClosestChild.ts
-function GetClosestChild(parent, point) {
-  const children = parent.children;
-  let closest = null;
-  let distance = 0;
-  children.forEach((child) => {
-    const childDistance = GetVec2Distance(point, child.getPosition());
-    if (!closest || childDistance < distance) {
-      closest = child;
-      distance = childDistance;
-    }
-  });
-  return closest;
-}
-
-// src/display/GetFirstChild.ts
-function GetFirstChild(parent, property, value) {
-  const children = parent.children;
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      return child;
-    }
-  }
-}
-
-// src/display/GetFurthestChild.ts
-function GetFurthestChild(parent, point) {
-  const children = parent.children;
-  let furthest = null;
-  let distance = 0;
-  children.forEach((child) => {
-    const childDistance = GetVec2Distance(point, child.getPosition());
-    if (!furthest || childDistance > distance) {
-      furthest = child;
-      distance = childDistance;
-    }
-  });
-  return furthest;
-}
-
-// src/display/GetLastChild.ts
-function GetLastChild(parent, property, value) {
-  const children = parent.children;
-  for (let i = children.length - 1; i >= 0; i--) {
-    const child = children[i];
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      return child;
-    }
-  }
-}
-
-// src/display/GetParents.ts
-function GetParents(child) {
-  const parents = [];
-  while (child.parent) {
-    parents.push(child.parent);
-    child = child.parent;
-  }
-  return parents;
-}
-
-// src/display/GetRandomChild.ts
-function GetRandomChild(parent, startIndex = 0, length) {
-  const children = parent.children;
-  if (!length) {
-    length = children.length;
-  }
-  const randomIndex = startIndex + Math.floor(Math.random() * length);
-  return children[randomIndex];
-}
-
-// src/display/MoveChildDown.ts
-function MoveChildDown(parent, child) {
-  const parentChildren = parent.children;
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex > 0) {
-    const child2 = parentChildren[currentIndex - 1];
-    const index2 = parentChildren.indexOf(child2);
-    parentChildren[currentIndex] = child2;
-    parentChildren[index2] = child;
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-    child2.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display/MoveChildTo.ts
-function MoveChildTo(parent, child, index) {
-  const parentChildren = parent.children;
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex === -1 || index < 0 || index >= parentChildren.length) {
-    throw new Error("Index out of bounds");
-  }
-  if (currentIndex !== index) {
-    parentChildren.splice(currentIndex, 1);
-    parentChildren.splice(index, 0, child);
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display/MoveChildUp.ts
-function MoveChildUp(parent, child) {
-  const parentChildren = parent.children;
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex !== -1 && currentIndex > 0) {
-    const child2 = parentChildren[currentIndex + 1];
-    const index2 = parentChildren.indexOf(child2);
-    parentChildren[currentIndex] = child2;
-    parentChildren[index2] = child;
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-    child2.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/geom/intersects/RectangleToRectangle.ts
-function RectangleToRectangle(rectA, rectB) {
-  if (rectA.width <= 0 || rectA.height <= 0 || rectB.width <= 0 || rectB.height <= 0) {
-    return false;
-  }
-  return !(rectA.right < rectB.x || rectA.bottom < rectB.y || rectA.x > rectB.right || rectA.y > rectB.bottom);
-}
-
-// src/display/OverlapBounds.ts
-function OverlapBounds(source, ...targets) {
-  const sourceBounds = source.getBounds();
-  for (let i = 0; i < targets.length; i++) {
-    const target = targets[i];
-    if (target === source) {
-      continue;
-    }
-    if (RectangleToRectangle(sourceBounds, target.getBounds())) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// src/display/RemoveChildren.ts
-function RemoveChildren(parent, ...children) {
-  children.forEach((child) => {
-    RemoveChild(parent, child);
-  });
-  return children;
-}
-
-// src/display/RemoveChildrenAt.ts
-function RemoveChildrenAt(parent, ...index) {
-  const removed = [];
-  index.sort((a, b) => a - b);
-  index.reverse().forEach((i) => {
-    const child = RemoveChildAt(parent, i);
-    if (child) {
-      removed.push(child);
-    }
-  });
-  return removed;
-}
-
-// src/display/ReparentChildren.ts
-function ReparentChildren(parent, newParent, beginIndex = 0, endIndex) {
-  const moved = RemoveChildrenBetween(parent, beginIndex, endIndex);
-  SetParent2(newParent, ...moved);
-  moved.forEach((child) => {
-    child.updateWorldTransform();
-  });
-  return moved;
-}
-
-// src/display/RotateChildrenLeft.ts
-function RotateChildrenLeft(parent, total = 1) {
-  const parentChildren = parent.children;
-  let child = null;
-  for (let i = 0; i < total; i++) {
-    child = parentChildren.shift();
-    parentChildren.push(child);
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display/RotateChildrenRight.ts
-function RotateChildrenRight(parent, total = 1) {
-  const parentChildren = parent.children;
-  let child = null;
-  for (let i = 0; i < total; i++) {
-    child = parentChildren.pop();
-    parentChildren.unshift(child);
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display/SendChildToBack.ts
-function SendChildToBack(parent, child) {
-  const parentChildren = parent.children;
-  const currentIndex = GetChildIndex(parent, child);
-  if (currentIndex !== -1 && currentIndex > 0) {
-    parentChildren.splice(currentIndex, 1);
-    parentChildren.unshift(child);
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display/SetBounds.ts
-function SetBounds(x, y, width, height, ...children) {
-  children.forEach((child) => {
-    child.bounds.set(x, y, width, height);
-  });
-  return children;
-}
-
-// src/display/SetChildrenValue.ts
-function SetChildrenValue(parent, property, value) {
-  const children = DepthFirstSearch(parent);
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor) {
-      descriptor.set(value);
-    }
-  });
-  return children;
-}
-
-// src/display/SetName.ts
-function SetName(name, ...children) {
-  children.forEach((child) => {
-    child.name = name;
-  });
-  return children;
-}
-
-// src/display/SetOrigin.ts
-function SetOrigin(originX, originY, ...children) {
-  children.forEach((child) => {
-    child.setOrigin(originX, originY);
-  });
-  return children;
-}
-
-// src/display/SetPosition.ts
-function SetPosition(x, y, ...children) {
-  children.forEach((child) => {
-    child.setPosition(x, y);
-  });
-  return children;
-}
-
-// src/display/SetRotation.ts
-function SetRotation(rotation, ...children) {
-  children.forEach((child) => {
-    child.rotation = rotation;
-  });
-  return children;
-}
-
-// src/display/SetScale.ts
-function SetScale(scaleX, scaleY, ...children) {
-  children.forEach((child) => {
-    child.setScale(scaleX, scaleY);
-  });
-  return children;
-}
-
-// src/display/SetSize.ts
-function SetSize2(width, height, ...children) {
-  children.forEach((child) => {
-    child.setSize(width, height);
-  });
-  return children;
-}
-
-// src/display/SetSkew.ts
-function SetSkew(skewX, skewY, ...children) {
-  children.forEach((child) => {
-    child.setSkew(skewX, skewY);
-  });
-  return children;
-}
-
-// src/display/SetType.ts
-function SetType(type, ...children) {
-  children.forEach((child) => {
-    child.type = type;
-  });
-  return children;
-}
-
-// src/display/SetValue.ts
-function SetValue(property, value, ...children) {
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor) {
-      descriptor.set(value);
-    }
-  });
-  return children;
-}
-
-// src/display/SetVisible.ts
-function SetVisible(visible, ...children) {
-  children.forEach((child) => {
-    child.visible = visible;
-  });
-  return children;
-}
-
-// src/display/ShuffleChildren.ts
-function ShuffleChildren(parent) {
-  const children = parent.children;
-  for (let i = children.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = children[i];
-    children[i] = children[j];
-    children[j] = temp;
-    temp.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return children;
-}
-
-// src/display/SwapChildren.ts
-function SwapChildren(child1, child2) {
-  if (child1.parent === child2.parent) {
-    const children = child1.parent.children;
-    const index1 = GetChildIndex(child1.parent, child1);
-    const index2 = GetChildIndex(child2.parent, child2);
-    if (index1 !== index2) {
-      children[index1] = child2;
-      children[index2] = child1;
-    }
-  }
-}
-
-// src/display3d/index.ts
-var display3d_exports = {};
-__export(display3d_exports, {
-  AddChild3D: () => AddChild3D,
-  AddChild3DAt: () => AddChild3DAt,
-  AddChildren3D: () => AddChildren3D,
-  AddChildren3DAt: () => AddChildren3DAt,
-  ConsoleTreeChildren3D: () => ConsoleTreeChildren3D,
-  CountMatchingChildren3D: () => CountMatchingChildren3D,
-  DepthFirstSearch3D: () => DepthFirstSearch3D,
-  DepthFirstSearchRecursive3D: () => DepthFirstSearchRecursive3D,
-  DepthFirstSearchRecursiveNested3D: () => DepthFirstSearchRecursiveNested3D,
-  DestroyChildren3D: () => DestroyChildren3D,
-  FindChild3DByName: () => FindChild3DByName,
-  FindChildren3DByName: () => FindChildren3DByName,
-  GetAllChildren3D: () => GetAllChildren3D,
-  GetChild3DAt: () => GetChild3DAt,
-  GetChild3DIndex: () => GetChild3DIndex,
-  GetChildren3D: () => GetChildren3D,
-  GetFirstChild3D: () => GetFirstChild3D,
-  GetLastChild3D: () => GetLastChild3D,
-  GetParents3D: () => GetParents3D,
-  GetRandomChild3D: () => GetRandomChild3D,
-  MoveChild3DTo: () => MoveChild3DTo,
-  RemoveChild3D: () => RemoveChild3D,
-  RemoveChild3DAt: () => RemoveChild3DAt,
-  RemoveChildren3D: () => RemoveChildren3D,
-  RemoveChildren3DAt: () => RemoveChildren3DAt,
-  RemoveChildren3DBetween: () => RemoveChildren3DBetween,
-  ReparentChildren3D: () => ReparentChildren3D,
-  ReplaceChild3D: () => ReplaceChild3D,
-  SetChildren3DValue: () => SetChildren3DValue,
-  SetParent3D: () => SetParent3D,
-  SetWorld3D: () => SetWorld3D,
-  SwapChildren3D: () => SwapChildren3D
-});
-
-// src/display3d/DepthFirstSearch3D.ts
-function DepthFirstSearch3D(parent) {
-  const stack = [parent];
-  const output = [];
-  while (stack.length > 0) {
-    const node = stack.shift();
-    output.push(node);
-    const numChildren = node.numChildren;
-    if (numChildren > 0) {
-      for (let i = numChildren - 1; i >= 0; i--) {
-        stack.unshift(node.children[i]);
-      }
-    }
-  }
-  output.shift();
-  return output;
-}
-
-// src/display3d/GetChild3DIndex.ts
-function GetChild3DIndex(parent, child) {
-  return parent.children.indexOf(child);
-}
-
-// src/display3d/RemoveChild3DAt.ts
-function RemoveChild3DAt(parent, index) {
-  const children = parent.children;
-  let child;
-  if (index >= 0 && index < children.length) {
-    const removed = children.splice(index, 1);
-    if (removed[0]) {
-      child = removed[0];
-      child.parent = null;
-    }
-  }
-  return child;
-}
-
-// src/display3d/RemoveChild3D.ts
-function RemoveChild3D(parent, child) {
-  const currentIndex = GetChild3DIndex(parent, child);
-  if (currentIndex > -1) {
-    RemoveChild3DAt(parent, currentIndex);
-  }
-  return child;
-}
-
-// src/display3d/SetWorld3D.ts
-function SetWorld3D(world, ...children) {
-  children.forEach((child) => {
-    if (child.world) {
-      Emit(child.world, RemovedFromWorldEvent, child, child.world);
-      Emit(child, RemovedFromWorldEvent, child, child.world);
-    }
-    child.world = world;
-    Emit(world, AddedToWorldEvent, child, world);
-    Emit(child, AddedToWorldEvent, child, world);
-  });
-  return children;
-}
-
-// src/display3d/SetParent3D.ts
-function SetParent3D(parent, ...children) {
-  children.forEach((child) => {
-    if (child.parent) {
-      RemoveChild3D(child.parent, child);
-    }
-    child.parent = parent;
-  });
-  const parentWorld = parent.world;
-  if (parentWorld) {
-    SetWorld3D(parentWorld, ...DepthFirstSearch3D(parent));
-  }
-  return children;
-}
-
-// src/display3d/AddChild3D.ts
-function AddChild3D(parent, child) {
-  parent.children.push(child);
-  SetParent3D(parent, child);
-  return child;
-}
-
-// src/display3d/AddChild3DAt.ts
-function AddChild3DAt(parent, index, child) {
-  const children = parent.children;
-  if (index >= 0 && index <= children.length) {
-    SetParent3D(parent, child);
-    children.splice(index, 0, child);
-  }
-  return child;
-}
-
-// src/display3d/AddChildren3D.ts
-function AddChildren3D(parent, ...children) {
-  children.forEach((child) => {
-    AddChild3D(parent, child);
-  });
-  return children;
-}
-
-// src/display3d/AddChildren3DAt.ts
-function AddChildren3DAt(parent, index, ...children) {
-  const parentChildren = parent.children;
-  if (index >= 0 && index <= parentChildren.length) {
-    children.reverse().forEach((child) => {
-      children.splice(index, 0, child);
-      SetParent3D(parent, child);
-    });
-  }
-  return children;
-}
-
-// src/display3d/DepthFirstSearchRecursiveNested3D.ts
-function DepthFirstSearchRecursiveNested3D(parent, output = []) {
-  for (let i = 0; i < parent.numChildren; i++) {
-    const node = parent.children[i];
-    const children = [];
-    output.push({node, children});
-    if (node.numChildren > 0) {
-      DepthFirstSearchRecursiveNested3D(node, children);
-    }
-  }
-  return output;
-}
-
-// src/display3d/ConsoleTreeChildren3D.ts
-function GetInfo2(entry) {
-  const legend = entry.numChildren > 0 ? "Parent" : "Child";
-  return `${legend} [ type=${entry.type}, name=${entry.name} ]`;
-}
-function LogChildren2(entry) {
-  console.group(GetInfo2(entry.node));
-  entry.children.forEach((child) => {
-    if (child.children.length > 0) {
-      LogChildren2(child);
-    } else {
-      console.log(GetInfo2(child.node));
-    }
-  });
-  console.groupEnd();
-}
-function ConsoleTreeChildren3D(parent) {
-  const entries = DepthFirstSearchRecursiveNested3D(parent);
-  if (parent.world === parent) {
-    console.group("World");
-  } else {
-    console.group(GetInfo2(parent));
-  }
-  entries.forEach((entry) => {
-    if (entry.children.length) {
-      LogChildren2(entry);
-    } else {
-      console.log(GetInfo2(entry.node));
-    }
-  });
-  console.groupEnd();
-}
-
-// src/display3d/CountMatchingChildren3D.ts
-function CountMatchingChildren3D(parent, property, value) {
-  const children = parent.children;
-  let total = 0;
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      total++;
-    }
-  });
-  return total;
-}
-
-// src/display3d/DepthFirstSearchRecursive3D.ts
-function DepthFirstSearchRecursive3D(parent, output = []) {
-  for (let i = 0; i < parent.numChildren; i++) {
-    const child = parent.children[i];
-    output.push(child);
-    if (child.numChildren > 0) {
-      DepthFirstSearchRecursive3D(child, output);
-    }
-  }
-  return output;
-}
-
-// src/display3d/RemoveChildren3DBetween.ts
-function RemoveChildren3DBetween(parent, beginIndex = 0, endIndex) {
-  const children = parent.children;
-  if (endIndex === void 0) {
-    endIndex = children.length;
-  }
-  const range = endIndex - beginIndex;
-  if (range > 0 && range <= endIndex) {
-    const removed = children.splice(beginIndex, range);
-    removed.forEach((child) => {
-      child.parent = null;
-    });
-    return removed;
-  } else {
-    return [];
-  }
-}
-
-// src/display3d/DestroyChildren3D.ts
-function DestroyChildren3D(parent, beginIndex = 0, endIndex) {
-  const removed = RemoveChildren3DBetween(parent, beginIndex, endIndex);
-  removed.forEach((child) => {
-    child.destroy();
-  });
-}
-
-// src/display3d/FindChild3DByName.ts
-function FindChild3DByName(parent, searchString) {
-  const children = DepthFirstSearch3D(parent);
-  const regex = RegExp(searchString);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (regex.test(child.name)) {
-      return child;
-    }
-  }
-}
-
-// src/display3d/FindChildren3DByName.ts
-function FindChildren3DByName(parent, searchString) {
-  const children = DepthFirstSearch3D(parent);
-  const regex = RegExp(searchString);
-  const results = [];
-  children.forEach((child) => {
-    if (regex.test(child.name)) {
-      results.push(child);
-    }
-  });
-  return results;
-}
-
-// src/display3d/GetAllChildren3D.ts
-function GetAllChildren3D(parent, property, value) {
-  const children = DepthFirstSearch3D(parent);
-  if (!property) {
-    return children;
-  }
-  const results = [];
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      results.push(child);
-    }
-  });
-  return results;
-}
-
-// src/display3d/GetChild3DAt.ts
-function GetChild3DAt(parent, index) {
-  const children = parent.children;
-  if (index < 0 || index > children.length) {
-    throw new Error(`Index out of bounds: ${index}`);
-  }
-  return children[index];
-}
-
-// src/display3d/GetChildren3D.ts
-function GetChildren3D(parent, property, value) {
-  const children = parent.children;
-  if (!property) {
-    return [...children];
-  }
-  const results = [];
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      results.push(child);
-    }
-  });
-  return results;
-}
-
-// src/display3d/GetFirstChild3D.ts
-function GetFirstChild3D(parent, property, value) {
-  const children = parent.children;
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      return child;
-    }
-  }
-}
-
-// src/display3d/GetLastChild3D.ts
-function GetLastChild3D(parent, property, value) {
-  const children = parent.children;
-  for (let i = children.length - 1; i >= 0; i--) {
-    const child = children[i];
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor && (value === void 0 || value === descriptor.value)) {
-      return child;
-    }
-  }
-}
-
-// src/display3d/GetParents3D.ts
-function GetParents3D(child) {
-  const parents = [];
-  while (child.parent) {
-    parents.push(child.parent);
-    child = child.parent;
-  }
-  return parents;
-}
-
-// src/display3d/GetRandomChild3D.ts
-function GetRandomChild3D(parent, startIndex = 0, length) {
-  const children = parent.children;
-  if (!length) {
-    length = children.length;
-  }
-  const randomIndex = startIndex + Math.floor(Math.random() * length);
-  return children[randomIndex];
-}
-
-// src/display3d/MoveChild3DTo.ts
-function MoveChild3DTo(parent, child, index) {
-  const parentChildren = parent.children;
-  const currentIndex = GetChild3DIndex(parent, child);
-  if (currentIndex === -1 || index < 0 || index >= parentChildren.length) {
-    throw new Error("Index out of bounds");
-  }
-  if (currentIndex !== index) {
-    parentChildren.splice(currentIndex, 1);
-    parentChildren.splice(index, 0, child);
-    child.setDirty(DIRTY_CONST.TRANSFORM);
-  }
-  return child;
-}
-
-// src/display3d/RemoveChildren3D.ts
-function RemoveChildren3D(parent, ...children) {
-  children.forEach((child) => {
-    RemoveChild3D(parent, child);
-  });
-  return children;
-}
-
-// src/display3d/RemoveChildren3DAt.ts
-function RemoveChildren3DAt(parent, ...index) {
-  const removed = [];
-  index.sort((a, b) => a - b);
-  index.reverse().forEach((i) => {
-    const child = RemoveChild3DAt(parent, i);
-    if (child) {
-      removed.push(child);
-    }
-  });
-  return removed;
-}
-
-// src/display3d/ReparentChildren3D.ts
-function ReparentChildren3D(parent, newParent, beginIndex = 0, endIndex) {
-  const moved = RemoveChildren3DBetween(parent, beginIndex, endIndex);
-  SetParent3D(newParent, ...moved);
-  moved.forEach((child) => {
-  });
-  return moved;
-}
-
-// src/display3d/ReplaceChild3D.ts
-function ReplaceChild3D(target, source) {
-  const targetParent = target.parent;
-  const sourceParent = source.parent;
-  const targetIndex = GetChild3DIndex(targetParent, target);
-  if (targetParent === sourceParent) {
-    MoveChild3DTo(targetParent, source, targetIndex);
-    RemoveChild3D(targetParent, target);
-  } else {
-    RemoveChild3D(targetParent, target);
-    RemoveChild3D(sourceParent, source);
-    AddChild3DAt(targetParent, targetIndex, source);
-  }
-  return target;
-}
-
-// src/display3d/SetChildren3DValue.ts
-function SetChildren3DValue(parent, property, value) {
-  const children = DepthFirstSearch3D(parent);
-  children.forEach((child) => {
-    const descriptor = Object.getOwnPropertyDescriptor(child, property);
-    if (descriptor) {
-      descriptor.set(value);
-    }
-  });
-  return children;
-}
-
-// src/display3d/SwapChildren3D.ts
-function SwapChildren3D(child1, child2) {
-  if (child1.parent === child2.parent) {
-    const children = child1.parent.children;
-    const index1 = GetChild3DIndex(child1.parent, child1);
-    const index2 = GetChild3DIndex(child2.parent, child2);
-    if (index1 !== index2) {
-      children[index1] = child2;
-      children[index2] = child1;
-    }
-  }
-}
-
-// src/events/index.ts
-var events_exports = {};
-__export(events_exports, {
-  ClearEvent: () => ClearEvent,
-  Emit: () => Emit,
-  EventEmitter: () => EventEmitter,
-  EventInstance: () => EventInstance,
-  GetEventNames: () => GetEventNames,
-  GetListenerCount: () => GetListenerCount,
-  GetListeners: () => GetListeners,
-  Off: () => Off,
-  On: () => On,
-  Once: () => Once,
-  RemoveAllListeners: () => RemoveAllListeners
-});
-
-// src/events/ClearEvent.ts
-function ClearEvent(emitter, event) {
-  emitter.events.delete(event);
-  return emitter;
-}
-
-// src/events/EventEmitter.ts
-var EventEmitter = class {
-  constructor() {
-    this.events = new Map();
-  }
-};
-
-// src/events/EventInstance.ts
-var EventInstance = class {
-  constructor(callback, context, once = false) {
-    this.callback = callback;
-    this.context = context;
-    this.once = once;
-  }
-};
-
-// src/events/GetEventNames.ts
-function GetEventNames(emitter) {
-  return [...emitter.events.keys()];
-}
-
-// src/events/GetListenerCount.ts
-function GetListenerCount(emitter, event) {
-  const listeners = emitter.events.get(event);
-  return listeners ? listeners.size : 0;
-}
-
-// src/events/GetListeners.ts
-function GetListeners(emitter, event) {
-  const out = [];
-  const listeners = emitter.events.get(event);
-  listeners.forEach((listener) => {
-    out.push(listener.callback);
-  });
-  return out;
-}
-
-// src/events/Off.ts
-function Off(emitter, event, callback, context, once) {
-  const events = emitter.events;
-  const listeners = events.get(event);
-  if (!callback) {
-    events.delete(event);
-  } else if (callback instanceof EventInstance) {
-    listeners.delete(callback);
-  } else {
-    const hasContext = !context;
-    const hasOnce = once !== void 0;
-    for (const listener of listeners) {
-      if (listener.callback === callback && (hasContext && listener.context === context) && (hasOnce && listener.once === once)) {
-        listeners.delete(listener);
-      }
-    }
-  }
-  if (listeners.size === 0) {
-    events.delete(event);
-  }
-  return emitter;
-}
-
-// src/events/On.ts
-function On(emitter, event, callback, context = emitter, once = false) {
-  if (typeof callback !== "function") {
-    throw new TypeError("Listener not a function");
-  }
-  const listener = new EventInstance(callback, context, once);
-  const listeners = emitter.events.get(event);
-  if (!listeners) {
-    emitter.events.set(event, new Set([listener]));
-  } else {
-    listeners.add(listener);
-  }
-  return listener;
-}
-
-// src/events/Once.ts
-function Once(emitter, event, callback, context = emitter) {
-  return On(emitter, event, callback, context, true);
-}
-
-// src/events/RemoveAllListeners.ts
-function RemoveAllListeners(emitter, event) {
-  if (!event) {
-    emitter.events.clear();
-  } else {
-    emitter.events.delete(event);
-  }
-}
-
-// src/gameobjects/index.ts
-var gameobjects_exports = {};
-__export(gameobjects_exports, {
-  AnimatedSprite: () => AnimatedSprite,
-  Components: () => components_exports,
-  Container: () => Container,
-  EffectLayer: () => EffectLayer,
-  GameObject: () => GameObject,
-  Layer: () => Layer,
-  Rectangle: () => Rectangle2,
-  RenderLayer: () => RenderLayer,
-  Sprite: () => Sprite,
-  SpriteBatch: () => SpriteBatch,
-  Text: () => Text
-});
-
-// src/components/index.ts
-var components_exports = {};
-__export(components_exports, {
-  Bounds: () => bounds_exports,
-  Input: () => input_exports,
-  Transform: () => transform_exports,
-  Vertex: () => Vertex
-});
-
-// src/components/bounds/index.ts
-var bounds_exports = {};
-__export(bounds_exports, {
-  BoundsComponent: () => BoundsComponent
-});
-
 // src/components/transform/GetVertices.ts
 function GetVertices(worldTransform, transformExtent) {
-  const {a, b, c, d, tx, ty} = worldTransform;
-  const {x, y, right, bottom} = transformExtent;
+  const { a, b, c, d, tx, ty } = worldTransform;
+  const { x, y, right, bottom } = transformExtent;
   const x0 = x * a + y * c + tx;
   const y0 = x * b + y * d + ty;
   const x1 = x * a + bottom * c + tx;
@@ -8970,15 +8895,17 @@ function GetVertices(worldTransform, transformExtent) {
   const y2 = right * b + bottom * d + ty;
   const x3 = right * a + y * c + tx;
   const y3 = right * b + y * d + ty;
-  return {x0, y0, x1, y1, x2, y2, x3, y3};
+  return { x0, y0, x1, y1, x2, y2, x3, y3 };
 }
 
 // src/components/bounds/BoundsComponent.ts
 var BoundsComponent = class {
+  entity;
+  area;
+  fixed = false;
+  includeChildren = true;
+  visibleOnly = true;
   constructor(entity) {
-    this.fixed = false;
-    this.includeChildren = true;
-    this.visibleOnly = true;
     this.entity = entity;
     this.area = new Rectangle();
   }
@@ -8992,7 +8919,7 @@ var BoundsComponent = class {
     return this.area;
   }
   updateLocal() {
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(this.entity.worldTransform, this.entity.transformExtent);
+    const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(this.entity.worldTransform, this.entity.transformExtent);
     const x = Math.min(x0, x1, x2, x3);
     const y = Math.min(y0, y1, y2, y3);
     const right = Math.max(x0, x1, x2, x3);
@@ -9046,9 +8973,11 @@ __export(input_exports, {
 
 // src/components/input/InputComponent.ts
 var InputComponent = class {
+  entity;
+  enabled = false;
+  enabledChildren = true;
+  hitArea;
   constructor(entity) {
-    this.enabled = false;
-    this.enabledChildren = true;
     this.entity = entity;
   }
   destroy() {
@@ -9057,18 +8986,192 @@ var InputComponent = class {
   }
 };
 
+// src/components/permissions/index.ts
+var permissions_exports = {};
+__export(permissions_exports, {
+  AddPermissionsComponent: () => AddPermissionsComponent,
+  PermissionsComponent: () => PermissionsComponent,
+  SetWillCacheChildren: () => SetWillCacheChildren,
+  SetWillRender: () => SetWillRender,
+  SetWillRenderChildren: () => SetWillRenderChildren,
+  SetWillUpdate: () => SetWillUpdate,
+  SetWillUpdateChildren: () => SetWillUpdateChildren,
+  WillCacheChildren: () => WillCacheChildren,
+  WillRender: () => WillRender,
+  WillRenderChildren: () => WillRenderChildren,
+  WillUpdate: () => WillUpdate,
+  WillUpdateChildren: () => WillUpdateChildren
+});
+
+// src/components/permissions/PermissionsComponent.ts
+var Permissions = defineComponent({
+  visible: Types.ui8,
+  visibleChildren: Types.ui8,
+  willUpdate: Types.ui8,
+  willUpdateChildren: Types.ui8,
+  willRender: Types.ui8,
+  willRenderChildren: Types.ui8,
+  willCacheChildren: Types.ui8,
+  willTransformChildren: Types.ui8
+});
+var PermissionsComponent = Permissions;
+
+// src/components/permissions/AddPermissionsComponent.ts
+function AddPermissionsComponent(id) {
+  addComponent(GameObjectWorld, PermissionsComponent, id);
+  PermissionsComponent.visible[id] = 1;
+  PermissionsComponent.visibleChildren[id] = 1;
+  PermissionsComponent.willUpdate[id] = 1;
+  PermissionsComponent.willUpdateChildren[id] = 1;
+  PermissionsComponent.willRender[id] = 1;
+  PermissionsComponent.willRenderChildren[id] = 1;
+  PermissionsComponent.willCacheChildren[id] = 0;
+  PermissionsComponent.willTransformChildren[id] = 1;
+}
+
+// src/components/permissions/SetWillCacheChildren.ts
+function SetWillCacheChildren(value, ...children) {
+  children.forEach((child) => {
+    PermissionsComponent.willCacheChildren[child.id] = Number(value);
+  });
+  return children;
+}
+
+// src/components/permissions/SetWillRender.ts
+function SetWillRender(value, ...children) {
+  children.forEach((child) => {
+    PermissionsComponent.willRender[child.id] = Number(value);
+  });
+  return children;
+}
+
+// src/components/permissions/SetWillRenderChildren.ts
+function SetWillRenderChildren(value, ...children) {
+  children.forEach((child) => {
+    PermissionsComponent.willRenderChildren[child.id] = Number(value);
+  });
+  return children;
+}
+
+// src/components/permissions/SetWillUpdate.ts
+function SetWillUpdate(value, ...children) {
+  children.forEach((child) => {
+    PermissionsComponent.willUpdate[child.id] = Number(value);
+  });
+  return children;
+}
+
+// src/components/permissions/SetWillUpdateChildren.ts
+function SetWillUpdateChildren(value, ...children) {
+  children.forEach((child) => {
+    PermissionsComponent.willUpdateChildren[child.id] = Number(value);
+  });
+  return children;
+}
+
+// src/components/permissions/WillCacheChildren.ts
+function WillCacheChildren(id) {
+  return Boolean(PermissionsComponent.willCacheChildren[id]);
+}
+
+// src/components/permissions/WillRender.ts
+function WillRender(id) {
+  return Boolean(PermissionsComponent.visible[id]) && Boolean(PermissionsComponent.willRender[id]);
+}
+
+// src/components/permissions/WillRenderChildren.ts
+function WillRenderChildren(id) {
+  return Boolean(PermissionsComponent.visibleChildren[id]) && Boolean(PermissionsComponent.willRenderChildren[id]);
+}
+
+// src/components/permissions/WillUpdate.ts
+function WillUpdate(id) {
+  return Boolean(PermissionsComponent.willUpdate[id]);
+}
+
+// src/components/permissions/WillUpdateChildren.ts
+function WillUpdateChildren(id) {
+  return Boolean(PermissionsComponent.willUpdateChildren[id]);
+}
+
 // src/components/transform/index.ts
 var transform_exports = {};
 __export(transform_exports, {
+  AddTransform2DComponent: () => AddTransform2DComponent,
+  Extent2DComponent: () => Extent2DComponent,
   GetVertices: () => GetVertices,
   GetVerticesFromValues: () => GetVerticesFromValues,
   GlobalToLocal: () => GlobalToLocal,
+  LocalMatrix2DComponent: () => LocalMatrix2DComponent,
   LocalToGlobal: () => LocalToGlobal,
   PreRenderVertices: () => PreRenderVertices,
-  UpdateLocalTransform: () => UpdateLocalTransform,
+  SetExtent: () => SetExtent,
+  Transform2DComponent: () => Transform2DComponent,
+  UpdateExtent: () => UpdateExtent,
+  UpdateLocalTransform2DSystem: () => UpdateLocalTransform2DSystem,
   UpdateVertices: () => UpdateVertices,
-  UpdateWorldTransform: () => UpdateWorldTransform
+  UpdateWorldTransform: () => UpdateWorldTransform,
+  UpdateWorldTransform2DSystem: () => UpdateWorldTransform2DSystem,
+  WorldMatrix2DComponent: () => WorldMatrix2DComponent
 });
+
+// src/components/transform/LocalMatrix2DComponent.ts
+var LocalMatrix2D = defineComponent({
+  a: Types.f32,
+  b: Types.f32,
+  c: Types.f32,
+  d: Types.f32,
+  tx: Types.f32,
+  ty: Types.f32
+});
+var LocalMatrix2DComponent = LocalMatrix2D;
+
+// src/components/transform/Transform2DComponent.ts
+var Transform2D = defineComponent({
+  x: Types.f32,
+  y: Types.f32,
+  rotation: Types.f32,
+  scaleX: Types.f32,
+  scaleY: Types.f32,
+  skewX: Types.f32,
+  skewY: Types.f32,
+  originX: Types.f32,
+  originY: Types.f32
+});
+var Transform2DComponent = Transform2D;
+
+// src/components/transform/WorldMatrix2DComponent.ts
+var WorldMatrix2D = defineComponent({
+  a: Types.f32,
+  b: Types.f32,
+  c: Types.f32,
+  d: Types.f32,
+  tx: Types.f32,
+  ty: Types.f32
+});
+var WorldMatrix2DComponent = WorldMatrix2D;
+
+// src/components/transform/AddTransform2DComponent.ts
+function AddTransform2DComponent(id, x = 0, y = 0, originX = 0, originY = 0) {
+  addComponent(GameObjectWorld, Transform2DComponent, id);
+  addComponent(GameObjectWorld, Extent2DComponent, id);
+  addComponent(GameObjectWorld, LocalMatrix2DComponent, id);
+  addComponent(GameObjectWorld, WorldMatrix2DComponent, id);
+  Transform2DComponent.x[id] = x;
+  Transform2DComponent.y[id] = y;
+  Transform2DComponent.scaleX[id] = 1;
+  Transform2DComponent.scaleY[id] = 1;
+  Transform2DComponent.originX[id] = originX;
+  Transform2DComponent.originY[id] = originY;
+  LocalMatrix2DComponent.a[id] = 1;
+  LocalMatrix2DComponent.d[id] = 1;
+  LocalMatrix2DComponent.tx[id] = x;
+  LocalMatrix2DComponent.ty[id] = y;
+  WorldMatrix2DComponent.a[id] = 1;
+  WorldMatrix2DComponent.d[id] = 1;
+  WorldMatrix2DComponent.tx[id] = x;
+  WorldMatrix2DComponent.ty[id] = y;
+}
 
 // src/components/transform/GetVerticesFromValues.ts
 function GetVerticesFromValues(left, right, top, bottom, x, y, rotation = 0, scaleX = 1, scaleY = 1, skewX = 0, skewY = 0) {
@@ -9084,12 +9187,12 @@ function GetVerticesFromValues(left, right, top, bottom, x, y, rotation = 0, sca
   const y2 = right * b + bottom * d + y;
   const x3 = right * a + top * c + x;
   const y3 = right * b + top * d + y;
-  return {x0, y0, x1, y1, x2, y2, x3, y3};
+  return { x0, y0, x1, y1, x2, y2, x3, y3 };
 }
 
 // src/components/transform/GlobalToLocal.ts
 function GlobalToLocal(worldTransform, x, y, out = new Vec2()) {
-  const {a, b, c, d, tx, ty} = worldTransform;
+  const { a, b, c, d, tx, ty } = worldTransform;
   const id = 1 / (a * d + c * -b);
   out.x = d * id * x + -c * id * y + (ty * c - tx * d) * id;
   out.y = a * id * y + -b * id * x + (-ty * a + tx * b) * id;
@@ -9098,7 +9201,7 @@ function GlobalToLocal(worldTransform, x, y, out = new Vec2()) {
 
 // src/components/transform/LocalToGlobal.ts
 function LocalToGlobal(worldTransform, x, y, out = new Vec2()) {
-  const {a, b, c, d, tx, ty} = worldTransform;
+  const { a, b, c, d, tx, ty } = worldTransform;
   out.x = a * x + c * y + tx;
   out.y = b * x + d * y + ty;
   return out;
@@ -9112,47 +9215,237 @@ function PackColors(vertices) {
 }
 
 // src/components/transform/UpdateVertices.ts
-function UpdateVertices(gameObject) {
-  const vertices = gameObject.vertices;
-  const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(gameObject.worldTransform, gameObject.transformExtent);
+function UpdateVertices(vertices, worldTransform, transformExtent) {
+  const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(worldTransform, transformExtent);
   vertices[0].setPosition(x0, y0);
   vertices[1].setPosition(x1, y1);
   vertices[2].setPosition(x2, y2);
   vertices[3].setPosition(x3, y3);
-  return gameObject;
 }
 
 // src/components/transform/PreRenderVertices.ts
 function PreRenderVertices(gameObject) {
+  const vertices = gameObject.vertices;
   if (gameObject.isDirty(DIRTY_CONST.COLORS)) {
-    PackColors(gameObject.vertices);
+    PackColors(vertices);
     gameObject.clearDirty(DIRTY_CONST.COLORS);
   }
   if (gameObject.isDirty(DIRTY_CONST.TRANSFORM)) {
-    UpdateVertices(gameObject);
+    UpdateVertices(vertices, gameObject.worldTransform, gameObject.transformExtent);
     gameObject.clearDirty(DIRTY_CONST.TRANSFORM);
   }
   return gameObject;
 }
 
-// src/components/transform/UpdateLocalTransform.ts
-function UpdateLocalTransform(localTransform, transformData) {
-  const [x, y, rotation, scaleX, scaleY, skewX, skewY] = transformData;
-  localTransform.set(Math.cos(rotation + skewY) * scaleX, Math.sin(rotation + skewY) * scaleX, -Math.sin(rotation - skewX) * scaleY, Math.cos(rotation - skewX) * scaleY, x, y);
+// src/components/transform/UpdateExtent.ts
+function UpdateExtent(id, width, height) {
+  const x = -Transform2DComponent.originX[id] * width;
+  const y = -Transform2DComponent.originY[id] * height;
+  Extent2DComponent.x[id] = x;
+  Extent2DComponent.y[id] = y;
+  Extent2DComponent.width[id] = width;
+  Extent2DComponent.height[id] = height;
+  Extent2DComponent.right[id] = x + width;
+  Extent2DComponent.bottom[id] = y + height;
+  SetDirtyTransform(id);
+}
+
+// src/components/transform/UpdateLocalTransform2DSystem.ts
+var changedLocalTransformQuery = defineQuery([Changed(Transform2DComponent)]);
+var entities;
+var updateLocalTransformSystem = defineSystem((world3) => {
+  for (let i = 0; i < entities.length; i++) {
+    const id = entities[i];
+    const x = Transform2DComponent.x[id];
+    const y = Transform2DComponent.y[id];
+    const rotation = Transform2DComponent.rotation[id];
+    const scaleX = Transform2DComponent.scaleX[id];
+    const scaleY = Transform2DComponent.scaleY[id];
+    const skewX = Transform2DComponent.skewX[id];
+    const skewY = Transform2DComponent.skewY[id];
+    LocalMatrix2DComponent.a[id] = Math.cos(rotation + skewY) * scaleX;
+    LocalMatrix2DComponent.b[id] = Math.sin(rotation + skewY) * scaleX;
+    LocalMatrix2DComponent.c[id] = -Math.sin(rotation - skewX) * scaleY;
+    LocalMatrix2DComponent.d[id] = Math.cos(rotation - skewX) * scaleY;
+    LocalMatrix2DComponent.tx[id] = x;
+    LocalMatrix2DComponent.ty[id] = y;
+  }
+  return world3;
+});
+var UpdateLocalTransform2DSystem = (world3) => {
+  entities = changedLocalTransformQuery(world3);
+  updateLocalTransformSystem(world3);
+  return entities;
+};
+
+// src/components/transform/CopyLocalToWorld.ts
+function CopyLocalToWorld(source, target) {
+  WorldMatrix2DComponent.a[target] = LocalMatrix2DComponent.a[source];
+  WorldMatrix2DComponent.b[target] = LocalMatrix2DComponent.b[source];
+  WorldMatrix2DComponent.c[target] = LocalMatrix2DComponent.c[source];
+  WorldMatrix2DComponent.d[target] = LocalMatrix2DComponent.d[source];
+  WorldMatrix2DComponent.tx[target] = LocalMatrix2DComponent.tx[source];
+  WorldMatrix2DComponent.ty[target] = LocalMatrix2DComponent.ty[source];
+}
+
+// src/components/transform/CopyWorldToWorld.ts
+function CopyWorldToWorld(source, target) {
+  WorldMatrix2DComponent.a[target] = WorldMatrix2DComponent.a[source];
+  WorldMatrix2DComponent.b[target] = WorldMatrix2DComponent.b[source];
+  WorldMatrix2DComponent.c[target] = WorldMatrix2DComponent.c[source];
+  WorldMatrix2DComponent.d[target] = WorldMatrix2DComponent.d[source];
+  WorldMatrix2DComponent.tx[target] = WorldMatrix2DComponent.tx[source];
+  WorldMatrix2DComponent.ty[target] = WorldMatrix2DComponent.ty[source];
+}
+
+// src/components/transform/MultiplyLocalWithWorld.ts
+function MultiplyLocalWithWorld(parentID, id) {
+  const pa = WorldMatrix2DComponent.a[parentID];
+  const pb = WorldMatrix2DComponent.b[parentID];
+  const pc = WorldMatrix2DComponent.c[parentID];
+  const pd = WorldMatrix2DComponent.d[parentID];
+  const ptx = WorldMatrix2DComponent.tx[parentID];
+  const pty = WorldMatrix2DComponent.ty[parentID];
+  const a = LocalMatrix2DComponent.a[id];
+  const b = LocalMatrix2DComponent.b[id];
+  const c = LocalMatrix2DComponent.c[id];
+  const d = LocalMatrix2DComponent.d[id];
+  const tx = LocalMatrix2DComponent.tx[id];
+  const ty = LocalMatrix2DComponent.ty[id];
+  WorldMatrix2DComponent.a[id] = a * pa + b * pc;
+  WorldMatrix2DComponent.b[id] = a * pb + b * pd;
+  WorldMatrix2DComponent.c[id] = c * pa + d * pc;
+  WorldMatrix2DComponent.d[id] = c * pb + d * pd;
+  WorldMatrix2DComponent.tx[id] = tx * pa + ty * pc + ptx;
+  WorldMatrix2DComponent.ty[id] = tx * pb + ty * pd + pty;
+}
+
+// src/world/RenderDataComponent.ts
+var RenderData = defineComponent({
+  gameFrame: Types.ui32,
+  dirtyFrame: Types.ui32,
+  numRendered: Types.ui32,
+  numRenderable: Types.ui32
+});
+var RenderDataComponent = RenderData;
+
+// src/world/ResetWorldRenderData.ts
+var numWorldTransforms = 0;
+function ResetWorldRenderData(id, gameFrame) {
+  numWorldTransforms = 0;
+  RenderDataComponent.gameFrame[id] = gameFrame;
+  RenderDataComponent.dirtyFrame[id] = 0;
+  RenderDataComponent.numRendered[id] = 0;
+  RenderDataComponent.numRenderable[id] = 0;
+}
+function UpdateNumWorldTransforms() {
+  numWorldTransforms++;
+}
+function GetNumWorldTransforms() {
+  return numWorldTransforms;
+}
+
+// src/components/permissions/WillTransformChildren.ts
+function WillTransformChildren(id) {
+  return Boolean(PermissionsComponent.willTransformChildren[id]);
 }
 
 // src/components/transform/UpdateWorldTransform.ts
-function UpdateWorldTransform(localTransform, worldTransform, passthru, parentWorldTransform) {
-  if (!parentWorldTransform) {
-    Mat2dCopyFrom(localTransform, worldTransform);
-  } else if (passthru) {
-    Mat2dCopyFrom(parentWorldTransform, worldTransform);
+function UpdateWorldTransform(id) {
+  const parentID = GetParentID(id);
+  if (parentID === 0) {
+    CopyLocalToWorld(id, id);
+  } else if (!WillTransformChildren(id)) {
+    CopyWorldToWorld(parentID, id);
   } else {
-    const {a, b, c, d, tx, ty} = localTransform;
-    const {a: pa, b: pb, c: pc, d: pd, tx: ptx, ty: pty} = parentWorldTransform;
-    worldTransform.set(a * pa + b * pc, a * pb + b * pd, c * pa + d * pc, c * pb + d * pd, tx * pa + ty * pc + ptx, tx * pb + ty * pd + pty);
+    MultiplyLocalWithWorld(parentID, id);
   }
+  UpdateNumWorldTransforms();
 }
+
+// src/components/transform/UpdateWorldTransform2DSystem.ts
+var changedWorldTransformQuery = defineQuery([Changed(LocalMatrix2DComponent)]);
+var updateWorldTransformSystem = defineSystem((world3) => {
+  const entities3 = changedWorldTransformQuery(world3);
+  for (let i = 0; i < entities3.length; i++) {
+    const id = entities3[i];
+    const gameObject = GameObjectCache.get(id);
+    const parent = gameObject.parent;
+    if (!parent) {
+      CopyLocalToWorld(id, id);
+    } else if (!WillTransformChildren(id)) {
+      CopyWorldToWorld(parent.id, id);
+    } else {
+      MultiplyLocalWithWorld(parent.id, id);
+    }
+  }
+});
+var UpdateWorldTransform2DSystem = updateWorldTransformSystem;
+
+// src/components/vertices/index.ts
+var vertices_exports = {};
+__export(vertices_exports, {
+  AddVertex: () => AddVertex,
+  QuadVertexComponent: () => QuadVertexComponent,
+  SetUV: () => SetUV,
+  UpdateVertexPositionSystem: () => UpdateVertexPositionSystem,
+  VertexComponent: () => VertexComponent,
+  VertexWorld: () => VertexWorld
+});
+
+// src/components/vertices/VertexWorld.ts
+var world2 = createWorld();
+var VertexWorld = world2;
+
+// src/components/vertices/AddVertex.ts
+function AddVertex() {
+  const vertexID = addEntity(VertexWorld);
+  addComponent(VertexWorld, VertexComponent, vertexID);
+  VertexComponent.alpha[vertexID] = 1;
+  VertexComponent.tint[vertexID] = 16777215;
+  VertexComponent.color[vertexID] = 4294967295;
+  return vertexID;
+}
+
+// src/components/vertices/UpdateVertexPositionSystem.ts
+var changedWorldExtentQuery = defineQuery([
+  Changed(WorldMatrix2DComponent),
+  Changed(Extent2DComponent)
+]);
+var entities2;
+var updateVertexPositionSystem = defineSystem((world3) => {
+  for (let i = 0; i < entities2.length; i++) {
+    const id = entities2[i];
+    const a = WorldMatrix2DComponent.a[id];
+    const b = WorldMatrix2DComponent.b[id];
+    const c = WorldMatrix2DComponent.c[id];
+    const d = WorldMatrix2DComponent.d[id];
+    const tx = WorldMatrix2DComponent.tx[id];
+    const ty = WorldMatrix2DComponent.ty[id];
+    const x = Extent2DComponent.x[id];
+    const y = Extent2DComponent.y[id];
+    const right = Extent2DComponent.right[id];
+    const bottom = Extent2DComponent.bottom[id];
+    const v1 = QuadVertexComponent.v1[id];
+    const v2 = QuadVertexComponent.v2[id];
+    const v3 = QuadVertexComponent.v3[id];
+    const v4 = QuadVertexComponent.v4[id];
+    VertexComponent.x[v1] = x * a + y * c + tx;
+    VertexComponent.y[v1] = x * b + y * d + ty;
+    VertexComponent.x[v2] = x * a + bottom * c + tx;
+    VertexComponent.y[v2] = x * b + bottom * d + ty;
+    VertexComponent.x[v3] = right * a + bottom * c + tx;
+    VertexComponent.y[v3] = right * b + bottom * d + ty;
+    VertexComponent.x[v4] = right * a + y * c + tx;
+    VertexComponent.y[v4] = right * b + y * d + ty;
+  }
+  return world3;
+});
+var UpdateVertexPositionSystem = (world3) => {
+  entities2 = changedWorldExtentQuery(world3);
+  updateVertexPositionSystem(world3);
+  return entities2;
+};
 
 // src/renderer/webgl1/colors/PackColor.ts
 function PackColor(rgb, alpha) {
@@ -9161,17 +9454,17 @@ function PackColor(rgb, alpha) {
 }
 
 // src/components/Vertex.ts
-var Vertex = class {
+var Vertex2 = class {
+  x = 0;
+  y = 0;
+  z = 0;
+  u = 0;
+  v = 0;
+  texture = 0;
+  tint = 16777215;
+  alpha = 1;
+  color = 4294967295;
   constructor(x = 0, y = 0, z = 0) {
-    this.x = 0;
-    this.y = 0;
-    this.z = 0;
-    this.u = 0;
-    this.v = 0;
-    this.texture = 0;
-    this.tint = 16777215;
-    this.alpha = 1;
-    this.color = 4294967295;
     this.x = x;
     this.y = y;
     this.z = z;
@@ -9206,20 +9499,26 @@ var Vertex = class {
   }
 };
 
+// src/renderer/webgl1/draw/AddVertexToBatch.ts
+function AddVertexToBatch(id, offset, textureIndex, F32, U32) {
+  VertexComponent.offset[id] = offset;
+  F32[offset + 0] = VertexComponent.x[id];
+  F32[offset + 1] = VertexComponent.y[id];
+  F32[offset + 2] = VertexComponent.u[id];
+  F32[offset + 3] = VertexComponent.v[id];
+  F32[offset + 4] = textureIndex;
+  U32[offset + 5] = VertexComponent.color[id];
+  return offset + 6;
+}
+
 // src/renderer/webgl1/draw/BatchTexturedQuad.ts
-function BatchTexturedQuad(texture, vertices, renderPass) {
-  const {F32, U32, offset} = GetVertexBufferEntry(renderPass, 1);
+function BatchTexturedQuad(texture, id, renderPass) {
+  const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
   const textureIndex = SetTexture(renderPass, texture);
-  let vertOffset = offset;
-  vertices.forEach((vertex) => {
-    F32[vertOffset + 0] = vertex.x;
-    F32[vertOffset + 1] = vertex.y;
-    F32[vertOffset + 2] = vertex.u;
-    F32[vertOffset + 3] = vertex.v;
-    F32[vertOffset + 4] = textureIndex;
-    U32[vertOffset + 5] = vertex.color;
-    vertOffset += 6;
-  });
+  let vertOffset = AddVertexToBatch(QuadVertexComponent.v1[id], offset, textureIndex, F32, U32);
+  vertOffset = AddVertexToBatch(QuadVertexComponent.v2[id], vertOffset, textureIndex, F32, U32);
+  vertOffset = AddVertexToBatch(QuadVertexComponent.v3[id], vertOffset, textureIndex, F32, U32);
+  AddVertexToBatch(QuadVertexComponent.v4[id], vertOffset, textureIndex, F32, U32);
 }
 
 // src/config/defaultorigin/GetDefaultOriginX.ts
@@ -9232,86 +9531,166 @@ function GetDefaultOriginY() {
   return ConfigStore.get(CONFIG_DEFAULTS.DEFAULT_ORIGIN).y;
 }
 
-// src/geom/rectangle/GetRectangleSize.ts
-function GetRectangleSize(rect, out = new Vec2()) {
-  return out.set(rect.width, rect.height);
+// src/display/RemoveChildrenBetween.ts
+function RemoveChildrenBetween(parent, beginIndex = 0, endIndex) {
+  const children = parent.children;
+  if (endIndex === void 0) {
+    endIndex = children.length;
+  }
+  const range = endIndex - beginIndex;
+  if (range > 0 && range <= endIndex) {
+    const removed2 = children.splice(beginIndex, range);
+    removed2.forEach((child) => {
+      child.parent = null;
+    });
+    return removed2;
+  } else {
+    return [];
+  }
 }
 
-// src/components/transform/TRANSFORM_CONST.ts
-var TRANSFORM_CONST = {
-  X: 0,
-  Y: 1,
-  ROTATION: 2,
-  SCALE_X: 3,
-  SCALE_Y: 4,
-  SKEW_X: 5,
-  SKEW_Y: 6,
-  ORIGIN_X: 7,
-  ORIGIN_Y: 8,
-  PASSTHRU: 9
-};
+// src/display/DestroyChildren.ts
+function DestroyChildren(parent, beginIndex = 0, endIndex) {
+  const removed2 = RemoveChildrenBetween(parent, beginIndex, endIndex);
+  removed2.forEach((child) => {
+    child.destroy();
+  });
+}
+
+// src/gameobjects/events/DestroyEvent.ts
+var DestroyEvent = "destroy";
+
+// src/events/Emit.ts
+function Emit(emitter, event, ...args) {
+  if (emitter.events.size === 0 || !emitter.events.has(event)) {
+    return false;
+  }
+  const listeners = emitter.events.get(event);
+  const handlers = [...listeners];
+  for (const ee of handlers) {
+    ee.callback.apply(ee.context, args);
+    if (ee.once) {
+      listeners.delete(ee);
+    }
+  }
+  if (listeners.size === 0) {
+    emitter.events.delete(event);
+  }
+  return true;
+}
+
+// src/display/DepthFirstSearch.ts
+function DepthFirstSearch(parent) {
+  const stack = [parent];
+  const output = [];
+  while (stack.length > 0) {
+    const node = stack.shift();
+    output.push(node);
+    const numChildren = node.numChildren;
+    if (numChildren > 0) {
+      for (let i = numChildren - 1; i >= 0; i--) {
+        stack.unshift(node.children[i]);
+      }
+    }
+  }
+  output.shift();
+  return output;
+}
+
+// src/display/GetChildIndex.ts
+function GetChildIndex(parent, child) {
+  return GameObjectTree.get(parent.id).indexOf(child.id);
+}
+
+// src/display/RemoveChildAt.ts
+function RemoveChildAt(parent, index) {
+  const children = GameObjectTree.get(parent.id);
+  if (index >= 0 && index < children.length) {
+    const removedID = children.splice(index, 1)[0];
+    if (removedID) {
+      const worldID = GetWorldID(removedID);
+      SetDirtyDisplayList(worldID);
+      ClearWorldAndParentID(removedID);
+      UpdateNumChildren(parent.id);
+      return GameObjectCache.get(removedID);
+    }
+  }
+}
+
+// src/display/RemoveChild.ts
+function RemoveChild(parent, child) {
+  if (child.hasParent()) {
+    RemoveChildAt(parent, GetChildIndex(parent, child));
+  }
+  return child;
+}
+
+// src/display/SetWorld.ts
+function SetWorld(world3, ...children) {
+  children.forEach((child) => {
+    addComponent(GameObjectWorld, world3.tag, child.id);
+  });
+  return children;
+}
+
+// src/display/SetParent.ts
+function SetParent2(parent, ...children) {
+  children.forEach((child) => {
+    if (child.parent) {
+      RemoveChild(child.parent, child);
+    }
+    child.parent = parent;
+  });
+  const parentWorld = parent.world;
+  if (parentWorld) {
+    SetWorld(parentWorld, ...DepthFirstSearch(parent));
+  }
+  return children;
+}
+
+// src/display/ReparentChildren.ts
+function ReparentChildren(parent, newParent, beginIndex = 0, endIndex) {
+  const moved = RemoveChildrenBetween(parent, beginIndex, endIndex);
+  SetParent2(newParent, ...moved);
+  moved.forEach((child) => {
+    child.updateWorldTransform();
+  });
+  return moved;
+}
 
 // src/gameobjects/GameObject.ts
 var GameObject = class {
-  constructor(x = 0, y = 0) {
-    this.type = "GameObject";
-    this.name = "";
-    this.willUpdate = true;
-    this.willUpdateChildren = true;
-    this.willRender = true;
-    this.willRenderChildren = true;
-    this.willCacheChildren = false;
-    this.dirty = 0;
-    this.dirtyFrame = 0;
-    this.visible = true;
-    this.children = [];
-    this.vertices = [];
+  id = addEntity(GameObjectWorld);
+  name = "";
+  events;
+  constructor() {
+    const id = this.id;
+    AddHierarchyComponent(id);
+    AddPermissionsComponent(id);
+    AddDirtyComponent(id);
+    GameObjectCache.set(id, this);
+    GameObjectTree.set(id, []);
     this.events = new Map();
-    this.localTransform = new Matrix2D();
-    this.worldTransform = new Matrix2D();
-    this.transformData = new Float32Array([x, y, 0, 1, 1, 0, 0, GetDefaultOriginX(), GetDefaultOriginY(), 0]);
-    this.transformExtent = new Rectangle();
-    this.bounds = new BoundsComponent(this);
-    this.input = new InputComponent(this);
-    this.dirty = DIRTY_CONST.DEFAULT;
-    this.updateLocalTransform();
-    this.updateWorldTransform();
   }
   isRenderable() {
-    return this.visible && this.willRender;
+    return WillRender(this.id);
   }
-  isDirty(flag) {
-    return (this.dirty & flag) !== 0;
-  }
-  clearDirty(flag) {
-    if (this.isDirty(flag)) {
-      this.dirty ^= flag;
-    }
-    return this;
-  }
-  setDirty(flag, flag2) {
-    if (!this.isDirty(flag)) {
-      this.dirty ^= flag;
-      this.dirtyFrame = GameInstance.getFrame();
-    }
-    if (!this.isDirty(flag2)) {
-      this.dirty ^= flag2;
-    }
-    return this;
+  beforeUpdate(delta, time) {
   }
   update(delta, time) {
-    if (this.willUpdateChildren) {
-      const children = this.children;
+    this.beforeUpdate(delta, time);
+    if (WillUpdateChildren(this.id)) {
+      const children = GameObjectTree.get(this.id);
       for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (child && child.willUpdate) {
-          child.update(delta, time);
+        const childID = children[i];
+        if (WillUpdate(childID)) {
+          GameObjectCache.get(childID).update(delta, time);
         }
       }
     }
-    this.postUpdate(delta, time);
+    this.afterUpdate(delta, time);
   }
-  postUpdate(delta, time) {
+  afterUpdate(delta, time) {
   }
   renderGL(renderPass) {
   }
@@ -9321,53 +9700,62 @@ var GameObject = class {
   }
   postRenderCanvas(renderer) {
   }
-  get numChildren() {
-    return this.children.length;
+  set visible(value) {
+    PermissionsComponent.visible[this.id] = Number(value);
+  }
+  get visible() {
+    return Boolean(PermissionsComponent.visible[this.id]);
+  }
+  set visibleChildren(value) {
+    PermissionsComponent.visibleChildren[this.id] = Number(value);
+  }
+  get visibleChildren() {
+    return Boolean(PermissionsComponent.visibleChildren[this.id]);
+  }
+  set depth(value) {
+    HierarchyComponent.depth[this.id] = value;
+  }
+  get depth() {
+    return HierarchyComponent.depth[this.id];
+  }
+  hasParent() {
+    return HierarchyComponent.parentID[this.id] > 0;
+  }
+  getParent() {
+    return GetParentGameObject(this.id);
+  }
+  getChildren() {
+    return GetChildren(this.id);
+  }
+  getNumChildren() {
+    return GetNumChildren(this.id);
+  }
+  destroy(reparentChildren) {
+    if (reparentChildren) {
+      ReparentChildren(this, reparentChildren);
+    } else {
+      DestroyChildren(this);
+    }
+    Emit(this, DestroyEvent, this);
+    this.events.clear();
+    this.events = null;
+  }
+};
+
+// src/gameobjects/container/Container.ts
+var Container = class extends GameObject {
+  _alpha = 1;
+  constructor(x = 0, y = 0) {
+    super();
+    AddTransform2DComponent(this.id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
+  }
+  updateWorldTransform() {
   }
   getBounds() {
     return this.bounds.get();
   }
-  updateTransform(flag, value) {
-    if (this.transformData[flag] !== value) {
-      this.transformData[flag] = value;
-      this.updateLocalTransform();
-      this.updateWorldTransform();
-    }
-  }
-  updateLocalTransform() {
-    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-    UpdateLocalTransform(this.localTransform, this.transformData);
-  }
-  updateWorldTransform() {
-    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-    const parentWorldTransform = this.parent ? this.parent.worldTransform : void 0;
-    UpdateWorldTransform(this.localTransform, this.worldTransform, this.passthru, parentWorldTransform);
-    if (this.numChildren) {
-      const children = this.children;
-      for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        child.updateWorldTransform();
-      }
-    }
-  }
-  setExtent(x, y, width, height) {
-    this.transformExtent.set(x, y, width, height);
-    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-  }
-  updateExtent(width, height) {
-    const extent = this.transformExtent;
-    if (width !== void 0) {
-      extent.width = width;
-    }
-    if (height !== void 0) {
-      extent.height = height;
-    }
-    extent.x = -this.originX * extent.width;
-    extent.y = -this.originY * extent.height;
-    this.setDirty(DIRTY_CONST.TRANSFORM, DIRTY_CONST.BOUNDS);
-  }
   setSize(width, height = width) {
-    this.updateExtent(width, height);
+    UpdateExtent(this.id, width, height);
     return this;
   }
   setPosition(x, y) {
@@ -9390,14 +9778,14 @@ var GameObject = class {
     return this;
   }
   setOrigin(x, y = x) {
-    const transformData = this.transformData;
-    transformData[TRANSFORM_CONST.ORIGIN_X] = x;
-    transformData[TRANSFORM_CONST.ORIGIN_Y] = y;
-    this.updateExtent();
+    const id = this.id;
+    Transform2DComponent.originX[id] = x;
+    Transform2DComponent.originY[id] = y;
+    UpdateExtent(id, this.width, this.height);
     return this;
   }
   getSize(out = new Vec2()) {
-    return GetRectangleSize(this.transformExtent, out);
+    return out.set(Extent2DComponent.width[this.id], Extent2DComponent.height[this.id]);
   }
   getPosition(out = new Vec2()) {
     return out.set(this.x, this.y);
@@ -9415,131 +9803,93 @@ var GameObject = class {
     return this.rotation;
   }
   set width(value) {
-    this.updateExtent(value);
+    UpdateExtent(this.id, value, this.height);
   }
   get width() {
-    return this.transformExtent.width;
+    return Extent2DComponent.width[this.id];
   }
   set height(value) {
-    this.updateExtent(void 0, value);
+    UpdateExtent(this.id, this.width, value);
   }
   get height() {
-    return this.transformExtent.height;
+    return Extent2DComponent.height[this.id];
   }
   set x(value) {
-    this.updateTransform(TRANSFORM_CONST.X, value);
+    Transform2DComponent.x[this.id] = value;
   }
   get x() {
-    return this.transformData[TRANSFORM_CONST.X];
+    return Transform2DComponent.x[this.id];
   }
   set y(value) {
-    this.updateTransform(TRANSFORM_CONST.Y, value);
+    Transform2DComponent.y[this.id] = value;
   }
   get y() {
-    return this.transformData[TRANSFORM_CONST.Y];
+    return Transform2DComponent.y[this.id];
   }
   set originX(value) {
-    const transformData = this.transformData;
-    if (value !== transformData[TRANSFORM_CONST.ORIGIN_X]) {
-      transformData[TRANSFORM_CONST.ORIGIN_X] = value;
-      this.updateExtent();
-    }
+    Transform2DComponent.originX[this.id] = value;
+    UpdateExtent(this.id, this.width, this.height);
   }
   get originX() {
-    return this.transformData[TRANSFORM_CONST.ORIGIN_X];
+    return Transform2DComponent.originX[this.id];
   }
   set originY(value) {
-    const transformData = this.transformData;
-    if (value !== transformData[TRANSFORM_CONST.ORIGIN_Y]) {
-      transformData[TRANSFORM_CONST.ORIGIN_Y] = value;
-      this.updateExtent();
-    }
+    Transform2DComponent.originY[this.id] = value;
+    UpdateExtent(this.id, this.width, this.height);
   }
   get originY() {
-    return this.transformData[TRANSFORM_CONST.ORIGIN_Y];
+    return Transform2DComponent.originY[this.id];
   }
   set skewX(value) {
-    this.updateTransform(TRANSFORM_CONST.SKEW_X, value);
+    Transform2DComponent.skewX[this.id] = value;
   }
   get skewX() {
-    return this.transformData[TRANSFORM_CONST.SKEW_X];
+    return Transform2DComponent.skewX[this.id];
   }
   set skewY(value) {
-    this.updateTransform(TRANSFORM_CONST.SKEW_Y, value);
+    Transform2DComponent.skewY[this.id] = value;
   }
   get skewY() {
-    return this.transformData[TRANSFORM_CONST.SKEW_Y];
+    return Transform2DComponent.skewY[this.id];
   }
   set scaleX(value) {
-    this.updateTransform(TRANSFORM_CONST.SCALE_X, value);
+    Transform2DComponent.scaleX[this.id] = value;
   }
   get scaleX() {
-    return this.transformData[TRANSFORM_CONST.SCALE_X];
+    return Transform2DComponent.scaleX[this.id];
   }
   set scaleY(value) {
-    this.updateTransform(TRANSFORM_CONST.SCALE_Y, value);
+    Transform2DComponent.scaleY[this.id] = value;
   }
   get scaleY() {
-    return this.transformData[TRANSFORM_CONST.SCALE_Y];
+    return Transform2DComponent.scaleY[this.id];
   }
   set rotation(value) {
-    this.updateTransform(TRANSFORM_CONST.ROTATION, value);
+    Transform2DComponent.rotation[this.id] = value;
   }
   get rotation() {
-    return this.transformData[TRANSFORM_CONST.ROTATION];
-  }
-  set passthru(value) {
-    this.updateTransform(TRANSFORM_CONST.PASSTHRU, Number(value));
-  }
-  get passthru() {
-    return Boolean(this.transformData[TRANSFORM_CONST.PASSTHRU]);
-  }
-  destroy(reparentChildren) {
-    if (reparentChildren) {
-      ReparentChildren(this, reparentChildren);
-    } else {
-      DestroyChildren(this);
-    }
-    Emit(this, DestroyEvent, this);
-    this.bounds.destroy();
-    this.input.destroy();
-    this.events.clear();
-    this.world = null;
-    this.parent = null;
-    this.children = null;
-    this.vertices = [];
-  }
-};
-
-// src/gameobjects/container/Container.ts
-var Container = class extends GameObject {
-  constructor(x = 0, y = 0) {
-    super(x, y);
-    this._alpha = 1;
-    this.type = "Container";
+    return Transform2DComponent.rotation[this.id];
   }
   get alpha() {
     return this._alpha;
   }
   set alpha(value) {
-    if (value !== this._alpha) {
-      this._alpha = value;
-      this.vertices.forEach((vertex) => {
-        vertex.setAlpha(value);
-      });
-      this.setDirty(DIRTY_CONST.COLORS);
-    }
+    this._alpha = value;
+    SetDirtyAlpha(this.id);
+  }
+  destroy(reparentChildren) {
+    super.destroy(reparentChildren);
   }
 };
 
-// src/renderer/canvas/draw/DrawTexturedQuad.ts
-function DrawTexturedQuad(frame2, alpha, worldTransform, transformExtent, renderer) {
+// src/renderer/canvas/draw/DrawImage.ts
+function DrawImage(frame2, alpha, worldTransform, transformExtent, renderer) {
   if (!frame2) {
     return;
   }
   const ctx = renderer.ctx;
-  const {a, b, c, d, tx, ty} = worldTransform;
-  const {x, y} = transformExtent;
+  const { a, b, c, d, tx, ty } = worldTransform;
+  const { x, y } = transformExtent;
   ctx.save();
   ctx.setTransform(a, b, c, d, tx, ty);
   ctx.globalAlpha = alpha;
@@ -9561,7 +9911,7 @@ function SetFrame(texture, key, ...children) {
       child.setOrigin(pivot.x, pivot.y);
     }
     frame2.copyToExtent(child);
-    frame2.copyToVertices(child.vertices);
+    frame2.copyToVertices(child.id);
   });
   return children;
 }
@@ -9598,12 +9948,18 @@ function SetTexture2(key, frame2, ...children) {
 
 // src/gameobjects/sprite/Sprite.ts
 var Sprite = class extends Container {
+  texture;
+  frame;
+  hasTexture = false;
+  _tint = 16777215;
   constructor(x, y, texture, frame2) {
     super(x, y);
-    this.hasTexture = false;
-    this._tint = 16777215;
-    this.type = "Sprite";
-    this.vertices = [new Vertex(), new Vertex(), new Vertex(), new Vertex()];
+    const id = this.id;
+    addComponent(GameObjectWorld, QuadVertexComponent, id);
+    QuadVertexComponent.v1[id] = AddVertex();
+    QuadVertexComponent.v2[id] = AddVertex();
+    QuadVertexComponent.v3[id] = AddVertex();
+    QuadVertexComponent.v4[id] = AddVertex();
     this.setTexture(texture, frame2);
   }
   setTexture(key, frame2) {
@@ -9615,15 +9971,14 @@ var Sprite = class extends Container {
     return this;
   }
   isRenderable() {
-    return this.visible && this.willRender && this.hasTexture && this.alpha > 0;
+    return this.visible && this.hasTexture && WillRender(this.id) && this.alpha > 0;
   }
   renderGL(renderPass) {
-    PreRenderVertices(this);
-    BatchTexturedQuad(this.texture, this.vertices, renderPass);
+    BatchTexturedQuad(this.texture, this.id, renderPass);
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+    DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get tint() {
     return this._tint;
@@ -9631,10 +9986,7 @@ var Sprite = class extends Container {
   set tint(value) {
     if (value !== this._tint) {
       this._tint = value;
-      this.vertices.forEach((vertex) => {
-        vertex.setTint(value);
-      });
-      this.setDirty(DIRTY_CONST.COLORS);
+      SetDirtyVertexColors(this.id);
     }
   }
   destroy(reparentChildren) {
@@ -9647,21 +9999,23 @@ var Sprite = class extends Container {
 
 // src/gameobjects/animatedsprite/AnimatedSprite.ts
 var AnimatedSprite = class extends Sprite {
+  currentAnimation;
+  currentFrame;
+  animData;
+  hasStarted = false;
+  forward = true;
+  inReverse = false;
+  accumulator = 0;
+  nextTick = 0;
+  delayCounter = 0;
+  repeatCounter = 0;
+  pendingRepeat = false;
+  paused = false;
+  wasPlaying = false;
+  pendingStop = 0;
+  pendingStopValue = 0;
   constructor(x, y, texture, frame2) {
     super(x, y, texture, frame2);
-    this.hasStarted = false;
-    this.forward = true;
-    this.inReverse = false;
-    this.accumulator = 0;
-    this.nextTick = 0;
-    this.delayCounter = 0;
-    this.repeatCounter = 0;
-    this.pendingRepeat = false;
-    this.paused = false;
-    this.wasPlaying = false;
-    this.pendingStop = 0;
-    this.pendingStopValue = 0;
-    this.type = "AnimatedSprite";
     this.currentAnimation;
     this.animData = CreateAnimData();
   }
@@ -9907,7 +10261,7 @@ var AnimatedSprite = class extends Sprite {
 
 // src/renderer/webgl1/draw/BatchSingleQuad.ts
 function BatchSingleQuad(renderPass, x, y, width, height, u0, v0, u1, v1, textureIndex = 0, packedColor = 4294967295) {
-  const {F32, U32, offset} = GetVertexBufferEntry(renderPass, 1);
+  const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
   F32[offset + 0] = x;
   F32[offset + 1] = y;
   F32[offset + 2] = u0;
@@ -9935,11 +10289,11 @@ function BatchSingleQuad(renderPass, x, y, width, height, u0, v0, u1, v1, textur
 }
 
 // src/renderer/webgl1/draw/DrawTexturedQuad.ts
-function DrawTexturedQuad2(renderPass, texture, shader) {
+function DrawTexturedQuad(renderPass, texture, shader) {
   if (!shader) {
     shader = renderPass.quadShader;
   }
-  const {u0, v0, u1, v1} = texture.firstFrame;
+  const { u0, v0, u1, v1 } = texture.firstFrame;
   BindTexture(texture, 0);
   SetVertexBuffer(renderPass, renderPass.quadBuffer);
   SetShader(renderPass, shader, 0);
@@ -9954,7 +10308,6 @@ function DrawTexturedQuad2(renderPass, texture, shader) {
 var Layer = class extends GameObject {
   constructor() {
     super();
-    this.type = "Layer";
     this.passthru = true;
     this.willRender = false;
   }
@@ -9962,9 +10315,10 @@ var Layer = class extends GameObject {
 
 // src/gameobjects/renderlayer/RenderLayer.ts
 var RenderLayer = class extends Layer {
+  texture;
+  framebuffer;
   constructor() {
     super();
-    this.type = "RenderLayer";
     this.willRender = true;
     this.willRenderChildren = true;
     this.willCacheChildren = true;
@@ -9994,17 +10348,16 @@ var RenderLayer = class extends Layer {
   postRenderGL(renderPass) {
     Flush(renderPass);
     PopFramebuffer(renderPass);
-    DrawTexturedQuad2(renderPass, this.texture);
+    DrawTexturedQuad(renderPass, this.texture);
     this.clearDirty(DIRTY_CONST.TRANSFORM);
   }
 };
 
 // src/gameobjects/effectlayer/EffectLayer.ts
 var EffectLayer = class extends RenderLayer {
+  shaders = [];
   constructor(...shaders) {
     super();
-    this.shaders = [];
-    this.type = "EffectLayer";
     if (Array.isArray(shaders)) {
       this.shaders = shaders;
     }
@@ -10015,15 +10368,15 @@ var EffectLayer = class extends RenderLayer {
     Flush(renderPass);
     PopFramebuffer(renderPass);
     if (shaders.length === 0) {
-      DrawTexturedQuad2(renderPass, texture);
+      DrawTexturedQuad(renderPass, texture);
     } else {
       let prevTexture = texture;
       for (let i = 0; i < shaders.length; i++) {
         const shader = shaders[i];
-        DrawTexturedQuad2(renderPass, prevTexture, shader);
+        DrawTexturedQuad(renderPass, prevTexture, shader);
         prevTexture = shader.texture;
       }
-      DrawTexturedQuad2(renderPass, prevTexture);
+      DrawTexturedQuad(renderPass, prevTexture);
     }
     this.clearDirty(DIRTY_CONST.TRANSFORM);
   }
@@ -10031,11 +10384,12 @@ var EffectLayer = class extends RenderLayer {
 
 // src/gameobjects/rectangle/Rectangle.ts
 var Rectangle2 = class extends Container {
+  texture;
+  frame;
+  _color = 16777215;
   constructor(x, y, width = 64, height = 64, color = 16777215) {
     super(x, y);
-    this._color = 16777215;
-    this.type = "Rectangle";
-    this.vertices = [new Vertex(), new Vertex(), new Vertex(), new Vertex()];
+    this.vertices = [new Vertex2(), new Vertex2(), new Vertex2(), new Vertex2()];
     this.color = color;
     this.setWhiteTexture();
     this.setSize(width, height);
@@ -10059,7 +10413,7 @@ var Rectangle2 = class extends Container {
   }
   renderCanvas(renderer) {
     PreRenderVertices(this);
-    DrawTexturedQuad(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+    DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
   }
   get color() {
     return this._color;
@@ -10086,11 +10440,19 @@ function BatchTexturedQuadBuffer(batch, renderPass) {
 
 // src/gameobjects/spritebatch/SpriteBatch.ts
 var SpriteBatch = class extends Layer {
+  data;
+  vertexViewF32;
+  vertexViewU32;
+  index;
+  vertexBuffer;
+  indexBuffer;
+  count;
+  maxSize;
+  glTextureIndex = 0;
+  texture;
+  hasTexture = false;
   constructor(maxSize, texture) {
     super();
-    this.glTextureIndex = 0;
-    this.hasTexture = false;
-    this.type = "SpriteBatch";
     this.willRender = true;
     this.setTexture(texture);
     this.setMaxSize(maxSize);
@@ -10151,7 +10513,7 @@ var SpriteBatch = class extends Layer {
       console.warn("SpriteBatch full");
       return this;
     }
-    const {u0, u1, v0, v1} = frame2;
+    const { u0, u1, v0, v1 } = frame2;
     const F32 = this.vertexViewF32;
     const U32 = this.vertexViewU32;
     const offset = this.count * 24;
@@ -10200,15 +10562,15 @@ var SpriteBatch = class extends Layer {
       tint = 16777215
     } = config;
     const textureFrame = this.texture.getFrame(frame2);
-    const {left, right, top, bottom} = textureFrame.getExtent(originX, originY);
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVerticesFromValues(left, right, top, bottom, x, y, rotation, scaleX, scaleY, skewX, skewY);
+    const { left, right, top, bottom } = textureFrame.getExtent(originX, originY);
+    const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVerticesFromValues(left, right, top, bottom, x, y, rotation, scaleX, scaleY, skewX, skewY);
     const packedColor = PackColor(tint, alpha);
     return this.addToBatch(textureFrame, packedColor, x0, y0, x1, y1, x2, y2, x3, y3);
   }
   addXY(x, y, frame2) {
     const textureFrame = this.texture.getFrame(frame2);
-    const {left, right, top, bottom} = textureFrame.getExtent(0, 0);
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVerticesFromValues(left, right, top, bottom, x, y);
+    const { left, right, top, bottom } = textureFrame.getExtent(0, 0);
+    const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVerticesFromValues(left, right, top, bottom, x, y);
     return this.addToBatch(textureFrame, 4294967295, x0, y0, x1, y1, x2, y2, x3, y3);
   }
   updateTextureIndex() {
@@ -10243,23 +10605,30 @@ var SpriteBatch = class extends Layer {
 
 // src/gameobjects/text/Text.ts
 var Text = class extends Sprite {
+  _text;
+  preRenderCallback;
+  wordWrapCallback;
+  canvas;
+  context;
+  splitRegExp = /(?:\r\n|\r|\n)/;
+  padding = { left: 0, right: 0, top: 0, bottom: 0 };
+  verticalAlign = "ascent";
+  lineSpacing = 0;
+  resolution;
+  font = "16px monospace";
+  fillStyle = "#fff";
+  strokeStyle = "";
+  backgroundStyle = "";
+  cornerRadius = 0;
+  textAlign = "left";
+  textBaseline = "alphabetic";
+  lineWidth = 0;
+  lineDash = [];
+  fixedWidth;
+  fixedHeight;
+  antialias = false;
   constructor(x, y, text = "", font, fillStyle) {
     super(x, y, CanvasTexture());
-    this.splitRegExp = /(?:\r\n|\r|\n)/;
-    this.padding = {left: 0, right: 0, top: 0, bottom: 0};
-    this.verticalAlign = "ascent";
-    this.lineSpacing = 0;
-    this.font = "16px monospace";
-    this.fillStyle = "#fff";
-    this.strokeStyle = "";
-    this.backgroundStyle = "";
-    this.cornerRadius = 0;
-    this.textAlign = "left";
-    this.textBaseline = "alphabetic";
-    this.lineWidth = 0;
-    this.lineDash = [];
-    this.antialias = false;
-    this.type = "Text";
     const game = GameInstance.get();
     this.resolution = game.renderer.resolution;
     this.canvas = this.texture.image;
@@ -10334,7 +10703,7 @@ var Text = class extends Sprite {
         }
       }
       maxWidth = Math.max(maxWidth, lineWidth);
-      lineMetrics.push({lineWidth, lineHeight, ascent, descent, left, right, y});
+      lineMetrics.push({ lineWidth, lineHeight, ascent, descent, left, right, y });
     }
     maxWidth += padding.left + padding.right;
     maxHeight += padding.top + padding.bottom;
@@ -10420,6 +10789,1155 @@ var Text = class extends Sprite {
   }
 };
 
+// src/display/IsValidParent.ts
+function IsValidParent(parent, child) {
+  return !(child.id === parent.id || parent.id === GetParentID(child.id));
+}
+
+// src/display/AddChild.ts
+function AddChild(parent, child) {
+  const childID = child.id;
+  const parentID = parent.id;
+  const worldID = GetWorldID(parentID);
+  const world3 = GameObjectCache.get(worldID);
+  if (IsValidParent(parent, child)) {
+    RemoveChild(child.getParent(), child);
+    GameObjectTree.get(parentID).push(childID);
+    SetWorldAndParentID(childID, worldID, parentID);
+    SetParentID(childID, parentID);
+    SetWorld(world3, child);
+    SetDirtyDisplayList(worldID);
+    UpdateNumChildren(parentID);
+  }
+  return child;
+}
+
+// src/display/AddChildAt.ts
+function AddChildAt(parent, index, child) {
+  const children = parent.children;
+  if (index >= 0 && index <= children.length) {
+    SetParent2(parent, child);
+    children.splice(index, 0, child);
+    child.updateWorldTransform();
+  }
+  return child;
+}
+
+// src/display/AddChildren.ts
+function AddChildren(parent, ...children) {
+  children.forEach((child) => {
+    AddChild(parent, child);
+  });
+  return children;
+}
+
+// src/display/AddChildrenAt.ts
+function AddChildrenAt(parent, index, ...children) {
+  const parentChildren = parent.children;
+  if (index >= 0 && index <= parentChildren.length) {
+    children.reverse().forEach((child) => {
+      children.splice(index, 0, child);
+      SetParent2(parent, child);
+      child.updateWorldTransform();
+    });
+  }
+  return children;
+}
+
+// src/display/AddPosition.ts
+function AddPosition(x, y, ...children) {
+  children.forEach((child) => {
+    child.x += x;
+    child.y += y;
+  });
+  return children;
+}
+
+// src/display/AddRotation.ts
+function AddRotation(rotation, ...children) {
+  children.forEach((child) => {
+    child.rotation += rotation;
+  });
+  return children;
+}
+
+// src/display/AddScale.ts
+function AddScale(scaleX, scaleY, ...children) {
+  children.forEach((child) => {
+    child.scaleX += scaleX;
+    child.scaleY += scaleY;
+  });
+  return children;
+}
+
+// src/display/AddSkew.ts
+function AddSkew(skewX, skewY, ...children) {
+  children.forEach((child) => {
+    child.skewX += skewX;
+    child.skewY += skewY;
+  });
+  return children;
+}
+
+// src/display/BringChildToTop.ts
+function BringChildToTop(parent, child) {
+  const parentChildren = parent.children;
+  const currentIndex = GetChildIndex(parent, child);
+  if (currentIndex !== -1 && currentIndex < parentChildren.length) {
+    parentChildren.splice(currentIndex, 1);
+    parentChildren.push(child);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display/DepthFirstSearchRecursiveNested.ts
+function DepthFirstSearchRecursiveNested(parent, output = []) {
+  for (let i = 0; i < parent.numChildren; i++) {
+    const node = parent.children[i];
+    const children = [];
+    output.push({ node, children });
+    if (node.numChildren > 0) {
+      DepthFirstSearchRecursiveNested(node, children);
+    }
+  }
+  return output;
+}
+
+// src/display/ConsoleTreeChildren.ts
+function GetInfo(entry) {
+  const legend = entry.numChildren > 0 ? "Parent" : "Child";
+  return `${legend} [ type=${typeof entry}, name=${entry.name} ]`;
+}
+function LogChildren(entry) {
+  console.group(GetInfo(entry.node));
+  entry.children.forEach((child) => {
+    if (child.children.length > 0) {
+      LogChildren(child);
+    } else {
+      console.log(GetInfo(child.node));
+    }
+  });
+  console.groupEnd();
+}
+function ConsoleTreeChildren(parent) {
+  const entries = DepthFirstSearchRecursiveNested(parent);
+  if (parent.world === parent) {
+    console.group("World");
+  } else {
+    console.group(GetInfo(parent));
+  }
+  entries.forEach((entry) => {
+    if (entry.children.length) {
+      LogChildren(entry);
+    } else {
+      console.log(GetInfo(entry.node));
+    }
+  });
+  console.groupEnd();
+}
+
+// src/display/CountMatchingChildren.ts
+function CountMatchingChildren(parent, property, value) {
+  const children = parent.children;
+  let total = 0;
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      total++;
+    }
+  });
+  return total;
+}
+
+// src/display/DepthFirstSearchRecursive.ts
+function DepthFirstSearchRecursive(parent, output = []) {
+  for (let i = 0; i < parent.numChildren; i++) {
+    const child = parent.children[i];
+    output.push(child);
+    if (child.numChildren > 0) {
+      DepthFirstSearchRecursive(child, output);
+    }
+  }
+  return output;
+}
+
+// src/display/FindChildByName.ts
+function FindChildByName(parent, searchString) {
+  const children = DepthFirstSearch(parent);
+  const regex = RegExp(searchString);
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (regex.test(child.name)) {
+      return child;
+    }
+  }
+}
+
+// src/display/FindChildrenByName.ts
+function FindChildrenByName(parent, searchString) {
+  const children = DepthFirstSearch(parent);
+  const regex = RegExp(searchString);
+  const results = [];
+  children.forEach((child) => {
+    if (regex.test(child.name)) {
+      results.push(child);
+    }
+  });
+  return results;
+}
+
+// src/display/GetAllChildren.ts
+function GetAllChildren(parent, property, value) {
+  const children = DepthFirstSearch(parent);
+  if (!property) {
+    return children;
+  }
+  const results = [];
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      results.push(child);
+    }
+  });
+  return results;
+}
+
+// src/display/GetBounds.ts
+function GetBounds(...children) {
+  let minX = Number.MAX_SAFE_INTEGER;
+  let minY = Number.MAX_SAFE_INTEGER;
+  let maxX = Number.MIN_SAFE_INTEGER;
+  let maxY = Number.MIN_SAFE_INTEGER;
+  children.forEach((child) => {
+    const { x, y, right, bottom } = child.bounds.get();
+    if (x < minX) {
+      minX = x;
+    }
+    if (y < minY) {
+      minY = y;
+    }
+    if (right > maxX) {
+      maxX = right;
+    }
+    if (bottom > maxY) {
+      maxY = bottom;
+    }
+  });
+  return new Rectangle(minX, minY, maxX, maxY);
+}
+
+// src/display/GetChildAt.ts
+function GetChildAt(parent, index) {
+  const children = parent.children;
+  if (index < 0 || index > children.length) {
+    throw new Error(`Index out of bounds: ${index}`);
+  }
+  return children[index];
+}
+
+// src/display/GetChildren.ts
+function GetChildren2(parent, property, value) {
+  const children = parent.children;
+  if (!property) {
+    return [...children];
+  }
+  const results = [];
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      results.push(child);
+    }
+  });
+  return results;
+}
+
+// src/display/GetClosestChild.ts
+function GetClosestChild(parent, point) {
+  const children = parent.children;
+  let closest = null;
+  let distance = 0;
+  children.forEach((child) => {
+    const childDistance = GetVec2Distance(point, child.getPosition());
+    if (!closest || childDistance < distance) {
+      closest = child;
+      distance = childDistance;
+    }
+  });
+  return closest;
+}
+
+// src/display/GetFirstChild.ts
+function GetFirstChild(parent, property, value) {
+  const children = parent.children;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      return child;
+    }
+  }
+}
+
+// src/display/GetFurthestChild.ts
+function GetFurthestChild(parent, point) {
+  const children = parent.children;
+  let furthest = null;
+  let distance = 0;
+  children.forEach((child) => {
+    const childDistance = GetVec2Distance(point, child.getPosition());
+    if (!furthest || childDistance > distance) {
+      furthest = child;
+      distance = childDistance;
+    }
+  });
+  return furthest;
+}
+
+// src/display/GetLastChild.ts
+function GetLastChild(parent, property, value) {
+  const children = parent.children;
+  for (let i = children.length - 1; i >= 0; i--) {
+    const child = children[i];
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      return child;
+    }
+  }
+}
+
+// src/display/GetParents.ts
+function GetParents(child) {
+  const parents = [];
+  while (child.parent) {
+    parents.push(child.parent);
+    child = child.parent;
+  }
+  return parents;
+}
+
+// src/display/GetRandomChild.ts
+function GetRandomChild(parent, startIndex = 0, length) {
+  const children = parent.children;
+  if (!length) {
+    length = children.length;
+  }
+  const randomIndex = startIndex + Math.floor(Math.random() * length);
+  return children[randomIndex];
+}
+
+// src/display/MoveChildDown.ts
+function MoveChildDown(parent, child) {
+  const parentChildren = parent.children;
+  const currentIndex = GetChildIndex(parent, child);
+  if (currentIndex > 0) {
+    const child2 = parentChildren[currentIndex - 1];
+    const index2 = parentChildren.indexOf(child2);
+    parentChildren[currentIndex] = child2;
+    parentChildren[index2] = child;
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+    child2.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display/MoveChildTo.ts
+function MoveChildTo(parent, child, index) {
+  const parentChildren = parent.children;
+  const currentIndex = GetChildIndex(parent, child);
+  if (currentIndex === -1 || index < 0 || index >= parentChildren.length) {
+    throw new Error("Index out of bounds");
+  }
+  if (currentIndex !== index) {
+    parentChildren.splice(currentIndex, 1);
+    parentChildren.splice(index, 0, child);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display/MoveChildUp.ts
+function MoveChildUp(parent, child) {
+  const parentChildren = parent.children;
+  const currentIndex = GetChildIndex(parent, child);
+  if (currentIndex !== -1 && currentIndex > 0) {
+    const child2 = parentChildren[currentIndex + 1];
+    const index2 = parentChildren.indexOf(child2);
+    parentChildren[currentIndex] = child2;
+    parentChildren[index2] = child;
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+    child2.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/geom/intersects/RectangleToRectangle.ts
+function RectangleToRectangle(rectA, rectB) {
+  if (rectA.width <= 0 || rectA.height <= 0 || rectB.width <= 0 || rectB.height <= 0) {
+    return false;
+  }
+  return !(rectA.right < rectB.x || rectA.bottom < rectB.y || rectA.x > rectB.right || rectA.y > rectB.bottom);
+}
+
+// src/display/OverlapBounds.ts
+function OverlapBounds(source, ...targets) {
+  const sourceBounds = source.getBounds();
+  for (let i = 0; i < targets.length; i++) {
+    const target = targets[i];
+    if (target === source) {
+      continue;
+    }
+    if (RectangleToRectangle(sourceBounds, target.getBounds())) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// src/display/RemoveChildren.ts
+function RemoveChildren(parent, ...children) {
+  children.forEach((child) => {
+    RemoveChild(parent, child);
+  });
+  return children;
+}
+
+// src/display/RemoveChildrenAt.ts
+function RemoveChildrenAt(parent, ...index) {
+  const removed2 = [];
+  index.sort((a, b) => a - b);
+  index.reverse().forEach((i) => {
+    const child = RemoveChildAt(parent, i);
+    if (child) {
+      removed2.push(child);
+    }
+  });
+  return removed2;
+}
+
+// src/display/RotateChildrenLeft.ts
+function RotateChildrenLeft(parent, total = 1) {
+  const parentChildren = parent.children;
+  let child = null;
+  for (let i = 0; i < total; i++) {
+    child = parentChildren.shift();
+    parentChildren.push(child);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display/RotateChildrenRight.ts
+function RotateChildrenRight(parent, total = 1) {
+  const parentChildren = parent.children;
+  let child = null;
+  for (let i = 0; i < total; i++) {
+    child = parentChildren.pop();
+    parentChildren.unshift(child);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display/SendChildToBack.ts
+function SendChildToBack(parent, child) {
+  const parentChildren = parent.children;
+  const currentIndex = GetChildIndex(parent, child);
+  if (currentIndex !== -1 && currentIndex > 0) {
+    parentChildren.splice(currentIndex, 1);
+    parentChildren.unshift(child);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display/SetBounds.ts
+function SetBounds(x, y, width, height, ...children) {
+  children.forEach((child) => {
+    child.bounds.set(x, y, width, height);
+  });
+  return children;
+}
+
+// src/display/SetChildrenValue.ts
+function SetChildrenValue(parent, property, value) {
+  const children = DepthFirstSearch(parent);
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor) {
+      descriptor.set(value);
+    }
+  });
+  return children;
+}
+
+// src/display/SetName.ts
+function SetName(name, ...children) {
+  children.forEach((child) => {
+    child.name = name;
+  });
+  return children;
+}
+
+// src/display/SetOrigin.ts
+function SetOrigin(originX, originY, ...children) {
+  children.forEach((child) => {
+    child.setOrigin(originX, originY);
+  });
+  return children;
+}
+
+// src/display/SetPosition.ts
+function SetPosition(x, y, ...children) {
+  children.forEach((child) => {
+    child.setPosition(x, y);
+  });
+  return children;
+}
+
+// src/display/SetRotation.ts
+function SetRotation(rotation, ...children) {
+  children.forEach((child) => {
+    child.rotation = rotation;
+  });
+  return children;
+}
+
+// src/display/SetScale.ts
+function SetScale(scaleX, scaleY, ...children) {
+  children.forEach((child) => {
+    child.setScale(scaleX, scaleY);
+  });
+  return children;
+}
+
+// src/display/SetSize.ts
+function SetSize2(width, height, ...children) {
+  children.forEach((child) => {
+    child.setSize(width, height);
+  });
+  return children;
+}
+
+// src/display/SetSkew.ts
+function SetSkew(skewX, skewY, ...children) {
+  children.forEach((child) => {
+    child.setSkew(skewX, skewY);
+  });
+  return children;
+}
+
+// src/display/SetValue.ts
+function SetValue(property, value, ...children) {
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor) {
+      descriptor.set(value);
+    }
+  });
+  return children;
+}
+
+// src/display/SetVisible.ts
+function SetVisible(visible, ...children) {
+  children.forEach((child) => {
+    child.visible = visible;
+  });
+  return children;
+}
+
+// src/display/ShuffleChildren.ts
+function ShuffleChildren(parent) {
+  const children = parent.children;
+  for (let i = children.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = children[i];
+    children[i] = children[j];
+    children[j] = temp;
+    temp.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return children;
+}
+
+// src/display/SwapChildren.ts
+function SwapChildren(child1, child2) {
+  if (child1.parent === child2.parent) {
+    const children = child1.parent.children;
+    const index1 = GetChildIndex(child1.parent, child1);
+    const index2 = GetChildIndex(child2.parent, child2);
+    if (index1 !== index2) {
+      children[index1] = child2;
+      children[index2] = child1;
+    }
+  }
+}
+
+// src/display3d/index.ts
+var display3d_exports = {};
+__export(display3d_exports, {
+  AddChild3D: () => AddChild3D,
+  AddChild3DAt: () => AddChild3DAt,
+  AddChildren3D: () => AddChildren3D,
+  AddChildren3DAt: () => AddChildren3DAt,
+  ConsoleTreeChildren3D: () => ConsoleTreeChildren3D,
+  CountMatchingChildren3D: () => CountMatchingChildren3D,
+  DepthFirstSearch3D: () => DepthFirstSearch3D,
+  DepthFirstSearchRecursive3D: () => DepthFirstSearchRecursive3D,
+  DepthFirstSearchRecursiveNested3D: () => DepthFirstSearchRecursiveNested3D,
+  DestroyChildren3D: () => DestroyChildren3D,
+  FindChild3DByName: () => FindChild3DByName,
+  FindChildren3DByName: () => FindChildren3DByName,
+  GetAllChildren3D: () => GetAllChildren3D,
+  GetChild3DAt: () => GetChild3DAt,
+  GetChild3DIndex: () => GetChild3DIndex,
+  GetChildren3D: () => GetChildren3D,
+  GetFirstChild3D: () => GetFirstChild3D,
+  GetLastChild3D: () => GetLastChild3D,
+  GetParents3D: () => GetParents3D,
+  GetRandomChild3D: () => GetRandomChild3D,
+  MoveChild3DTo: () => MoveChild3DTo,
+  RemoveChild3D: () => RemoveChild3D,
+  RemoveChild3DAt: () => RemoveChild3DAt,
+  RemoveChildren3D: () => RemoveChildren3D,
+  RemoveChildren3DAt: () => RemoveChildren3DAt,
+  RemoveChildren3DBetween: () => RemoveChildren3DBetween,
+  ReparentChildren3D: () => ReparentChildren3D,
+  ReplaceChild3D: () => ReplaceChild3D,
+  SetChildren3DValue: () => SetChildren3DValue,
+  SetParent3D: () => SetParent3D,
+  SetWorld3D: () => SetWorld3D,
+  SwapChildren3D: () => SwapChildren3D
+});
+
+// src/display3d/DepthFirstSearch3D.ts
+function DepthFirstSearch3D(parent) {
+  const stack = [parent];
+  const output = [];
+  while (stack.length > 0) {
+    const node = stack.shift();
+    output.push(node);
+    const numChildren = node.numChildren;
+    if (numChildren > 0) {
+      for (let i = numChildren - 1; i >= 0; i--) {
+        stack.unshift(node.children[i]);
+      }
+    }
+  }
+  output.shift();
+  return output;
+}
+
+// src/display3d/GetChild3DIndex.ts
+function GetChild3DIndex(parent, child) {
+  return parent.children.indexOf(child);
+}
+
+// src/display3d/RemoveChild3DAt.ts
+function RemoveChild3DAt(parent, index) {
+  const children = parent.children;
+  let child;
+  if (index >= 0 && index < children.length) {
+    const removed2 = children.splice(index, 1);
+    if (removed2[0]) {
+      child = removed2[0];
+      child.parent = null;
+    }
+  }
+  return child;
+}
+
+// src/display3d/RemoveChild3D.ts
+function RemoveChild3D(parent, child) {
+  const currentIndex = GetChild3DIndex(parent, child);
+  if (currentIndex > -1) {
+    RemoveChild3DAt(parent, currentIndex);
+  }
+  return child;
+}
+
+// src/gameobjects/events/AddedToWorldEvent.ts
+var AddedToWorldEvent = "addedtoworld";
+
+// src/gameobjects/events/RemovedFromWorldEvent.ts
+var RemovedFromWorldEvent = "removedfromworld";
+
+// src/gameobjects/events/UpdateEvent.ts
+var UpdateEvent = "update";
+
+// src/display3d/SetWorld3D.ts
+function SetWorld3D(world3, ...children) {
+  children.forEach((child) => {
+    if (child.world) {
+      Emit(child.world, RemovedFromWorldEvent, child, child.world);
+      Emit(child, RemovedFromWorldEvent, child, child.world);
+    }
+    child.world = world3;
+    Emit(world3, AddedToWorldEvent, child, world3);
+    Emit(child, AddedToWorldEvent, child, world3);
+  });
+  return children;
+}
+
+// src/display3d/SetParent3D.ts
+function SetParent3D(parent, ...children) {
+  children.forEach((child) => {
+    if (child.parent) {
+      RemoveChild3D(child.parent, child);
+    }
+    child.parent = parent;
+  });
+  const parentWorld = parent.world;
+  if (parentWorld) {
+    SetWorld3D(parentWorld, ...DepthFirstSearch3D(parent));
+  }
+  return children;
+}
+
+// src/display3d/AddChild3D.ts
+function AddChild3D(parent, child) {
+  parent.children.push(child);
+  SetParent3D(parent, child);
+  return child;
+}
+
+// src/display3d/AddChild3DAt.ts
+function AddChild3DAt(parent, index, child) {
+  const children = parent.children;
+  if (index >= 0 && index <= children.length) {
+    SetParent3D(parent, child);
+    children.splice(index, 0, child);
+  }
+  return child;
+}
+
+// src/display3d/AddChildren3D.ts
+function AddChildren3D(parent, ...children) {
+  children.forEach((child) => {
+    AddChild3D(parent, child);
+  });
+  return children;
+}
+
+// src/display3d/AddChildren3DAt.ts
+function AddChildren3DAt(parent, index, ...children) {
+  const parentChildren = parent.children;
+  if (index >= 0 && index <= parentChildren.length) {
+    children.reverse().forEach((child) => {
+      children.splice(index, 0, child);
+      SetParent3D(parent, child);
+    });
+  }
+  return children;
+}
+
+// src/display3d/DepthFirstSearchRecursiveNested3D.ts
+function DepthFirstSearchRecursiveNested3D(parent, output = []) {
+  for (let i = 0; i < parent.numChildren; i++) {
+    const node = parent.children[i];
+    const children = [];
+    output.push({ node, children });
+    if (node.numChildren > 0) {
+      DepthFirstSearchRecursiveNested3D(node, children);
+    }
+  }
+  return output;
+}
+
+// src/display3d/ConsoleTreeChildren3D.ts
+function GetInfo2(entry) {
+  const legend = entry.numChildren > 0 ? "Parent" : "Child";
+  return `${legend} [ type=${entry.type}, name=${entry.name} ]`;
+}
+function LogChildren2(entry) {
+  console.group(GetInfo2(entry.node));
+  entry.children.forEach((child) => {
+    if (child.children.length > 0) {
+      LogChildren2(child);
+    } else {
+      console.log(GetInfo2(child.node));
+    }
+  });
+  console.groupEnd();
+}
+function ConsoleTreeChildren3D(parent) {
+  const entries = DepthFirstSearchRecursiveNested3D(parent);
+  if (parent.world === parent) {
+    console.group("World");
+  } else {
+    console.group(GetInfo2(parent));
+  }
+  entries.forEach((entry) => {
+    if (entry.children.length) {
+      LogChildren2(entry);
+    } else {
+      console.log(GetInfo2(entry.node));
+    }
+  });
+  console.groupEnd();
+}
+
+// src/display3d/CountMatchingChildren3D.ts
+function CountMatchingChildren3D(parent, property, value) {
+  const children = parent.children;
+  let total = 0;
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      total++;
+    }
+  });
+  return total;
+}
+
+// src/display3d/DepthFirstSearchRecursive3D.ts
+function DepthFirstSearchRecursive3D(parent, output = []) {
+  for (let i = 0; i < parent.numChildren; i++) {
+    const child = parent.children[i];
+    output.push(child);
+    if (child.numChildren > 0) {
+      DepthFirstSearchRecursive3D(child, output);
+    }
+  }
+  return output;
+}
+
+// src/display3d/RemoveChildren3DBetween.ts
+function RemoveChildren3DBetween(parent, beginIndex = 0, endIndex) {
+  const children = parent.children;
+  if (endIndex === void 0) {
+    endIndex = children.length;
+  }
+  const range = endIndex - beginIndex;
+  if (range > 0 && range <= endIndex) {
+    const removed2 = children.splice(beginIndex, range);
+    removed2.forEach((child) => {
+      child.parent = null;
+    });
+    return removed2;
+  } else {
+    return [];
+  }
+}
+
+// src/display3d/DestroyChildren3D.ts
+function DestroyChildren3D(parent, beginIndex = 0, endIndex) {
+  const removed2 = RemoveChildren3DBetween(parent, beginIndex, endIndex);
+  removed2.forEach((child) => {
+    child.destroy();
+  });
+}
+
+// src/display3d/FindChild3DByName.ts
+function FindChild3DByName(parent, searchString) {
+  const children = DepthFirstSearch3D(parent);
+  const regex = RegExp(searchString);
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (regex.test(child.name)) {
+      return child;
+    }
+  }
+}
+
+// src/display3d/FindChildren3DByName.ts
+function FindChildren3DByName(parent, searchString) {
+  const children = DepthFirstSearch3D(parent);
+  const regex = RegExp(searchString);
+  const results = [];
+  children.forEach((child) => {
+    if (regex.test(child.name)) {
+      results.push(child);
+    }
+  });
+  return results;
+}
+
+// src/display3d/GetAllChildren3D.ts
+function GetAllChildren3D(parent, property, value) {
+  const children = DepthFirstSearch3D(parent);
+  if (!property) {
+    return children;
+  }
+  const results = [];
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      results.push(child);
+    }
+  });
+  return results;
+}
+
+// src/display3d/GetChild3DAt.ts
+function GetChild3DAt(parent, index) {
+  const children = parent.children;
+  if (index < 0 || index > children.length) {
+    throw new Error(`Index out of bounds: ${index}`);
+  }
+  return children[index];
+}
+
+// src/display3d/GetChildren3D.ts
+function GetChildren3D(parent, property, value) {
+  const children = parent.children;
+  if (!property) {
+    return [...children];
+  }
+  const results = [];
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      results.push(child);
+    }
+  });
+  return results;
+}
+
+// src/display3d/GetFirstChild3D.ts
+function GetFirstChild3D(parent, property, value) {
+  const children = parent.children;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      return child;
+    }
+  }
+}
+
+// src/display3d/GetLastChild3D.ts
+function GetLastChild3D(parent, property, value) {
+  const children = parent.children;
+  for (let i = children.length - 1; i >= 0; i--) {
+    const child = children[i];
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor && (value === void 0 || value === descriptor.value)) {
+      return child;
+    }
+  }
+}
+
+// src/display3d/GetParents3D.ts
+function GetParents3D(child) {
+  const parents = [];
+  while (child.parent) {
+    parents.push(child.parent);
+    child = child.parent;
+  }
+  return parents;
+}
+
+// src/display3d/GetRandomChild3D.ts
+function GetRandomChild3D(parent, startIndex = 0, length) {
+  const children = parent.children;
+  if (!length) {
+    length = children.length;
+  }
+  const randomIndex = startIndex + Math.floor(Math.random() * length);
+  return children[randomIndex];
+}
+
+// src/display3d/MoveChild3DTo.ts
+function MoveChild3DTo(parent, child, index) {
+  const parentChildren = parent.children;
+  const currentIndex = GetChild3DIndex(parent, child);
+  if (currentIndex === -1 || index < 0 || index >= parentChildren.length) {
+    throw new Error("Index out of bounds");
+  }
+  if (currentIndex !== index) {
+    parentChildren.splice(currentIndex, 1);
+    parentChildren.splice(index, 0, child);
+    child.setDirty(DIRTY_CONST.TRANSFORM);
+  }
+  return child;
+}
+
+// src/display3d/RemoveChildren3D.ts
+function RemoveChildren3D(parent, ...children) {
+  children.forEach((child) => {
+    RemoveChild3D(parent, child);
+  });
+  return children;
+}
+
+// src/display3d/RemoveChildren3DAt.ts
+function RemoveChildren3DAt(parent, ...index) {
+  const removed2 = [];
+  index.sort((a, b) => a - b);
+  index.reverse().forEach((i) => {
+    const child = RemoveChild3DAt(parent, i);
+    if (child) {
+      removed2.push(child);
+    }
+  });
+  return removed2;
+}
+
+// src/display3d/ReparentChildren3D.ts
+function ReparentChildren3D(parent, newParent, beginIndex = 0, endIndex) {
+  const moved = RemoveChildren3DBetween(parent, beginIndex, endIndex);
+  SetParent3D(newParent, ...moved);
+  moved.forEach((child) => {
+  });
+  return moved;
+}
+
+// src/display3d/ReplaceChild3D.ts
+function ReplaceChild3D(target, source) {
+  const targetParent = target.parent;
+  const sourceParent = source.parent;
+  const targetIndex = GetChild3DIndex(targetParent, target);
+  if (targetParent === sourceParent) {
+    MoveChild3DTo(targetParent, source, targetIndex);
+    RemoveChild3D(targetParent, target);
+  } else {
+    RemoveChild3D(targetParent, target);
+    RemoveChild3D(sourceParent, source);
+    AddChild3DAt(targetParent, targetIndex, source);
+  }
+  return target;
+}
+
+// src/display3d/SetChildren3DValue.ts
+function SetChildren3DValue(parent, property, value) {
+  const children = DepthFirstSearch3D(parent);
+  children.forEach((child) => {
+    const descriptor = Object.getOwnPropertyDescriptor(child, property);
+    if (descriptor) {
+      descriptor.set(value);
+    }
+  });
+  return children;
+}
+
+// src/display3d/SwapChildren3D.ts
+function SwapChildren3D(child1, child2) {
+  if (child1.parent === child2.parent) {
+    const children = child1.parent.children;
+    const index1 = GetChild3DIndex(child1.parent, child1);
+    const index2 = GetChild3DIndex(child2.parent, child2);
+    if (index1 !== index2) {
+      children[index1] = child2;
+      children[index2] = child1;
+    }
+  }
+}
+
+// src/events/index.ts
+var events_exports = {};
+__export(events_exports, {
+  ClearEvent: () => ClearEvent,
+  Emit: () => Emit,
+  EventEmitter: () => EventEmitter,
+  EventInstance: () => EventInstance,
+  GetEventNames: () => GetEventNames,
+  GetListenerCount: () => GetListenerCount,
+  GetListeners: () => GetListeners,
+  Off: () => Off,
+  On: () => On,
+  Once: () => Once,
+  RemoveAllListeners: () => RemoveAllListeners
+});
+
+// src/events/ClearEvent.ts
+function ClearEvent(emitter, event) {
+  emitter.events.delete(event);
+  return emitter;
+}
+
+// src/events/EventEmitter.ts
+var EventEmitter = class {
+  events;
+  constructor() {
+    this.events = new Map();
+  }
+};
+
+// src/events/EventInstance.ts
+var EventInstance = class {
+  callback;
+  context;
+  once;
+  constructor(callback, context, once = false) {
+    this.callback = callback;
+    this.context = context;
+    this.once = once;
+  }
+};
+
+// src/events/GetEventNames.ts
+function GetEventNames(emitter) {
+  return [...emitter.events.keys()];
+}
+
+// src/events/GetListenerCount.ts
+function GetListenerCount(emitter, event) {
+  const listeners = emitter.events.get(event);
+  return listeners ? listeners.size : 0;
+}
+
+// src/events/GetListeners.ts
+function GetListeners(emitter, event) {
+  const out = [];
+  const listeners = emitter.events.get(event);
+  listeners.forEach((listener) => {
+    out.push(listener.callback);
+  });
+  return out;
+}
+
+// src/events/Off.ts
+function Off(emitter, event, callback, context, once) {
+  const events = emitter.events;
+  const listeners = events.get(event);
+  if (!callback) {
+    events.delete(event);
+  } else if (callback instanceof EventInstance) {
+    listeners.delete(callback);
+  } else {
+    const hasContext = !context;
+    const hasOnce = once !== void 0;
+    for (const listener of listeners) {
+      if (listener.callback === callback && (hasContext && listener.context === context) && (hasOnce && listener.once === once)) {
+        listeners.delete(listener);
+      }
+    }
+  }
+  if (listeners.size === 0) {
+    events.delete(event);
+  }
+  return emitter;
+}
+
+// src/events/On.ts
+function On(emitter, event, callback, context = emitter, once = false) {
+  if (typeof callback !== "function") {
+    throw new TypeError("Listener not a function");
+  }
+  const listener = new EventInstance(callback, context, once);
+  const listeners = emitter.events.get(event);
+  if (!listeners) {
+    emitter.events.set(event, new Set([listener]));
+  } else {
+    listeners.add(listener);
+  }
+  return listener;
+}
+
+// src/events/Once.ts
+function Once(emitter, event, callback, context = emitter) {
+  return On(emitter, event, callback, context, true);
+}
+
+// src/events/RemoveAllListeners.ts
+function RemoveAllListeners(emitter, event) {
+  if (!event) {
+    emitter.events.clear();
+  } else {
+    emitter.events.delete(event);
+  }
+}
+
 // src/gameobjects3d/index.ts
 var gameobjects3d_exports = {};
 __export(gameobjects3d_exports, {
@@ -10444,8 +11962,19 @@ __export(components_exports2, {
 
 // src/gameobjects3d/components/transform3d/Transform3DComponent.ts
 var Transform3DComponent = class {
+  entity;
+  local;
+  world;
+  normal;
+  position;
+  scale;
+  origin;
+  rotation;
+  forward;
+  up;
+  right;
+  passthru = false;
   constructor(entity, x = 0, y = 0, z = 0) {
-    this.passthru = false;
     this.entity = entity;
     this.local = new Matrix4();
     this.world = new Matrix4();
@@ -10548,13 +12077,20 @@ __export(webgl1_exports, {
 
 // src/gameobjects3d/geometry/FaceUVNormalTexture.ts
 var FaceUVNormalTexture = class {
+  vertex1;
+  vertex2;
+  vertex3;
+  normal1;
+  normal2;
+  normal3;
+  color = 16777215;
+  alpha = 1;
+  size = 30;
+  _packedColor;
   constructor(v1, v2, v3, n1, n2, n3, uv1, uv2, uv3, scale = 1) {
-    this.color = 16777215;
-    this.alpha = 1;
-    this.size = 30;
-    this.vertex1 = new Vertex(v1.x * scale, v1.y * scale, v1.z * scale);
-    this.vertex2 = new Vertex(v2.x * scale, v2.y * scale, v2.z * scale);
-    this.vertex3 = new Vertex(v3.x * scale, v3.y * scale, v3.z * scale);
+    this.vertex1 = new Vertex2(v1.x * scale, v1.y * scale, v1.z * scale);
+    this.vertex2 = new Vertex2(v2.x * scale, v2.y * scale, v2.z * scale);
+    this.vertex3 = new Vertex2(v3.x * scale, v3.y * scale, v3.z * scale);
     this.vertex1.setUV(uv1.x, uv1.y);
     this.vertex2.setUV(uv2.x, uv2.y);
     this.vertex3.setUV(uv3.x, uv3.y);
@@ -10631,7 +12167,7 @@ function CreateNonIndexedVertexBuffer(data) {
   const total = vertices.length;
   const count = total / 3;
   const batchSize = count / 3;
-  const buffer = new VertexBuffer({batchSize, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
+  const buffer = new VertexBuffer({ batchSize, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3 });
   const F32 = buffer.vertexViewF32;
   let offset = 0;
   let uvIndex = 0;
@@ -10656,7 +12192,7 @@ function CreateVertexBuffer(data) {
     uvs,
     indices
   } = data;
-  const buffer = new VertexBuffer({batchSize: indices.length / 3, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
+  const buffer = new VertexBuffer({ batchSize: indices.length / 3, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3 });
   const F32 = buffer.vertexViewF32;
   let offset = 0;
   for (let i = 0; i < indices.length; i += 3) {
@@ -10710,6 +12246,7 @@ function GetBufferFromVertexSet(data) {
 
 // src/gameobjects3d/geometry/Geometry.ts
 var Geometry = class {
+  buffer;
   constructor(data) {
     if (data) {
       if (data.hasOwnProperty("vertices")) {
@@ -10726,14 +12263,17 @@ var Geometry = class {
 
 // src/gameobjects3d/geometry/ParseObj.ts
 var ParseObj = class {
+  fileContents;
+  defaultModelName;
+  currentMaterial = "";
+  currentGroup = "";
+  smoothingGroup = 0;
+  result = {
+    materialLibraries: [],
+    models: []
+  };
+  flipUVs;
   constructor(fileContents, flipUVs = true, defaultModelName = "untitled") {
-    this.currentMaterial = "";
-    this.currentGroup = "";
-    this.smoothingGroup = 0;
-    this.result = {
-      materialLibraries: [],
-      models: []
-    };
     this.fileContents = fileContents;
     this.defaultModelName = defaultModelName;
     this.flipUVs = flipUVs;
@@ -10829,7 +12369,7 @@ var ParseObj = class {
     const x = len >= 2 ? parseFloat(lineItems[1]) : 0;
     const y = len >= 3 ? parseFloat(lineItems[2]) : 0;
     const z = len >= 4 ? parseFloat(lineItems[3]) : 0;
-    this.currentModel().vertices.push({x, y, z});
+    this.currentModel().vertices.push({ x, y, z });
   }
   parseTextureCoords(lineItems) {
     const len = lineItems.length;
@@ -10848,14 +12388,14 @@ var ParseObj = class {
     if (this.flipUVs) {
       v = 1 - v;
     }
-    this.currentModel().textureCoords.push({u, v, w});
+    this.currentModel().textureCoords.push({ u, v, w });
   }
   parseVertexNormal(lineItems) {
     const len = lineItems.length;
     const x = len >= 2 ? parseFloat(lineItems[1]) : 0;
     const y = len >= 3 ? parseFloat(lineItems[2]) : 0;
     const z = len >= 4 ? parseFloat(lineItems[3]) : 0;
-    this.currentModel().vertexNormals.push({x, y, z});
+    this.currentModel().vertexNormals.push({ x, y, z });
   }
   parsePolygon(lineItems) {
     const totalVertices = lineItems.length - 1;
@@ -10937,7 +12477,7 @@ function GetBufferFromObj(data, flipUVs = true) {
     for (let i = 0; i < faces.length; i++) {
       totalFaces += faces[i].vertices.length === 4 ? 6 : 3;
     }
-    const buffer = new VertexBuffer({batchSize: totalFaces, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
+    const buffer = new VertexBuffer({ batchSize: totalFaces, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3 });
     const F32 = buffer.vertexViewF32;
     let offset = 0;
     for (let i = 0; i < faces.length; i++) {
@@ -11011,7 +12551,7 @@ function GetBufferFromObj(data, flipUVs = true) {
         buffer.count += 3;
       }
     }
-    output.push({name: model.name, buffer});
+    output.push({ name: model.name, buffer });
   });
   return output;
 }
@@ -11049,7 +12589,7 @@ function GetFacesFromVertexSet(data) {
     const uv1 = GetVec22(uvs, i1);
     const uv2 = GetVec22(uvs, i2);
     const uv3 = GetVec22(uvs, i3);
-    const f = new FaceUVNormalTexture({x: v1[0], y: v1[1], z: v1[2]}, {x: v2[0], y: v2[1], z: v2[2]}, {x: v3[0], y: v3[1], z: v3[2]}, {x: n1[0], y: n1[1], z: n1[2]}, {x: n2[0], y: n2[1], z: n2[2]}, {x: n3[0], y: n3[1], z: n3[2]}, {x: uv1[0], y: uv1[1]}, {x: uv2[0], y: uv2[1]}, {x: uv3[0], y: uv3[1]}, 1);
+    const f = new FaceUVNormalTexture({ x: v1[0], y: v1[1], z: v1[2] }, { x: v2[0], y: v2[1], z: v2[2] }, { x: v3[0], y: v3[1], z: v3[2] }, { x: n1[0], y: n1[1], z: n1[2] }, { x: n2[0], y: n2[1], z: n2[2] }, { x: n3[0], y: n3[1], z: n3[2] }, { x: uv1[0], y: uv1[1] }, { x: uv2[0], y: uv2[1] }, { x: uv3[0], y: uv3[1] }, 1);
     faces.push(f);
   }
   return faces;
@@ -11121,17 +12661,22 @@ function BoxGeometry(x = 0, y = 0, z = 0, width = 1, height = 1, depth = 1, widt
 
 // src/gameobjects3d/GameObject3D.ts
 var GameObject3D = class {
+  type = "GameObject3D";
+  name = "";
+  world;
+  parent;
+  children;
+  events;
+  willUpdate = true;
+  willUpdateChildren = true;
+  willRender = true;
+  willRenderChildren = true;
+  willCacheChildren = false;
+  dirty = 0;
+  dirtyFrame = 0;
+  transform;
+  visible = true;
   constructor(x = 0, y = 0, z = 0) {
-    this.type = "GameObject3D";
-    this.name = "";
-    this.willUpdate = true;
-    this.willUpdateChildren = true;
-    this.willRender = true;
-    this.willRenderChildren = true;
-    this.willCacheChildren = false;
-    this.dirty = 0;
-    this.dirtyFrame = 0;
-    this.visible = true;
     this.children = [];
     this.events = new Map();
     this.transform = new Transform3DComponent(this, x, y, z);
@@ -11195,8 +12740,12 @@ var GameObject3D = class {
 
 // src/gameobjects3d/material/Material.ts
 var Material = class {
+  ambient;
+  diffuse;
+  specular;
+  isDirty = false;
+  _shine;
   constructor(config = {}) {
-    this.isDirty = false;
     const {
       ambient = [1, 1, 1],
       diffuse = [1, 1, 1],
@@ -11274,10 +12823,14 @@ function SetTexture3(key, frame2, ...children) {
 
 // src/gameobjects3d/mesh/Mesh.ts
 var Mesh = class extends GameObject3D {
+  texture;
+  frame;
+  hasTexture = false;
+  geometry;
+  material;
+  cullFaces = true;
   constructor(x = 0, y = 0, z = 0, geometry, material = new Material()) {
     super(x, y, z);
-    this.hasTexture = false;
-    this.cullFaces = true;
     this.geometry = geometry;
     this.material = material;
     this.setTexture("__WHITE");
@@ -11443,8 +12996,12 @@ var Cone = class extends Mesh {
 
 // src/gameobjects3d/light/Light.ts
 var Light = class {
+  position;
+  ambient;
+  diffuse;
+  specular;
+  isDirty = false;
   constructor(config = {}) {
-    this.isDirty = false;
     const {
       x = 0,
       y = 0,
@@ -11487,9 +13044,10 @@ var Plane = class extends Mesh {
 
 // src/gameobjects3d/renderlayer3d/RenderLayer3D.ts
 var RenderLayer3D = class extends Layer {
+  texture;
+  framebuffer;
   constructor() {
     super();
-    this.type = "RenderLayer";
     this.willRender = true;
     this.willRenderChildren = true;
     this.willCacheChildren = true;
@@ -11520,7 +13078,7 @@ var RenderLayer3D = class extends Layer {
   postRenderGL(renderPass) {
     Flush(renderPass);
     PopFramebuffer(renderPass);
-    DrawTexturedQuad2(renderPass, this.texture);
+    DrawTexturedQuad(renderPass, this.texture);
     this.clearDirty(DIRTY_CONST.TRANSFORM);
   }
 };
@@ -11622,7 +13180,7 @@ __export(circle_exports, {
   TranslateCirclePoint: () => TranslateCirclePoint
 });
 
-// src/geom/circle/CircleContains.ts
+// src/geom/Circle/CircleContains.ts
 function CircleContains(circle, x, y) {
   if (circle.radius > 0 && x >= circle.left && x <= circle.right && y >= circle.top && y <= circle.bottom) {
     const dx = (circle.x - x) * (circle.x - x);
@@ -11635,6 +13193,10 @@ function CircleContains(circle, x, y) {
 
 // src/geom/Circle/Circle.ts
 var Circle = class {
+  x;
+  y;
+  _radius;
+  _diameter;
   constructor(x = 0, y = 0, radius = 0) {
     this.set(x, y, radius);
   }
@@ -11809,6 +13371,10 @@ function EllipseContains(ellipse, x, y) {
 
 // src/geom/ellipse/Ellipse.ts
 var Ellipse = class {
+  x;
+  y;
+  width;
+  height;
   constructor(x = 0, y = 0, width = 0, height = 0) {
     this.set(x, y, width, height);
   }
@@ -12055,7 +13621,7 @@ function LineToCircle(line, circle, nearest) {
   if (!nearest) {
     nearest = tmp;
   }
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   if (CircleContains(circle, x1, y1)) {
     nearest.set(x1, y1);
     return true;
@@ -12084,7 +13650,7 @@ function LineToCircle(line, circle, nearest) {
 // src/geom/intersects/GetLineToCircle.ts
 function GetLineToCircle(line, circle, out = []) {
   if (LineToCircle(line, circle)) {
-    const {x1, y1, x2, y2} = line;
+    const { x1, y1, x2, y2 } = line;
     const cr = circle.radius;
     const lDirX = x2 - x1;
     const lDirY = y2 - y1;
@@ -12123,6 +13689,10 @@ function GetLineToCircle(line, circle, out = []) {
 
 // src/geom/line/Line.ts
 var Line = class {
+  x1;
+  y1;
+  x2;
+  y2;
   constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
     this.set(x1, y1, x2, y2);
   }
@@ -12177,7 +13747,7 @@ var Line = class {
 
 // src/geom/rectangle/GetRectangleEdges.ts
 function GetRectangleEdges(rectangle) {
-  const {x, y, right, bottom} = rectangle;
+  const { x, y, right, bottom } = rectangle;
   const line1 = new Line(x, y, right, y);
   const line2 = new Line(right, y, right, bottom);
   const line3 = new Line(right, bottom, x, bottom);
@@ -12199,8 +13769,8 @@ function GetCircleToRectangle(circle, rect, out = []) {
 
 // src/geom/intersects/LineToLine.ts
 function LineToLine(line1, line2, out) {
-  const {x1, y1, x2, y2} = line1;
-  const {x1: x3, y1: y3, x2: x4, y2: y4} = line2;
+  const { x1, y1, x2, y2 } = line1;
+  const { x1: x3, y1: y3, x2: x4, y2: y4 } = line2;
   const numA = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
   const numB = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
   const deNom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
@@ -12220,8 +13790,8 @@ function LineToLine(line1, line2, out) {
 
 // src/geom/intersects/LineToRectangle.ts
 function LineToRectangle(line, rect) {
-  const {x1, y1, x2, y2} = line;
-  const {x, y, right, bottom} = rect;
+  const { x1, y1, x2, y2 } = line;
+  const { x, y, right, bottom } = rect;
   let t = 0;
   if (x1 >= x && x1 <= right && y1 >= y && y1 <= bottom || x2 >= x && x2 <= right && y2 >= y && y2 <= bottom) {
     return true;
@@ -12294,7 +13864,7 @@ function GetRectangleToRectangle(rectA, rectB, out = []) {
 
 // src/geom/triangle/GetTriangleEdges.ts
 function GetTriangleEdges(triangle) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const edge1 = new Line(x1, y1, x2, y2);
   const edge2 = new Line(x2, y2, x3, y3);
   const edge3 = new Line(x3, y3, x1, y1);
@@ -12309,7 +13879,7 @@ function DecomposeRectangle(rect, out = []) {
 
 // src/geom/triangle/TriangleContains.ts
 function TriangleContains(triangle, x, y) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const v0x = x3 - x1;
   const v0y = y3 - y1;
   const v1x = x2 - x1;
@@ -12335,7 +13905,7 @@ function TriangleContainsPoints(triangle, points, returnFirst = false, out = [])
     if (skip) {
       return;
     }
-    const {x, y} = point;
+    const { x, y } = point;
     if (TriangleContains(triangle, x, y)) {
       out.push(new Vec2(x, y));
       if (returnFirst) {
@@ -12411,7 +13981,7 @@ function GetTriangleToCircle(triangle, circle, out = []) {
 
 // src/geom/intersects/TriangleToLine.ts
 function TriangleToLine(triangle, line) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   if (TriangleContains(triangle, x1, y1) || TriangleContains(triangle, x2, y2)) {
     return true;
   }
@@ -12440,7 +14010,7 @@ function GetTriangleToLine(triangle, line, out = []) {
 
 // src/geom/triangle/DecomposeTriangle.ts
 function DecomposeTriangle(triangle, out = []) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   out.push(new Vec2(x1, y1), new Vec2(x2, y2), new Vec2(x3, y3));
   return out;
 }
@@ -12476,8 +14046,8 @@ function GetTriangleToTriangle(triangleA, triangleB, out = []) {
 
 // src/geom/intersects/PointToLine.ts
 function PointToLine(point, line, lineThickness = 1) {
-  const {x1, y1, x2, y2} = line;
-  const {x: px, y: py} = point;
+  const { x1, y1, x2, y2 } = line;
+  const { x: px, y: py } = point;
   const L2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
   if (L2 === 0) {
     return false;
@@ -12498,8 +14068,8 @@ function PointToLineSegment(point, line) {
   if (!PointToLine(point, line)) {
     return false;
   }
-  const {x1, y1, x2, y2} = line;
-  const {x, y} = point;
+  const { x1, y1, x2, y2 } = line;
+  const { x, y } = point;
   const xMin = Math.min(x1, x2);
   const xMax = Math.max(x1, x2);
   const yMin = Math.min(y1, y2);
@@ -12565,7 +14135,7 @@ function CopyLineFrom(source, dest) {
 
 // src/geom/line/GetLineLength.ts
 function GetLineLength(line) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
@@ -12635,7 +14205,7 @@ function GetLineMidPoint(line, out = new Vec2()) {
 
 // src/geom/line/GetLineNearestPoint.ts
 function GetLineNearestPoint(line, point, out = new Vec2()) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   const L2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
   if (L2 === 0) {
     return out;
@@ -12672,7 +14242,7 @@ function GetLineNormalY(line) {
 
 // src/geom/line/GetLinePerpSlope.ts
 function GetLinePerpSlope(line) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   return -((x2 - x1) / (y2 - y1));
 }
 
@@ -12688,7 +14258,7 @@ function GetLinePoints(line, quantity, stepRate = 0, out = []) {
   if (!quantity) {
     quantity = GetLineLength(line) / stepRate;
   }
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   for (let i = 0; i < quantity; i++) {
     const position = i / quantity;
     const x = x1 + (x2 - x1) * position;
@@ -12713,7 +14283,7 @@ function GetLineReflectAngle(lineA, lineB) {
 
 // src/geom/line/GetLineSlope.ts
 function GetLineSlope(line) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   return (y2 - y1) / (x2 - x1);
 }
 
@@ -12724,7 +14294,7 @@ function GetLineWidth(line) {
 
 // src/geom/line/GetShortestLineDistance.ts
 function GetShortestLineDistance(line, point) {
-  const {x1, y1, x2, y2} = line;
+  const { x1, y1, x2, y2 } = line;
   const L2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
   if (L2 === 0) {
     return 0;
@@ -13114,6 +14684,11 @@ function GetRectangleRandomPointOutside(outer, inner, out = new Vec2()) {
   return out;
 }
 
+// src/geom/rectangle/GetRectangleSize.ts
+function GetRectangleSize(rect, out = new Vec2()) {
+  return out.set(rect.width, rect.height);
+}
+
 // src/geom/rectangle/GetRectangleUnion.ts
 function GetRectangleUnion(rectA, rectB, out = new Rectangle()) {
   const x = Math.min(rectA.x, rectB.x);
@@ -13229,6 +14804,12 @@ __export(triangle_exports, {
 
 // src/geom/triangle/Triangle.ts
 var Triangle = class {
+  x1;
+  y1;
+  x2;
+  y2;
+  x3;
+  y3;
   constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0) {
     this.set(x1, y1, x2, y2, x3, y3);
   }
@@ -13248,65 +14829,65 @@ var Triangle = class {
     return Math.min(this.x1, this.x2, this.x3);
   }
   set left(value) {
-    let diff = 0;
+    let diff2 = 0;
     if (this.x1 <= this.x2 && this.x1 <= this.x3) {
-      diff = this.x1 - value;
+      diff2 = this.x1 - value;
     } else if (this.x2 <= this.x1 && this.x2 <= this.x3) {
-      diff = this.x2 - value;
+      diff2 = this.x2 - value;
     } else {
-      diff = this.x3 - value;
+      diff2 = this.x3 - value;
     }
-    this.x1 -= diff;
-    this.x2 -= diff;
-    this.x3 -= diff;
+    this.x1 -= diff2;
+    this.x2 -= diff2;
+    this.x3 -= diff2;
   }
   get right() {
     return Math.max(this.x1, this.x2, this.x3);
   }
   set right(value) {
-    let diff = 0;
+    let diff2 = 0;
     if (this.x1 >= this.x2 && this.x1 >= this.x3) {
-      diff = this.x1 - value;
+      diff2 = this.x1 - value;
     } else if (this.x2 >= this.x1 && this.x2 >= this.x3) {
-      diff = this.x2 - value;
+      diff2 = this.x2 - value;
     } else {
-      diff = this.x3 - value;
+      diff2 = this.x3 - value;
     }
-    this.x1 -= diff;
-    this.x2 -= diff;
-    this.x3 -= diff;
+    this.x1 -= diff2;
+    this.x2 -= diff2;
+    this.x3 -= diff2;
   }
   get top() {
     return Math.min(this.y1, this.y2, this.y3);
   }
   set top(value) {
-    let diff = 0;
+    let diff2 = 0;
     if (this.y1 <= this.y2 && this.y1 <= this.y3) {
-      diff = this.y1 - value;
+      diff2 = this.y1 - value;
     } else if (this.y2 <= this.y1 && this.y2 <= this.y3) {
-      diff = this.y2 - value;
+      diff2 = this.y2 - value;
     } else {
-      diff = this.y3 - value;
+      diff2 = this.y3 - value;
     }
-    this.y1 -= diff;
-    this.y2 -= diff;
-    this.y3 -= diff;
+    this.y1 -= diff2;
+    this.y2 -= diff2;
+    this.y3 -= diff2;
   }
   get bottom() {
     return Math.max(this.y1, this.y2, this.y3);
   }
   set bottom(value) {
-    let diff = 0;
+    let diff2 = 0;
     if (this.y1 >= this.y2 && this.y1 >= this.y3) {
-      diff = this.y1 - value;
+      diff2 = this.y1 - value;
     } else if (this.y2 >= this.y1 && this.y2 >= this.y3) {
-      diff = this.y2 - value;
+      diff2 = this.y2 - value;
     } else {
-      diff = this.y3 - value;
+      diff2 = this.y3 - value;
     }
-    this.y1 -= diff;
-    this.y2 -= diff;
-    this.y3 -= diff;
+    this.y1 -= diff2;
+    this.y2 -= diff2;
+    this.y3 -= diff2;
   }
 };
 
@@ -13359,19 +14940,19 @@ function CenterTriangleOn(triangle, x, y, centerFunc = GetTriangleCentroid) {
 
 // src/geom/triangle/CloneTriangle.ts
 function CloneTriangle(source) {
-  const {x1, y1, x2, y2, x3, y3} = source;
+  const { x1, y1, x2, y2, x3, y3 } = source;
   return new Triangle(x1, y1, x2, y2, x3, y3);
 }
 
 // src/geom/triangle/CopyTriangleFrom.ts
 function CopyTriangleFrom(source, dest) {
-  const {x1, y1, x2, y2, x3, y3} = source;
+  const { x1, y1, x2, y2, x3, y3 } = source;
   return dest.set(x1, y1, x2, y2, x3, y3);
 }
 
 // src/geom/triangle/GetTriangleArea.ts
 function GetTriangleArea(triangle) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   return Math.abs(((x3 - x1) * (y2 - y1) - (x2 - x1) * (y3 - y1)) / 2);
 }
 
@@ -13394,7 +14975,7 @@ function GetTriangleCircumCenter(triangle, out = new Vec2()) {
 
 // src/geom/triangle/GetTriangleCircumCircle.ts
 function GetTriangleCircumCircle(triangle, out = new Circle()) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const A = x2 - x1;
   const B = y2 - y1;
   const C = x3 - x1;
@@ -13424,7 +15005,7 @@ function GetLength(x1, y1, x2, y2) {
   return Math.sqrt(x * x + y * y);
 }
 function GetTriangleInCenter(triangle, out = new Vec2()) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const d1 = GetLength(x3, y3, x2, y2);
   const d2 = GetLength(x1, y1, x3, y3);
   const d3 = GetLength(x2, y2, x1, y1);
@@ -13452,17 +15033,17 @@ function GetTrianglePoint(triangle, position, out = new Vec2()) {
   let localPosition = 0;
   if (p < length1) {
     localPosition = p / length1;
-    const {x1, y1, x2, y2} = line1;
+    const { x1, y1, x2, y2 } = line1;
     return out.set(x1 + (x2 - x1) * localPosition, y1 + (y2 - y1) * localPosition);
   } else if (p > length1 + length2) {
     p -= length1 + length2;
     localPosition = p / length3;
-    const {x1, y1, x2, y2} = line3;
+    const { x1, y1, x2, y2 } = line3;
     return out.set(x1 + (x2 - x1) * localPosition, y1 + (y2 - y1) * localPosition);
   } else {
     p -= length1;
     localPosition = p / length2;
-    const {x1, y1, x2, y2} = line2;
+    const { x1, y1, x2, y2 } = line2;
     return out.set(x1 + (x2 - x1) * localPosition, y1 + (y2 - y1) * localPosition);
   }
 }
@@ -13483,17 +15064,17 @@ function GetTrianglePoints(triangle, quantity, stepRate, out = []) {
     let point;
     if (p < length1) {
       localPosition = p / length1;
-      const {x1, y1, x2, y2} = line1;
+      const { x1, y1, x2, y2 } = line1;
       point = new Vec2(x1 + (x2 - x1) * localPosition, y1 + (y2 - y1) * localPosition);
     } else if (p > length1 + length2) {
       p -= length1 + length2;
       localPosition = p / length3;
-      const {x1, y1, x2, y2} = line3;
+      const { x1, y1, x2, y2 } = line3;
       point = new Vec2(x1 + (x2 - x1) * localPosition, y1 + (y2 - y1) * localPosition);
     } else {
       p -= length1;
       localPosition = p / length2;
-      const {x1, y1, x2, y2} = line2;
+      const { x1, y1, x2, y2 } = line2;
       point = new Vec2(x1 + (x2 - x1) * localPosition, y1 + (y2 - y1) * localPosition);
     }
     out.push(point);
@@ -13503,7 +15084,7 @@ function GetTrianglePoints(triangle, quantity, stepRate, out = []) {
 
 // src/geom/triangle/GetTriangleRandomPoint.ts
 function GetTriangleRandomPoint(triangle, out = new Vec2()) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const ux = x2 - x1;
   const uy = y2 - y1;
   const vx = x3 - x1;
@@ -13519,7 +15100,7 @@ function GetTriangleRandomPoint(triangle, out = new Vec2()) {
 
 // src/geom/triangle/RotateTriangleAround.ts
 function RotateTriangleAround(triangle, x, y, angle) {
-  const {x1, y1, x2, y2, x3, y3} = triangle;
+  const { x1, y1, x2, y2, x3, y3 } = triangle;
   const c = Math.cos(angle);
   const s = Math.sin(angle);
   return triangle.set((x1 - x) * c - (y1 - y) * s + x, (x1 - x) * s + (y1 - y) * c + y, (x2 - x) * c - (y2 - y) * s + x, (x2 - x) * s + (y2 - y) * c + y, (x3 - x) * c - (y3 - y) * s + x, (x3 - x) * s + (y3 - y) * c + y);
@@ -13658,15 +15239,22 @@ __export(keys_exports, {
 
 // src/input/keyboard/Key.ts
 var Key = class {
+  value;
+  events;
+  capture = true;
+  isDown = false;
+  enabled = true;
+  repeatRate = 0;
+  canRepeat = true;
+  timeDown = 0;
+  timeUpdated = 0;
+  timeUp = 0;
+  shiftKey;
+  ctrlKey;
+  altKey;
+  downCallback;
+  upCallback;
   constructor(value) {
-    this.capture = true;
-    this.isDown = false;
-    this.enabled = true;
-    this.repeatRate = 0;
-    this.canRepeat = true;
-    this.timeDown = 0;
-    this.timeUpdated = 0;
-    this.timeUp = 0;
     this.value = value;
     this.events = new Map();
   }
@@ -13743,6 +15331,11 @@ var AKey = class extends Key {
 
 // src/input/keyboard/keys/ArrowKeys.ts
 var ArrowKeys = class {
+  left;
+  right;
+  up;
+  down;
+  space;
   constructor(keyboardManager, config) {
     const {
       left = true,
@@ -13959,6 +15552,11 @@ var VKey = class extends Key {
 
 // src/input/keyboard/keys/WASDKeys.ts
 var WASDKeys = class {
+  W;
+  A;
+  S;
+  D;
+  space;
   constructor(keyboardManager, config) {
     const {
       W = true,
@@ -14030,25 +15628,29 @@ function GetKeyDownDuration(key) {
 
 // src/input/keyboard/Keyboard.ts
 var Keyboard = class extends EventEmitter {
+  keys;
+  keydownHandler;
+  keyupHandler;
+  blurHandler;
+  keyConversion = {
+    Up: "ArrowUp",
+    Down: "ArrowDown",
+    Left: "ArrowLeft",
+    Right: "ArrowRight",
+    Spacebar: " ",
+    Win: "Meta",
+    Scroll: "ScrollLock",
+    Del: "Delete",
+    Apps: "ContextMenu",
+    Esc: "Escape",
+    Add: "+",
+    Subtract: "-",
+    Multiply: "*",
+    Decimal: ".",
+    Divide: "/"
+  };
   constructor() {
     super();
-    this.keyConversion = {
-      Up: "ArrowUp",
-      Down: "ArrowDown",
-      Left: "ArrowLeft",
-      Right: "ArrowRight",
-      Spacebar: " ",
-      Win: "Meta",
-      Scroll: "ScrollLock",
-      Del: "Delete",
-      Apps: "ContextMenu",
-      Esc: "Escape",
-      Add: "+",
-      Subtract: "-",
-      Multiply: "*",
-      Decimal: ".",
-      Divide: "/"
-    };
     this.keydownHandler = (event) => this.onKeyDown(event);
     this.keyupHandler = (event) => this.onKeyUp(event);
     this.blurHandler = () => this.onBlur();
@@ -14119,13 +15721,23 @@ __export(mouse_exports, {
 
 // src/input/mouse/Mouse.ts
 var Mouse = class extends EventEmitter {
+  primaryDown = false;
+  auxDown = false;
+  secondaryDown = false;
+  blockContextMenu = true;
+  localPoint;
+  hitPoint;
+  target;
+  resolution = 1;
+  mousedownHandler;
+  mouseupHandler;
+  mousemoveHandler;
+  mousewheelHandler;
+  contextmenuHandler;
+  blurHandler;
+  transPoint;
   constructor(target) {
     super();
-    this.primaryDown = false;
-    this.auxDown = false;
-    this.secondaryDown = false;
-    this.blockContextMenu = true;
-    this.resolution = 1;
     this.mousedownHandler = (event) => this.onMouseDown(event);
     this.mouseupHandler = (event) => this.onMouseUp(event);
     this.mousemoveHandler = (event) => this.onMouseMove(event);
@@ -14140,7 +15752,7 @@ var Mouse = class extends EventEmitter {
     }
     target.addEventListener("mousedown", this.mousedownHandler);
     target.addEventListener("mouseup", this.mouseupHandler);
-    target.addEventListener("wheel", this.mousewheelHandler, {passive: false});
+    target.addEventListener("wheel", this.mousewheelHandler, { passive: false });
     target.addEventListener("contextmenu", this.contextmenuHandler);
     window.addEventListener("mouseup", this.mouseupHandler);
     window.addEventListener("mousemove", this.mousemoveHandler);
@@ -14202,12 +15814,12 @@ var Mouse = class extends EventEmitter {
     }
     return false;
   }
-  hitTest(...entities) {
+  hitTest(...entities3) {
     const localX = this.localPoint.x;
     const localY = this.localPoint.y;
     const point = this.transPoint;
-    for (let i = 0; i < entities.length; i++) {
-      const entity = entities[i];
+    for (let i = 0; i < entities3.length; i++) {
+      const entity = entities3[i];
       if (!entity.world) {
         continue;
       }
@@ -14289,11 +15901,18 @@ __export(files_exports, {
 
 // src/loader/File.ts
 var File = class {
+  key;
+  url;
+  responseType = "text";
+  crossOrigin = void 0;
+  data;
+  error;
+  config;
+  skipCache = false;
+  hasLoaded = false;
+  loader;
+  load;
   constructor(key, url, config) {
-    this.responseType = "text";
-    this.crossOrigin = void 0;
-    this.skipCache = false;
-    this.hasLoaded = false;
     this.key = key;
     this.url = url;
     this.config = config;
@@ -14314,33 +15933,34 @@ function GetURL(key, url, extension, loader) {
   }
 }
 
-// src/loader/ImageTagLoader.ts
+// src/loader/ImageLoader.ts
 function ImageTagLoader(file) {
-  file.data = new Image();
-  if (file.crossOrigin) {
-    file.data.crossOrigin = file.crossOrigin;
+  const fileCast = file;
+  fileCast.data = new Image();
+  if (fileCast.crossOrigin) {
+    fileCast.data.crossOrigin = file.crossOrigin;
   }
   return new Promise((resolve, reject) => {
-    file.data.onload = () => {
-      if (file.data.onload) {
-        file.data.onload = null;
-        file.data.onerror = null;
-        resolve(file);
+    fileCast.data.onload = () => {
+      if (fileCast.data.onload) {
+        fileCast.data.onload = null;
+        fileCast.data.onerror = null;
+        resolve(fileCast);
       }
     };
-    file.data.onerror = (event) => {
-      if (file.data.onload) {
-        file.data.onload = null;
-        file.data.onerror = null;
-        file.error = event;
-        reject(file);
+    fileCast.data.onerror = (event) => {
+      if (fileCast.data.onload) {
+        fileCast.data.onload = null;
+        fileCast.data.onerror = null;
+        fileCast.error = event;
+        reject(fileCast);
       }
     };
-    file.data.src = file.url;
-    if (file.data.complete && file.data.width && file.data.height) {
-      file.data.onload = null;
-      file.data.onerror = null;
-      resolve(file);
+    fileCast.data.src = file.url;
+    if (fileCast.data.complete && fileCast.data.width && fileCast.data.height) {
+      fileCast.data.onload = null;
+      fileCast.data.onerror = null;
+      resolve(fileCast);
     }
   });
 }
@@ -14663,13 +16283,19 @@ function SpriteSheetFile(key, url, frameConfig, glConfig) {
 
 // src/loader/Loader.ts
 var Loader = class extends EventEmitter {
+  baseURL = "";
+  path = "";
+  crossOrigin = "anonymous";
+  maxParallelDownloads = -1;
+  isLoading = false;
+  progress;
+  queue;
+  inflight;
+  completed;
+  onComplete;
+  onError;
   constructor() {
     super();
-    this.baseURL = "";
-    this.path = "";
-    this.crossOrigin = "anonymous";
-    this.maxParallelDownloads = -1;
-    this.isLoading = false;
     this.reset();
   }
   reset() {
@@ -15000,6 +16626,209 @@ var YellowRubber = new Material({
   shine: 0.078125
 });
 
+// src/scenes/index.ts
+var scenes_exports = {};
+__export(scenes_exports, {
+  AddRenderStatsComponent: () => AddRenderStatsComponent,
+  CreateSceneRenderData: () => CreateSceneRenderData,
+  GameObjectRenderList: () => GameObjectRenderList,
+  GetConfigValue: () => GetConfigValue,
+  GetRenderStatsAsObject: () => GetRenderStatsAsObject,
+  Install: () => Install,
+  RenderStatsComponent: () => RenderStatsComponent,
+  ResetRenderStats: () => ResetRenderStats,
+  Scene: () => Scene,
+  SceneManager: () => SceneManager,
+  SceneManagerInstance: () => SceneManagerInstance
+});
+
+// src/scenes/RenderStatsComponent.ts
+var RenderStats = defineComponent({
+  gameFrame: Types.ui32,
+  numScenes: Types.ui8,
+  numWorlds: Types.ui8,
+  numGameObjects: Types.ui32,
+  numGameObjectsRendered: Types.ui32,
+  numDirtyLocalTransforms: Types.ui32,
+  numDirtyWorldTransforms: Types.ui32,
+  numDirtyVertices: Types.ui32,
+  numDirtyWorldLists: Types.ui8,
+  numDirtyCameras: Types.ui32
+});
+var RenderStatsComponent = RenderStats;
+
+// src/scenes/AddRenderStatsComponent.ts
+function AddRenderStatsComponent(id) {
+  addComponent(GameObjectWorld, RenderStatsComponent, id);
+}
+
+// src/scenes/CreateSceneRenderData.ts
+function CreateSceneRenderData() {
+  return {
+    gameFrame: 0,
+    numTotalFrames: 0,
+    numDirtyFrames: 0,
+    numDirtyCameras: 0,
+    worldData: []
+  };
+}
+
+// src/scenes/GameObjectRenderList.ts
+var GameObjectRenderList = new Set();
+
+// src/scenes/GetConfigValue.ts
+function GetConfigValue(config, property, defaultValue) {
+  if (Object.prototype.hasOwnProperty.call(config, property)) {
+    return config[property];
+  } else {
+    return defaultValue;
+  }
+}
+
+// src/scenes/SceneManagerInstance.ts
+var instance4;
+var SceneManagerInstance = {
+  get: () => {
+    return instance4;
+  },
+  set: (manager) => {
+    if (instance4) {
+      throw new Error("SceneManager should not be instantiated more than once");
+    }
+    instance4 = manager;
+  }
+};
+
+// src/scenes/GetRenderStatsAsObject.ts
+function GetRenderStatsAsObject(obj) {
+  const id = SceneManagerInstance.get().id;
+  if (!obj) {
+    obj = { gameFrame: 0, numScenes: 0, numWorlds: 0, numGameObjects: 0, numGameObjectsRendered: 0, numDirtyLocalTransforms: 0, numDirtyWorldTransforms: 0, numDirtyVertices: 0, numDirtyWorldLists: 0, numDirtyCameras: 0 };
+  }
+  obj.gameFrame = RenderStatsComponent.gameFrame[id];
+  obj.numScenes = RenderStatsComponent.numScenes[id];
+  obj.numWorlds = RenderStatsComponent.numWorlds[id];
+  obj.numGameObjects = RenderStatsComponent.numGameObjects[id];
+  obj.numGameObjectsRendered = RenderStatsComponent.numGameObjectsRendered[id];
+  obj.numDirtyLocalTransforms = RenderStatsComponent.numDirtyLocalTransforms[id];
+  obj.numDirtyWorldTransforms = RenderStatsComponent.numDirtyWorldTransforms[id];
+  obj.numDirtyVertices = RenderStatsComponent.numDirtyVertices[id];
+  obj.numDirtyWorldLists = RenderStatsComponent.numDirtyWorldLists[id];
+  obj.numDirtyCameras = RenderStatsComponent.numDirtyCameras[id];
+  return obj;
+}
+
+// src/scenes/Install.ts
+function Install(scene, config = {}) {
+  const sceneManager = SceneManagerInstance.get();
+  const size = sceneManager.scenes.size;
+  const sceneIndex = sceneManager.sceneIndex;
+  const firstScene = size === 0;
+  if (typeof config === "string") {
+    scene.key = config;
+  } else if (config || !config && firstScene) {
+    scene.key = GetConfigValue(config, "key", "scene" + sceneIndex.toString());
+  }
+  if (sceneManager.scenes.has(scene.key)) {
+    console.warn("Scene key already in use: " + scene.key);
+  } else {
+    sceneManager.scenes.set(scene.key, scene);
+    sceneManager.flush = true;
+    sceneManager.sceneIndex++;
+  }
+  WorldList.set(scene, []);
+}
+
+// src/scenes/ResetRenderStats.ts
+function ResetRenderStats(id, gameFrame, scenes, worlds2, transforms) {
+  RenderStatsComponent.gameFrame[id] = gameFrame;
+  RenderStatsComponent.numScenes[id] = scenes;
+  RenderStatsComponent.numWorlds[id] = worlds2;
+  RenderStatsComponent.numGameObjects[id] = 0;
+  RenderStatsComponent.numGameObjectsRendered[id] = 0;
+  RenderStatsComponent.numDirtyWorldLists[id] = 0;
+  RenderStatsComponent.numDirtyVertices[id] = 0;
+  RenderStatsComponent.numDirtyLocalTransforms[id] = transforms;
+  RenderStatsComponent.numDirtyWorldTransforms[id] = 0;
+  RenderStatsComponent.numDirtyCameras[id] = 0;
+}
+
+// src/scenes/Scene.ts
+var Scene = class {
+  key;
+  game;
+  events;
+  constructor(config) {
+    this.game = GameInstance.get();
+    this.events = new Map();
+    Install(this, config);
+  }
+};
+
+// src/config/scenes/GetScenes.ts
+function GetScenes() {
+  return ConfigStore.get(CONFIG_DEFAULTS.SCENES);
+}
+
+// src/scenes/SceneManager.ts
+var SceneManager = class {
+  id = addEntity(GameObjectWorld);
+  game;
+  scenes = new Map();
+  sceneIndex = 0;
+  flush;
+  changedMatrixQuery = defineQuery([Changed(LocalMatrix2DComponent)]);
+  constructor() {
+    this.game = GameInstance.get();
+    SceneManagerInstance.set(this);
+    AddRenderStatsComponent(this.id);
+    Once(this.game, "boot", () => this.boot());
+  }
+  boot() {
+    GetScenes().forEach((scene) => new scene());
+  }
+  update(delta, time, gameFrame) {
+    let sceneTotal = 0;
+    let worldTotal = 0;
+    for (const scene of this.scenes.values()) {
+      const worlds2 = WorldList.get(scene);
+      for (const world3 of worlds2) {
+        world3.beforeUpdate(delta, time);
+        world3.update(delta, time);
+        world3.afterUpdate(delta, time);
+        worldTotal++;
+      }
+      sceneTotal++;
+    }
+    const localTransforms = UpdateLocalTransform2DSystem(GameObjectWorld);
+    ResetRenderStats(this.id, gameFrame, sceneTotal, worldTotal, localTransforms.length);
+  }
+  preRender(gameFrame) {
+    const dirtyTransforms = this.changedMatrixQuery(GameObjectWorld);
+    let dirtyWorld = false;
+    for (const scene of this.scenes.values()) {
+      const worlds2 = WorldList.get(scene);
+      for (const world3 of worlds2) {
+        if (world3.preRender(gameFrame, dirtyTransforms)) {
+          dirtyWorld = true;
+        }
+      }
+    }
+    const verts = UpdateVertexPositionSystem(GameObjectWorld);
+    RenderStatsComponent.numDirtyVertices[this.id] = verts.length;
+    if (dirtyWorld) {
+      this.flush = true;
+    }
+  }
+  updateWorldStats(numGameObjects, numRendered, numDisplayLists, numWorldTransforms2) {
+    const id = this.id;
+    RenderStatsComponent.numGameObjects[id] += numGameObjects;
+    RenderStatsComponent.numGameObjectsRendered[id] += numRendered;
+    RenderStatsComponent.numDirtyWorldLists[id] += numDisplayLists;
+    RenderStatsComponent.numDirtyWorldTransforms[id] += numWorldTransforms2;
+  }
+};
+
 // src/time/index.ts
 var time_exports = {};
 __export(time_exports, {
@@ -15078,8 +16907,12 @@ function AddDelayedCall(clock, delay, callback) {
 
 // src/time/Clock.ts
 var Clock = class {
-  constructor(world) {
-    this.world = world;
+  world;
+  now;
+  timeScale;
+  events;
+  constructor(world3) {
+    this.world = world3;
     this.timeScale = 1;
     this.events = new Set();
   }
@@ -15114,9 +16947,22 @@ __export(world_exports, {
 // src/world/events/index.ts
 var events_exports2 = {};
 __export(events_exports2, {
+  WorldAfterUpdateEvent: () => WorldAfterUpdateEvent,
+  WorldBeforeUpdateEvent: () => WorldBeforeUpdateEvent,
+  WorldPostRenderEvent: () => WorldPostRenderEvent,
   WorldRenderEvent: () => WorldRenderEvent,
-  WorldShutdownEvent: () => WorldShutdownEvent
+  WorldShutdownEvent: () => WorldShutdownEvent,
+  WorldUpdateEvent: () => WorldUpdateEvent
 });
+
+// src/world/events/WorldAfterUpdateEvent.ts
+var WorldAfterUpdateEvent = "afterupdate";
+
+// src/world/events/WorldBeforeUpdateEvent.ts
+var WorldBeforeUpdateEvent = "beforeupdate";
+
+// src/world/events/WorldPostRenderEvent.ts
+var WorldPostRenderEvent = "worldpostrender";
 
 // src/world/events/WorldRenderEvent.ts
 var WorldRenderEvent = "worldrender";
@@ -15124,11 +16970,216 @@ var WorldRenderEvent = "worldrender";
 // src/world/events/WorldShutdownEvent.ts
 var WorldShutdownEvent = "worldshutdown";
 
+// src/world/events/WorldUpdateEvent.ts
+var WorldUpdateEvent = "update";
+
+// src/world/AddRenderDataComponent.ts
+function AddRenderDataComponent(id) {
+  addComponent(GameObjectWorld, RenderDataComponent, id);
+}
+
+// src/world/CheckDirtyTransforms.ts
+function CheckDirtyTransforms(worldID, list) {
+  for (let i = 0; i < list.length; i++) {
+    if (GetWorldID(list[i]) === worldID) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// src/config/worldsize/GetWorldSize.ts
+function GetWorldSize() {
+  return ConfigStore.get(CONFIG_DEFAULTS.WORLD_SIZE);
+}
+
+// src/world/RebuildWorldList.ts
+function RebuildWorldList(world3, parent) {
+  if (WillRender(parent)) {
+    if (world3.id !== parent) {
+      world3.addToRenderList(parent, 0);
+    }
+    const children = GameObjectTree.get(parent);
+    for (let i = 0; i < children.length; i++) {
+      const nodeID = children[i];
+      if (WillRender(nodeID)) {
+        if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID)) {
+          RebuildWorldList(world3, nodeID);
+        } else {
+          world3.addToRenderList(nodeID, 0);
+          world3.addToRenderList(nodeID, 1);
+        }
+      }
+    }
+    if (world3.id !== parent) {
+      world3.addToRenderList(parent, 1);
+    }
+  }
+}
+
+// src/world/RebuildWorldTransforms.ts
+function RebuildWorldTransforms(world3, parent, transformList, forceUpdate) {
+  if (WillRender(parent)) {
+    if (!forceUpdate && transformList.indexOf(parent) > -1) {
+      forceUpdate = true;
+    }
+    if (forceUpdate) {
+      UpdateWorldTransform(parent);
+    }
+    const children = GameObjectTree.get(parent);
+    for (let i = 0; i < children.length; i++) {
+      const nodeID = children[i];
+      if (WillRender(nodeID)) {
+        if (GetNumChildren(nodeID) > 0) {
+          if (WillRenderChildren(nodeID) && WillTransformChildren(nodeID)) {
+            RebuildWorldTransforms(world3, nodeID, transformList, forceUpdate);
+          }
+        } else if (forceUpdate || transformList.indexOf(nodeID) > -1) {
+          UpdateWorldTransform(nodeID);
+        }
+      }
+    }
+  }
+}
+
+// src/scenes/events/SceneDestroyEvent.ts
+var SceneDestroyEvent = "destroy";
+
+// src/world/BaseWorld.ts
+var BaseWorld = class extends GameObject {
+  tag = defineComponent();
+  scene;
+  sceneManager;
+  camera;
+  forceRefresh = false;
+  is3D = false;
+  runRender = false;
+  renderList;
+  listLength;
+  totalChildren;
+  totalChildrenQuery;
+  dirtyWorldQuery;
+  constructor(scene) {
+    super();
+    this.scene = scene;
+    this.sceneManager = SceneManagerInstance.get();
+    this.totalChildren = 0;
+    this.totalChildrenQuery = defineQuery([this.tag]);
+    this.dirtyWorldQuery = defineQuery([this.tag, Changed(WorldMatrix2DComponent)]);
+    this.renderList = new Uint32Array(GetWorldSize() * 4);
+    this.listLength = 0;
+    const id = this.id;
+    AddRenderDataComponent(id);
+    AddTransform2DComponent(id);
+    SetWorldID(id, id);
+    WorldList.get(scene).push(this);
+    Once(scene, SceneDestroyEvent, () => this.destroy());
+  }
+  beforeUpdate(delta, time) {
+    Emit(this, WorldBeforeUpdateEvent, delta, time, this);
+  }
+  update(delta, time) {
+    if (!WillUpdate(this.id)) {
+      return;
+    }
+    Emit(this, WorldUpdateEvent, delta, time, this);
+    super.update(delta, time);
+  }
+  afterUpdate(delta, time) {
+    Emit(this, WorldAfterUpdateEvent, delta, time, this);
+  }
+  addToRenderList(id, renderType) {
+    let len = this.listLength;
+    const list = this.renderList;
+    list[len] = id;
+    list[len + 1] = renderType;
+    this.listLength += 2;
+    len += 2;
+    if (len === list.length) {
+      const newList = new Uint32Array(len + GetWorldSize() * 4);
+      newList.set(list, 0);
+      this.renderList = newList;
+    }
+  }
+  preRender(gameFrame, transformList) {
+    const sceneManager = this.sceneManager;
+    if (!this.isRenderable()) {
+      this.runRender = false;
+      sceneManager.updateWorldStats(this.totalChildren, 0, 0, 0);
+      return false;
+    }
+    const id = this.id;
+    const dirtyDisplayList = HasDirtyDisplayList(id);
+    ResetWorldRenderData(id, gameFrame);
+    let isDirty = false;
+    if (dirtyDisplayList) {
+      this.listLength = 0;
+      RebuildWorldList(this, id);
+      ClearDirtyDisplayList(id);
+      isDirty = true;
+      this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
+    }
+    if (dirtyDisplayList || CheckDirtyTransforms(id, transformList)) {
+      RebuildWorldTransforms(this, id, transformList, false);
+      isDirty = true;
+    }
+    this.camera.dirtyRender = false;
+    this.runRender = this.listLength > 0;
+    sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), GetNumWorldTransforms());
+    return isDirty;
+  }
+  getTotalChildren() {
+    if (HasDirtyDisplayList(this.id)) {
+      this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
+    }
+    return this.totalChildren;
+  }
+  renderGL(renderPass) {
+    Emit(this, WorldRenderEvent, this);
+    const currentCamera = renderPass.current2DCamera;
+    const camera = this.camera;
+    if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform)) {
+      Flush(renderPass);
+    }
+    Begin(renderPass, camera);
+    const list = this.renderList;
+    for (let i = 0; i < this.listLength; i += 2) {
+      const eid = list[i];
+      const type = list[i + 1];
+      const entry = GameObjectCache.get(eid);
+      if (type === 1) {
+        entry.postRenderGL(renderPass);
+      } else {
+        entry.renderGL(renderPass);
+      }
+    }
+  }
+  postRenderGL(renderPass) {
+    Emit(this, WorldPostRenderEvent, renderPass, this);
+  }
+  shutdown() {
+    RemoveChildren(this);
+    Emit(this, WorldShutdownEvent, this);
+    ResetWorldRenderData(this.id, 0);
+    if (this.camera) {
+      this.camera.reset();
+    }
+  }
+  destroy(reparentChildren) {
+    super.destroy(reparentChildren);
+    this.shutdown();
+    if (this.camera) {
+      this.camera.destroy();
+    }
+    this.camera = null;
+  }
+};
+
 // src/world/CalculateTotalRenderable.ts
 function CalculateTotalRenderable(entry, renderData) {
   renderData.numRendered++;
   renderData.numRenderable++;
-  if (entry.node.dirtyFrame >= renderData.gameFrame) {
+  if (IsDirtyFrame(entry.node.id, renderData.gameFrame)) {
     renderData.dirtyFrame++;
   }
   entry.children.forEach((child) => {
@@ -15140,13 +17191,13 @@ function CalculateTotalRenderable(entry, renderData) {
 
 // src/world/HasDirtyChildren.ts
 function HasDirtyChildren(parent) {
-  if (parent.node.isDirty(DIRTY_CONST.CHILD_CACHE)) {
+  if (HasDirtyChildCache(parent.node.id)) {
     return true;
   }
   const stack = [parent];
   while (stack.length > 0) {
     const entry = stack.pop();
-    if (entry.node.isDirty(DIRTY_CONST.TRANSFORM)) {
+    if (HasDirtyTransform(entry.node.id)) {
       return true;
     }
     const numChildren = entry.children.length;
@@ -15164,7 +17215,7 @@ function HasDirtyChildren(parent) {
 function UpdateCachedLayers(cachedLayers, dirtyCamera) {
   cachedLayers.forEach((layer) => {
     if (dirtyCamera || HasDirtyChildren(layer)) {
-      layer.node.setDirty(DIRTY_CONST.CHILD_CACHE);
+      SetDirtyChildCache(layer.node.id);
     } else {
       layer.children.length = 0;
     }
@@ -15172,49 +17223,83 @@ function UpdateCachedLayers(cachedLayers, dirtyCamera) {
 }
 
 // src/world/WorldDepthFirstSearch.ts
-function WorldDepthFirstSearch(cachedLayers, parent, output = []) {
-  for (let i = 0; i < parent.numChildren; i++) {
-    const node = parent.children[i];
-    if (node.isRenderable()) {
-      const children = [];
-      const entry = {node, children};
-      output.push(entry);
-      if (node.willRenderChildren && node.numChildren > 0) {
-        if (node.willCacheChildren) {
-          cachedLayers.push(entry);
+function WorldDepthFirstSearch(world3, parent, transformList, forceUpdate) {
+  const renderList = world3.renderList;
+  const renderType = world3.renderType;
+  if (WillRender(parent)) {
+    if (world3.id !== parent) {
+      renderList.push(parent);
+      renderType.push(0);
+    }
+    if (!forceUpdate && transformList.indexOf(parent) > -1) {
+      forceUpdate = true;
+    }
+    if (forceUpdate) {
+      UpdateWorldTransform(parent);
+    }
+    const children = GameObjectTree.get(parent);
+    for (let i = 0; i < children.length; i++) {
+      const nodeID = children[i];
+      if (WillRender(nodeID)) {
+        if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID)) {
+          WorldDepthFirstSearch(world3, nodeID, transformList, forceUpdate);
+        } else {
+          renderList.push(nodeID);
+          renderType.push(0);
+          if (forceUpdate || transformList.indexOf(nodeID) > -1) {
+            UpdateWorldTransform(nodeID);
+          }
+          renderList.push(nodeID);
+          renderType.push(1);
         }
-        WorldDepthFirstSearch(cachedLayers, node, children);
       }
     }
+    if (world3.id !== parent) {
+      renderList.push(parent);
+      renderType.push(1);
+    }
   }
-  return output;
 }
 
 // src/world/BuildRenderList.ts
-function BuildRenderList(world) {
+function BuildRenderList(world3) {
+  const worldID = world3.id;
   const cachedLayers = [];
   const stack = [];
-  const entries = WorldDepthFirstSearch(cachedLayers, world, stack);
-  const renderData = world.renderData;
+  const entries = WorldDepthFirstSearch(cachedLayers, world3, stack);
+  const renderData = world3.renderData;
   if (cachedLayers.length > 0) {
-    UpdateCachedLayers(cachedLayers, world.camera.dirtyRender);
+    UpdateCachedLayers(cachedLayers, world3.camera.dirtyRender);
   }
+  const gameFrame = RenderDataComponent.gameFrame[worldID];
   entries.forEach((entry) => {
     if (entry.children.length > 0) {
       CalculateTotalRenderable(entry, renderData);
     } else {
-      renderData.numRendered++;
-      renderData.numRenderable++;
-      if (entry.node.dirtyFrame >= renderData.gameFrame) {
-        renderData.dirtyFrame++;
+      RenderDataComponent.numRendered[worldID]++;
+      RenderDataComponent.numRenderable[worldID]++;
+      if (IsDirtyFrame(entry.node.id, gameFrame)) {
+        RenderDataComponent.dirtyFrame[worldID]++;
       }
     }
   });
-  world.renderList = entries;
-  if (world.forceRefresh) {
-    renderData.dirtyFrame++;
-    world.forceRefresh = false;
+  world3.renderList = entries;
+  if (world3.forceRefresh) {
+    RenderDataComponent.dirtyFrame[worldID]++;
+    world3.forceRefresh = false;
   }
+}
+
+// src/world/CreateWorldRenderData.ts
+function CreateWorldRenderData(world3, camera) {
+  return {
+    world: world3,
+    camera,
+    gameFrame: 0,
+    dirtyFrame: 0,
+    numRendered: 0,
+    numRenderable: 0
+  };
 }
 
 // src/world/MergeRenderData.ts
@@ -15227,122 +17312,11 @@ function MergeRenderData(sceneRenderData, worldRenderData) {
   sceneRenderData.worldData.push(worldRenderData);
 }
 
-// src/world/ResetWorldRenderData.ts
-function ResetWorldRenderData(renderData, gameFrame) {
-  renderData.gameFrame = gameFrame;
-  renderData.dirtyFrame = 0;
-  renderData.numRendered = 0;
-  renderData.numRenderable = 0;
-}
-
-// src/world/BaseWorld.ts
-var BaseWorld = class extends GameObject {
-  constructor(scene) {
-    super();
-    this.forceRefresh = false;
-    this.is3D = false;
-    this.type = "BaseWorld";
-    this.scene = scene;
-    this.world = this;
-    this.events = new Map();
-    this.renderList = [];
-    this._updateListener = On(scene, "update", (delta, time) => this.update(delta, time));
-    this._renderListener = On(scene, "render", (renderData) => this.render(renderData));
-    this._shutdownListener = On(scene, "shutdown", () => this.shutdown());
-    Once(scene, "destroy", () => this.destroy());
-  }
-  update(delta, time) {
-    if (!this.willUpdate) {
-      return;
-    }
-    Emit(this, UpdateEvent, delta, time, this);
-    super.update(delta, time);
-  }
-  postUpdate(delta, time) {
-    Emit(this, PostUpdateEvent, delta, time, this);
-  }
-  render(sceneRenderData) {
-    const renderData = this.renderData;
-    ResetWorldRenderData(renderData, sceneRenderData.gameFrame);
-    if (!this.willRender || !this.visible) {
-      return;
-    }
-    BuildRenderList(this);
-    Emit(this, WorldRenderEvent, renderData, this);
-    MergeRenderData(sceneRenderData, renderData);
-    this.camera.dirtyRender = false;
-  }
-  renderGL(renderPass) {
-    const currentCamera = renderPass.current2DCamera;
-    const camera = this.camera;
-    if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform)) {
-      Flush(renderPass);
-    }
-    Begin(renderPass, camera);
-    this.renderList.forEach((entry) => {
-      if (entry.children.length > 0) {
-        this.renderNode(entry, renderPass);
-      } else {
-        entry.node.renderGL(renderPass);
-      }
-    });
-  }
-  renderNode(entry, renderPass) {
-    entry.node.renderGL(renderPass);
-    entry.children.forEach((child) => {
-      if (child.children.length > 0) {
-        this.renderNode(child, renderPass);
-      } else {
-        child.node.renderGL(renderPass);
-      }
-    });
-    entry.node.postRenderGL(renderPass);
-  }
-  postRenderGL(renderPass) {
-  }
-  shutdown() {
-    const scene = this.scene;
-    Off(scene, "update", this._updateListener);
-    Off(scene, "render", this._renderListener);
-    Off(scene, "shutdown", this._shutdownListener);
-    RemoveChildren(this);
-    Emit(this, WorldShutdownEvent, this);
-    ResetWorldRenderData(this.renderData, 0);
-    if (this.camera) {
-      this.camera.reset();
-    }
-  }
-  destroy(reparentChildren) {
-    super.destroy(reparentChildren);
-    Emit(this, DestroyEvent, this);
-    ResetWorldRenderData(this.renderData, 0);
-    if (this.camera) {
-      this.camera.destroy();
-    }
-    this.events.clear();
-    this.camera = null;
-    this.renderData = null;
-    this.events = null;
-  }
-};
-
-// src/world/CreateWorldRenderData.ts
-function CreateWorldRenderData(world, camera) {
-  return {
-    world,
-    camera,
-    gameFrame: 0,
-    dirtyFrame: 0,
-    numRendered: 0,
-    numRenderable: 0
-  };
-}
-
 // src/world/StaticWorld.ts
 var StaticWorld = class extends BaseWorld {
+  camera;
   constructor(scene) {
     super(scene);
-    this.type = "StaticWorld";
     this.camera = new StaticCamera();
     this.renderData = CreateWorldRenderData(this, this.camera);
   }
@@ -15350,10 +17324,10 @@ var StaticWorld = class extends BaseWorld {
 
 // src/world/World.ts
 var World = class extends BaseWorld {
+  camera;
+  enableCameraCull = true;
   constructor(scene) {
     super(scene);
-    this.enableCameraCull = true;
-    this.type = "World";
     this.camera = new Camera();
     this.renderData = CreateWorldRenderData(this, this.camera);
   }
@@ -15441,7 +17415,7 @@ function WorldDepthFirstSearch2(cachedLayers, parent, output = []) {
     const node = parent.children[i];
     if (node.isRenderable()) {
       const children = [];
-      const entry = {node, children};
+      const entry = { node, children };
       output.push(entry);
       if (node.willRenderChildren && node.numChildren > 0) {
         if (node.willCacheChildren) {
@@ -15455,13 +17429,13 @@ function WorldDepthFirstSearch2(cachedLayers, parent, output = []) {
 }
 
 // src/world3d/BuildRenderList.ts
-function BuildRenderList2(world) {
+function BuildRenderList2(world3) {
   const cachedLayers = [];
   const stack = [];
-  const entries = WorldDepthFirstSearch2(cachedLayers, world, stack);
-  const renderData = world.renderData;
+  const entries = WorldDepthFirstSearch2(cachedLayers, world3, stack);
+  const renderData = world3.renderData;
   if (cachedLayers.length > 0) {
-    UpdateCachedLayers2(cachedLayers, world.camera.dirtyRender);
+    UpdateCachedLayers2(cachedLayers, world3.camera.dirtyRender);
   }
   entries.forEach((entry) => {
     if (entry.children.length > 0) {
@@ -15474,10 +17448,10 @@ function BuildRenderList2(world) {
       }
     }
   });
-  world.renderList = entries;
-  if (world.forceRefresh) {
+  world3.renderList = entries;
+  if (world3.forceRefresh) {
     renderData.dirtyFrame++;
-    world.forceRefresh = false;
+    world3.forceRefresh = false;
   }
 }
 
@@ -15501,11 +17475,18 @@ function ResetWorld3DRenderData(renderData, gameFrame) {
 
 // src/world3d/BaseWorld3D.ts
 var BaseWorld3D = class extends GameObject3D {
+  scene;
+  camera;
+  renderData;
+  forceRefresh = false;
+  events;
+  is3D = true;
+  renderList;
+  _updateListener;
+  _renderListener;
+  _shutdownListener;
   constructor(scene) {
     super();
-    this.forceRefresh = false;
-    this.is3D = true;
-    this.type = "BaseWorld";
     this.scene = scene;
     this.world = this;
     this.events = new Map();
@@ -15523,7 +17504,6 @@ var BaseWorld3D = class extends GameObject3D {
     super.update(delta, time);
   }
   postUpdate(delta, time) {
-    Emit(this, PostUpdateEvent, delta, time, this);
   }
   render(sceneRenderData) {
     const renderData = this.renderData;
@@ -15567,9 +17547,9 @@ var BaseWorld3D = class extends GameObject3D {
 };
 
 // src/world3d/CreateWorld3DRenderData.ts
-function CreateWorld3DRenderData(world, camera) {
+function CreateWorld3DRenderData(world3, camera) {
   return {
-    world,
+    world: world3,
     camera,
     gameFrame: 0,
     dirtyFrame: 0,
@@ -15662,9 +17642,9 @@ var AmbientLightShader = class extends Shader {
       fragmentShader: AMBIENT_LIGHT_FRAG,
       vertexShader: AMBIENT_LIGHT_VERT,
       attributes: {
-        aVertexPosition: {size: 3, type: FLOAT, normalized: false, offset: 0},
-        aVertexNormal: {size: 3, type: FLOAT, normalized: false, offset: 12},
-        aTextureCoord: {size: 2, type: FLOAT, normalized: false, offset: 24}
+        aVertexPosition: { size: 3, type: FLOAT, normalized: false, offset: 0 },
+        aVertexNormal: { size: 3, type: FLOAT, normalized: false, offset: 12 },
+        aTextureCoord: { size: 2, type: FLOAT, normalized: false, offset: 24 }
       },
       uniforms: {
         uViewProjectionMatrix: tempMat4,
@@ -15688,22 +17668,38 @@ var AmbientLightShader = class extends Shader {
 
 // src/camera3d/NewCamera3D.ts
 var NewCamera3D = class {
+  type;
+  renderer;
+  position;
+  rotation;
+  matrix;
+  viewMatrix;
+  projectionMatrix;
+  viewProjectionMatrix;
+  forward;
+  up;
+  right;
+  start;
+  aspect;
+  isOrbit = false;
+  minDistance = 0;
+  maxDistance = Infinity;
+  minPolarAngle = 0;
+  maxPolarAngle = Math.PI;
+  minAzimuthAngle = -Infinity;
+  maxAzimuthAngle = Infinity;
+  dirtyRender = true;
+  panRate = 5;
+  zoomRate = 200;
+  rotateRate = -3;
+  viewport;
+  _fov;
+  _near;
+  _far;
+  _yaw = 0;
+  _pitch = 0;
+  _roll = 0;
   constructor(fov = 45, near = 0.1, far = 1e3) {
-    this.isOrbit = false;
-    this.minDistance = 0;
-    this.maxDistance = Infinity;
-    this.minPolarAngle = 0;
-    this.maxPolarAngle = Math.PI;
-    this.minAzimuthAngle = -Infinity;
-    this.maxAzimuthAngle = Infinity;
-    this.dirtyRender = true;
-    this.panRate = 5;
-    this.zoomRate = 200;
-    this.rotateRate = -3;
-    this._yaw = 0;
-    this._pitch = 0;
-    this._roll = 0;
-    this.type = "Camera3D";
     this._fov = fov;
     this._near = near;
     this._far = far;
@@ -15845,10 +17841,12 @@ var NewCamera3D = class {
 
 // src/world3d/World3D.ts
 var World3D = class extends BaseWorld3D {
+  camera;
+  light;
+  shader;
+  enableCameraCull = true;
   constructor(scene, x = 0, y = 0, z = 0, lightConfig) {
     super(scene);
-    this.enableCameraCull = true;
-    this.type = "World3D";
     this.camera = new NewCamera3D();
     this.camera.position.set(x, y, z);
     this.light = new Light(lightConfig);
@@ -15883,7 +17881,7 @@ var World3D = class extends BaseWorld3D {
 
 // src/config/banner/GetBanner.ts
 function GetBanner() {
-  const {title, version, url, color, background} = ConfigStore.get(CONFIG_DEFAULTS.BANNER);
+  const { title, version, url, color, background } = ConfigStore.get(CONFIG_DEFAULTS.BANNER);
   if (title !== "") {
     const str = version !== "" ? title + " " + version : title;
     console.log(`%c${str}%c ${url}`, `padding: 4px 16px; color: ${color}; background: ${background}`, "");
@@ -15905,75 +17903,6 @@ function GetRenderer() {
   return ConfigStore.get(CONFIG_DEFAULTS.RENDERER);
 }
 
-// src/scenes/CreateSceneRenderData.ts
-function CreateSceneRenderData() {
-  return {
-    gameFrame: 0,
-    numTotalFrames: 0,
-    numDirtyFrames: 0,
-    numDirtyCameras: 0,
-    worldData: []
-  };
-}
-
-// src/config/scenes/GetScenes.ts
-function GetScenes() {
-  return ConfigStore.get(CONFIG_DEFAULTS.SCENES);
-}
-
-// src/scenes/ResetSceneRenderData.ts
-function ResetSceneRenderData(renderData, gameFrame = 0) {
-  renderData.gameFrame = gameFrame;
-  renderData.numTotalFrames = 0;
-  renderData.numDirtyFrames = 0;
-  renderData.numDirtyCameras = 0;
-  renderData.worldData.length = 0;
-}
-
-// src/scenes/SceneManagerInstance.ts
-var instance4;
-var SceneManagerInstance = {
-  get: () => {
-    return instance4;
-  },
-  set: (manager) => {
-    instance4 = manager;
-  }
-};
-
-// src/scenes/SceneManager.ts
-var SceneManager = class {
-  constructor() {
-    this.scenes = new Map();
-    this.sceneIndex = 0;
-    this.flush = false;
-    this.renderResult = CreateSceneRenderData();
-    this.game = GameInstance.get();
-    SceneManagerInstance.set(this);
-    Once(this.game, "boot", () => this.boot());
-  }
-  boot() {
-    GetScenes().forEach((scene) => new scene());
-  }
-  update(delta, time) {
-    for (const scene of this.scenes.values()) {
-      Emit(scene, "update", delta, time);
-    }
-  }
-  render(gameFrame) {
-    const results = this.renderResult;
-    ResetSceneRenderData(results, gameFrame);
-    for (const scene of this.scenes.values()) {
-      Emit(scene, "render", results);
-    }
-    if (this.flush) {
-      results.numDirtyFrames++;
-      this.flush = false;
-    }
-    return results;
-  }
-};
-
 // src/config/SetConfigDefaults.ts
 function SetConfigDefaults() {
   SetBackgroundColor(0);
@@ -15987,20 +17916,25 @@ function SetConfigDefaults() {
     desynchronized: true,
     preserveDrawingBuffer: true
   });
+  SetWorldSize(512);
 }
 
 // src/Game.ts
 var Game = class extends EventEmitter {
+  id = addEntity(GameObjectWorld);
+  VERSION = "4.0.0-beta1";
+  isBooted = false;
+  isPaused = false;
+  willUpdate = true;
+  willRender = true;
+  lastTick = 0;
+  elapsed = 0;
+  frame = 0;
+  renderer;
+  textureManager;
+  sceneManager;
   constructor(...settings) {
     super();
-    this.VERSION = "4.0.0-beta1";
-    this.isBooted = false;
-    this.isPaused = false;
-    this.willUpdate = true;
-    this.willRender = true;
-    this.lastTick = 0;
-    this.elapsed = 0;
-    this.frame = 0;
     GameInstance.set(this);
     SetConfigDefaults();
     DOMContentLoaded(() => this.boot(settings));
@@ -16036,59 +17970,25 @@ var Game = class extends EventEmitter {
     const delta = time - this.lastTick;
     this.lastTick = time;
     this.elapsed += delta;
+    const renderer = this.renderer;
+    const sceneManager = this.sceneManager;
     if (!this.isPaused) {
       if (this.willUpdate) {
-        this.sceneManager.update(delta, time);
-        Emit(this, "update", delta, time);
+        sceneManager.update(delta, time, this.frame);
       }
       if (this.willRender) {
-        this.renderer.render(this.sceneManager.render(this.frame));
+        sceneManager.preRender(this.frame);
+        renderer.render(sceneManager.flush, sceneManager.scenes);
+        sceneManager.flush = false;
       }
     }
+    Emit(this, "step");
     this.frame++;
     GameInstance.setFrame(this.frame);
     GameInstance.setElapsed(this.elapsed);
     requestAnimationFrame((now) => this.step(now));
   }
   destroy() {
-  }
-};
-
-// src/scenes/GetConfigValue.ts
-function GetConfigValue(config, property, defaultValue) {
-  if (Object.prototype.hasOwnProperty.call(config, property)) {
-    return config[property];
-  } else {
-    return defaultValue;
-  }
-}
-
-// src/scenes/Install.ts
-function Install(scene, config = {}) {
-  const sceneManager = SceneManagerInstance.get();
-  const size = sceneManager.scenes.size;
-  const sceneIndex = sceneManager.sceneIndex;
-  const firstScene = size === 0;
-  if (typeof config === "string") {
-    scene.key = config;
-  } else if (config || !config && firstScene) {
-    scene.key = GetConfigValue(config, "key", "scene" + sceneIndex.toString());
-  }
-  if (sceneManager.scenes.has(scene.key)) {
-    console.warn("Scene key already in use: " + scene.key);
-  } else {
-    sceneManager.scenes.set(scene.key, scene);
-    sceneManager.flush = true;
-    sceneManager.sceneIndex++;
-  }
-}
-
-// src/scenes/Scene.ts
-var Scene = class {
-  constructor(config) {
-    this.game = GameInstance.get();
-    this.events = new Map();
-    Install(this, config);
   }
 };
 export {
@@ -16112,6 +18012,7 @@ export {
   materials3d_exports as Materials3D,
   math_exports as Math,
   Scene,
+  scenes_exports as Scenes,
   textures_exports as Textures,
   time_exports as Time,
   webgl1_exports as WebGL1,

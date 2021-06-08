@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Between} from "../../math/Between";
-import {RectangleContainsRectangle} from "./RectangleContainsRectangle";
-import {Vec2} from "../../math/vec2/Vec2";
+import { Between } from "../../math/Between";
+import { RectangleContainsRectangle } from "./RectangleContainsRectangle";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetRectangleRandomPointOutside(outer, inner, out = new Vec2()) {
   if (RectangleContainsRectangle(outer, inner)) {
     switch (Between(0, 3)) {

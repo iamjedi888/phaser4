@@ -1,6 +1,6 @@
-import {Matrix2D} from "./Matrix2D";
+import { Matrix2D } from "./Matrix2D";
 export function Mat2dInvert(target, out = new Matrix2D()) {
-  const {a, b, c, d, tx, ty} = target;
+  const { a, b, c, d, tx, ty } = target;
   let determinant = a * d - b * c;
   if (determinant) {
     determinant = 1 / determinant;

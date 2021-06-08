@@ -4,8 +4,8 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 export function LineToRectangle(line, rect) {
-  const {x1, y1, x2, y2} = line;
-  const {x, y, right, bottom} = rect;
+  const { x1, y1, x2, y2 } = line;
+  const { x, y, right, bottom } = rect;
   let t = 0;
   if (x1 >= x && x1 <= right && y1 >= y && y1 <= bottom || x2 >= x && x2 <= right && y2 >= y && y2 <= bottom) {
     return true;

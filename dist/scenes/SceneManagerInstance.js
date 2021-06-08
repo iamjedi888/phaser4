@@ -4,6 +4,9 @@ export const SceneManagerInstance = {
     return instance;
   },
   set: (manager) => {
+    if (instance) {
+      throw new Error("SceneManager should not be instantiated more than once");
+    }
     instance = manager;
   }
 };

@@ -11,5 +11,5 @@ export function GetVerticesFromValues(left, right, top, bottom, x, y, rotation =
   const y2 = right * b + bottom * d + y;
   const x3 = right * a + top * c + x;
   const y3 = right * b + top * d + y;
-  return {x0, y0, x1, y1, x2, y2, x3, y3};
+  return { x0, y0, x1, y1, x2, y2, x3, y3 };
 }

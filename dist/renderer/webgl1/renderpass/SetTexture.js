@@ -1,5 +1,5 @@
-import {Flush} from "./Flush";
-import {gl} from "../GL";
+import { Flush } from "./Flush";
+import { gl } from "../GL";
 export function SetTexture(renderPass, texture) {
   const binding = texture.binding;
   const currentActiveTexture = renderPass.currentActiveTexture;

@@ -1,13 +1,18 @@
-import {DIRTY_CONST} from "../DIRTY_CONST";
-import {DrawTexturedQuad} from "../../renderer/webgl1/draw/DrawTexturedQuad";
-import {Flush} from "../../renderer/webgl1/renderpass/Flush";
-import {PopFramebuffer} from "../../renderer/webgl1/renderpass/PopFramebuffer";
-import {RenderLayer} from "../renderlayer/RenderLayer";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { DIRTY_CONST } from "../DIRTY_CONST";
+import { DrawTexturedQuad } from "../../renderer/webgl1/draw/DrawTexturedQuad";
+import { Flush } from "../../renderer/webgl1/renderpass/Flush";
+import { PopFramebuffer } from "../../renderer/webgl1/renderpass/PopFramebuffer";
+import { RenderLayer } from "../renderlayer/RenderLayer";
 export class EffectLayer extends RenderLayer {
   constructor(...shaders) {
     super();
-    this.shaders = [];
-    this.type = "EffectLayer";
+    __publicField(this, "shaders", []);
     if (Array.isArray(shaders)) {
       this.shaders = shaders;
     }

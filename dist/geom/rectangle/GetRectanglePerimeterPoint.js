@@ -3,10 +3,10 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {DegToRad} from "../../math/DegToRad";
-import {GetRectangleCenterX} from "./GetRectangleCenterX";
-import {GetRectangleCenterY} from "./GetRectangleCenterY";
-import {Vec2} from "../../math/vec2/Vec2";
+import { DegToRad } from "../../math/DegToRad";
+import { GetRectangleCenterX } from "./GetRectangleCenterX";
+import { GetRectangleCenterY } from "./GetRectangleCenterY";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetRectanglePerimeterPoint(rectangle, angle, out = new Vec2()) {
   angle = DegToRad(angle);
   const s = Math.sin(angle);

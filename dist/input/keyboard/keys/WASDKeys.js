@@ -1,6 +1,17 @@
-import {Key} from "../Key";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Key } from "../Key";
 export class WASDKeys {
   constructor(keyboardManager, config) {
+    __publicField(this, "W");
+    __publicField(this, "A");
+    __publicField(this, "S");
+    __publicField(this, "D");
+    __publicField(this, "space");
     const {
       W = true,
       A = true,

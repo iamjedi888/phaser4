@@ -1,5 +1,5 @@
-import {BindFramebuffer} from "./BindFramebuffer";
-import {PopViewport} from "./PopViewport";
+import { BindFramebuffer } from "./BindFramebuffer";
+import { PopViewport } from "./PopViewport";
 export function PopFramebuffer(renderPass) {
   const stack = renderPass.framebufferStack;
   if (stack.length > 1) {

@@ -1,4 +1,4 @@
-import {VertexBuffer} from "../../renderer/webgl1/buffers";
+import { VertexBuffer } from "../../renderer/webgl1/buffers";
 function GetVec3(data, index) {
   const x = data[index * 3 + 0];
   const y = data[index * 3 + 1];
@@ -19,7 +19,7 @@ function CreateNonIndexedVertexBuffer(data) {
   const total = vertices.length;
   const count = total / 3;
   const batchSize = count / 3;
-  const buffer = new VertexBuffer({batchSize, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
+  const buffer = new VertexBuffer({ batchSize, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3 });
   const F32 = buffer.vertexViewF32;
   let offset = 0;
   let uvIndex = 0;
@@ -44,7 +44,7 @@ function CreateVertexBuffer(data) {
     uvs,
     indices
   } = data;
-  const buffer = new VertexBuffer({batchSize: indices.length / 3, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3});
+  const buffer = new VertexBuffer({ batchSize: indices.length / 3, isDynamic: false, vertexElementSize: 8, elementsPerEntry: 3 });
   const F32 = buffer.vertexViewF32;
   let offset = 0;
   for (let i = 0; i < indices.length; i += 3) {

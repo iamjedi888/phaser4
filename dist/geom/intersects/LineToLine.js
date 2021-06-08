@@ -4,8 +4,8 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 export function LineToLine(line1, line2, out) {
-  const {x1, y1, x2, y2} = line1;
-  const {x1: x3, y1: y3, x2: x4, y2: y4} = line2;
+  const { x1, y1, x2, y2 } = line1;
+  const { x1: x3, y1: y3, x2: x4, y2: y4 } = line2;
   const numA = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
   const numB = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
   const deNom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);

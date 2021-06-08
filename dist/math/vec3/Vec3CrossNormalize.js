@@ -1,7 +1,7 @@
-import {Vec3} from "./Vec3";
+import { Vec3 } from "./Vec3";
 export function Vec3CrossNormalize(a, b, out = new Vec3()) {
-  const {x: ax, y: ay, z: az} = a;
-  const {x: bx, y: by, z: bz} = b;
+  const { x: ax, y: ay, z: az } = a;
+  const { x: bx, y: by, z: bz } = b;
   const x = ay * bz - az * by;
   const y = az * bx - ax * bz;
   const z = ax * by - ay * bx;

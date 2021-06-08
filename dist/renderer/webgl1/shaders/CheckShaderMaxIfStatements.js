@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 const fragTemplate = [
   "precision mediump float;",
   "void main(void){",

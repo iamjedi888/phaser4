@@ -1,8 +1,18 @@
-import {Clamp} from "../../math";
-import {RGBCallback} from "../../math/vec3";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Clamp } from "../../math";
+import { RGBCallback } from "../../math/vec3";
 export class Material {
   constructor(config = {}) {
-    this.isDirty = false;
+    __publicField(this, "ambient");
+    __publicField(this, "diffuse");
+    __publicField(this, "specular");
+    __publicField(this, "isDirty", false);
+    __publicField(this, "_shine");
     const {
       ambient = [1, 1, 1],
       diffuse = [1, 1, 1],

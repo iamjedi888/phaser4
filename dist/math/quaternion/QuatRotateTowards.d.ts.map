@@ -1,1 +1,0 @@
-{"version":3,"file":"QuatRotateTowards.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatRotateTowards.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,wBAAgB,iBAAiB,CAAE,CAAC,EAAE,UAAU,EAAE,CAAC,EAAE,UAAU,EAAE,IAAI,EAAE,MAAM,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CAY7H"}

@@ -1,6 +1,6 @@
-import {Banner} from "./Banner";
-import {GetBanner} from "./GetBanner";
-import {SetBanner} from "./SetBanner";
+import { Banner } from "./Banner";
+import { GetBanner } from "./GetBanner";
+import { SetBanner } from "./SetBanner";
 export {
   GetBanner,
   SetBanner,

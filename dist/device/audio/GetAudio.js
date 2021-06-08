@@ -1,11 +1,11 @@
-import {CanPlayM4A} from "./CanPlayM4A";
-import {CanPlayMP3} from "./CanPlayMP3";
-import {CanPlayOGG} from "./CanPlayOGG";
-import {CanPlayOpus} from "./CanPlayOpus";
-import {CanPlayWAV} from "./CanPlayWAV";
-import {CanPlayWebM} from "./CanPlayWebM";
-import {HasAudio} from "./HasAudio";
-import {HasWebAudio} from "./HasWebAudio";
+import { CanPlayM4A } from "./CanPlayM4A";
+import { CanPlayMP3 } from "./CanPlayMP3";
+import { CanPlayOGG } from "./CanPlayOGG";
+import { CanPlayOpus } from "./CanPlayOpus";
+import { CanPlayWAV } from "./CanPlayWAV";
+import { CanPlayWebM } from "./CanPlayWebM";
+import { HasAudio } from "./HasAudio";
+import { HasWebAudio } from "./HasWebAudio";
 export function GetAudio() {
   const result = {
     audioData: HasAudio(),

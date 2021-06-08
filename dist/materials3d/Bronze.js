@@ -1,4 +1,4 @@
-import {Material} from "../gameobjects3d/material/Material";
+import { Material } from "../gameobjects3d/material/Material";
 export const Bronze = new Material({
   ambient: [0.2125, 0.1275, 0.054],
   diffuse: [0.714, 0.4284, 0.18144],

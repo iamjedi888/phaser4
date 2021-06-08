@@ -1,4 +1,4 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4Frustum(left, right, bottom, top, near, far, out = new Matrix4()) {
   const rl = 1 / (right - left);
   const tb = 1 / (top - bottom);

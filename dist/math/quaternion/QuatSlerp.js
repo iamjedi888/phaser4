@@ -1,14 +1,14 @@
-import {QuatCopyFrom} from "./QuatCopyFrom";
-import {QuatNormalize} from "./QuatNormalize";
-import {Quaternion} from "./Quaternion";
+import { QuatCopyFrom } from "./QuatCopyFrom";
+import { QuatNormalize } from "./QuatNormalize";
+import { Quaternion } from "./Quaternion";
 export function QuatSlerp(a, b, t, out = new Quaternion()) {
   if (t === 0) {
     return QuatCopyFrom(a, out);
   } else if (t === 1) {
     return QuatCopyFrom(b, out);
   }
-  const {x, y, z, w} = a;
-  const {x: bx, y: by, z: bz, w: bw} = b;
+  const { x, y, z, w } = a;
+  const { x: bx, y: by, z: bz, w: bw } = b;
   let cosHalfTheta = w * bw + x * bx + y * by + z * bz;
   if (cosHalfTheta < 0) {
     out.set(-bx, -by, -bz, -bw);

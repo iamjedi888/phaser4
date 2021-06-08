@@ -1,4 +1,4 @@
-import {DepthFirstSearchRecursiveNested3D} from "./DepthFirstSearchRecursiveNested3D";
+import { DepthFirstSearchRecursiveNested3D } from "./DepthFirstSearchRecursiveNested3D";
 function GetInfo(entry) {
   const legend = entry.numChildren > 0 ? "Parent" : "Child";
   return `${legend} [ type=${entry.type}, name=${entry.name} ]`;

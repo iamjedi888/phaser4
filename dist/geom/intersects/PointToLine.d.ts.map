@@ -1,1 +1,0 @@
-{"version":3,"file":"PointToLine.d.ts","sourceRoot":"","sources":["../../../src/geom/intersects/PointToLine.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AACtC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAgB5C,wBAAgB,WAAW,CAAE,KAAK,EAAE,IAAI,EAAE,IAAI,EAAE,KAAK,EAAE,aAAa,GAAE,MAAU,GAAG,OAAO,CAgCzF"}

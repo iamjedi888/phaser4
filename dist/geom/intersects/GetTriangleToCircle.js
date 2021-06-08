@@ -4,9 +4,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetLineToCircle} from "./GetLineToCircle";
-import {GetTriangleEdges} from "../triangle/GetTriangleEdges";
-import {TriangleToCircle} from "./TriangleToCircle";
+import { GetLineToCircle } from "./GetLineToCircle";
+import { GetTriangleEdges } from "../triangle/GetTriangleEdges";
+import { TriangleToCircle } from "./TriangleToCircle";
 export function GetTriangleToCircle(triangle, circle, out = []) {
   if (TriangleToCircle(triangle, circle)) {
     const [lineA, lineB, lineC] = GetTriangleEdges(triangle);

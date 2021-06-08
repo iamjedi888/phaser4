@@ -3,8 +3,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CheckMatrix} from "./CheckMatrix";
-import {TransposeMatrix} from "./TransposeMatrix";
+import { CheckMatrix } from "./CheckMatrix";
+import { TransposeMatrix } from "./TransposeMatrix";
 export function RotateMatrix(matrix, direction = 90) {
   if (!CheckMatrix(matrix)) {
     return matrix;

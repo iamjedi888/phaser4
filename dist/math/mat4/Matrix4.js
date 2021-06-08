@@ -1,6 +1,14 @@
-import {NOOP} from "../../utils";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { NOOP } from "../../utils";
 export class Matrix4 {
   constructor(src) {
+    __publicField(this, "data");
+    __publicField(this, "onChange");
     const data = new Float32Array(16);
     this.data = data;
     this.onChange = NOOP;

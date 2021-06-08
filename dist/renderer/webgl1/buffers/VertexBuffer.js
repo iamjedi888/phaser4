@@ -1,11 +1,29 @@
-import {DeleteGLBuffer} from "./DeleteGLBuffer";
-import {gl} from "../GL";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { DeleteGLBuffer } from "./DeleteGLBuffer";
+import { gl } from "../GL";
 export class VertexBuffer {
   constructor(config = {}) {
-    this.indexed = false;
-    this.isDynamic = false;
-    this.count = 0;
-    this.offset = 0;
+    __publicField(this, "batchSize");
+    __publicField(this, "dataSize");
+    __publicField(this, "vertexElementSize");
+    __publicField(this, "vertexByteSize");
+    __publicField(this, "entryByteSize");
+    __publicField(this, "bufferByteSize");
+    __publicField(this, "data");
+    __publicField(this, "vertexViewF32");
+    __publicField(this, "vertexViewU32");
+    __publicField(this, "vertexBuffer");
+    __publicField(this, "indexed", false);
+    __publicField(this, "isDynamic", false);
+    __publicField(this, "count", 0);
+    __publicField(this, "offset", 0);
+    __publicField(this, "elementsPerEntry");
+    __publicField(this, "isBound", false);
     const {
       batchSize = 1,
       dataSize = 4,
@@ -41,6 +59,7 @@ export class VertexBuffer {
     const type = this.isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
     gl.bufferData(gl.ARRAY_BUFFER, data, type);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    this.isBound = false;
   }
   add(count) {
     this.count += count;

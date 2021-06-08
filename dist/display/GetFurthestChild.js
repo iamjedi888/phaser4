@@ -1,4 +1,4 @@
-import {GetVec2Distance} from "../math/vec2/GetVec2Distance";
+import { GetVec2Distance } from "../math/vec2/GetVec2Distance";
 export function GetFurthestChild(parent, point) {
   const children = parent.children;
   let furthest = null;

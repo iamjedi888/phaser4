@@ -1,9 +1,21 @@
-import {DeleteGLBuffer} from "./DeleteGLBuffer";
-import {VertexBuffer} from "./VertexBuffer";
-import {gl} from "../GL";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { DeleteGLBuffer } from "./DeleteGLBuffer";
+import { VertexBuffer } from "./VertexBuffer";
+import { gl } from "../GL";
 export class IndexedVertexBuffer extends VertexBuffer {
   constructor(config = {}) {
     super(config);
+    __publicField(this, "indexSize");
+    __publicField(this, "entryElementSize");
+    __publicField(this, "entryIndexSize");
+    __publicField(this, "index");
+    __publicField(this, "indexBuffer");
+    __publicField(this, "indexLayout");
     const {
       indexSize = 4,
       entryIndexSize = 6,

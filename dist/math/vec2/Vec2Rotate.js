@@ -1,4 +1,4 @@
-import {Vec2} from "./Vec2";
+import { Vec2 } from "./Vec2";
 export function Vec2Rotate(a, origin, angle, out = new Vec2()) {
   const s = Math.sin(angle);
   const c = Math.cos(angle);

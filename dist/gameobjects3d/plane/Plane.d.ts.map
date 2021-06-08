@@ -1,1 +1,0 @@
-{"version":3,"file":"Plane.d.ts","sourceRoot":"","sources":["../../../src/gameobjects3d/plane/Plane.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AAGpC,qBAAa,KAAM,SAAQ,IAAI;gBAEd,CAAC,GAAE,MAAU,EAAE,CAAC,GAAE,MAAU,EAAE,CAAC,GAAE,MAAU,EAAE,KAAK,GAAE,MAAU,EAAE,MAAM,GAAE,MAAU,EAAE,aAAa,GAAE,MAAU,EAAE,cAAc,GAAE,MAAU;CAQzJ"}

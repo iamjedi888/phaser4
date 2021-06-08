@@ -1,6 +1,6 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4FromQuat(q, out = new Matrix4()) {
-  const {x, y, z, w} = q;
+  const { x, y, z, w } = q;
   const x2 = x + x;
   const y2 = y + y;
   const z2 = z + z;

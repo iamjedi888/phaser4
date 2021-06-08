@@ -1,4 +1,4 @@
-import {FaceUVNormalTexture} from "./FaceUVNormalTexture";
+import { FaceUVNormalTexture } from "./FaceUVNormalTexture";
 function GetVec3(data, index) {
   const x = data[index * 3 + 0];
   const y = data[index * 3 + 1];
@@ -31,7 +31,7 @@ export function GetFacesFromVertexSet(data) {
     const uv1 = GetVec2(uvs, i1);
     const uv2 = GetVec2(uvs, i2);
     const uv3 = GetVec2(uvs, i3);
-    const f = new FaceUVNormalTexture({x: v1[0], y: v1[1], z: v1[2]}, {x: v2[0], y: v2[1], z: v2[2]}, {x: v3[0], y: v3[1], z: v3[2]}, {x: n1[0], y: n1[1], z: n1[2]}, {x: n2[0], y: n2[1], z: n2[2]}, {x: n3[0], y: n3[1], z: n3[2]}, {x: uv1[0], y: uv1[1]}, {x: uv2[0], y: uv2[1]}, {x: uv3[0], y: uv3[1]}, 1);
+    const f = new FaceUVNormalTexture({ x: v1[0], y: v1[1], z: v1[2] }, { x: v2[0], y: v2[1], z: v2[2] }, { x: v3[0], y: v3[1], z: v3[2] }, { x: n1[0], y: n1[1], z: n1[2] }, { x: n2[0], y: n2[1], z: n2[2] }, { x: n3[0], y: n3[1], z: n3[2] }, { x: uv1[0], y: uv1[1] }, { x: uv2[0], y: uv2[1] }, { x: uv3[0], y: uv3[1] }, 1);
     faces.push(f);
   }
   return faces;

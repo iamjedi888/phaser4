@@ -1,1 +1,0 @@
-{"version":3,"file":"AddVertexBuffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/AddVertexBuffer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,eAAe,CAAC;AAC5C,OAAO,EAAE,aAAa,EAAE,MAAM,0BAA0B,CAAC;AAEzD,wBAAgB,eAAe,CAAE,UAAU,EAAE,WAAW,EAAE,MAAM,EAAE,aAAa,GAAG,aAAa,CAK9F"}

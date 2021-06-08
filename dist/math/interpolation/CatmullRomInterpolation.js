@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {CatmullRom} from "../CatmullRom";
+import { CatmullRom } from "../CatmullRom";
 export function CatmullRomInterpolation(v, k) {
   const m = v.length - 1;
   let f = m * k;

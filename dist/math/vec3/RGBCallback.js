@@ -1,4 +1,4 @@
-import {Vec3Callback} from "./Vec3Callback";
+import { Vec3Callback } from "./Vec3Callback";
 export class RGBCallback extends Vec3Callback {
   constructor(onChange, r = 0, g = 0, b = 0) {
     super(onChange, r, g, b);
@@ -22,7 +22,7 @@ export class RGBCallback extends Vec3Callback {
     return this.z;
   }
   toString() {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     return `[ r=${x}, g=${y}, b=${z} ]`;
   }
 }

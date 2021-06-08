@@ -1,14 +1,22 @@
-import {Flush, PopShader, SetShader} from "../renderer/webgl1/renderpass";
-import {Light} from "../gameobjects3d/light/Light";
-import {AmbientLightShader} from "../renderer/webgl1/shaders/AmbientLightShader";
-import {BaseWorld3D} from "./BaseWorld3D";
-import {CreateWorld3DRenderData} from "./CreateWorld3DRenderData";
-import {NewCamera3D} from "../camera3d/NewCamera3D";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Flush, PopShader, SetShader } from "../renderer/webgl1/renderpass";
+import { Light } from "../gameobjects3d/light/Light";
+import { AmbientLightShader } from "../renderer/webgl1/shaders/AmbientLightShader";
+import { BaseWorld3D } from "./BaseWorld3D";
+import { CreateWorld3DRenderData } from "./CreateWorld3DRenderData";
+import { NewCamera3D } from "../camera3d/NewCamera3D";
 export class World3D extends BaseWorld3D {
   constructor(scene, x = 0, y = 0, z = 0, lightConfig) {
     super(scene);
-    this.enableCameraCull = true;
-    this.type = "World3D";
+    __publicField(this, "camera");
+    __publicField(this, "light");
+    __publicField(this, "shader");
+    __publicField(this, "enableCameraCull", true);
     this.camera = new NewCamera3D();
     this.camera.position.set(x, y, z);
     this.light = new Light(lightConfig);

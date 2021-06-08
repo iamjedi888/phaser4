@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Vec2} from "../../math/vec2/Vec2";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetLineRandomPoint(line, out = new Vec2()) {
   const t = Math.random();
   out.x = line.x1 + t * (line.x2 - line.x1);

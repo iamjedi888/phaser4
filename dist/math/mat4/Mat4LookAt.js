@@ -1,9 +1,9 @@
-import {Mat4Identity} from "./Mat4Identity";
-import {Matrix4} from "./Matrix4";
+import { Mat4Identity } from "./Mat4Identity";
+import { Matrix4 } from "./Matrix4";
 export function Mat4LookAt(eye, center, up, out = new Matrix4()) {
-  const {x: eyex, y: eyey, z: eyez} = eye;
-  const {x: upx, y: upy, z: upz} = up;
-  const {x: centerx, y: centery, z: centerz} = center;
+  const { x: eyex, y: eyey, z: eyez } = eye;
+  const { x: upx, y: upy, z: upz } = up;
+  const { x: centerx, y: centery, z: centerz } = center;
   if (Math.abs(eyex - centerx) < 1e-5 && Math.abs(eyey - centery) < 1e-5 && Math.abs(eyez - centerz) < 1e-5) {
     return Mat4Identity(out);
   }

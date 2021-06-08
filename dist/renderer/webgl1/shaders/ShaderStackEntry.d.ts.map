@@ -1,1 +1,0 @@
-{"version":3,"file":"ShaderStackEntry.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/ShaderStackEntry.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,oBAAY,gBAAgB,GAAG;IAC3B,MAAM,EAAE,OAAO,CAAC;IAChB,SAAS,CAAC,EAAE,MAAM,CAAC;CACtB,CAAC"}

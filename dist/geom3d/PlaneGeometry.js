@@ -1,4 +1,4 @@
-import {CreateVertexSet} from "../gameobjects3d/geometry/CreateVertexSet";
+import { CreateVertexSet } from "../gameobjects3d/geometry/CreateVertexSet";
 export function PlaneGeometry(data, x = 0, y = 0, z = 0, u = 0, v = 1, w = 2, udir = 1, vdir = -1, width = 1, height = 1, depth = 1, gridX = 1, gridY = 1) {
   if (!data) {
     data = CreateVertexSet();

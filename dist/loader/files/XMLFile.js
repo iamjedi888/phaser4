@@ -1,8 +1,8 @@
-import {Cache} from "../../cache/Cache";
-import {File} from "../File";
-import {GetURL} from "../GetURL";
-import {ParseXML} from "../../dom/ParseXML";
-import {XHRLoader} from "../XHRLoader";
+import { Cache } from "../../cache/Cache";
+import { File } from "../File";
+import { GetURL } from "../GetURL";
+import { ParseXML } from "../../dom/ParseXML";
+import { XHRLoader } from "../XHRLoader";
 export function XMLFile(key, url) {
   const file = new File(key, url);
   file.load = () => {

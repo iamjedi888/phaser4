@@ -1,8 +1,8 @@
-import {File} from "../File";
-import {GetURL} from "../GetURL";
-import {ImageTagLoader} from "../ImageTagLoader";
-import {SpriteSheetParser} from "../../textures/parsers/SpriteSheetParser";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
+import { File } from "../File";
+import { GetURL } from "../GetURL";
+import { ImageTagLoader } from "../ImageLoader";
+import { SpriteSheetParser } from "../../textures/parsers/SpriteSheetParser";
+import { TextureManagerInstance } from "../../textures/TextureManagerInstance";
 export function SpriteSheetFile(key, url, frameConfig, glConfig) {
   const file = new File(key, url);
   file.load = () => {

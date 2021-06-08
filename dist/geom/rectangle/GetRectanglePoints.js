@@ -3,8 +3,8 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetRectanglePerimeter} from "./GetRectanglePerimeter";
-import {GetRectanglePoint} from "./GetRectanglePoint";
+import { GetRectanglePerimeter } from "./GetRectanglePerimeter";
+import { GetRectanglePoint } from "./GetRectanglePoint";
 export function GetRectanglePoints(rectangle, step, quantity = 0, out = []) {
   if (!quantity) {
     quantity = GetRectanglePerimeter(rectangle) / step;

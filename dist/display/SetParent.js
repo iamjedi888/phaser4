@@ -1,6 +1,6 @@
-import {DepthFirstSearch} from "./DepthFirstSearch";
-import {RemoveChild} from "./RemoveChild";
-import {SetWorld} from "./SetWorld";
+import { DepthFirstSearch } from "./DepthFirstSearch";
+import { RemoveChild } from "./RemoveChild";
+import { SetWorld } from "./SetWorld";
 export function SetParent(parent, ...children) {
   children.forEach((child) => {
     if (child.parent) {

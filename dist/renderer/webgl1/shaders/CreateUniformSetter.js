@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function CreateUniformSetter(uniform, location, isArray = false) {
   switch (uniform.type) {
     case gl.INT:

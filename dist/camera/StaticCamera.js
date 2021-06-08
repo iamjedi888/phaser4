@@ -1,10 +1,24 @@
-import {GameInstance} from "../GameInstance";
-import {Mat4Identity} from "../math/mat4";
-import {Matrix2D} from "../math/mat2d/Matrix2D";
-import {Rectangle} from "../geom/rectangle/Rectangle";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { GameInstance } from "../GameInstance";
+import { Mat4Identity } from "../math/mat4";
+import { Matrix2D } from "../math/mat2d/Matrix2D";
+import { Rectangle } from "../geom/rectangle/Rectangle";
 export class StaticCamera {
   constructor() {
-    this.type = "StaticCamera";
+    __publicField(this, "world");
+    __publicField(this, "matrix");
+    __publicField(this, "renderer");
+    __publicField(this, "type");
+    __publicField(this, "width");
+    __publicField(this, "height");
+    __publicField(this, "bounds");
+    __publicField(this, "dirtyRender");
+    __publicField(this, "worldTransform");
     this.dirtyRender = true;
     const game = GameInstance.get();
     this.renderer = game.renderer;

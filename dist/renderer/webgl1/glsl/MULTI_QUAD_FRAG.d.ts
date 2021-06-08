@@ -1,2 +1,0 @@
-export declare const MULTI_QUAD_FRAG = "#define SHADER_NAME MULTI_QUAD_FRAG\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nvarying float vTextureId;\nvarying vec4 vTintColor;\n\nuniform sampler2D uTexture[%count%];\n\nvoid main (void)\n{\n    vec4 color;\n\n    %forloop%\n\n    gl_FragColor = color * vec4(vTintColor.bgr * vTintColor.a, vTintColor.a);\n}";
-//# sourceMappingURL=MULTI_QUAD_FRAG.d.ts.map

@@ -1,12 +1,24 @@
-import {Emit, EventEmitter} from "../events";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Emit, EventEmitter } from "../events";
 export class Loader extends EventEmitter {
   constructor() {
     super();
-    this.baseURL = "";
-    this.path = "";
-    this.crossOrigin = "anonymous";
-    this.maxParallelDownloads = -1;
-    this.isLoading = false;
+    __publicField(this, "baseURL", "");
+    __publicField(this, "path", "");
+    __publicField(this, "crossOrigin", "anonymous");
+    __publicField(this, "maxParallelDownloads", -1);
+    __publicField(this, "isLoading", false);
+    __publicField(this, "progress");
+    __publicField(this, "queue");
+    __publicField(this, "inflight");
+    __publicField(this, "completed");
+    __publicField(this, "onComplete");
+    __publicField(this, "onError");
     this.reset();
   }
   reset() {

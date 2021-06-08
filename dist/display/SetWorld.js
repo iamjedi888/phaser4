@@ -1,14 +1,8 @@
-import {AddedToWorldEvent, RemovedFromWorldEvent} from "../gameobjects/events";
-import {Emit} from "../events/Emit";
+import { GameObjectWorld } from "../GameObjectWorld";
+import { addComponent } from "bitecs";
 export function SetWorld(world, ...children) {
   children.forEach((child) => {
-    if (child.world) {
-      Emit(child.world, RemovedFromWorldEvent, child, child.world);
-      Emit(child, RemovedFromWorldEvent, child, child.world);
-    }
-    child.world = world;
-    Emit(world, AddedToWorldEvent, child, world);
-    Emit(child, AddedToWorldEvent, child, world);
+    addComponent(GameObjectWorld, world.tag, child.id);
   });
   return children;
 }

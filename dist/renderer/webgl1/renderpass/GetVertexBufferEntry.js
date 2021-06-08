@@ -1,4 +1,4 @@
-import {Flush} from "./Flush";
+import { Flush } from "./Flush";
 export function GetVertexBufferEntry(renderPass, addToCount = 0) {
   const buffer = renderPass.currentVertexBuffer;
   if (renderPass.count + addToCount >= buffer.batchSize) {

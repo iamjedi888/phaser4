@@ -1,6 +1,6 @@
-import {PopFramebuffer} from "./PopFramebuffer";
-import {SetFramebuffer} from "./SetFramebuffer";
-import {gl} from "../GL";
+import { PopFramebuffer } from "./PopFramebuffer";
+import { SetFramebuffer } from "./SetFramebuffer";
+import { gl } from "../GL";
 export function Draw(renderPass) {
   const count = renderPass.count;
   if (count === 0) {

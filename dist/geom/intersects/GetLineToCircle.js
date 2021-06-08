@@ -4,11 +4,11 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {LineToCircle} from "./LineToCircle";
-import {Vec2} from "../../math/vec2/Vec2";
+import { LineToCircle } from "./LineToCircle";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetLineToCircle(line, circle, out = []) {
   if (LineToCircle(line, circle)) {
-    const {x1, y1, x2, y2} = line;
+    const { x1, y1, x2, y2 } = line;
     const cr = circle.radius;
     const lDirX = x2 - x1;
     const lDirY = y2 - y1;

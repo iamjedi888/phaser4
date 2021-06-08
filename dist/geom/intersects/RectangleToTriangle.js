@@ -3,12 +3,12 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {DecomposeRectangle} from "../rectangle/DecomposeRectangle";
-import {GetRectangleEdges} from "../rectangle/GetRectangleEdges";
-import {GetTriangleEdges} from "../triangle/GetTriangleEdges";
-import {LineToLine} from "./LineToLine";
-import {RectangleContains} from "../rectangle/RectangleContains";
-import {TriangleContainsPoints} from "../triangle/TriangleContainsPoints";
+import { DecomposeRectangle } from "../rectangle/DecomposeRectangle";
+import { GetRectangleEdges } from "../rectangle/GetRectangleEdges";
+import { GetTriangleEdges } from "../triangle/GetTriangleEdges";
+import { LineToLine } from "./LineToLine";
+import { RectangleContains } from "../rectangle/RectangleContains";
+import { TriangleContainsPoints } from "../triangle/TriangleContainsPoints";
 export function RectangleToTriangle(rect, triangle) {
   if (triangle.left > rect.right || triangle.right < rect.x || triangle.top > rect.bottom || triangle.bottom < rect.y) {
     return false;

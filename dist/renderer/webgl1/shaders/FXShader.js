@@ -1,5 +1,5 @@
-import {DefaultQuadAttributes} from "./DefaultQuadAttributes";
-import {QuadShader} from "./QuadShader";
+import { DefaultQuadAttributes } from "./DefaultQuadAttributes";
+import { QuadShader } from "./QuadShader";
 export class FXShader extends QuadShader {
   constructor(config = {}) {
     const shaderConfig = config;

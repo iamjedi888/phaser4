@@ -1,1 +1,0 @@
-{"version":3,"file":"IWorld.d.ts","sourceRoot":"","sources":["../../src/world/IWorld.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAE,OAAO,EAAE,MAAM,mBAAmB,CAAC;AAE5C,MAAM,WAAW,MAAO,SAAQ,UAAU;IAEtC,MAAM,EAAE,OAAO,CAAC;CACnB"}

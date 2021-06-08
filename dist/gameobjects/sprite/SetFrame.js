@@ -11,7 +11,7 @@ export function SetFrame(texture, key, ...children) {
       child.setOrigin(pivot.x, pivot.y);
     }
     frame.copyToExtent(child);
-    frame.copyToVertices(child.vertices);
+    frame.copyToVertices(child.id);
   });
   return children;
 }

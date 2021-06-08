@@ -1,3 +1,9 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 /**
  * @author       Richard Davey <rich@photonstorm.com>
  * @copyright    2020 Photon Storm Ltd.
@@ -5,6 +11,10 @@
  */
 export class Line {
   constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
+    __publicField(this, "x1");
+    __publicField(this, "y1");
+    __publicField(this, "x2");
+    __publicField(this, "y2");
     this.set(x1, y1, x2, y2);
   }
   set(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {

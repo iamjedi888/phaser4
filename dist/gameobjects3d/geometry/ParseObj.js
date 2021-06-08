@@ -1,12 +1,21 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 export class ParseObj {
   constructor(fileContents, flipUVs = true, defaultModelName = "untitled") {
-    this.currentMaterial = "";
-    this.currentGroup = "";
-    this.smoothingGroup = 0;
-    this.result = {
+    __publicField(this, "fileContents");
+    __publicField(this, "defaultModelName");
+    __publicField(this, "currentMaterial", "");
+    __publicField(this, "currentGroup", "");
+    __publicField(this, "smoothingGroup", 0);
+    __publicField(this, "result", {
       materialLibraries: [],
       models: []
-    };
+    });
+    __publicField(this, "flipUVs");
     this.fileContents = fileContents;
     this.defaultModelName = defaultModelName;
     this.flipUVs = flipUVs;
@@ -102,7 +111,7 @@ export class ParseObj {
     const x = len >= 2 ? parseFloat(lineItems[1]) : 0;
     const y = len >= 3 ? parseFloat(lineItems[2]) : 0;
     const z = len >= 4 ? parseFloat(lineItems[3]) : 0;
-    this.currentModel().vertices.push({x, y, z});
+    this.currentModel().vertices.push({ x, y, z });
   }
   parseTextureCoords(lineItems) {
     const len = lineItems.length;
@@ -121,14 +130,14 @@ export class ParseObj {
     if (this.flipUVs) {
       v = 1 - v;
     }
-    this.currentModel().textureCoords.push({u, v, w});
+    this.currentModel().textureCoords.push({ u, v, w });
   }
   parseVertexNormal(lineItems) {
     const len = lineItems.length;
     const x = len >= 2 ? parseFloat(lineItems[1]) : 0;
     const y = len >= 3 ? parseFloat(lineItems[2]) : 0;
     const z = len >= 4 ? parseFloat(lineItems[3]) : 0;
-    this.currentModel().vertexNormals.push({x, y, z});
+    this.currentModel().vertexNormals.push({ x, y, z });
   }
   parsePolygon(lineItems) {
     const totalVertices = lineItems.length - 1;

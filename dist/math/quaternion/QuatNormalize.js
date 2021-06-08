@@ -1,6 +1,6 @@
-import {GetQuatLength} from "./GetQuatLength";
-import {QuatScale} from "./QuatScale";
-import {Quaternion} from "./Quaternion";
+import { GetQuatLength } from "./GetQuatLength";
+import { QuatScale } from "./QuatScale";
+import { Quaternion } from "./Quaternion";
 export function QuatNormalize(a, out = new Quaternion()) {
   const length = GetQuatLength(a);
   if (length === 0) {

@@ -1,4 +1,4 @@
-import {Material} from "../gameobjects3d/material/Material";
+import { Material } from "../gameobjects3d/material/Material";
 export const Jade = new Material({
   ambient: [0.135, 0.2225, 0.1575],
   diffuse: [0.54, 0.89, 0.63],

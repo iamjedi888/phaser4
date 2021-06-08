@@ -1,12 +1,26 @@
-import {GetHeight, GetResolution, GetWidth} from "../../config/size/";
-import {BindingQueue} from "../BindingQueue";
-import {GetBackgroundColor} from "../../config/backgroundcolor/GetBackgroundColor";
-import {GetCanvasContext} from "../../config/canvascontext/GetCanvasContext";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { GetHeight, GetResolution, GetWidth } from "../../config/size/";
+import { BindingQueue } from "../BindingQueue";
+import { GetBackgroundColor } from "../../config/backgroundcolor/GetBackgroundColor";
+import { GetCanvasContext } from "../../config/canvascontext/GetCanvasContext";
 export class CanvasRenderer {
   constructor() {
-    this.clearBeforeRender = true;
-    this.optimizeRedraw = true;
-    this.autoResize = true;
+    __publicField(this, "canvas");
+    __publicField(this, "ctx");
+    __publicField(this, "clearColor");
+    __publicField(this, "width");
+    __publicField(this, "height");
+    __publicField(this, "resolution");
+    __publicField(this, "textureIndex");
+    __publicField(this, "flushTotal");
+    __publicField(this, "clearBeforeRender", true);
+    __publicField(this, "optimizeRedraw", true);
+    __publicField(this, "autoResize", true);
     this.width = GetWidth();
     this.height = GetHeight();
     this.resolution = GetResolution();
@@ -57,6 +71,18 @@ export class CanvasRenderer {
       ctx.clearRect(0, 0, this.width, this.height);
       ctx.fillStyle = this.clearColor;
       ctx.fillRect(0, 0, this.width, this.height);
+    }
+    const worlds = renderData.worldData;
+    for (let i = 0; i < worlds.length; i++) {
+      const { numRendered, world } = worlds[i];
+      const camera = worlds[i].camera;
+      const { a, b, c, d, tx, ty } = camera.worldTransform;
+      ctx.setTransform(a, b, c, d, tx, ty);
+      for (let s = 0; s < numRendered; s++) {
+        const entry = world.renderList[s];
+        entry.node.renderCanvas(this);
+        entry.node.postRenderCanvas(this);
+      }
     }
   }
   destroy() {

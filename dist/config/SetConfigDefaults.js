@@ -1,10 +1,11 @@
-import {SetBackgroundColor} from "./backgroundcolor/SetBackgroundColor";
-import {SetBanner} from "./banner/SetBanner";
-import {SetBatchSize} from "./batchsize/SetBatchSize";
-import {SetDefaultOrigin} from "./defaultorigin/SetDefaultOrigin";
-import {SetMaxTextures} from "./maxtextures/SetMaxTextures";
-import {SetSize} from "./size/SetSize";
-import {SetWebGLContext} from "./webglcontext";
+import { SetBackgroundColor } from "./backgroundcolor/SetBackgroundColor";
+import { SetBanner } from "./banner/SetBanner";
+import { SetBatchSize } from "./batchsize/SetBatchSize";
+import { SetDefaultOrigin } from "./defaultorigin/SetDefaultOrigin";
+import { SetMaxTextures } from "./maxtextures/SetMaxTextures";
+import { SetSize } from "./size/SetSize";
+import { SetWebGLContext } from "./webglcontext";
+import { SetWorldSize } from "./worldsize/SetWorldSize";
 export function SetConfigDefaults() {
   SetBackgroundColor(0);
   SetBatchSize(4096);
@@ -17,4 +18,5 @@ export function SetConfigDefaults() {
     desynchronized: true,
     preserveDrawingBuffer: true
   });
+  SetWorldSize(512);
 }

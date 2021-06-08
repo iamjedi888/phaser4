@@ -1,8 +1,8 @@
-import {Matrix4} from "./Matrix4";
+import { Matrix4 } from "./Matrix4";
 export function Mat4TargetTo(eye, target, up, out = new Matrix4()) {
-  const {x: eyex, y: eyey, z: eyez} = eye;
-  const {x: upx, y: upy, z: upz} = up;
-  const {x: targetx, y: targety, z: targetz} = target;
+  const { x: eyex, y: eyey, z: eyez } = eye;
+  const { x: upx, y: upy, z: upz } = up;
+  const { x: targetx, y: targety, z: targetz } = target;
   let z0 = eyex - targetx;
   let z1 = eyey - targety;
   let z2 = eyez - targetz;

@@ -1,1 +1,0 @@
-{"version":3,"file":"SinCosTableGenerator.d.ts","sourceRoot":"","sources":["../../src/math/SinCosTableGenerator.ts"],"names":[],"mappings":"AAeA,aAAK,WAAW,GAAG;IAAE,GAAG,EAAE,MAAM,EAAE,CAAC;IAAC,GAAG,EAAE,MAAM,EAAE,CAAC;IAAC,MAAM,EAAE,MAAM,CAAA;CAAE,CAAC;AAepE,wBAAgB,oBAAoB,CAAE,MAAM,EAAE,MAAM,EAAE,MAAM,GAAE,MAAU,EAAE,MAAM,GAAE,MAAU,EAAE,SAAS,GAAE,MAAU,GAAG,WAAW,CAqBhI"}

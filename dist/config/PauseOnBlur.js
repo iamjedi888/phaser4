@@ -1,4 +1,4 @@
-import {GameInstance} from "../GameInstance";
+import { GameInstance } from "../GameInstance";
 let willPauseOnVisibility = false;
 let willPauseOnBlur = false;
 let visibilityHandler;

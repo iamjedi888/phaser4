@@ -3,10 +3,10 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {FromPercent} from "../../math/FromPercent";
-import {GetCircleCircumference} from "./GetCircleCircumference";
-import {GetCircleCircumferencePoint} from "./GetCircleCircumferencePoint";
-import {MATH_CONST} from "../../math/const";
+import { FromPercent } from "../../math/FromPercent";
+import { GetCircleCircumference } from "./GetCircleCircumference";
+import { GetCircleCircumferencePoint } from "./GetCircleCircumferencePoint";
+import { MATH_CONST } from "../../math/const";
 export function GetCirclePoints(circle, step, quantity = 0, out = []) {
   if (!quantity) {
     quantity = GetCircleCircumference(circle) / step;

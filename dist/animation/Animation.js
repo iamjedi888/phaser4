@@ -1,7 +1,28 @@
-import {CalculateDuration} from "./CalculateDuration";
-import {LinkFrames} from "./LinkFrames";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { CalculateDuration } from "./CalculateDuration";
+import { LinkFrames } from "./LinkFrames";
 export class Animation {
   constructor(config) {
+    __publicField(this, "key");
+    __publicField(this, "frames");
+    __publicField(this, "firstFrame");
+    __publicField(this, "msPerFrame");
+    __publicField(this, "frameRate");
+    __publicField(this, "duration");
+    __publicField(this, "skipMissedFrames");
+    __publicField(this, "delay");
+    __publicField(this, "hold");
+    __publicField(this, "repeat");
+    __publicField(this, "repeatDelay");
+    __publicField(this, "yoyo");
+    __publicField(this, "showOnStart");
+    __publicField(this, "hideOnComplete");
+    __publicField(this, "paused");
     const {
       key,
       frames = [],

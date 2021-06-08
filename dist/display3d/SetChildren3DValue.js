@@ -1,4 +1,4 @@
-import {DepthFirstSearch3D} from "./DepthFirstSearch3D";
+import { DepthFirstSearch3D } from "./DepthFirstSearch3D";
 export function SetChildren3DValue(parent, property, value) {
   const children = DepthFirstSearch3D(parent);
   children.forEach((child) => {

@@ -1,4 +1,4 @@
-import {DIRTY_CONST} from "../DIRTY_CONST";
+import { DIRTY_CONST } from "../DIRTY_CONST";
 export function SetQuadTint(topLeft, topRight, bottomLeft, bottomRight, ...children) {
   children.forEach((child) => {
     const vertices = child.vertices;

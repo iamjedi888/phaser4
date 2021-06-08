@@ -1,7 +1,7 @@
-import {File} from "../File";
-import {GetURL} from "../GetURL";
-import {ImageTagLoader} from "../ImageTagLoader";
-import {TextureManagerInstance} from "../../textures/TextureManagerInstance";
+import { File } from "../File";
+import { GetURL } from "../GetURL";
+import { ImageTagLoader } from "../ImageLoader";
+import { TextureManagerInstance } from "../../textures/TextureManagerInstance";
 export function ImageFile(key, url, glConfig) {
   const file = new File(key, url);
   file.load = () => {

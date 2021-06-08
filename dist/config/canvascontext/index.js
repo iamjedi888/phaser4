@@ -1,6 +1,6 @@
-import {CanvasContext} from "./CanvasContext";
-import {GetCanvasContext} from "./GetCanvasContext";
-import {SetCanvasContext} from "./SetCanvasContext";
+import { CanvasContext } from "./CanvasContext";
+import { GetCanvasContext } from "./GetCanvasContext";
+import { SetCanvasContext } from "./SetCanvasContext";
 export {
   GetCanvasContext,
   SetCanvasContext,

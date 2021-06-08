@@ -1,4 +1,4 @@
-import {IsWindowsPhone} from "../os/IsWindowsPhone";
+import { IsWindowsPhone } from "../os/IsWindowsPhone";
 export function IsSafari() {
   const ua = navigator.userAgent;
   const safari = ua.includes("Safari") && !IsWindowsPhone();

@@ -1,7 +1,7 @@
-import {Vec3} from "./Vec3";
+import { Vec3 } from "./Vec3";
 export function Vec3TransformQuat(a, q, out = new Vec3()) {
-  const {x: qx, y: qy, z: qz, w: qw} = q;
-  const {x, y, z} = a;
+  const { x: qx, y: qy, z: qz, w: qw } = q;
+  const { x, y, z } = a;
   let uvx = qy * z - qz * y;
   let uvy = qz * x - qx * z;
   let uvz = qx * y - qy * x;

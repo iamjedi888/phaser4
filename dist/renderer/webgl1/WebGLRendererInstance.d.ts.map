@@ -1,1 +1,0 @@
-{"version":3,"file":"WebGLRendererInstance.d.ts","sourceRoot":"","sources":["../../../src/renderer/webgl1/WebGLRendererInstance.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAEhD,eAAO,IAAI,QAAQ,EAAE,aAAa,CAAC;AAEnC,eAAO,MAAM,qBAAqB;eAErB,aAAa;oBAKN,aAAa,GAAG,SAAS,KAAG,IAAI;CAInD,CAAC"}

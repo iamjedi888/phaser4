@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {Arne16} from "../palettes/Arne16";
-import {CreateCanvas} from "../CreateCanvas";
-import {Texture} from "../Texture";
+import { Arne16 } from "../palettes/Arne16";
+import { CreateCanvas } from "../CreateCanvas";
+import { Texture } from "../Texture";
 export function PixelTexture(config) {
   const {
     data = [],

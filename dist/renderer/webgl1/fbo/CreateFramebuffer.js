@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function CreateFramebuffer(texture, attachment) {
   if (!attachment) {
     attachment = gl.COLOR_ATTACHMENT0;

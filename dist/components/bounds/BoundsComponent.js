@@ -1,11 +1,19 @@
-import {DIRTY_CONST} from "../../gameobjects/DIRTY_CONST";
-import {GetVertices} from "../transform/GetVertices";
-import {Rectangle} from "../../geom/rectangle/Rectangle";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { DIRTY_CONST } from "../../gameobjects/DIRTY_CONST";
+import { GetVertices } from "../transform/GetVertices";
+import { Rectangle } from "../../geom/rectangle/Rectangle";
 export class BoundsComponent {
   constructor(entity) {
-    this.fixed = false;
-    this.includeChildren = true;
-    this.visibleOnly = true;
+    __publicField(this, "entity");
+    __publicField(this, "area");
+    __publicField(this, "fixed", false);
+    __publicField(this, "includeChildren", true);
+    __publicField(this, "visibleOnly", true);
     this.entity = entity;
     this.area = new Rectangle();
   }
@@ -19,7 +27,7 @@ export class BoundsComponent {
     return this.area;
   }
   updateLocal() {
-    const {x0, y0, x1, y1, x2, y2, x3, y3} = GetVertices(this.entity.worldTransform, this.entity.transformExtent);
+    const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVertices(this.entity.worldTransform, this.entity.transformExtent);
     const x = Math.min(x0, x1, x2, x3);
     const y = Math.min(y0, y1, y2, y3);
     const right = Math.max(x0, x1, x2, x3);

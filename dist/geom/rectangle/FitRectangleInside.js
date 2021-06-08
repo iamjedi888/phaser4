@@ -3,9 +3,9 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetRectangleAspectRatio} from "./GetRectangleAspectRatio";
-import {GetRectangleCenterX} from "./GetRectangleCenterX";
-import {GetRectangleCenterY} from "./GetRectangleCenterY";
+import { GetRectangleAspectRatio } from "./GetRectangleAspectRatio";
+import { GetRectangleCenterX } from "./GetRectangleCenterX";
+import { GetRectangleCenterY } from "./GetRectangleCenterY";
 export function FitRectangleInside(target, source) {
   const ratio = GetRectangleAspectRatio(target);
   let width = source.width;

@@ -1,8 +1,18 @@
-import {Emit, EventEmitter} from "../../events";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Emit, EventEmitter } from "../../events";
 export class Keyboard extends EventEmitter {
   constructor() {
     super();
-    this.keyConversion = {
+    __publicField(this, "keys");
+    __publicField(this, "keydownHandler");
+    __publicField(this, "keyupHandler");
+    __publicField(this, "blurHandler");
+    __publicField(this, "keyConversion", {
       Up: "ArrowUp",
       Down: "ArrowDown",
       Left: "ArrowLeft",
@@ -18,7 +28,7 @@ export class Keyboard extends EventEmitter {
       Multiply: "*",
       Decimal: ".",
       Divide: "/"
-    };
+    });
     this.keydownHandler = (event) => this.onKeyDown(event);
     this.keyupHandler = (event) => this.onKeyUp(event);
     this.blurHandler = () => this.onBlur();

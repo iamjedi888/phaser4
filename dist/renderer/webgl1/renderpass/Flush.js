@@ -1,4 +1,4 @@
-import {Draw} from "./Draw";
+import { Draw } from "./Draw";
 export function Flush(renderPass, forceCount) {
   if (forceCount) {
     renderPass.count = forceCount;

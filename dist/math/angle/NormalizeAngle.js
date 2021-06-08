@@ -3,7 +3,7 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {MATH_CONST} from "../const";
+import { MATH_CONST } from "../const";
 export function NormalizeAngle(angle) {
   angle = angle % MATH_CONST.PI2;
   if (angle >= 0) {

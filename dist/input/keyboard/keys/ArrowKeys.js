@@ -1,6 +1,17 @@
-import {Key} from "../Key";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { Key } from "../Key";
 export class ArrowKeys {
   constructor(keyboardManager, config) {
+    __publicField(this, "left");
+    __publicField(this, "right");
+    __publicField(this, "up");
+    __publicField(this, "down");
+    __publicField(this, "space");
     const {
       left = true,
       right = true,

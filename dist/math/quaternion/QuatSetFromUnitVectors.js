@@ -1,8 +1,8 @@
-import {Quaternion} from "./Quaternion";
-import {Vec3Dot} from "../vec3";
+import { Quaternion } from "./Quaternion";
+import { Vec3Dot } from "../vec3";
 export function QuatSetFromUnitVectors(a, from, to, out = new Quaternion()) {
-  const {x: fx, y: fy, z: fz} = from;
-  const {x: tx, y: ty, z: tz} = to;
+  const { x: fx, y: fy, z: fz } = from;
+  const { x: tx, y: ty, z: tz } = to;
   const epsilon = 1e-6;
   let r = Vec3Dot(from, to) + 1;
   if (r < epsilon) {

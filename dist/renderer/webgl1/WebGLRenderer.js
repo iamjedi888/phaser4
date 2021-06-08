@@ -1,20 +1,33 @@
-import {GetHeight, GetResolution, GetWidth} from "../../config/size/";
-import {End} from "./renderpass/End";
-import {GL} from "./GL";
-import {GetBackgroundColor} from "../../config/backgroundcolor/GetBackgroundColor";
-import {GetRGBArray} from "./colors/GetRGBArray";
-import {GetWebGLContext} from "../../config/webglcontext/GetWebGLContext";
-import {ProcessBindingQueue} from "./renderpass/ProcessBindingQueue";
-import {RenderPass} from "./renderpass/RenderPass";
-import {Start} from "./renderpass";
-import {WebGLRendererInstance} from "./WebGLRendererInstance";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { GetHeight, GetResolution, GetWidth } from "../../config/size/";
+import { End } from "./renderpass/End";
+import { GL } from "./GL";
+import { GetBackgroundColor } from "../../config/backgroundcolor/GetBackgroundColor";
+import { GetRGBArray } from "./colors/GetRGBArray";
+import { GetWebGLContext } from "../../config/webglcontext/GetWebGLContext";
+import { ProcessBindingQueue } from "./renderpass/ProcessBindingQueue";
+import { RenderPass } from "./renderpass/RenderPass";
+import { Start } from "./renderpass";
+import { WebGLRendererInstance } from "./WebGLRendererInstance";
+import { WorldList } from "../../world/WorldList";
 export class WebGLRenderer {
   constructor() {
-    this.clearColor = [0, 0, 0, 1];
-    this.clearBeforeRender = true;
-    this.optimizeRedraw = false;
-    this.autoResize = true;
-    this.contextLost = false;
+    __publicField(this, "canvas");
+    __publicField(this, "gl");
+    __publicField(this, "renderPass");
+    __publicField(this, "clearColor", [0, 0, 0, 1]);
+    __publicField(this, "width");
+    __publicField(this, "height");
+    __publicField(this, "resolution");
+    __publicField(this, "clearBeforeRender", true);
+    __publicField(this, "optimizeRedraw", true);
+    __publicField(this, "autoResize", true);
+    __publicField(this, "contextLost", false);
     this.width = GetWidth();
     this.height = GetHeight();
     this.resolution = GetResolution();
@@ -64,27 +77,30 @@ export class WebGLRenderer {
   }
   reset() {
   }
-  render(renderData) {
+  render(willRedraw, scenes) {
     if (this.contextLost) {
       return;
     }
     const gl = this.gl;
     const renderPass = this.renderPass;
+    gl.getContextAttributes();
     ProcessBindingQueue();
-    if (this.optimizeRedraw && renderData.numDirtyFrames === 0 && renderData.numDirtyCameras === 0) {
-      return;
+    if (this.optimizeRedraw && !willRedraw) {
     }
     if (this.clearBeforeRender) {
       const cls = this.clearColor;
       gl.clearColor(cls[0], cls[1], cls[2], cls[3]);
       gl.clear(gl.COLOR_BUFFER_BIT);
     }
-    const worlds = renderData.worldData;
     Start(renderPass);
-    for (let i = 0; i < worlds.length; i++) {
-      const {world} = worlds[i];
-      world.renderGL(renderPass);
-      world.postRenderGL(renderPass);
+    for (const scene of scenes.values()) {
+      const worlds = WorldList.get(scene);
+      for (const world of worlds) {
+        if (world.runRender) {
+          world.renderGL(renderPass);
+          world.postRenderGL(renderPass);
+        }
+      }
     }
     End(renderPass);
   }

@@ -1,4 +1,4 @@
-import {DepthFirstSearch} from "./DepthFirstSearch";
+import { DepthFirstSearch } from "./DepthFirstSearch";
 export function FindChildrenByName(parent, searchString) {
   const children = DepthFirstSearch(parent);
   const regex = RegExp(searchString);

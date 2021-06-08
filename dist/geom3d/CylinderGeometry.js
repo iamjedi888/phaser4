@@ -1,7 +1,7 @@
-import {CreateVertexSet} from "../gameobjects3d/geometry/CreateVertexSet";
-import {Vec2} from "../math/vec2/Vec2";
-import {Vec3} from "../math/vec3/Vec3";
-import {Vec3Normalize} from "../math/vec3/Vec3Normalize";
+import { CreateVertexSet } from "../gameobjects3d/geometry/CreateVertexSet";
+import { Vec2 } from "../math/vec2/Vec2";
+import { Vec3 } from "../math/vec3/Vec3";
+import { Vec3Normalize } from "../math/vec3/Vec3Normalize";
 function GenerateCap(top, data, index, halfHeight, radiusTop, radiusBottom, radialSegments, thetaStart, thetaLength) {
   const {
     vertices,

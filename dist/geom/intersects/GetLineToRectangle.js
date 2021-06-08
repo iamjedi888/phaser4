@@ -4,10 +4,10 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {GetRectangleEdges} from "../rectangle/GetRectangleEdges";
-import {LineToLine} from "./LineToLine";
-import {LineToRectangle} from "./LineToRectangle";
-import {Vec2} from "../../math/vec2/Vec2";
+import { GetRectangleEdges } from "../rectangle/GetRectangleEdges";
+import { LineToLine } from "./LineToLine";
+import { LineToRectangle } from "./LineToRectangle";
+import { Vec2 } from "../../math/vec2/Vec2";
 export function GetLineToRectangle(line, rect, out = []) {
   if (LineToRectangle(line, rect)) {
     const [lineA, lineB, lineC, lineD] = GetRectangleEdges(rect);

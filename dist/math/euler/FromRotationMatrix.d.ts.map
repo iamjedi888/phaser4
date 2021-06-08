@@ -1,1 +1,0 @@
-{"version":3,"file":"FromRotationMatrix.d.ts","sourceRoot":"","sources":["../../../src/math/euler/FromRotationMatrix.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,SAAS,CAAC;AAChC,OAAO,EAAE,OAAO,EAAE,MAAM,SAAS,CAAC;AAIlC,wBAAgB,kBAAkB,CAAE,CAAC,EAAE,KAAK,EAAE,CAAC,EAAE,OAAO,EAAE,KAAK,GAAE,MAAgB,GAAG,KAAK,CA8GxF"}

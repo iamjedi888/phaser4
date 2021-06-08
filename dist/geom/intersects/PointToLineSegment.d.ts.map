@@ -1,1 +1,0 @@
-{"version":3,"file":"PointToLineSegment.d.ts","sourceRoot":"","sources":["../../../src/geom/intersects/PointToLineSegment.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AAEtC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAa5C,wBAAgB,kBAAkB,CAAE,KAAK,EAAE,IAAI,EAAE,IAAI,EAAE,KAAK,GAAG,OAAO,CAgBrE"}

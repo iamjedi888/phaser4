@@ -1,5 +1,15 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 export class TweenProperty {
   constructor(name, end) {
+    __publicField(this, "name");
+    __publicField(this, "start");
+    __publicField(this, "end");
+    __publicField(this, "modifier");
     this.name = name;
     if (typeof end === "string") {
       this.modifier = end.substr(0, 1);

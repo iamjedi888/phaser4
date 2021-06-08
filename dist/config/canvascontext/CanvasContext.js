@@ -1,4 +1,4 @@
-import {SetCanvasContext} from "./SetCanvasContext";
+import { SetCanvasContext } from "./SetCanvasContext";
 export function CanvasContext(contextAttributes) {
   return () => {
     SetCanvasContext(contextAttributes);

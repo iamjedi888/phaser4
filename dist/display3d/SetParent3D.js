@@ -1,6 +1,6 @@
-import {DepthFirstSearch3D} from "./DepthFirstSearch3D";
-import {RemoveChild3D} from "./RemoveChild3D";
-import {SetWorld3D} from "./SetWorld3D";
+import { DepthFirstSearch3D } from "./DepthFirstSearch3D";
+import { RemoveChild3D } from "./RemoveChild3D";
+import { SetWorld3D } from "./SetWorld3D";
 export function SetParent3D(parent, ...children) {
   children.forEach((child) => {
     if (child.parent) {

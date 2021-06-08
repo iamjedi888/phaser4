@@ -1,6 +1,6 @@
-import {GetMaxTextures} from "../../../config/maxtextures/GetMaxTextures";
-import {MULTI_QUAD_FRAG} from "../glsl/MULTI_QUAD_FRAG";
-import {QuadShader} from "./QuadShader";
+import { GetMaxTextures } from "../../../config/maxtextures/GetMaxTextures";
+import { MULTI_QUAD_FRAG } from "../glsl/MULTI_QUAD_FRAG";
+import { QuadShader } from "./QuadShader";
 export class MultiTextureQuadShader extends QuadShader {
   constructor(config = {}) {
     if (!config.fragmentShader) {

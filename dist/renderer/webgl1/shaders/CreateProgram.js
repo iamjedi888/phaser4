@@ -1,5 +1,5 @@
-import {DeleteShaders} from "./DeleteShaders";
-import {gl} from "../GL";
+import { DeleteShaders } from "./DeleteShaders";
+import { gl } from "../GL";
 export function CreateProgram(...shaders) {
   const program = gl.createProgram();
   shaders.forEach((shader) => {

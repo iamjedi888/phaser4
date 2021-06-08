@@ -1,7 +1,7 @@
-import {DepthFirstSearchRecursiveNested} from "./DepthFirstSearchRecursiveNested";
+import { DepthFirstSearchRecursiveNested } from "./DepthFirstSearchRecursiveNested";
 function GetInfo(entry) {
   const legend = entry.numChildren > 0 ? "Parent" : "Child";
-  return `${legend} [ type=${entry.type}, name=${entry.name} ]`;
+  return `${legend} [ type=${typeof entry}, name=${entry.name} ]`;
 }
 function LogChildren(entry) {
   console.group(GetInfo(entry.node));

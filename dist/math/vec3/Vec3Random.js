@@ -1,4 +1,4 @@
-import {Vec3} from "./Vec3";
+import { Vec3 } from "./Vec3";
 export function Vec3Random(a, scale = 1, out = new Vec3()) {
   const r = Math.random() * 2 * Math.PI;
   const z = Math.random() * 2 - 1;

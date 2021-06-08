@@ -1,4 +1,4 @@
-import {gl} from "../GL";
+import { gl } from "../GL";
 export function CreateShader(source, type) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);

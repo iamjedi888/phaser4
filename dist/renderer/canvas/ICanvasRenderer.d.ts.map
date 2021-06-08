@@ -1,1 +1,0 @@
-{"version":3,"file":"ICanvasRenderer.d.ts","sourceRoot":"","sources":["../../../src/renderer/canvas/ICanvasRenderer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,cAAc,CAAC;AAEzC,MAAM,WAAW,eAAgB,SAAQ,SAAS;IAE9C,GAAG,EAAE,wBAAwB,CAAC;IAC9B,UAAU,EAAE,MAAM,CAAC;IACnB,KAAK,IAAK,IAAI,CAAC;CAClB"}

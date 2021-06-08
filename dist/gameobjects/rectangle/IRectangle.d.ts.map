@@ -1,1 +1,0 @@
-{"version":3,"file":"IRectangle.d.ts","sourceRoot":"","sources":["../../../src/gameobjects/rectangle/IRectangle.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AAErD,MAAM,WAAW,UAAW,SAAQ,UAAU;IAE1C,KAAK,EAAE,MAAM,CAAC;IAEd,QAAQ,CAAE,KAAK,EAAE,MAAM,GAAG,IAAI,CAAC;CAClC"}

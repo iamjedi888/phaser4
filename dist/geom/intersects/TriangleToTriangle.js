@@ -3,10 +3,10 @@
  * @copyright    2020 Photon Storm Ltd.
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
-import {DecomposeTriangle} from "../triangle/DecomposeTriangle";
-import {GetTriangleEdges} from "../triangle/GetTriangleEdges";
-import {LineToLine} from "./LineToLine";
-import {TriangleContainsPoints} from "../triangle/TriangleContainsPoints";
+import { DecomposeTriangle } from "../triangle/DecomposeTriangle";
+import { GetTriangleEdges } from "../triangle/GetTriangleEdges";
+import { LineToLine } from "./LineToLine";
+import { TriangleContainsPoints } from "../triangle/TriangleContainsPoints";
 export function TriangleToTriangle(triangleA, triangleB) {
   if (triangleA.left > triangleB.right || triangleA.right < triangleB.left || triangleA.top > triangleB.bottom || triangleA.bottom < triangleB.top) {
     return false;

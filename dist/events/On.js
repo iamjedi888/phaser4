@@ -1,4 +1,4 @@
-import {EventInstance} from "./EventInstance";
+import { EventInstance } from "./EventInstance";
 export function On(emitter, event, callback, context = emitter, once = false) {
   if (typeof callback !== "function") {
     throw new TypeError("Listener not a function");

@@ -1,6 +1,6 @@
-import {CreateVertexSet} from "../gameobjects3d/geometry/CreateVertexSet";
-import {Vec3} from "../math/vec3/Vec3";
-import {Vec3Normalize} from "../math/vec3/Vec3Normalize";
+import { CreateVertexSet } from "../gameobjects3d/geometry/CreateVertexSet";
+import { Vec3 } from "../math/vec3/Vec3";
+import { Vec3Normalize } from "../math/vec3/Vec3Normalize";
 export function SphereGeometry(radius = 1, widthSegments = 3, heightSegments = 3, phiStart = 0, phiLength = Math.PI * 2, thetaStart = 0, thetaLength = Math.PI) {
   widthSegments = Math.max(3, Math.floor(widthSegments) || 8);
   heightSegments = Math.max(2, Math.floor(heightSegments) || 6);

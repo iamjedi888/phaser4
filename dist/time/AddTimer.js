@@ -1,4 +1,4 @@
-import {NOOP} from "./NOOP";
+import { NOOP } from "./NOOP";
 export function AddTimer(clock, config) {
   const {
     duration = 0,

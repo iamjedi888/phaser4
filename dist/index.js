@@ -16,13 +16,14 @@ import * as Input from "./input/";
 import * as Loader from "./loader/";
 import * as Materials3D from "./materials3d/";
 import * as Math from "./math/";
+import * as Scenes from "./scenes/";
 import * as Textures from "./textures/";
 import * as Time from "./time/";
 import * as WebGL1 from "./renderer/webgl1/";
 import * as World from "./world/";
 import * as World3D from "./world3d/";
-import {Game} from "./Game";
-import {Scene} from "./scenes/Scene";
+import { Game } from "./Game";
+import { Scene } from "./scenes/Scene";
 export {
   Animation,
   Camera,
@@ -44,6 +45,7 @@ export {
   Loader,
   Materials3D,
   Math,
+  Scenes,
   Textures,
   Time,
   WebGL1,

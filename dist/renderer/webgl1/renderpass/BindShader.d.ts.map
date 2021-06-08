@@ -1,1 +1,0 @@
-{"version":3,"file":"BindShader.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/BindShader.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,eAAe,CAAC;AAC5C,OAAO,EAAE,gBAAgB,EAAE,MAAM,6BAA6B,CAAC;AAE/D,wBAAgB,UAAU,CAAE,UAAU,EAAE,WAAW,EAAE,KAAK,CAAC,EAAE,gBAAgB,GAAG,IAAI,CAanF"}
