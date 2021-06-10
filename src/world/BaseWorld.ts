@@ -172,6 +172,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.runRender = (this.listLength > 0);
 
+        //  TODO - When new bitecs version is released we can use this instead:
         // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld).length;
         // console.log('dirtyworld', dirtyWorld);
         // sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);

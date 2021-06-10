@@ -1,5 +1,4 @@
 import { BaseWorld } from './BaseWorld';
-import { CreateWorldRenderData } from './CreateWorldRenderData';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
@@ -19,7 +18,5 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         super(scene);
 
         this.camera = new StaticCamera();
-
-        this.renderData = CreateWorldRenderData(this, this.camera);
     }
 }
