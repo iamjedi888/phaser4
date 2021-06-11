@@ -17,8 +17,12 @@ export class Origin implements IVec2
 
     set (x: number, y: number = x): this
     {
-        this.x = x;
-        this.y = y;
+        const id = this.id;
+
+        Transform2DComponent.originX[id] = x;
+        Transform2DComponent.originY[id] = y;
+
+        UpdateExtent(id, Extent2DComponent.width[id], Extent2DComponent.height[id]);
 
         return this;
     }
