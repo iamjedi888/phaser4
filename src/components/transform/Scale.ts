@@ -5,7 +5,7 @@ export class Scale implements IVec2
 {
     private id: number;
 
-    constructor (id: number, x: number = 0, y: number = 0)
+    constructor (id: number, x: number = 1, y: number = 1)
     {
         this.id = id;
 
