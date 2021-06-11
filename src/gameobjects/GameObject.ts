@@ -1,4 +1,4 @@
-import { AddHierarchyComponent, GetChildren, GetNumChildren, GetParentGameObject, HierarchyComponent } from '../components/hierarchy';
+import { AddHierarchyComponent, GetChildren, GetNumChildren, GetParentGameObject, GetWorldID, HierarchyComponent } from '../components/hierarchy';
 import { AddPermissionsComponent, PermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
@@ -13,6 +13,7 @@ import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ReparentChildren } from '../display/ReparentChildren';
+import { SetDirtyDisplayList } from '../components/dirty';
 import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
@@ -108,6 +109,8 @@ export class GameObject implements IGameObject
     set visible (value: boolean)
     {
         PermissionsComponent.visible[this.id] = Number(value);
+
+        SetDirtyDisplayList(GetWorldID(this.id));
     }
 
     get visible (): boolean
@@ -118,6 +121,8 @@ export class GameObject implements IGameObject
     set visibleChildren (value: boolean)
     {
         PermissionsComponent.visibleChildren[this.id] = Number(value);
+
+        SetDirtyDisplayList(GetWorldID(this.id));
     }
 
     get visibleChildren (): boolean
