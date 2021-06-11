@@ -1,14 +1,9 @@
+import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BaseWorld } from './BaseWorld';
 import { Camera } from '../camera/Camera';
-import { CreateWorldRenderData } from './CreateWorldRenderData';
-import { DIRTY_CONST } from '../gameobjects/DIRTY_CONST';
 import { ICamera } from '../camera/ICamera';
-import { IGameObject } from '../gameobjects/IGameObject';
 import { IScene } from '../scenes/IScene';
-import { ISceneRenderData } from '../scenes/ISceneRenderData';
 import { IWorld } from './IWorld';
-import { IWorldRenderData } from './IWorldRenderData';
-import { RectangleToRectangle } from '../geom/intersects';
 
 export class World extends BaseWorld implements IWorld
 {
@@ -22,7 +17,7 @@ export class World extends BaseWorld implements IWorld
 
         this.camera = new Camera();
 
-        this.renderData = CreateWorldRenderData(this, this.camera);
+        AddTransform2DComponent(this.id);
     }
 
     //  TODO: An out-of-bounds parent with in-bounds children will be cull checked against in postRender, stop this.
