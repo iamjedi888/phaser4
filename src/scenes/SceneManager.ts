@@ -5,6 +5,7 @@ import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { IScene } from './IScene';
 import { LocalMatrix2DComponent } from '../components/transform';
 import { Once } from '../events';
@@ -104,6 +105,23 @@ export class SceneManager
         {
             this.flush = true;
         }
+    }
+
+    getRenderList (): IGameObject[]
+    {
+        let output: IGameObject[] = [];
+
+        for (const scene of this.scenes.values())
+        {
+            const worlds = WorldList.get(scene);
+
+            for (const world of worlds)
+            {
+                output = output.concat(world.getRenderList());
+            }
+        }
+
+        return output;
     }
 
     updateWorldStats (numGameObjects: number, numRendered: number, numDisplayLists: number, numWorldTransforms: number): void
