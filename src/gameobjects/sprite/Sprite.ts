@@ -85,7 +85,7 @@ export class Sprite extends Container implements ISprite
     {
         PreRenderVertices(this);
 
-        DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+        // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }
 
     get tint (): number
