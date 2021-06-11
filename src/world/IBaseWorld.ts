@@ -16,6 +16,7 @@ export interface IBaseWorld extends IGameObject
     runRender: boolean;
 
     addToRenderList (id: number, renderType: number): void;
+    getRenderList (): IGameObject[];
 
     beforeUpdate (delta: number, time: number): void;
     update (delta: number, time: number): void;

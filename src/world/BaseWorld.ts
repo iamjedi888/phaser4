@@ -8,7 +8,6 @@ import { GameObject, GameObjectCache } from '../gameobjects';
 import { GetNumWorldTransforms, ResetWorldRenderData } from './ResetWorldRenderData';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
-import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetWorldSize } from '../config/worldsize';
@@ -70,7 +69,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
         const id = this.id;
 
         AddRenderDataComponent(id);
-        AddTransform2DComponent(id);
 
         SetWorldID(id, id);
 
@@ -121,6 +119,26 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
             this.renderList = newList;
         }
+    }
+
+    getRenderList (): IGameObject[]
+    {
+        const list = this.renderList;
+
+        const output = [];
+
+        for (let i = 0; i < this.listLength; i += 2)
+        {
+            const eid = list[i];
+            const type = list[i + 1];
+
+            if (type === 0)
+            {
+                output.push(GameObjectCache.get(eid));
+            }
+        }
+
+        return output;
     }
 
     preRender (gameFrame: number, transformList: number[]): boolean
