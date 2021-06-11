@@ -11,6 +11,7 @@ import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
+import { PackColor } from '../../renderer/webgl1';
 import { PackColors } from '../../renderer/webgl1/colors/PackColors';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { QuadVertexComponent } from '../../components/vertices/QuadVertexComponent';
@@ -18,6 +19,7 @@ import { SetDirtyVertexColors } from '../../components/dirty';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
+import { VertexComponent } from '../../components/vertices';
 import { WillRender } from '../../components/permissions';
 import { addComponent } from 'bitecs';
 
@@ -29,6 +31,7 @@ export class Sprite extends Container implements ISprite
     frame: Frame;
     hasTexture: boolean = false;
 
+    protected _alpha: number = 1;
     protected _tint: number = 0xffffff;
 
     constructor (x: number, y: number, texture: string | Texture | Frame, frame?: string | number | Frame)
@@ -88,9 +91,62 @@ export class Sprite extends Container implements ISprite
     {
         if (value !== this._tint)
         {
+            const id = this.id;
+
             this._tint = value;
 
-            SetDirtyVertexColors(this.id);
+            const v1 = QuadVertexComponent.v1[id];
+            const v2 = QuadVertexComponent.v2[id];
+            const v3 = QuadVertexComponent.v3[id];
+            const v4 = QuadVertexComponent.v4[id];
+
+            // VertexComponent.tint[v1] = value;
+            // VertexComponent.tint[v2] = value;
+            // VertexComponent.tint[v3] = value;
+            // VertexComponent.tint[v4] = value;
+
+            const color = PackColor(value, this.alpha);
+
+            VertexComponent.color[v1] = color;
+            VertexComponent.color[v2] = color;
+            VertexComponent.color[v3] = color;
+            VertexComponent.color[v4] = color;
+
+            // SetDirtyVertexColors(this.id);
+        }
+    }
+
+    get alpha (): number
+    {
+        return this._alpha;
+    }
+
+    set alpha (value: number)
+    {
+        if (value !== this._alpha)
+        {
+            const id = this.id;
+
+            this._alpha = value;
+
+            const v1 = QuadVertexComponent.v1[id];
+            const v2 = QuadVertexComponent.v2[id];
+            const v3 = QuadVertexComponent.v3[id];
+            const v4 = QuadVertexComponent.v4[id];
+
+            // VertexComponent.tint[v1] = value;
+            // VertexComponent.tint[v2] = value;
+            // VertexComponent.tint[v3] = value;
+            // VertexComponent.tint[v4] = value;
+
+            const color = PackColor(this._tint, value);
+
+            VertexComponent.color[v1] = color;
+            VertexComponent.color[v2] = color;
+            VertexComponent.color[v3] = color;
+            VertexComponent.color[v4] = color;
+
+            // SetDirtyVertexColors(this.id);
         }
     }
 
@@ -98,7 +154,6 @@ export class Sprite extends Container implements ISprite
     {
         super.destroy(reparentChildren);
 
-        // this.vertices.length = 0;
         this.texture = null;
         this.frame = null;
         this.hasTexture = false;
