@@ -29,6 +29,7 @@ import { Vec2Dot } from './Vec2Dot';
 import { Vec2Equals } from './Vec2Equals';
 import { Vec2Floor } from './Vec2Floor';
 import { Vec2Fract } from './Vec2Fract';
+import { Vec2FromArray } from './Vec2FromArray';
 import { Vec2FromGridIndex } from './Vec2FromGridIndex';
 import { Vec2FromTransform } from './Vec2FromTransform';
 import { Vec2FuzzyEquals } from './Vec2FuzzyEquals';
@@ -53,6 +54,7 @@ import { Vec2ScaleAndAdd } from './Vec2ScaleAndAdd';
 import { Vec2SetLength } from './Vec2SetLength';
 import { Vec2Subtract } from './Vec2Subtract';
 import { Vec2SubtractScalar } from './Vec2SubtractScalar';
+import { Vec2ToArray } from './Vec2ToArray';
 import { Vec2Transform } from './Vec2Transform';
 import { Vec2TransformMat2d } from './Vec2TransformMat2d';
 import { Vec2TransformMat4 } from './Vec2TransformMat4';
@@ -90,6 +92,7 @@ export {
     Vec2Equals,
     Vec2Floor,
     Vec2Fract,
+    Vec2FromArray,
     Vec2FromGridIndex,
     Vec2FromTransform,
     Vec2FuzzyEquals,
@@ -114,6 +117,7 @@ export {
     Vec2SetLength,
     Vec2Subtract,
     Vec2SubtractScalar,
+    Vec2ToArray,
     Vec2Transform,
     Vec2TransformMat2d,
     Vec2TransformMat4,
