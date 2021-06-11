@@ -1,7 +1,8 @@
 import { Extent2DComponent } from './Extent2DComponent';
+import { IVec2 } from '../../math/vec2/IVec2';
 import { UpdateExtent } from './UpdateExtent';
 
-export class Size
+export class Size implements IVec2
 {
     private id: number;
 
@@ -9,8 +10,7 @@ export class Size
     {
         this.id = id;
 
-        this.width = width;
-        this.height = height;
+        this.set(width, height);
     }
 
     set (width: number, height: number = width): this
@@ -39,5 +39,25 @@ export class Size
     get height (): number
     {
         return Extent2DComponent.height[this.id];
+    }
+
+    set x (value: number)
+    {
+        this.width = value;
+    }
+
+    get x (): number
+    {
+        return this.width;
+    }
+
+    set y (value: number)
+    {
+        this.height = value;
+    }
+
+    get y (): number
+    {
+        return this.height;
     }
 }
