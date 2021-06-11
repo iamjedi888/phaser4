@@ -14,6 +14,8 @@ import { Vertex } from '../../components/Vertex';
 
 export class Rectangle extends Container implements IRectangle
 {
+    readonly type: string = 'Rectangle';
+
     private texture: Texture;
     private frame: Frame;
 

@@ -5,6 +5,7 @@ import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 export interface IGameObject
 {
     readonly id: number;
+    readonly type: string;
 
     name: string;
 

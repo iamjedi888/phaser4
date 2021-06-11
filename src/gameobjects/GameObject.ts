@@ -19,6 +19,8 @@ export class GameObject implements IGameObject
 {
     readonly id: number = addEntity(GameObjectWorld);
 
+    readonly type: string = 'GameObject';
+
     //  User defined name. Never used internally.
     name: string = '';
 
@@ -155,7 +157,7 @@ export class GameObject implements IGameObject
 
     toString (): string
     {
-        return `[ GameObject id="${this.id}" ]`;
+        return `[ ${this.type} id="${this.id}" ]`;
     }
 
     destroy <P extends IGameObject> (reparentChildren?: P): void

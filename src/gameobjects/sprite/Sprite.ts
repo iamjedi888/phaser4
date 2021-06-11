@@ -23,6 +23,8 @@ import { addComponent } from 'bitecs';
 
 export class Sprite extends Container implements ISprite
 {
+    readonly type: string = 'Sprite';
+
     texture: Texture;
     frame: Frame;
     hasTexture: boolean = false;
@@ -104,11 +106,6 @@ export class Sprite extends Container implements ISprite
 
             SetDirtyVertexColors(this.id);
         }
-    }
-
-    toString (): string
-    {
-        return `[ Sprite id="${this.id}" texture="${this.texture.key}" frame="${this.frame.key}" x="${this.x}" y="${this.y}" ]`;
     }
 
     destroy (reparentChildren?: IGameObject): void
