@@ -106,6 +106,11 @@ export class Sprite extends Container implements ISprite
         }
     }
 
+    toString (): string
+    {
+        return `[ Sprite id="${this.id}" texture="${this.texture.key}" frame="${this.frame.key}" x="${this.x}" y="${this.y}" ]`;
+    }
+
     destroy (reparentChildren?: IGameObject): void
     {
         super.destroy(reparentChildren);

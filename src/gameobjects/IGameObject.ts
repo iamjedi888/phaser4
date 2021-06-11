@@ -31,5 +31,7 @@ export interface IGameObject
     getChildren (): IGameObject[];
     getNumChildren (): number;
 
+    toString (): string;
+
     destroy (reparentChildren?: IGameObject): void;
 }

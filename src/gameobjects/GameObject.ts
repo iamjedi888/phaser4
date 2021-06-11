@@ -153,6 +153,11 @@ export class GameObject implements IGameObject
         return GetNumChildren(this.id);
     }
 
+    toString (): string
+    {
+        return `[ GameObject id="${this.id}" ]`;
+    }
+
     destroy <P extends IGameObject> (reparentChildren?: P): void
     {
         if (reparentChildren)
