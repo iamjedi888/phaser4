@@ -119,8 +119,8 @@ export class Frame implements IFrame
 
     copyToExtent (child: IContainer): this
     {
-        const originX = child.originX;
-        const originY = child.originY;
+        const originX = child.origin.x;
+        const originY = child.origin.y;
 
         const sourceSizeWidth = this.sourceSizeWidth;
         const sourceSizeHeight = this.sourceSizeHeight;
