@@ -78,20 +78,6 @@ export class Container extends GameObject implements IContainer
         this._alpha = value;
 
         SetDirtyAlpha(this.id);
-
-        /*
-        if (value !== this._alpha)
-        {
-            this._alpha = value;
-
-            this.vertices.forEach(vertex =>
-            {
-                vertex.setAlpha(value);
-            });
-
-            this.setDirty(DIRTY_CONST.COLORS);
-        }
-        */
     }
 
     destroy (reparentChildren?: IGameObject): void

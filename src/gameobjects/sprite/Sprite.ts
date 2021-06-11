@@ -68,15 +68,6 @@ export class Sprite extends Container implements ISprite
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        //  In World we need to run a system to pack all colors and
-        //  another to update all UVs that have changed
-
-        //  Also, move tint and alpha to component, so we can monitor them changing
-
-        // PreRenderVertices(this);
-        // PackColors(vertices);
-
-        // GetQuadVertices(this.id);
 
         BatchTexturedQuad(this.texture, this.id, renderPass);
     }
@@ -98,11 +89,6 @@ export class Sprite extends Container implements ISprite
         if (value !== this._tint)
         {
             this._tint = value;
-
-            // this.vertices.forEach(vertex =>
-            // {
-            //     vertex.setTint(value);
-            // });
 
             SetDirtyVertexColors(this.id);
         }
