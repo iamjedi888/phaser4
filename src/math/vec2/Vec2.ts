@@ -1,4 +1,8 @@
-export class Vec2
+import { IVec2 } from './IVec2';
+import { Vec2FromArray } from './Vec2FromArray';
+import { Vec2ToArray } from './Vec2ToArray';
+
+export class Vec2 implements IVec2
 {
     x: number;
     y: number;
@@ -18,26 +22,18 @@ export class Vec2
 
     toArray (dst: Float32List = [], index: number = 0): Float32List
     {
-        const { x, y } = this;
-
-        dst[ index ] = x;
-        dst[ index + 1 ] = y;
-
-        return dst;
+        return Vec2ToArray(this, dst, index);
     }
 
     fromArray (src: Float32List, index: number = 0): this
     {
-        return this.set(
-            src[ index ],
-            src[ index + 1 ]
-        );
+        Vec2FromArray(this, src, index);
+
+        return this;
     }
 
     toString (): string
     {
-        const { x, y } = this;
-
-        return `{ x=${x}, y=${y} }`;
+        return `{ x=${this.x}, y=${this.y} }`;
     }
 }
