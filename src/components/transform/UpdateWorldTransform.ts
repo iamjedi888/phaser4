@@ -1,15 +1,18 @@
 import { CopyLocalToWorld } from './CopyLocalToWorld';
 import { CopyWorldToWorld } from './CopyWorldToWorld';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetParentID } from '../hierarchy';
 import { MultiplyLocalWithWorld } from './MultiplyLocalWithWorld';
+import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateNumWorldTransforms } from '../../world/ResetWorldRenderData';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
+import { hasComponent } from 'bitecs';
 
 export function UpdateWorldTransform (id: number): void
 {
     const parentID = GetParentID(id);
 
-    if (parentID === 0)
+    if (!hasComponent(GameObjectWorld, Transform2DComponent, parentID))
     {
         CopyLocalToWorld(id, id);
     }
