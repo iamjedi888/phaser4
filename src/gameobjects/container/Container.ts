@@ -1,3 +1,4 @@
+import { AddColorComponent, ColorComponent, SetAlpha } from '../../components/color';
 import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform2DComponent } from '../../components/transform/';
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
@@ -5,12 +6,9 @@ import { GameObject } from '../GameObject';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
-import { SetDirtyAlpha } from '../../components/dirty/';
 
 export class Container extends GameObject implements IContainer
 {
-    protected _alpha: number = 1;
-
     position: Position;
     scale: Scale;
     skew: Skew;
@@ -24,6 +22,7 @@ export class Container extends GameObject implements IContainer
         const id = this.id;
 
         AddTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
+        AddColorComponent(id);
 
         this.position = new Position(id, x, y);
         this.scale = new Scale(id);
@@ -70,14 +69,12 @@ export class Container extends GameObject implements IContainer
 
     get alpha (): number
     {
-        return this._alpha;
+        return ColorComponent.alpha[this.id];
     }
 
     set alpha (value: number)
     {
-        this._alpha = value;
-
-        SetDirtyAlpha(this.id);
+        SetAlpha(this.id, value);
     }
 
     destroy (reparentChildren?: IGameObject): void
