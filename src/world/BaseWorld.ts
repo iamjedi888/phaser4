@@ -1,7 +1,7 @@
 import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
-import { Changed, defineComponent, defineQuery } from 'bitecs';
+import { Changed, defineComponent, defineQuery, resetChangedQuery } from 'bitecs';
 import { ClearDirtyDisplayList, HasDirtyDisplayList } from '../components/dirty';
 import { Emit, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
@@ -186,12 +186,16 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.runRender = (this.listLength > 0);
 
-        //  TODO - When new bitecs version is released we can use this instead:
-        // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld).length;
-        // console.log('dirtyworld', dirtyWorld);
-        // sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
+        //  So close, but so far ... doesn't work quite right in bitecs yet:
+        // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld, false).length;
+        const dirtyWorld = GetNumWorldTransforms();
 
-        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), GetNumWorldTransforms());
+        // if (dirtyWorld > 0)
+        // {
+        //     console.log('dw', dirtyWorld);
+        // }
+
+        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
 
         return isDirty;
     }
@@ -243,6 +247,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
+
+        // resetChangedQuery(GameObjectWorld, this.dirtyWorldQuery);
     }
 
     shutdown (): void
