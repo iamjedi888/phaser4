@@ -37,7 +37,7 @@
         "@types/jest": "^26.0.23",
         "@typescript-eslint/eslint-plugin": "4.26.1",
         "@typescript-eslint/parser": "4.26.1",
-        "bitecs": "0.3.8",
+        "bitecs": "^0.3.10-3",
         "boxen": "^5.0.1",
         "directory-tree": "^2.2.9",
         "esbuild": "^0.12.8",
