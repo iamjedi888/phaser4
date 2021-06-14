@@ -1,4 +1,5 @@
 import * as Bounds from './bounds';
+import * as Color from './color';
 import * as Dirty from './dirty';
 import * as Hierarchy from './hierarchy';
 import * as Input from './input';
@@ -10,6 +11,7 @@ import { Vertex } from './Vertex';
 
 export {
     Bounds,
+    Color,
     Dirty,
     Hierarchy,
     Input,
