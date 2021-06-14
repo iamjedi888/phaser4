@@ -10,7 +10,6 @@ export function SetFrame <T extends ISprite> (texture: Texture, key?: string | n
 
     children.forEach(child =>
     {
-        //  TODO - If frame is dirty, reset it anyway
         if (!child || frame === child.frame)
         {
             return;
@@ -21,7 +20,7 @@ export function SetFrame <T extends ISprite> (texture: Texture, key?: string | n
 
         if (pivot)
         {
-            child.setOrigin(pivot.x, pivot.y);
+            child.origin.set(pivot.x, pivot.y);
         }
 
         frame.copyToExtent(child);
