@@ -140,9 +140,16 @@ export class GameObject implements IGameObject
         return HierarchyComponent.depth[this.id];
     }
 
-    hasParent (): boolean
+    hasParent (id?: number): boolean
     {
-        return (HierarchyComponent.parentID[this.id] > 0);
+        if (id)
+        {
+            return (HierarchyComponent.parentID[this.id] === id);
+        }
+        else
+        {
+            return (HierarchyComponent.parentID[this.id] > 0);
+        }
     }
 
     getParent (): IGameObject | undefined
