@@ -1,11 +1,11 @@
-import { IGameObject } from '../gameobjects/IGameObject';
+import { IContainer } from '../gameobjects/container/IContainer';
 
-export function AddScale (scaleX: number, scaleY: number, ...children: IGameObject[]): IGameObject[]
+export function AddScale <T extends IContainer> (scaleX: number, scaleY: number, ...children: T[]): T[]
 {
     children.forEach(child =>
     {
-        child.scaleX += scaleX;
-        child.scaleY += scaleY;
+        child.scale.x += scaleX;
+        child.scale.y += scaleY;
     });
 
     return children;

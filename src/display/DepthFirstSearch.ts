@@ -3,7 +3,7 @@ import { IGameObject } from '../gameobjects/IGameObject';
 //  Returns all children of the parent, no matter what depth they go to, using an iterative search.
 //  Does NOT include the parent in the results.
 
-export function DepthFirstSearch (parent: IGameObject): IGameObject[]
+export function DepthFirstSearch <P extends IGameObject> (parent: P): IGameObject[]
 {
     const stack: IGameObject[] = [ parent ];
     const output: IGameObject[] = [];
@@ -14,7 +14,7 @@ export function DepthFirstSearch (parent: IGameObject): IGameObject[]
 
         output.push(node);
 
-        const numChildren = node.numChildren;
+        const numChildren = node.getNumChildren();
 
         if (numChildren > 0)
         {

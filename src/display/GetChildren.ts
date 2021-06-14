@@ -16,7 +16,7 @@ import { IGameObject } from '../gameobjects/IGameObject';
  */
 export function GetChildren (parent: IGameObject, property?: string | symbol, value?: never): IGameObject[]
 {
-    const children = parent.children;
+    // const children = GetChildren()
 
     //  Fast path out of here
     if (!property)

@@ -1,11 +1,11 @@
-import { AddChild } from './AddChild';
+import { AddChildAt } from './AddChildAt';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function AddChildren <P extends IGameObject, C extends IGameObject> (parent: P, ...children: C[]): C[]
 {
     children.forEach(child =>
     {
-        AddChild(parent, child);
+        AddChildAt(parent, child);
     });
 
     return children;

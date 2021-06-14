@@ -1,21 +1,12 @@
+import { AddChildAt } from './AddChildAt';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetParent } from './SetParent';
 
-export function AddChildrenAt (parent: IGameObject, index: number, ...children: IGameObject[]): IGameObject[]
+export function AddChildrenAt <P extends IGameObject, C extends IGameObject> (parent: P, index: number, ...children: C[]): C[]
 {
-    const parentChildren = parent.children;
-
-    if (index >= 0 && index <= parentChildren.length)
+    children.reverse().forEach(child =>
     {
-        children.reverse().forEach(child =>
-        {
-            children.splice(index, 0, child);
-
-            SetParent(parent, child);
-
-            child.updateWorldTransform();
-        });
-    }
+        AddChildAt(parent, child, index);
+    });
 
     return children;
 }

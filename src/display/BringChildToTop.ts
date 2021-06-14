@@ -1,19 +1,25 @@
-import { DIRTY_CONST } from '../gameobjects/DIRTY_CONST';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GetChildIndex } from './GetChildIndex';
+import { GetWorldID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 
-export function BringChildToTop <T extends IGameObject> (parent: IGameObject, child: T): T
+export function BringChildToTop <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
-    const parentChildren = parent.children;
-
     const currentIndex = GetChildIndex(parent, child);
 
-    if (currentIndex !== -1 && currentIndex < parentChildren.length)
-    {
-        parentChildren.splice(currentIndex, 1);
-        parentChildren.push(child);
+    const parentID = parent.id;
 
-        child.setDirty(DIRTY_CONST.TRANSFORM);
+    const children = GameObjectTree.get(parentID);
+
+    const worldID = GetWorldID(parentID);
+
+    if (currentIndex !== -1 && currentIndex < children.length)
+    {
+        children.splice(currentIndex, 1);
+        children.push(child.id);
+
+        SetDirtyDisplayList(worldID);
     }
 
     return child;
