@@ -1,9 +1,7 @@
-import { ClearWorldAndParentID, GetWorldID, UpdateNumChildren } from '../components/hierarchy';
-
+import { ClearWorldAndParentID } from '../components/hierarchy';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 
 export function RemoveChildAt <T extends IGameObject> (parent: T, index: number): IGameObject | undefined
 {
@@ -15,15 +13,9 @@ export function RemoveChildAt <T extends IGameObject> (parent: T, index: number)
 
         if (removedID)
         {
-            const worldID = GetWorldID(removedID);
-
-            SetDirtyDisplayList(worldID);
-
             ClearWorldAndParentID(removedID);
 
             //  Emit remove event?
-
-            UpdateNumChildren(parent.id);
 
             return GameObjectCache.get(removedID);
         }
