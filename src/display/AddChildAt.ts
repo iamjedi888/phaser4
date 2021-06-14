@@ -1,17 +1,36 @@
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
+import { GetWorldFromParentID } from '../components/hierarchy/GetWorldFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetParent } from './SetParent';
+import { IsValidParent } from './IsValidParent';
+import { RemoveChild } from './RemoveChild';
+import { SetParentID } from '../components/hierarchy';
+import { SetWorld } from './SetWorld';
 
-export function AddChildAt <T extends IGameObject> (parent: IGameObject, index: number, child: T): T
+export function AddChildAt <P extends IGameObject, C extends IGameObject> (parent: P, child: C, index: number = -1): C
 {
-    const children = parent.children;
-
-    if (index >= 0 && index <= children.length)
+    if (IsValidParent(parent, child))
     {
-        SetParent(parent, child);
+        const childID = child.id;
+        const parentID = parent.id;
+        const world = GetWorldFromParentID(parentID);
 
-        children.splice(index, 0, child);
+        const children = GameObjectTree.get(parentID);
 
-        child.updateWorldTransform();
+        if (index === -1)
+        {
+            index = children.length;
+        }
+
+        if (index >= 0 && index <= children.length && world)
+        {
+            RemoveChild(child.getParent(), child);
+
+            SetWorld(world, child);
+
+            SetParentID(childID, parentID);
+
+            children.splice(index, 0, childID);
+        }
     }
 
     return child;
