@@ -22,7 +22,7 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
 
         GameObjectTree.get(parentID).push(childID);
 
-        SetWorldAndParentID(childID, worldID, parentID);
+        // SetWorldAndParentID(childID, worldID, parentID);
 
         SetParentID(childID, parentID);
 
