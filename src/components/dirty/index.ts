@@ -2,7 +2,6 @@ import { AddDirtyComponent } from './AddDirtyComponent';
 import { ClearDirtyDisplayList } from './ClearDirtyDisplayList';
 import { DirtyComponent } from './DirtyComponent';
 import { GetDirtyFrame } from './GetDirtyFrame';
-import { HasDirtyAlpha } from './HasDirtyAlpha';
 import { HasDirtyBounds } from './HasDirtyBounds';
 import { HasDirtyChild } from './HasDirtyChild';
 import { HasDirtyChildCache } from './HasDirtyChildCache';
@@ -12,9 +11,7 @@ import { HasDirtyTexture } from './HasDirtyTexture';
 import { HasDirtyTextureFrame } from './HasDirtyTextureFrame';
 import { HasDirtyTransform } from './HasDirtyTransform';
 import { HasDirtyUpdate } from './HasDirtyUpdate';
-import { HasDirtyVertexColors } from './HasDirtyVertexColors';
 import { IsDirtyFrame } from './IsDirtyFrame';
-import { SetDirtyAlpha } from './SetDirtyAlpha';
 import { SetDirtyBounds } from './SetDirtyBounds';
 import { SetDirtyChild } from './SetDirtyChild';
 import { SetDirtyChildCache } from './SetDirtyChildCache';
@@ -25,14 +22,12 @@ import { SetDirtyTexture } from './SetDirtyTexture';
 import { SetDirtyTextureFrame } from './SetDirtyTextureFrame';
 import { SetDirtyTransform } from './SetDirtyTransform';
 import { SetDirtyUpdate } from './SetDirtyUpdate';
-import { SetDirtyVertexColors } from './SetDirtyVertexColors';
 
 export {
     AddDirtyComponent,
     ClearDirtyDisplayList,
     DirtyComponent,
     GetDirtyFrame,
-    HasDirtyAlpha,
     HasDirtyBounds,
     HasDirtyChild,
     HasDirtyChildCache,
@@ -42,9 +37,7 @@ export {
     HasDirtyTextureFrame,
     HasDirtyTransform,
     HasDirtyUpdate,
-    HasDirtyVertexColors,
     IsDirtyFrame,
-    SetDirtyAlpha,
     SetDirtyBounds,
     SetDirtyChild,
     SetDirtyChildCache,
@@ -54,6 +47,5 @@ export {
     SetDirtyTexture,
     SetDirtyTextureFrame,
     SetDirtyTransform,
-    SetDirtyUpdate,
-    SetDirtyVertexColors
+    SetDirtyUpdate
 };

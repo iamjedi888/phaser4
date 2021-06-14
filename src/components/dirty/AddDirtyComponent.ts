@@ -11,11 +11,9 @@ export function AddDirtyComponent (id: number): void
     DirtyComponent.update[id] = 1;
     DirtyComponent.childCache[id] = 0;
     DirtyComponent.postRender[id] = 0;
-    DirtyComponent.vertexColors[id] = 1;
     DirtyComponent.bounds[id] = 1;
     DirtyComponent.texture[id] = 0;
     DirtyComponent.textureFrame[id] = 0;
-    DirtyComponent.alpha[id] = 0;
     DirtyComponent.child[id] = 0;
     DirtyComponent.displayList[id] = 0;
 }
