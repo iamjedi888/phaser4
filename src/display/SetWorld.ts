@@ -5,10 +5,14 @@ import { GameObjectWorld } from '../GameObjectWorld';
 import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 import { addComponent } from 'bitecs';
 
 export function SetWorld <W extends IBaseWorld, C extends IGameObject> (world: W, ...children: C[]): C[]
 {
+    const worldID = world.id;
+    const worldTag = world.tag;
+
     children.forEach(child =>
     {
         // if (child.world)
@@ -17,13 +21,15 @@ export function SetWorld <W extends IBaseWorld, C extends IGameObject> (world: W
         //     Emit(child, RemovedFromWorldEvent, child, child.world);
         // }
 
-        addComponent(GameObjectWorld, world.tag, child.id);
+        addComponent(GameObjectWorld, worldTag, child.id);
 
-        HierarchyComponent.worldID[child.id] = world.id;
+        HierarchyComponent.worldID[child.id] = worldID;
 
         // Emit(world, AddedToWorldEvent, child, world);
         // Emit(child, AddedToWorldEvent, child, world);
     });
+
+    SetDirtyDisplayList(worldID);
 
     return children;
 }
