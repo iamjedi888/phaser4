@@ -4,7 +4,7 @@ import { RemoveChildAt } from './RemoveChildAt';
 
 export function RemoveChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
-    if (child.hasParent())
+    if (parent && child.hasParent(parent.id))
     {
         RemoveChildAt(parent, GetChildIndex(parent, child));
     }
