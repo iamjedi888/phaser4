@@ -154,10 +154,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return false;
         }
 
-        //  Any modification of the display list makes this world dirty ✅
-        //  Any modification of any transform for any member of this world, makes it dirty ✅
-        //  Any modification of the visibility of a child makes it dirty
-
         const id = this.id;
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
