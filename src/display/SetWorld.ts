@@ -2,6 +2,7 @@ import { AddedToWorldEvent, RemovedFromWorldEvent } from '../gameobjects/events'
 
 import { Emit } from '../events/Emit';
 import { GameObjectWorld } from '../GameObjectWorld';
+import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { addComponent } from 'bitecs';
@@ -18,7 +19,7 @@ export function SetWorld <W extends IBaseWorld, C extends IGameObject> (world: W
 
         addComponent(GameObjectWorld, world.tag, child.id);
 
-        // child.world = world;
+        HierarchyComponent.worldID[child.id] = world.id;
 
         // Emit(world, AddedToWorldEvent, child, world);
         // Emit(child, AddedToWorldEvent, child, world);
