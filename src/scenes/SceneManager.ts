@@ -9,6 +9,7 @@ import { IGameObject } from '../gameobjects/IGameObject';
 import { IScene } from './IScene';
 import { LocalMatrix2DComponent } from '../components/transform';
 import { Once } from '../events';
+import { PackQuadColorsSystem } from '../components/color/PackQuadColorsSystem';
 import { RenderStatsComponent } from './RenderStatsComponent';
 import { ResetRenderStats } from './ResetRenderStats';
 import { SceneManagerInstance } from './SceneManagerInstance';
@@ -95,6 +96,9 @@ export class SceneManager
                 }
             }
         }
+
+        //  Repack any changed vertex colors
+        PackQuadColorsSystem(GameObjectWorld);
 
         //  Update all vertices across the whole game, ready for rendering
         const verts = UpdateVertexPositionSystem(GameObjectWorld);
