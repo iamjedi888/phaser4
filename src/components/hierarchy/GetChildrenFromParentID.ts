@@ -2,7 +2,7 @@ import { GameObjectCache } from '../../gameobjects/GameObjectCache';
 import { GameObjectTree } from '../../gameobjects/GameObjectTree';
 import { IGameObject } from '../../gameobjects/IGameObject';
 
-export function GetChildren (id: number): IGameObject[]
+export function GetChildrenFromParentID (id: number): IGameObject[]
 {
     const out: IGameObject[] = [];
 

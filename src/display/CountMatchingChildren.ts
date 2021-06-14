@@ -1,9 +1,9 @@
-import { GetChildren } from '../components/hierarchy';
+import { GetChildrenFromParentID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function CountMatchingChildren <T extends IGameObject> (parent: T, property: string | symbol, value?: never): number
 {
-    const children = GetChildren(parent.id);
+    const children = GetChildrenFromParentID(parent.id);
 
     let total = 0;
 
