@@ -11,13 +11,13 @@ import { SetWorld } from './SetWorld';
 
 export function AddChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
-    const childID = child.id;
-    const parentID = parent.id;
-    const worldID = GetWorldID(parentID);
-    const world = GameObjectCache.get(worldID) as IBaseWorld;
-
     if (IsValidParent(parent, child))
     {
+        const childID = child.id;
+        const parentID = parent.id;
+        const worldID = GetWorldID(parentID);
+        const world = GameObjectCache.get(worldID) as IBaseWorld;
+
         RemoveChild(child.getParent(), child);
 
         GameObjectTree.get(parentID).push(childID);
