@@ -1,4 +1,4 @@
-import { AddHierarchyComponent, GetChildren, GetNumChildren, GetParentGameObject, GetWorldID, HierarchyComponent } from '../components/hierarchy';
+import { AddHierarchyComponent, GetChildrenFromParentID, GetNumChildren, GetParentGameObject, GetWorldID, HierarchyComponent } from '../components/hierarchy';
 import { AddPermissionsComponent, PermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
@@ -159,7 +159,7 @@ export class GameObject implements IGameObject
 
     getChildren (): IGameObject[]
     {
-        return GetChildren(this.id);
+        return GetChildrenFromParentID(this.id);
     }
 
     getNumChildren (): number
