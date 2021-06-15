@@ -12,7 +12,6 @@ import { CountMatchingChildren } from './CountMatchingChildren';
 import { DepthFirstSearch } from './DepthFirstSearch';
 import { DepthFirstSearchRecursive } from './DepthFirstSearchRecursive';
 import { DestroyChildren } from './DestroyChildren';
-import { FindChildByName } from './FindChildByName';
 import { FindChildrenByName } from './FindChildrenByName';
 import { GetAllChildren } from './GetAllChildren';
 import { GetBounds } from './GetBounds';
@@ -21,6 +20,7 @@ import { GetChildIndex } from './GetChildIndex';
 import { GetChildren } from './GetChildren';
 import { GetClosestChild } from './GetClosestChild';
 import { GetFirstChild } from './GetFirstChild';
+import { GetFirstChildByName } from './GetFirstChildByName';
 import { GetFurthestChild } from './GetFurthestChild';
 import { GetLastChild } from './GetLastChild';
 import { GetParents } from './GetParents';
@@ -69,7 +69,6 @@ export {
     DepthFirstSearch,
     DepthFirstSearchRecursive,
     DestroyChildren,
-    FindChildByName,
     FindChildrenByName,
     GetAllChildren,
     GetBounds,
@@ -78,6 +77,7 @@ export {
     GetChildren,
     GetClosestChild,
     GetFirstChild,
+    GetFirstChildByName,
     GetFurthestChild,
     GetLastChild,
     GetParents,

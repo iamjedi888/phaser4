@@ -1,9 +1,9 @@
 import { DepthFirstSearch } from './DepthFirstSearch';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-//  Searhes for the first child matching the given string and returns it
+//  Searches for the first child name matching the given string and return it
 
-export function FindChildByName <P extends IGameObject> (parent: P, searchString: string): IGameObject | undefined
+export function GetFirstChildByName <P extends IGameObject> (parent: P, searchString: string): IGameObject | undefined
 {
     const children = DepthFirstSearch(parent);
     const regex = RegExp(searchString);
