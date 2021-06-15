@@ -1,23 +1,23 @@
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
+import { GetSiblingIDs, GetWorldID } from '../components/hierarchy';
+
 import { GetChildIndex } from './GetChildIndex';
-import { GetWorldID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 
-export function SendChildToBack <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
+export function SendChildToBack <T extends IGameObject> (child: T): T
 {
-    const currentIndex = GetChildIndex(parent, child);
+    const childID = child.id;
 
-    const parentID = parent.id;
+    const currentIndex = GetChildIndex(child);
 
-    const children = GameObjectTree.get(parentID);
+    const children = GetSiblingIDs(childID);
 
-    const worldID = GetWorldID(parentID);
+    const worldID = GetWorldID(childID);
 
-    if (currentIndex !== -1 && currentIndex < children.length)
+    if (currentIndex > 0)
     {
         children.splice(currentIndex, 1);
-        children.unshift(child.id);
+        children.unshift(childID);
 
         SetDirtyDisplayList(worldID);
     }

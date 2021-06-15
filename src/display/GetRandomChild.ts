@@ -1,15 +1,16 @@
+import { GameObjectCache, GameObjectTree } from '../gameobjects';
+
+import { GetRandom } from '../utils/array';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function GetRandomChild (parent: IGameObject, startIndex: number = 0, length?: number): IGameObject
+export function GetRandomChild <P extends IGameObject> (parent: P, startIndex: number = 0, length?: number): IGameObject
 {
-    const children = parent.children;
+    const children = GameObjectTree.get(parent.id);
 
-    if (!length)
+    if (children.length > 0)
     {
-        length = children.length;
+        const randomIndex = GetRandom(children, startIndex, length);
+
+        return GameObjectCache.get(children[randomIndex]);
     }
-
-    const randomIndex = startIndex + Math.floor(Math.random() * length);
-
-    return children[randomIndex];
 }

@@ -1,14 +1,18 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function GetParents (child: IGameObject): IGameObject[]
+export function GetParents <T extends IGameObject> (child: T): T[]
 {
-    const parents: IGameObject[] = [];
+    const parents: T[] = [];
 
-    while (child.parent)
+    let currentParent: T;
+
+    while (child.hasParent())
     {
-        parents.push(child.parent);
+        currentParent = child.getParent() as T;
 
-        child = child.parent;
+        parents.push(currentParent);
+
+        child = currentParent;
     }
 
     return parents;

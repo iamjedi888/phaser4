@@ -1,10 +1,16 @@
+import { GetChildrenFromParentID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function GetLastChild (parent: IGameObject, property: string | symbol, value?: never): IGameObject | undefined
+export function GetLastChild <P extends IGameObject> (parent: P, property?: string | symbol, value?: never): IGameObject | undefined
 {
-    const children = parent.children;
+    const children = GetChildrenFromParentID(parent.id);
 
-    for (let i = children.length - 1; i >= 0; i--)
+    if (!property)
+    {
+        return children.pop();
+    }
+
+    for (let i = 0; i < children.length; i++)
     {
         const child = children[i];
 

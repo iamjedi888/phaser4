@@ -6,7 +6,7 @@ export function RemoveChild <P extends IGameObject, C extends IGameObject> (pare
 {
     if (parent && child.hasParent(parent.id))
     {
-        RemoveChildAt(parent, GetChildIndex(parent, child));
+        RemoveChildAt(parent, GetChildIndex(child));
     }
 
     return child;

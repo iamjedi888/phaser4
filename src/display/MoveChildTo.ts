@@ -1,14 +1,20 @@
-import { DIRTY_CONST } from '../gameobjects/DIRTY_CONST';
+import { GetSiblingIDs, GetWorldID } from '../components/hierarchy';
+
 import { GetChildIndex } from './GetChildIndex';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 
-export function MoveChildTo <T extends IGameObject> (parent: IGameObject, child: T, index: number): T
+export function MoveChildTo <T extends IGameObject> (child: T, index: number): T
 {
-    const parentChildren = parent.children;
+    const childID = child.id;
 
-    const currentIndex = GetChildIndex(parent, child);
+    const currentIndex = GetChildIndex(child);
 
-    if (currentIndex === -1 || index < 0 || index >= parentChildren.length)
+    const children = GetSiblingIDs(childID);
+
+    const worldID = GetWorldID(childID);
+
+    if (currentIndex === -1 || index < 0 || index >= children.length)
     {
         throw new Error('Index out of bounds');
     }
@@ -16,12 +22,12 @@ export function MoveChildTo <T extends IGameObject> (parent: IGameObject, child:
     if (currentIndex !== index)
     {
         //  Remove
-        parentChildren.splice(currentIndex, 1);
+        children.splice(currentIndex, 1);
 
         //  Add in new location
-        parentChildren.splice(index, 0, child);
+        children.splice(index, 0, childID);
 
-        child.setDirty(DIRTY_CONST.TRANSFORM);
+        SetDirtyDisplayList(worldID);
     }
 
     return child;

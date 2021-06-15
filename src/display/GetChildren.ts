@@ -1,3 +1,4 @@
+import { GetChildrenFromParentID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 /**
@@ -14,9 +15,9 @@ import { IGameObject } from '../gameobjects/IGameObject';
  * @param {never} [value]
  * @returns {IGameObject[]}
  */
-export function GetChildren (parent: IGameObject, property?: string | symbol, value?: never): IGameObject[]
+export function GetChildren <P extends IGameObject> (parent: P, property?: string | symbol, value?: never): IGameObject[]
 {
-    // const children = GetChildren()
+    const children = GetChildrenFromParentID(parent.id);
 
     //  Fast path out of here
     if (!property)

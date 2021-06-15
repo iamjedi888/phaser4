@@ -1,24 +1,31 @@
+import { GameObjectWorld } from '../GameObjectWorld';
+import { GetChildrenFromParentID } from '../components/hierarchy';
 import { GetVec2Distance } from '../math/vec2/GetVec2Distance';
+import { IContainer } from '../gameobjects/container/IContainer';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { Vec2 } from '../math/vec2/Vec2';
+import { IVec2Like } from '../math/vec2/IVec2Like';
+import { Transform2DComponent } from '../components/transform';
+import { hasComponent } from 'bitecs';
 
-export function GetClosestChild (parent: IGameObject, point: Vec2): IGameObject
+export function GetClosestChild <P extends IGameObject> (parent: P, point: IVec2Like): IContainer
 {
-    const children = parent.children;
+    const children = GetChildrenFromParentID(parent.id);
 
-    let closest: IGameObject = null;
+    let closest: IContainer = null;
     let distance: number = 0;
 
     children.forEach(child =>
     {
-        const childDistance = GetVec2Distance(point, child.getPosition());
-
-        if (!closest || childDistance < distance)
+        if (hasComponent(GameObjectWorld, Transform2DComponent, child.id))
         {
-            closest = child;
-            distance = childDistance;
-        }
+            const childDistance = GetVec2Distance(point, (child as IContainer).position);
 
+            if (!closest || childDistance < distance)
+            {
+                closest = child as IContainer;
+                distance = childDistance;
+            }
+        }
     });
 
     return closest;
