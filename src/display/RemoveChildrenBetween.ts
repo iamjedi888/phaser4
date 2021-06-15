@@ -1,8 +1,9 @@
+import { GetChildrenFromParentID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function RemoveChildrenBetween (parent: IGameObject, beginIndex: number = 0, endIndex?: number): IGameObject[]
+export function RemoveChildrenBetween <P extends IGameObject> (parent: P, beginIndex: number = 0, endIndex?: number): IGameObject[]
 {
-    const children = parent.children;
+    const children = GetChildrenFromParentID(parent.id);
 
     if (endIndex === undefined)
     {

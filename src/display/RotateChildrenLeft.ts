@@ -1,20 +1,19 @@
-import { DIRTY_CONST } from '../gameobjects/DIRTY_CONST';
+import { GameObjectCache } from '../gameobjects';
+import { GetChildIDsFromParent } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function RotateChildrenLeft (parent: IGameObject, total: number = 1): IGameObject
+export function RotateChildrenLeft <P extends IGameObject> (parent: P, total: number = 1): IGameObject | undefined
 {
-    const parentChildren = parent.children;
+    const parentChildren = GetChildIDsFromParent(parent);
 
-    let child = null;
+    let child;
 
     for (let i: number = 0; i < total; i++)
     {
         child = parentChildren.shift();
 
         parentChildren.push(child);
-
-        child.setDirty(DIRTY_CONST.TRANSFORM);
     }
 
-    return child;
+    return GameObjectCache.get(child);
 }

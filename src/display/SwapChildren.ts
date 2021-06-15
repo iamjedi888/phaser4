@@ -1,19 +1,23 @@
+import { GetParentID, GetSiblingIDs } from '../components/hierarchy';
+
 import { GetChildIndex } from './GetChildIndex';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function SwapChildren (child1: IGameObject, child2: IGameObject): void
+export function SwapChildren <C extends IGameObject, T extends IGameObject> (child1: C, child2: T): void
 {
-    if (child1.parent === child2.parent)
+    const child1ID = child1.id;
+    const child2ID = child2.id;
+
+    const parentID = GetParentID(child1ID);
+
+    if (child2.hasParent(parentID))
     {
-        const children = child1.parent.children;
+        const children = GetSiblingIDs(child1ID);
 
-        const index1 = GetChildIndex(child1.parent, child1);
-        const index2 = GetChildIndex(child2.parent, child2);
+        const index1 = GetChildIndex(child1);
+        const index2 = GetChildIndex(child2);
 
-        if (index1 !== index2)
-        {
-            children[index1] = child2;
-            children[index2] = child1;
-        }
+        children[index1] = child2ID;
+        children[index2] = child1ID;
     }
 }

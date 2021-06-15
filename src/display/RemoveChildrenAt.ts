@@ -1,7 +1,7 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 import { RemoveChildAt } from './RemoveChildAt';
 
-export function RemoveChildrenAt (parent: IGameObject, ...index: number[]): IGameObject[]
+export function RemoveChildrenAt <P extends IGameObject> (parent: P, ...index: number[]): IGameObject[]
 {
     const removed: IGameObject[] = [];
 

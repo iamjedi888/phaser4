@@ -1,20 +1,12 @@
-import { DIRTY_CONST } from '../gameobjects/DIRTY_CONST';
+import { GetChildIDsFromParent } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { Shuffle } from '../utils/array';
 
-export function ShuffleChildren (parent: IGameObject): IGameObject[]
+export function ShuffleChildren <P extends IGameObject> (parent: P): IGameObject[]
 {
-    const children = parent.children;
+    const children = GetChildIDsFromParent(parent);
 
-    for (let i = children.length - 1; i > 0; i--)
-    {
-        const j = Math.floor(Math.random() * (i + 1));
-        const temp = children[i];
+    Shuffle(children);
 
-        children[i] = children[j];
-        children[j] = temp;
-
-        temp.setDirty(DIRTY_CONST.TRANSFORM);
-    }
-
-    return children;
+    return parent.getChildren();
 }
