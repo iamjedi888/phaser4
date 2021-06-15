@@ -1,38 +1,37 @@
-import { DepthFirstSearchRecursiveNested } from './DepthFirstSearchRecursiveNested';
+import { DepthFirstSearch } from './DepthFirstSearch';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SearchEntry } from './SearchEntryType';
 
 function GetInfo (entry: IGameObject): string
 {
-    const legend = (entry.numChildren > 0) ? 'Parent' :  'Child';
+    const legend = (entry.getNumChildren() > 0) ? 'Parent' :  'Child';
 
-    return `${legend} [ type=${typeof entry}, name=${entry.name} ]`;
+    return `${legend} [ type=${typeof entry}, id=${entry.id} name=${entry.name} ]`;
 }
 
-function LogChildren (entry: SearchEntry): void
+function LogChildren (entry: IGameObject): void
 {
-    console.group(GetInfo(entry.node));
+    console.group(GetInfo(entry));
 
-    entry.children.forEach(child =>
+    entry.getChildren().forEach(child =>
     {
-        if (child.children.length > 0)
+        if (child.getNumChildren() > 0)
         {
             LogChildren(child);
         }
         else
         {
-            console.log(GetInfo(child.node));
+            console.log(GetInfo(child));
         }
     });
 
     console.groupEnd();
 }
 
-export function ConsoleTreeChildren (parent: IGameObject): void
+export function ConsoleTreeChildren <P extends IGameObject> (parent: P): void
 {
-    const entries = DepthFirstSearchRecursiveNested(parent);
+    const entries = DepthFirstSearch(parent);
 
-    if (parent.world === parent)
+    if (parent.hasOwnProperty('tag'))
     {
         console.group('World');
     }
@@ -43,13 +42,13 @@ export function ConsoleTreeChildren (parent: IGameObject): void
 
     entries.forEach(entry =>
     {
-        if (entry.children.length)
+        if (entry.getNumChildren())
         {
             LogChildren(entry);
         }
         else
         {
-            console.log(GetInfo(entry.node));
+            console.log(GetInfo(entry));
         }
     });
 
