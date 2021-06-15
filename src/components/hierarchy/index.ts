@@ -1,5 +1,6 @@
 import { AddHierarchyComponent } from './AddHierarchyComponent';
 import { ClearWorldAndParentID } from './ClearWorldAndParentID';
+import { GetChildIDsFromParent } from './GetChildIDsFromParent';
 import { GetChildrenFromParentID } from './GetChildrenFromParentID';
 import { GetDepth } from './GetDepth';
 import { GetNumChildren } from './GetNumChildren';
@@ -20,6 +21,7 @@ import { UpdateNumChildren } from './UpdateNumChildren';
 export {
     AddHierarchyComponent,
     ClearWorldAndParentID,
+    GetChildIDsFromParent,
     GetChildrenFromParentID,
     GetDepth,
     GetNumChildren,
