@@ -12,6 +12,7 @@ import { CountMatchingChildren } from './CountMatchingChildren';
 import { DepthFirstSearch } from './DepthFirstSearch';
 import { DepthFirstSearchRecursive } from './DepthFirstSearchRecursive';
 import { DestroyChildren } from './DestroyChildren';
+import { DisplayDebugTools } from './DisplayDebugTools';
 import { FindChildrenByName } from './FindChildrenByName';
 import { GetAllChildren } from './GetAllChildren';
 import { GetBounds } from './GetBounds';
@@ -69,6 +70,7 @@ export {
     DepthFirstSearch,
     DepthFirstSearchRecursive,
     DestroyChildren,
+    DisplayDebugTools,
     FindChildrenByName,
     GetAllChildren,
     GetBounds,
