@@ -1,27 +1,16 @@
-import { DepthFirstSearch } from './DepthFirstSearch';
+import { AddChildAt } from './AddChildAt';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { RemoveChild } from './RemoveChild';
-import { SetWorld } from './SetWorld';
 
-export function SetParent (parent: IGameObject, ...children: IGameObject[]): IGameObject[]
+//  Adds all of the children to the given parent
+//  If already a child of the parent, it is skipped
+//  If already child of another parent, it is removed from it first
+
+export function SetParent <P extends IGameObject, C extends IGameObject> (parent: P, ...children: C[]): C[]
 {
     children.forEach(child =>
     {
-        if (child.parent)
-        {
-            RemoveChild(child.parent, child);
-        }
-
-        child.parent = parent;
+        AddChildAt(parent, child);
     });
-
-    const parentWorld = parent.world;
-
-    if (parentWorld)
-    {
-        //  Full list of all children, including sub-children
-        SetWorld(parentWorld, ...DepthFirstSearch(parent));
-    }
 
     return children;
 }

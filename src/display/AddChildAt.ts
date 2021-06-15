@@ -1,9 +1,9 @@
+import { GetWorldFromParentID, SetParentID } from '../components/hierarchy';
+
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
-import { GetWorldFromParentID } from '../components/hierarchy/GetWorldFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
-import { SetParentID } from '../components/hierarchy';
 import { SetWorld } from './SetWorld';
 
 export function AddChildAt <P extends IGameObject, C extends IGameObject> (parent: P, child: C, index: number = -1): C

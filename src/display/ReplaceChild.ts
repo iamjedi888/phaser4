@@ -11,16 +11,17 @@ import { RemoveChild } from './RemoveChild';
 //  If both children have the same parent, target is removed from the parent and source is moved to the position target previously held.
 //  Target is returned.
 
-export function ReplaceChild (target: IGameObject, source: IGameObject): IGameObject
+export function ReplaceChild <T extends IGameObject, S extends IGameObject> (target: T, source: S): T
 {
-    const targetParent = target.parent;
-    const sourceParent = source.parent;
-    const targetIndex = GetChildIndex(targetParent, target);
+    const targetParent = target.getParent();
+    const sourceParent = source.getParent();
+
+    const targetIndex = GetChildIndex(target);
 
     if (targetParent === sourceParent)
     {
         //  Remove target from parent and move source to targets position
-        MoveChildTo(targetParent, source, targetIndex);
+        MoveChildTo(source, targetIndex);
         RemoveChild(targetParent, target);
     }
     else
@@ -29,7 +30,7 @@ export function ReplaceChild (target: IGameObject, source: IGameObject): IGameOb
         RemoveChild(targetParent, target);
         RemoveChild(sourceParent, source);
 
-        AddChildAt(targetParent, targetIndex, source);
+        AddChildAt(targetParent, source, targetIndex);
     }
 
     return target;

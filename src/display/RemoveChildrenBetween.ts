@@ -1,9 +1,11 @@
-import { GetChildrenFromParentID } from '../components/hierarchy';
+import { GameObjectCache, GameObjectTree } from '../gameobjects';
+
+import { ClearWorldAndParentID } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function RemoveChildrenBetween <P extends IGameObject> (parent: P, beginIndex: number = 0, endIndex?: number): IGameObject[]
 {
-    const children = GetChildrenFromParentID(parent.id);
+    const children = GameObjectTree.get(parent.id);
 
     if (endIndex === undefined)
     {
@@ -16,12 +18,12 @@ export function RemoveChildrenBetween <P extends IGameObject> (parent: P, beginI
     {
         const removed = children.splice(beginIndex, range);
 
-        removed.forEach(child =>
+        removed.forEach(childID =>
         {
-            child.parent = null;
+            ClearWorldAndParentID(childID);
         });
 
-        return removed;
+        return removed.map(id => GameObjectCache.get(id));
     }
     else
     {
