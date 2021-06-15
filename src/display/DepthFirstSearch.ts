@@ -1,3 +1,5 @@
+import { DepthFirstSearchFromParentID } from '../components/hierarchy';
+import { GameObjectCache } from '../gameobjects';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 //  Returns all children of the parent, no matter what depth they go to, using an iterative search.
@@ -5,7 +7,14 @@ import { IGameObject } from '../gameobjects/IGameObject';
 
 export function DepthFirstSearch <P extends IGameObject> (parent: P): IGameObject[]
 {
-    const stack: IGameObject[] = [ parent ];
+    const children = DepthFirstSearchFromParentID(parent.id);
+
+    const output: IGameObject[] = children.map(id => GameObjectCache.get(id));
+
+    return output;
+
+    /*
+    let stack: IGameObject[] = [ parent ];
     const output: IGameObject[] = [];
 
     while (stack.length > 0)
@@ -14,19 +23,15 @@ export function DepthFirstSearch <P extends IGameObject> (parent: P): IGameObjec
 
         output.push(node);
 
-        const numChildren = node.getNumChildren();
-
-        if (numChildren > 0)
+        if (node.getNumChildren() > 0)
         {
-            for (let i = numChildren - 1; i >= 0; i--)
-            {
-                stack.unshift(node.children[i]);
-            }
+            stack = stack.concat(node.getChildren());
         }
     }
 
     //  Remove the parent from the results
     output.shift();
 
-    return output;
+    return output.reverse();
+    */
 }

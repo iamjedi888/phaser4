@@ -3,15 +3,13 @@ import { IGameObject } from '../gameobjects/IGameObject';
 //  Returns all children of the parent, no matter what depth they go to, using a recursive search.
 //  Does NOT include the parent in the results.
 
-export function DepthFirstSearchRecursive (parent: IGameObject, output: IGameObject[] = []): IGameObject[]
+export function DepthFirstSearchRecursive <P extends IGameObject> (parent: P, output: IGameObject[] = []): IGameObject[]
 {
-    for (let i = 0; i < parent.numChildren; i++)
+    for (const child of parent.getChildren())
     {
-        const child = parent.children[i];
-
         output.push(child);
 
-        if (child.numChildren > 0)
+        if (child.getNumChildren() > 0)
         {
             DepthFirstSearchRecursive(child, output);
         }
