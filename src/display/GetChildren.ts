@@ -22,20 +22,14 @@ export function GetChildren <P extends IGameObject> (parent: P, property?: strin
     //  Fast path out of here
     if (!property)
     {
+        //  Or return children ?
         return [ ...children ];
     }
 
-    const results: IGameObject[] = [];
-
-    children.forEach(child =>
+    return children.filter(child =>
     {
         const descriptor = Object.getOwnPropertyDescriptor(child, property);
 
-        if (descriptor && (value === undefined || value === descriptor.value))
-        {
-            results.push(child);
-        }
+        return (descriptor && (value === undefined || value === descriptor.value));
     });
-
-    return results;
 }

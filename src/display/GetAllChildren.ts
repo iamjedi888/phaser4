@@ -1,7 +1,7 @@
 import { DepthFirstSearch } from './DepthFirstSearch';
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function GetAllChildren (parent: IGameObject, property?: string | symbol, value?: never): IGameObject[]
+export function GetAllChildren <P extends IGameObject> (parent: P, property?: string | symbol, value?: never): IGameObject[]
 {
     const children = DepthFirstSearch(parent);
 
@@ -11,17 +11,10 @@ export function GetAllChildren (parent: IGameObject, property?: string | symbol,
         return children;
     }
 
-    const results: IGameObject[] = [];
-
-    children.forEach(child =>
+    return children.filter(child =>
     {
         const descriptor = Object.getOwnPropertyDescriptor(child, property);
 
-        if (descriptor && (value === undefined || value === descriptor.value))
-        {
-            results.push(child);
-        }
+        return (descriptor && (value === undefined || value === descriptor.value));
     });
-
-    return results;
 }

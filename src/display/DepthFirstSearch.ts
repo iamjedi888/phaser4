@@ -9,9 +9,7 @@ export function DepthFirstSearch <P extends IGameObject> (parent: P): IGameObjec
 {
     const children = DepthFirstSearchFromParentID(parent.id);
 
-    const output: IGameObject[] = children.map(id => GameObjectCache.get(id));
-
-    return output;
+    return children.map(id => GameObjectCache.get(id));
 
     /*
     let stack: IGameObject[] = [ parent ];
