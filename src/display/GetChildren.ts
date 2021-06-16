@@ -28,8 +28,6 @@ export function GetChildren <P extends IGameObject> (parent: P, property?: strin
 
     return children.filter(child =>
     {
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        return (descriptor && (value === undefined || value === descriptor.value));
+        return (property in child && (value === undefined || child[property] === value));
     });
 }

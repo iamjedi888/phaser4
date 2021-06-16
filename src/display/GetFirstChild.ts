@@ -14,9 +14,7 @@ export function GetFirstChild <P extends IGameObject> (parent: P, property?: str
     {
         const child = children[i];
 
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        if (descriptor && (value === undefined || value === descriptor.value))
+        if (property in child && (value === undefined || child[property] === value))
         {
             return child;
         }

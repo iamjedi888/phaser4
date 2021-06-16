@@ -8,11 +8,9 @@ export function SetChildrenValue <P extends IGameObject> (parent: P, property: s
 
     children.forEach(child =>
     {
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        if (descriptor)
+        if (property in child)
         {
-            descriptor.set(value);
+            child[property] = value;
         }
     });
 

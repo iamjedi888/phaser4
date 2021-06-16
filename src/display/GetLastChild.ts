@@ -10,13 +10,11 @@ export function GetLastChild <P extends IGameObject> (parent: P, property?: stri
         return children.pop();
     }
 
-    for (let i = 0; i < children.length; i++)
+    for (let i = children.length; i >= 0; i--)
     {
         const child = children[i];
 
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        if (descriptor && (value === undefined || value === descriptor.value))
+        if (property in child && (value === undefined || child[property] === value))
         {
             return child;
         }

@@ -9,9 +9,7 @@ export function CountMatchingChildren <T extends IGameObject> (parent: T, proper
 
     children.forEach(child =>
     {
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        if (descriptor && (value === undefined || value === descriptor.value))
+        if (property in child && (value === undefined || child[property] === value))
         {
             total++;
         }

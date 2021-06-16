@@ -4,11 +4,9 @@ export function SetValue <T extends IGameObject> (property: string | symbol, val
 {
     children.forEach(child =>
     {
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        if (descriptor)
+        if (property in child)
         {
-            descriptor.set(value);
+            child[property] = value;
         }
     });
 

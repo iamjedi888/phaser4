@@ -13,8 +13,6 @@ export function GetAllChildren <P extends IGameObject> (parent: P, property?: st
 
     return children.filter(child =>
     {
-        const descriptor = Object.getOwnPropertyDescriptor(child, property);
-
-        return (descriptor && (value === undefined || value === descriptor.value));
+        return (property in child && (value === undefined || child[property] === value));
     });
 }
