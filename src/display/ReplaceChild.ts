@@ -3,6 +3,7 @@ import { GetChildIndex } from './GetChildIndex';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { MoveChildTo } from './MoveChildTo';
 import { RemoveChild } from './RemoveChild';
+import { SetDirtyWorldDisplayList } from '../components/dirty';
 
 //  Replaces the `target` child with the `source` child.
 //  Both children are removed from their parents.
@@ -32,6 +33,8 @@ export function ReplaceChild <T extends IGameObject, S extends IGameObject> (tar
 
         AddChildAt(targetParent, source, targetIndex);
     }
+
+    SetDirtyWorldDisplayList(target.id);
 
     return target;
 }

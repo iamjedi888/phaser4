@@ -10,26 +10,4 @@ export function DepthFirstSearch <P extends IGameObject> (parent: P): IGameObjec
     const children = DepthFirstSearchFromParentID(parent.id);
 
     return children.map(id => GameObjectCache.get(id));
-
-    /*
-    let stack: IGameObject[] = [ parent ];
-    const output: IGameObject[] = [];
-
-    while (stack.length > 0)
-    {
-        const node = stack.shift();
-
-        output.push(node);
-
-        if (node.getNumChildren() > 0)
-        {
-            stack = stack.concat(node.getChildren());
-        }
-    }
-
-    //  Remove the parent from the results
-    output.shift();
-
-    return output.reverse();
-    */
 }

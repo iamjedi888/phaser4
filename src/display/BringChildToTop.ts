@@ -1,8 +1,7 @@
-import { GetSiblingIDs, GetWorldID } from '../components/hierarchy';
-
 import { GetChildIndex } from './GetChildIndex';
+import { GetSiblingIDs } from '../components/hierarchy';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
+import { SetDirtyWorldDisplayList } from '../components/dirty';
 
 export function BringChildToTop <T extends IGameObject> (child: T): T
 {
@@ -12,14 +11,12 @@ export function BringChildToTop <T extends IGameObject> (child: T): T
 
     const children = GetSiblingIDs(childID);
 
-    const worldID = GetWorldID(childID);
-
     if (currentIndex !== -1 && currentIndex < children.length)
     {
         children.splice(currentIndex, 1);
         children.push(childID);
 
-        SetDirtyDisplayList(worldID);
+        SetDirtyWorldDisplayList(childID);
     }
 
     return child;
