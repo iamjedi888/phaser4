@@ -169,7 +169,7 @@ export class GameObject implements IGameObject
 
     toString (): string
     {
-        return `${this.type} id="${this.id}"`;
+        return `${this.type} id="${this.id}" name="${this.name}"`;
     }
 
     destroy <P extends IGameObject> (reparentChildren?: P): void
