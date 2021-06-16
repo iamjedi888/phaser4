@@ -22,6 +22,7 @@ import { SetDirtyTexture } from './SetDirtyTexture';
 import { SetDirtyTextureFrame } from './SetDirtyTextureFrame';
 import { SetDirtyTransform } from './SetDirtyTransform';
 import { SetDirtyUpdate } from './SetDirtyUpdate';
+import { SetDirtyWorldDisplayList } from './SetDirtyWorldDisplayList';
 
 export {
     AddDirtyComponent,
@@ -47,5 +48,6 @@ export {
     SetDirtyTexture,
     SetDirtyTextureFrame,
     SetDirtyTransform,
-    SetDirtyUpdate
+    SetDirtyUpdate,
+    SetDirtyWorldDisplayList
 };
