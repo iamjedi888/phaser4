@@ -116,6 +116,25 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     addHelp('Textures()', 'List all of the textures loaded into the Texture Manager');
 
+    top['SaveList'] = (name: string) =>
+    {
+        const entries = DepthFirstSearch(world);
+
+        console.log(entries);
+
+        //  TODO
+    };
+
+    addHelp('SaveList(name)', 'Saves the Display List to Local Storage');
+
+    top['LoadList'] = (name: string) =>
+    {
+        //  TODO
+    };
+
+    addHelp('LoadList(name)', 'Loads the Display List from Local Storage');
+
+
     addHelp('');
 
     //  -----------------------
