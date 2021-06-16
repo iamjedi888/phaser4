@@ -124,140 +124,140 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     top['AddChild'] = (parent: IGameObject, child: IGameObject) =>
     {
-        AddChild(parent, child);
+        return AddChild(parent, child);
     };
 
     addHelp('AddChild(parent, child)', 'Add the child to the parent');
 
     top['AddChildAt'] = (parent: IGameObject, child: IGameObject, index: number = 0) =>
     {
-        AddChildAt(parent, child, index);
+        return AddChildAt(parent, child, index);
     };
 
     addHelp('AddChildAt(parent, child, index?)', 'Add the child to the parent at the given index');
 
     top['AddChildren'] = (parent: IGameObject = world, ...children: IGameObject[]) =>
     {
-        AddChildren(parent, ...children);
+        return AddChildren(parent, ...children);
     };
 
     addHelp('AddChildren(parent, ...children)', 'Add all children to the parent');
 
     top['BringChildToTop'] = (child: IGameObject) =>
     {
-        BringChildToTop(child);
+        return BringChildToTop(child);
     };
 
     addHelp('BringChildToTop(child)', 'Moves the child to the top of its parents display list');
 
     top['CountMatchingChildren'] = (parent: IGameObject, property: string | symbol, value?: never) =>
     {
-        CountMatchingChildren(parent, property, value);
+        return CountMatchingChildren(parent, property, value);
     };
 
     addHelp('CountMatchingChildren(parent, property, value?)', 'How many children match the property and value');
 
     top['DepthFirstSearch'] = (parent: IGameObject = world) =>
     {
-        DepthFirstSearch(parent);
+        return DepthFirstSearch(parent);
     };
 
     addHelp('DepthFirstSearch(parent?)', 'Return all children from a DFS of the parent');
 
     top['DepthFirstSearchRecursive'] = (parent: IGameObject = world) =>
     {
-        DepthFirstSearchRecursive(parent);
+        return DepthFirstSearchRecursive(parent);
     };
 
     addHelp('DepthFirstSearchRecursive(parent?)', 'Return all children from a recursive DFS of the parent');
 
     top['DestroyChildren'] = (parent: IGameObject = world, beginIndex: number = 0, endIndex?: number) =>
     {
-        DestroyChildren(parent, beginIndex, endIndex);
+        return DestroyChildren(parent, beginIndex, endIndex);
     };
 
     addHelp('DestroyChildren(parent?, beginIndex?, endIndex?)', 'Destroy all children optionally between the indexes');
 
     top['FindChildrenByName'] = (parent: IGameObject, searchString: string) =>
     {
-        FindChildrenByName(parent, searchString);
+        return FindChildrenByName(parent, searchString);
     };
 
     addHelp('FindChildrenByName(parent, searchString)', 'Return all children with a name matching the string or regexp');
 
     top['GetAllChildren'] = (parent: IGameObject, property?: string | symbol, value?: never) =>
     {
-        GetAllChildren(parent, property, value);
+        return GetAllChildren(parent, property, value);
     };
 
     addHelp('GetAllChildren(parent, property?, value?)', 'Return all children of the parent in a deep scan');
 
     top['GetChildAt'] = (parent: IGameObject, index: number) =>
     {
-        GetChildAt(parent, index);
+        return GetChildAt(parent, index);
     };
 
     addHelp('GetChildAt(parent, index)', 'Return the child at the given index');
 
     top['GetChildIndex'] = (child: IGameObject) =>
     {
-        GetChildIndex(child);
+        return GetChildIndex(child);
     };
 
     addHelp('GetChildIndex(child)', 'Get the index of the child within the parent display list');
 
     top['GetChildren'] = (parent: IGameObject, property?: string | symbol, value?: never) =>
     {
-        GetChildren(parent, property, value);
+        return GetChildren(parent, property, value);
     };
 
     addHelp('GetChildren(parent, property?, value?)', 'Return all direct children of the parent');
 
     top['GetClosestChild'] = (parent: IGameObject, point: IVec2Like) =>
     {
-        GetClosestChild(parent, point);
+        return GetClosestChild(parent, point);
     };
 
     addHelp('GetClosestChild(parent, IVec2Like point)', 'Return the child closest to the given vector point');
 
     top['GetFirstChild'] = (parent: IGameObject, property?: string | symbol, value?: never) =>
     {
-        GetFirstChild(parent, property, value);
+        return GetFirstChild(parent, property, value);
     };
 
     addHelp('GetFirstChild(parent, property?, value?)', 'Return the first child, optionally matching the given property and value');
 
     top['GetFirstChildByName'] = (parent: IGameObject, searchString: string) =>
     {
-        GetFirstChildByName(parent, searchString);
+        return GetFirstChildByName(parent, searchString);
     };
 
     addHelp('GetFirstChildByName(parent, searchString)', 'Return the first child matching the string or regexp');
 
     top['GetFurthestChild'] = (parent: IGameObject, point: IVec2Like) =>
     {
-        GetFurthestChild(parent, point);
+        return GetFurthestChild(parent, point);
     };
 
     addHelp('GetFurthestChild(parent, IVec2Like point)', 'Return the child furthest away from the given vector point');
 
     top['GetLastChild'] = (parent: IGameObject, property?: string | symbol, value?: never) =>
     {
-        GetLastChild(parent, property, value);
+        return GetLastChild(parent, property, value);
     };
 
     addHelp('GetLastChild(parent, property?, value?)', 'Return the last child, optionally matching the given property and value');
 
     top['GetParents'] = (child: IGameObject) =>
     {
-        GetParents(child);
+        return GetParents(child);
     };
 
     addHelp('GetParents(child)', 'Get all parents of the child in an array, recursively searching up');
 
     top['GetRandomChild'] = (parent: IGameObject, startIndex: number = 0, length?: number) =>
     {
-        GetRandomChild(parent, startIndex, length);
+        return GetRandomChild(parent, startIndex, length);
     };
 
     addHelp('GetRandomChild(parent, startIndex?, length?)', 'Get a random child from the parent, optionally between the indexes');
@@ -271,189 +271,189 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     top['MoveChildDown'] = (child: IGameObject) =>
     {
-        MoveChildDown(child);
+        return MoveChildDown(child);
     };
 
     addHelp('MoveChildDown(child)', 'Moves the child one index down the display list');
 
     top['MoveChildTo'] = (child: IGameObject, index: number) =>
     {
-        MoveChildTo(child, index);
+        return MoveChildTo(child, index);
     };
 
     addHelp('MoveChildTo(child, index)', 'Moves the child to the given index in the display list');
 
     top['MoveChildUp'] = (child: IGameObject) =>
     {
-        MoveChildUp(child);
+        return MoveChildUp(child);
     };
 
     addHelp('MoveChildUp(child)', 'Moves the child one index up the display list');
 
     top['RemoveChild'] = (parent: IGameObject, child: IGameObject) =>
     {
-        RemoveChild(parent, child);
+        return RemoveChild(parent, child);
     };
 
     addHelp('RemoveChild(parent, child)', 'Removes a single child from its parent');
 
     top['RemoveChildAt'] = (parent: IGameObject, index: number) =>
     {
-        RemoveChildAt(parent, index);
+        return RemoveChildAt(parent, index);
     };
 
     addHelp('RemoveChildAt(parent, index)', 'Removes the child at the given index from the parent');
 
     top['RemoveChildren'] = (parent: IGameObject, ...children: IGameObject[]) =>
     {
-        RemoveChildren(parent, ...children);
+        return RemoveChildren(parent, ...children);
     };
 
     addHelp('RemoveChildren(parent, ...children)', 'Removes all given children from the parent');
 
     top['RemoveChildrenAt'] = (parent: IGameObject, ...index: number[]) =>
     {
-        RemoveChildrenAt(parent, ...index);
+        return RemoveChildrenAt(parent, ...index);
     };
 
     addHelp('RemoveChildrenAt(parent, ...index)', 'Removes the children at the given indexes from the parent');
 
     top['RemoveChildrenBetween'] = (parent: IGameObject, beginIndex: number = 0, endIndex?: number) =>
     {
-        RemoveChildrenBetween(parent, beginIndex, endIndex);
+        return RemoveChildrenBetween(parent, beginIndex, endIndex);
     };
 
     addHelp('RemoveChildrenBetween(parent, beginIndex, endIndex)', 'Removes the children from the parent between the start and end indexes');
 
     top['RemoveWorld'] = (world: IBaseWorld, ...children: IGameObject[]) =>
     {
-        RemoveWorld(world, ...children);
+        return RemoveWorld(world, ...children);
     };
 
     addHelp('RemoveWorld(world, ...children)', 'Removes the World component from the given children');
 
     top['ReparentChildren'] = (parent: IGameObject, newParent: IGameObject, beginIndex: number = 0, endIndex?: number) =>
     {
-        ReparentChildren(parent, newParent, beginIndex, endIndex);
+        return ReparentChildren(parent, newParent, beginIndex, endIndex);
     };
 
     addHelp('ReparentChildren(parent, newParent, beginIndex?, endIndex?)', 'Removes the children from parent and adds them to newParent');
 
     top['ReplaceChild'] = (target: IGameObject, source: IGameObject) =>
     {
-        ReplaceChild(target, source);
+        return ReplaceChild(target, source);
     };
 
     addHelp('ReplaceChild(target, source)', 'Replaces the target with the source child within the parent');
 
     top['RotateChildrenLeft'] = (parent: IGameObject, total: number = 1) =>
     {
-        RotateChildrenLeft(parent, total);
+        return RotateChildrenLeft(parent, total);
     };
 
     addHelp('RotateChildrenLeft(parent, total?)', 'Rotates the parent display list "total" places to the left');
 
     top['RotateChildrenRight'] = (parent: IGameObject, total: number = 1) =>
     {
-        RotateChildrenRight(parent, total);
+        return RotateChildrenRight(parent, total);
     };
 
     addHelp('RotateChildrenRight(parent, total?)', 'Rotates the parent display list "total" places to the right');
 
     top['SendChildToBack'] = (child: IGameObject) =>
     {
-        SendChildToBack(child);
+        return SendChildToBack(child);
     };
 
     addHelp('SendChildToBack(child)', 'Sends the given child to the back of the parent display list');
 
     top['SetChildrenValue'] = (parent: IGameObject, property: string | symbol, value: never) =>
     {
-        SetChildrenValue(parent, property, value);
+        return SetChildrenValue(parent, property, value);
     };
 
     addHelp('SetChildrenValue(parent, property, value)', 'Sets the property to value on all children of the parent');
 
     top['SetName'] = (name: string, ...children: IGameObject[]) =>
     {
-        SetName(name, ...children);
+        return SetName(name, ...children);
     };
 
     addHelp('SetName(name, ...children)', 'Sets the name property on all given children');
 
     top['SetOrigin'] = (originX: number, originY: number, ...children: IContainer[]) =>
     {
-        SetOrigin(originX, originY, ...children);
+        return SetOrigin(originX, originY, ...children);
     };
 
     addHelp('SetOrigin(originX, originY, ...children)', 'Sets the origin on all given children');
 
     top['SetParent'] = (parent: IGameObject, ...children: IGameObject[]) =>
     {
-        SetParent(parent, ...children);
+        return SetParent(parent, ...children);
     };
 
     addHelp('SetParent(parent, ...children)', 'Sets the parent on all given children, removing from previous parent');
 
     top['SetPosition'] = (x: number, y: number, ...children: IContainer[]) =>
     {
-        SetPosition(x, y, ...children);
+        return SetPosition(x, y, ...children);
     };
 
     addHelp('SetPosition(x, y, ...children)', 'Sets the position on all given children');
 
     top['SetRotation'] = (rotation: number, ...children: IContainer[]) =>
     {
-        SetRotation(rotation, ...children);
+        return SetRotation(rotation, ...children);
     };
 
     addHelp('SetRotation(rotation, ...children)', 'Sets the rotation on all given children');
 
     top['SetScale'] = (scaleX: number, scaleY: number, ...children: IContainer[]) =>
     {
-        SetScale(scaleX, scaleY, ...children);
+        return SetScale(scaleX, scaleY, ...children);
     };
 
     addHelp('SetScale(scaleX, scaleY, ...children)', 'Sets the scale on all given children');
 
     top['SetSize'] = (width: number, height: number, ...children: IContainer[]) =>
     {
-        SetSize(width, height, ...children);
+        return SetSize(width, height, ...children);
     };
 
     addHelp('SetSize(width, height, ...children)', 'Sets the size on all given children');
 
     top['SetSkew'] = (skewX: number, skewY: number, ...children: IContainer[]) =>
     {
-        SetSkew(skewX, skewY, ...children);
+        return SetSkew(skewX, skewY, ...children);
     };
 
     addHelp('SetSkew(skewX, skewY, ...children)', 'Sets the skew on all given children');
 
     top['SetValue'] = (property: string | symbol, value: never, ...children: IGameObject[]) =>
     {
-        SetValue(property, value, ...children);
+        return SetValue(property, value, ...children);
     };
 
     addHelp('SetValue(property, value, ...children)', 'Sets the property to the value on all given children');
 
     top['SetVisible'] = (visible: boolean, ...children: IContainer[]) =>
     {
-        SetVisible(visible, ...children);
+        return SetVisible(visible, ...children);
     };
 
     addHelp('SetVisible(visible, ...children)', 'Sets the visible state on all given children');
 
     top['SetWorld'] = (world: IBaseWorld, ...children: IContainer[]) =>
     {
-        SetWorld(world, ...children);
+        return SetWorld(world, ...children);
     };
 
     addHelp('SetWorld(world, ...children)', 'Sets the World on all given children');
 
     top['ShuffleChildren'] = (parent: IGameObject) =>
     {
-        ShuffleChildren(parent);
+        return ShuffleChildren(parent);
     };
 
     addHelp('ShuffleChildren(parent)', 'Shuffles all of the children of the given parent');
