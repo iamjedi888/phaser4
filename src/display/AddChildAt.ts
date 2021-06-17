@@ -25,11 +25,12 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
         {
             RemoveChild(child.getParent(), child);
 
+            //  Always modify the array before calling SetParentID
+            children.splice(index, 0, childID);
+
             SetWorld(world, child);
 
             SetParentID(childID, parentID);
-
-            children.splice(index, 0, childID);
         }
     }
 
