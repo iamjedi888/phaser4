@@ -6,7 +6,8 @@ const LocalMatrix2D = defineComponent({
     c: Types.f32,
     d: Types.f32,
     tx: Types.f32,
-    ty: Types.f32
+    ty: Types.f32,
+    dirty: Types.ui32
 });
 
 export const LocalMatrix2DComponent = LocalMatrix2D;
