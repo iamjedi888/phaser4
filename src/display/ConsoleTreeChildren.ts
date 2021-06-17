@@ -1,4 +1,3 @@
-import { DepthFirstSearch } from './DepthFirstSearch';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 function GetInfo (entry: IGameObject): string
@@ -29,7 +28,7 @@ function LogChildren (entry: IGameObject): void
 
 export function ConsoleTreeChildren <P extends IGameObject> (parent: P): void
 {
-    const entries = DepthFirstSearch(parent);
+    const entries = parent.getChildren();
 
     if (parent.hasOwnProperty('tag'))
     {
@@ -42,7 +41,7 @@ export function ConsoleTreeChildren <P extends IGameObject> (parent: P): void
 
     entries.forEach(entry =>
     {
-        if (entry.getNumChildren())
+        if (entry.getNumChildren() > 0)
         {
             LogChildren(entry);
         }
