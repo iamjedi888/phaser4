@@ -9,8 +9,8 @@ export function GetRandomChild <P extends IGameObject> (parent: P, startIndex: n
 
     if (children.length > 0)
     {
-        const randomIndex = GetRandom(children, startIndex, length);
+        const random = GetRandom(children, startIndex, length);
 
-        return GameObjectCache.get(children[randomIndex]);
+        return GameObjectCache.get(random);
     }
 }
