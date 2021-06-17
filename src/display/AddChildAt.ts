@@ -2,6 +2,7 @@ import { GetWorldFromParentID, SetParentID } from '../components/hierarchy';
 
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { InvalidateLocalMatrix2DComponent } from '../components/transform';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
 import { SetWorld } from './SetWorld';
@@ -27,6 +28,8 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
 
             //  Always modify the array before calling SetParentID
             children.splice(index, 0, childID);
+
+            InvalidateLocalMatrix2DComponent(child.id);
 
             SetWorld(world, child);
 
