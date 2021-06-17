@@ -4,7 +4,7 @@ import { GameObjectTree } from '../../gameobjects';
 
 export function DepthFirstSearchFromParentID (parentID: number): number[]
 {
-    let stack: number[] = [ parentID ];
+    const stack: number[] = [ parentID ];
     const output: number[] = [];
 
     while (stack.length > 0)
@@ -15,14 +15,19 @@ export function DepthFirstSearchFromParentID (parentID: number): number[]
 
         const nodeChildren = GameObjectTree.get(node);
 
-        if (nodeChildren.length > 0)
+        const numChildren = nodeChildren.length;
+
+        if (numChildren > 0)
         {
-            stack = stack.concat(nodeChildren);
+            for (let i = numChildren - 1; i >= 0; i--)
+            {
+                stack.unshift(nodeChildren[i]);
+            }
         }
     }
 
     //  Remove the parent from the results
     output.shift();
 
-    return output.reverse();
+    return output;
 }
