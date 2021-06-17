@@ -3,6 +3,7 @@ import { Extent2DComponent } from './Extent2DComponent';
 import { GetVertices } from './GetVertices';
 import { GetVerticesFromValues } from './GetVerticesFromValues';
 import { GlobalToLocal } from './GlobalToLocal';
+import { InvalidateLocalMatrix2DComponent } from './InvalidateLocalMatrix2DComponent';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
 import { LocalToGlobal } from './LocalToGlobal';
 import { Origin } from './Origin';
@@ -26,6 +27,7 @@ export {
     GetVertices,
     GetVerticesFromValues,
     GlobalToLocal,
+    InvalidateLocalMatrix2DComponent,
     LocalMatrix2DComponent,
     LocalToGlobal,
     Origin,
