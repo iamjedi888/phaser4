@@ -190,11 +190,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
         // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld, false).length;
         const dirtyWorld = GetNumWorldTransforms();
 
-        // if (dirtyWorld > 0)
-        // {
-        //     console.log('dw', dirtyWorld);
-        // }
-
         sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
 
         return isDirty;
