@@ -2,6 +2,7 @@ import { AddColorComponent, ColorComponent, SetAlpha } from '../../components/co
 import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform2DComponent } from '../../components/transform/';
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
+import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
 import { GameObject } from '../GameObject';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
@@ -23,6 +24,7 @@ export class Container extends GameObject implements IContainer
 
         AddTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
         AddColorComponent(id);
+        AddBoundsComponent(id);
 
         this.position = new Position(id, x, y);
         this.scale = new Scale(id);

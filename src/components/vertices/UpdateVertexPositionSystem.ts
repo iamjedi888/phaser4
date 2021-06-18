@@ -1,5 +1,6 @@
 import { Changed, IWorld, defineQuery, defineSystem } from 'bitecs';
 
+import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
 import { QuadVertexComponent } from './QuadVertexComponent';
 import { VertexComponent } from './VertexComponent';
@@ -35,17 +36,36 @@ const updateVertexPositionSystem = defineSystem(world =>
         const v3 = QuadVertexComponent.v3[id];
         const v4 = QuadVertexComponent.v4[id];
 
-        VertexComponent.x[v1] = (x * a) + (y * c) + tx;
-        VertexComponent.y[v1] = (x * b) + (y * d) + ty;
+        const x0 = (x * a) + (y * c) + tx;
+        const y0 = (x * b) + (y * d) + ty;
 
-        VertexComponent.x[v2] = (x * a) + (bottom * c) + tx;
-        VertexComponent.y[v2] = (x * b) + (bottom * d) + ty;
+        const x1 = (x * a) + (bottom * c) + tx;
+        const y1 = (x * b) + (bottom * d) + ty;
 
-        VertexComponent.x[v3] = (right * a) + (bottom * c) + tx;
-        VertexComponent.y[v3] = (right * b) + (bottom * d) + ty;
+        const x2 = (right * a) + (bottom * c) + tx;
+        const y2 = (right * b) + (bottom * d) + ty;
 
-        VertexComponent.x[v4] = (right * a) + (y * c) + tx;
-        VertexComponent.y[v4] = (right * b) + (y * d) + ty;
+        const x3 = (right * a) + (y * c) + tx;
+        const y3 = (right * b) + (y * d) + ty;
+
+        VertexComponent.x[v1] = x0;
+        VertexComponent.y[v1] = y0;
+
+        VertexComponent.x[v2] = x1;
+        VertexComponent.y[v2] = y1;
+
+        VertexComponent.x[v3] = x2;
+        VertexComponent.y[v3] = y2;
+
+        VertexComponent.x[v4] = x3;
+        VertexComponent.y[v4] = y3;
+
+        BoundsComponent.x[id] = Math.min(x0, x1, x2, x3);
+        BoundsComponent.y[id] = Math.min(y0, y1, y2, y3);
+        BoundsComponent.right[id] = Math.max(x0, x1, x2, x3);
+        BoundsComponent.bottom[id] = Math.max(y0, y1, y2, y3);
+        BoundsComponent.width[id] = BoundsComponent.right[id] - BoundsComponent.x[id];
+        BoundsComponent.height[id] = BoundsComponent.bottom[id] - BoundsComponent.y[id];
     }
 
     return world;
