@@ -41,7 +41,7 @@
         "boxen": "^5.0.1",
         "directory-tree": "^2.2.9",
         "esbuild": "^0.12.9",
-        "eslint": "^7.28.0",
+        "eslint": "^7.29.0",
         "fs-extra": "^10.0.0",
         "rollup": "^2.52.1",
         "rollup-plugin-filesize": "9.1.1",
