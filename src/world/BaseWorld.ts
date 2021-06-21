@@ -241,6 +241,11 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
+        if (!this.runRender)
+        {
+            Begin(renderPass, this.camera);
+        }
+
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
 
         // resetChangedQuery(GameObjectWorld, this.dirtyWorldQuery);
