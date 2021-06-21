@@ -160,11 +160,9 @@ export class WebGLRenderer
                 if (world.runRender)
                 {
                     world.renderGL(renderPass);
-
-                    //  Stats sweep
-
-                    world.postRenderGL(renderPass);
                 }
+
+                world.postRenderGL(renderPass);
             }
         }
 
