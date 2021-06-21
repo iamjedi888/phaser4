@@ -35,6 +35,7 @@ export class Game extends EventEmitter
     delta: number = 0;
     fps: number = 0;
     frame: number = 0;
+    framems: number = 0;
 
     private frames: number = 0;
     private prevFrame: number = 0;
@@ -114,12 +115,16 @@ export class Game extends EventEmitter
         const renderer = this.renderer;
         const sceneManager = this.sceneManager;
 
+        this.framems = time - this.lastTick;
+
         if (!this.isPaused)
         {
             if (this.willUpdate)
             {
                 sceneManager.update(this.delta, time, this.frame);
             }
+
+            Emit(this, 'update', this.framems, time);
 
             if (this.willRender)
             {
