@@ -1,6 +1,4 @@
 import { AddRenderStatsComponent } from './AddRenderStatsComponent';
-import { CreateSceneRenderData } from './CreateSceneRenderData';
-import { GameObjectRenderList } from './GameObjectRenderList';
 import { GetConfigValue } from './GetConfigValue';
 import { GetRenderStatsAsObject } from './GetRenderStatsAsObject';
 import { Install } from './Install';
@@ -12,8 +10,6 @@ import { SceneManagerInstance } from './SceneManagerInstance';
 
 export {
     AddRenderStatsComponent,
-    CreateSceneRenderData,
-    GameObjectRenderList,
     GetConfigValue,
     GetRenderStatsAsObject,
     Install,

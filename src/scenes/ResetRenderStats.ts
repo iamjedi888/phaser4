@@ -2,7 +2,6 @@ import { RenderStatsComponent } from './RenderStatsComponent';
 
 export function ResetRenderStats (id: number, gameFrame: number, scenes: number, worlds: number, transforms: number): void
 {
-    //  TODO - Consider using an array instead so we can plot changes across frames
     RenderStatsComponent.gameFrame[id] = gameFrame;
     RenderStatsComponent.numScenes[id] = scenes;
     RenderStatsComponent.numWorlds[id] = worlds;
