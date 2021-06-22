@@ -1,11 +1,13 @@
-import { BlendModeStackEntry, FramebufferStackEntry, ShaderStackEntry } from './RenderPass';
-
+import { BlendModeStack } from './BlendModeStack';
+import { FramebufferStack } from './FramebufferStack';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IShader } from '../shaders/IShader';
 import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { Matrix4 } from '../../../math/mat4/Matrix4';
-import { Rectangle } from '../../../geom/rectangle/Rectangle';
+import { ShaderStack } from './ShaderStack';
+import { VertexBufferStack } from './VertexBufferStack';
+import { ViewportStack } from './ViewportStack';
 
 export interface IRenderPass
 {
@@ -25,30 +27,11 @@ export interface IRenderPass
     tempTextures: WebGLTexture[];
     textureIndex: number[];
 
-    //  FBO
-    framebufferStack: FramebufferStackEntry[];
-    currentFramebuffer: FramebufferStackEntry;
-    defaultFramebuffer: FramebufferStackEntry;
-
-    //  VBO
-    vertexBufferStack: IVertexBuffer[];
-    currentVertexBuffer: IVertexBuffer;
-    defaultVertexBuffer: IVertexBuffer;
-
-    //  Shader
-    shaderStack: ShaderStackEntry[];
-    currentShader: ShaderStackEntry;
-    defaultShader: ShaderStackEntry;
-
-    //  Viewport
-    viewportStack: Rectangle[];
-    currentViewport: Rectangle;
-    defaultViewport: Rectangle;
-
-    //  Blend Mode
-    blendModeStack: BlendModeStackEntry[];
-    currentBlendMode: BlendModeStackEntry;
-    defaultBlendMode: BlendModeStackEntry;
+    framebuffer: FramebufferStack;
+    vertexbuffer: VertexBufferStack;
+    blendMode: BlendModeStack;
+    shader: ShaderStack;
+    viewport: ViewportStack;
 
     quadShader: IShader;
     quadBuffer: IVertexBuffer;

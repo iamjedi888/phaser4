@@ -1,4 +1,6 @@
+import { BlendModeStack } from './BlendModeStack';
 import { CreateTempTextures } from './CreateTempTextures';
+import { FramebufferStack } from './FramebufferStack';
 import { GetBatchSize } from '../../../config/batchsize/GetBatchSize';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
@@ -10,29 +12,10 @@ import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { Matrix4 } from '../../../math/mat4/Matrix4';
 import { MultiTextureQuadShader } from '../shaders';
 import { QuadShader } from '../shaders/QuadShader';
-import { Rectangle } from '../../../geom/rectangle/Rectangle';
-import { SetDefaultBlendMode } from './SetDefaultBlendMode';
-import { SetDefaultFramebuffer } from './SetDefaultFramebuffer';
-import { SetDefaultShader } from './SetDefaultShader';
-import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
-import { SetDefaultViewport } from './SetDefaultViewport';
+import { ShaderStack } from './ShaderStack';
 import { StaticCamera } from '../../../camera';
-
-export type FramebufferStackEntry = {
-    framebuffer: WebGLFramebuffer;
-    viewport?: Rectangle;
-};
-
-export type ShaderStackEntry = {
-    shader: IShader;
-    textureID?: number;
-};
-
-export type BlendModeStackEntry = {
-    enable: boolean;
-    sfactor?: number;
-    dfactor?: number;
-};
+import { VertexBufferStack } from './VertexBufferStack';
+import { ViewportStack } from './ViewportStack';
 
 export class RenderPass implements IRenderPass
 {
@@ -53,30 +36,12 @@ export class RenderPass implements IRenderPass
     tempTextures: WebGLTexture[] = [];
     textureIndex: number[] = [];
 
-    //  FBO
-    framebufferStack: FramebufferStackEntry[] = [];
-    currentFramebuffer: FramebufferStackEntry = null;
-    defaultFramebuffer: FramebufferStackEntry = null;
-
-    //  VBO
-    vertexBufferStack: IVertexBuffer[] = [];
-    currentVertexBuffer: IVertexBuffer = null;
-    defaultVertexBuffer: IVertexBuffer = null;
-
-    //  Shader
-    shaderStack: ShaderStackEntry[] = [];
-    currentShader: ShaderStackEntry = null;
-    defaultShader: ShaderStackEntry = null;
-
-    //  Viewport
-    viewportStack: Rectangle[] = [];
-    currentViewport: Rectangle = null;
-    defaultViewport: Rectangle = null;
-
-    //  Blend Mode
-    blendModeStack: BlendModeStackEntry[] = [];
-    currentBlendMode: BlendModeStackEntry = null;
-    defaultBlendMode: BlendModeStackEntry = null;
+    //  Stacks
+    framebuffer: FramebufferStack;
+    vertexbuffer: VertexBufferStack;
+    blendMode: BlendModeStack;
+    shader: ShaderStack;
+    viewport: ViewportStack;
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
@@ -91,6 +56,12 @@ export class RenderPass implements IRenderPass
         this.renderer = renderer;
 
         this.projectionMatrix = new Matrix4();
+
+        this.framebuffer = new FramebufferStack(this);
+        this.vertexbuffer = new VertexBufferStack(this);
+        this.blendMode = new BlendModeStack(this);
+        this.shader = new ShaderStack(this);
+        this.viewport = new ViewportStack(this);
 
         this.reset();
     }
@@ -114,10 +85,10 @@ export class RenderPass implements IRenderPass
 
         CreateTempTextures(this);
 
-        SetDefaultFramebuffer(this);
-        SetDefaultBlendMode(this, true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        SetDefaultVertexBuffer(this, new IndexedVertexBuffer({ batchSize: GetBatchSize(), indexLayout }));
-        SetDefaultShader(this, new MultiTextureQuadShader());
+        this.framebuffer.setDefault();
+        this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        this.vertexbuffer.setDefault(new IndexedVertexBuffer({ batchSize: GetBatchSize(), indexLayout }));
+        this.shader.setDefault(new MultiTextureQuadShader());
     }
 
     resize (width: number, height: number): void
@@ -127,6 +98,6 @@ export class RenderPass implements IRenderPass
 
         this.quadCamera.reset();
 
-        SetDefaultViewport(this, 0, 0, width, height);
+        this.viewport.setDefault(0, 0, width, height);
     }
 }
