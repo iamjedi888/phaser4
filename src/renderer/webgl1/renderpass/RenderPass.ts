@@ -1,5 +1,4 @@
 import { BlendModeStack } from './BlendModeStack';
-import { CreateTempTextures } from './CreateTempTextures';
 import { FramebufferStack } from './FramebufferStack';
 import { GetBatchSize } from '../../../config/batchsize/GetBatchSize';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
@@ -14,6 +13,7 @@ import { MultiTextureQuadShader } from '../shaders';
 import { QuadShader } from '../shaders/QuadShader';
 import { ShaderStack } from './ShaderStack';
 import { StaticCamera } from '../../../camera';
+import { TextureStack } from './TextureStack';
 import { VertexBufferStack } from './VertexBufferStack';
 import { ViewportStack } from './ViewportStack';
 
@@ -28,20 +28,13 @@ export class RenderPass implements IRenderPass
     prevCount: number = 0;
     flushTotal: number = 0;
 
-    //  The maximum number of combined image units the GPU supports
-    //  According to the WebGL spec the minimum is 8
-    maxTextures: number = 0;
-    currentActiveTexture: number = 0;
-    startActiveTexture: number = 0;
-    tempTextures: WebGLTexture[] = [];
-    textureIndex: number[] = [];
-
     //  Stacks
     framebuffer: FramebufferStack;
     vertexbuffer: VertexBufferStack;
     blendMode: BlendModeStack;
     shader: ShaderStack;
     viewport: ViewportStack;
+    textures: TextureStack;
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
@@ -83,8 +76,7 @@ export class RenderPass implements IRenderPass
 
         //  Default settings
 
-        CreateTempTextures(this);
-
+        this.textures.setDefault();
         this.framebuffer.setDefault();
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         this.vertexbuffer.setDefault(new IndexedVertexBuffer({ batchSize: GetBatchSize(), indexLayout }));

@@ -1,12 +1,12 @@
 import { GetMaxTextures, SetMaxTextures } from '../../../config/maxtextures/';
 
 import { CheckShaderMaxIfStatements } from '../shaders/CheckShaderMaxIfStatements';
-import { IRenderPass } from './IRenderPass';
+import { TextureStack } from './TextureStack';
 import { gl } from '../GL';
 
 //  As per the WebGL spec, the browser should always support at least 8 texture units
 
-export function CreateTempTextures (renderPass: IRenderPass): void
+export function CreateTempTextures (textureStack: TextureStack): void
 {
     let maxGPUTextures: number = CheckShaderMaxIfStatements(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
 
@@ -23,7 +23,7 @@ export function CreateTempTextures (renderPass: IRenderPass): void
         maxGPUTextures = Math.max(8, maxConfigTextures);
     }
 
-    const tempTextures = renderPass.tempTextures;
+    const tempTextures = textureStack.tempTextures;
 
     if (tempTextures.length)
     {
@@ -51,10 +51,10 @@ export function CreateTempTextures (renderPass: IRenderPass): void
         index.push(texturesIndex);
     }
 
-    renderPass.maxTextures = maxGPUTextures;
+    textureStack.maxTextures = maxGPUTextures;
 
-    renderPass.textureIndex = index;
+    textureStack.textureIndex = index;
 
     //  ID Zero is reserved for FBO Textures
-    renderPass.currentActiveTexture = 1;
+    textureStack.currentActiveTexture = 1;
 }
