@@ -30,6 +30,11 @@ export class FramebufferStack
         return entry;
     }
 
+    bindDefault (): void
+    {
+        this.bind(false, this.default);
+    }
+
     bind (clear: boolean = true, entry?: FramebufferStackEntry): void
     {
         if (!entry)

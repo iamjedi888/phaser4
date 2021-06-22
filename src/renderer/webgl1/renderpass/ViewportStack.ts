@@ -25,6 +25,11 @@ export class ViewportStack
         return viewport;
     }
 
+    bindDefault (): void
+    {
+        this.bind(this.default);
+    }
+
     bind (viewport?: Rectangle): void
     {
         if (!viewport)

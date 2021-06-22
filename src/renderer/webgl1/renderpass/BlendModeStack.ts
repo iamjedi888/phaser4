@@ -30,6 +30,11 @@ export class BlendModeStack
         return entry;
     }
 
+    bindDefault (): void
+    {
+        this.bind(this.default);
+    }
+
     bind (entry?: BlendModeStackEntry): void
     {
         if (!entry)

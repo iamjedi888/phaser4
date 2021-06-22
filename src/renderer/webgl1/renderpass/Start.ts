@@ -1,7 +1,3 @@
-import { BindBlendMode } from './BindBlendMode';
-import { BindFramebuffer } from './BindFramebuffer';
-import { BindVertexBuffer } from './BindVertexBuffer';
-import { BindViewport } from './BindViewport';
 import { IRenderPass } from './IRenderPass';
 
 export function Start (renderPass: IRenderPass): void
@@ -14,8 +10,8 @@ export function Start (renderPass: IRenderPass): void
     renderPass.count = 0;
     renderPass.flushTotal = 0;
 
-    BindFramebuffer(renderPass, false, renderPass.defaultFramebuffer);
-    BindBlendMode(renderPass, renderPass.defaultBlendMode);
-    BindViewport(renderPass, renderPass.defaultViewport);
-    BindVertexBuffer(renderPass, renderPass.defaultVertexBuffer);
+    renderPass.framebuffer.bindDefault();
+    renderPass.blendMode.bindDefault();
+    renderPass.viewport.bindDefault();
+    renderPass.vertexbuffer.bindDefault();
 }

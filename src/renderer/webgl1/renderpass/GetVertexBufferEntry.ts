@@ -4,7 +4,7 @@ import { IRenderPass } from './IRenderPass';
 
 export function GetVertexBufferEntry (renderPass: IRenderPass, addToCount: number = 0): BufferEntry
 {
-    const buffer = renderPass.currentVertexBuffer;
+    const buffer = renderPass.vertexbuffer.current;
 
     //  If batch cannot take the size of this entry, flush it first
     if (renderPass.count + addToCount >= buffer.batchSize)

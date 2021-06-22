@@ -1,6 +1,4 @@
 import { IRenderPass } from './IRenderPass';
-import { PopFramebuffer } from './PopFramebuffer';
-import { SetFramebuffer } from './SetFramebuffer';
 import { gl } from '../GL';
 
 export function Draw (renderPass: IRenderPass): void
@@ -12,14 +10,15 @@ export function Draw (renderPass: IRenderPass): void
         return;
     }
 
-    const currentBuffer = renderPass.currentVertexBuffer;
-    const currentShader = renderPass.currentShader;
+    const currentBuffer = renderPass.vertexbuffer.current;
+    const currentShader = renderPass.shader.current;
 
     const renderToFramebuffer = currentShader.shader.renderToFramebuffer;
 
     if (renderToFramebuffer)
     {
-        SetFramebuffer(renderPass, currentShader.shader.framebuffer, true);
+        // SetFramebuffer(renderPass, currentShader.shader.framebuffer, true);
+        renderPass.framebuffer.set(currentShader.shader.framebuffer, true);
     }
 
     if (count === currentBuffer.batchSize)
@@ -48,6 +47,7 @@ export function Draw (renderPass: IRenderPass): void
 
     if (renderToFramebuffer)
     {
-        PopFramebuffer(renderPass);
+        // PopFramebuffer(renderPass);
+        renderPass.framebuffer.pop();
     }
 }

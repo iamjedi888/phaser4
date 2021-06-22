@@ -29,6 +29,11 @@ export class ShaderStack
         return stackEntry;
     }
 
+    bindDefault (): void
+    {
+        this.bind(this.default);
+    }
+
     bind (entry?: ShaderStackEntry): void
     {
         let prevShader;

@@ -187,7 +187,7 @@ export class Shader implements IShader
     {
         if (this.program)
         {
-            const stride = renderPass.currentVertexBuffer.vertexByteSize;
+            const stride = renderPass.vertexbuffer.current.vertexByteSize;
 
             this.attributes.forEach(attrib =>
             {

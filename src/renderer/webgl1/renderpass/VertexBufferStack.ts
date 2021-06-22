@@ -23,6 +23,11 @@ export class VertexBufferStack
         return buffer;
     }
 
+    bindDefault (): void
+    {
+        this.bind(this.default);
+    }
+
     bind (buffer?: IVertexBuffer): void
     {
         if (buffer)
