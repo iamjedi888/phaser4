@@ -1,9 +1,9 @@
-import { Flush, PopFramebuffer, SetFramebuffer } from '../../renderer/webgl1/renderpass';
 import { GetHeight, GetResolution, GetWidth } from '../../config/size';
 
 import { CreateFramebuffer } from '../../renderer/webgl1/fbo/CreateFramebuffer';
 import { DIRTY_CONST } from '../DIRTY_CONST';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
+import { Flush } from '../../renderer/webgl1/renderpass';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
@@ -59,14 +59,14 @@ export class RenderLayer extends Layer implements IRenderLayer
             if (!this.willCacheChildren || this.isDirty(DIRTY_CONST.CHILD_CACHE))
             {
                 //  This RenderLayer has dirty children
-                SetFramebuffer(renderPass, this.framebuffer, true);
+                renderPass.framebuffer.set(this.framebuffer, true);
 
-                this.clearDirty(DIRTY_CONST.CHILD_CACHE);
+                // this.clearDirty(DIRTY_CONST.CHILD_CACHE);
             }
             else
             {
                 //  This RenderLayer doesn't have any dirty children, so we'll use the previous fbo contents
-                SetFramebuffer(renderPass, this.framebuffer, false);
+                renderPass.framebuffer.set(this.framebuffer, false);
 
                 this.postRenderGL(renderPass);
             }
@@ -77,10 +77,10 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         Flush(renderPass);
 
-        PopFramebuffer(renderPass);
+        renderPass.framebuffer.pop();
 
         DrawTexturedQuad(renderPass, this.texture);
 
-        this.clearDirty(DIRTY_CONST.TRANSFORM);
+        // this.clearDirty(DIRTY_CONST.TRANSFORM);
     }
 }

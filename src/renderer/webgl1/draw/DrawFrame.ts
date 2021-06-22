@@ -3,7 +3,6 @@ import { IFrame } from '../../../textures/IFrame';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
 import { PackColor } from '../colors/PackColor';
-import { SetTexture } from '../renderpass/SetTexture';
 
 export function DrawFrame (renderPass: IRenderPass, texture: ITexture, frame: string | number | IFrame, x: number, y: number, alpha: number = 1, scaleX: number = 1, scaleY: number = 1): void
 {
@@ -13,7 +12,7 @@ export function DrawFrame (renderPass: IRenderPass, texture: ITexture, frame: st
 
     frame = texture.getFrame(frame);
 
-    const textureIndex = SetTexture(renderPass, texture);
+    const textureIndex = renderPass.textures.set(texture);
 
     const displayWidth = frame.width * scaleX;
     const displayHeight = frame.height * scaleY;

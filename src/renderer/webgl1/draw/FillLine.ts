@@ -2,9 +2,6 @@ import { GetTexture } from '../../../textures/GetTexture';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { PackColor } from '../colors/PackColor';
-import { SetShader } from '../renderpass/SetShader';
-import { SetTexture } from '../renderpass/SetTexture';
-import { SetVertexBuffer } from '../renderpass/SetVertexBuffer';
 
 export function FillLine (renderPass: IRenderPass, x0: number, y0: number, x1: number, y1: number, width: number, color: number, alpha: number = 1): void
 {
@@ -12,7 +9,7 @@ export function FillLine (renderPass: IRenderPass, x0: number, y0: number, x1: n
 
     const packedColor = PackColor(color, alpha);
 
-    const textureIndex = SetTexture(renderPass, GetTexture('__WHITE'));
+    const textureIndex = renderPass.textures.set(GetTexture('__WHITE'));
 
     const dx = x1 - x0;
     const dy = y1 - y0;

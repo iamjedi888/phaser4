@@ -4,7 +4,6 @@ import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { IEffectLayer } from './IEffectLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
-import { PopFramebuffer } from '../../renderer/webgl1/renderpass/PopFramebuffer';
 import { RenderLayer } from '../renderlayer/RenderLayer';
 
 //  A WebGL specific EffectLayer
@@ -31,7 +30,7 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
 
         Flush(renderPass);
 
-        PopFramebuffer(renderPass);
+        renderPass.framebuffer.pop();
 
         //  this.framebuffer contains a texture with all of this layers sprites drawn to it
 
@@ -55,6 +54,6 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
             DrawTexturedQuad(renderPass, prevTexture);
         }
 
-        this.clearDirty(DIRTY_CONST.TRANSFORM);
+        // this.clearDirty(DIRTY_CONST.TRANSFORM);
     }
 }

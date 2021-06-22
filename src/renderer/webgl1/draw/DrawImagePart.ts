@@ -4,7 +4,6 @@ import { IFrame } from '../../../textures/IFrame';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
 import { PackColor } from '../colors/PackColor';
-import { SetTexture } from '../renderpass/SetTexture';
 
 export function DrawImagePart (renderPass: IRenderPass, texture: ITexture, x0: number, y0: number, x1: number, y1: number, dx: number, dy: number, dw?: number, dh?: number, alpha: number = 1): void
 {
@@ -14,7 +13,7 @@ export function DrawImagePart (renderPass: IRenderPass, texture: ITexture, x0: n
 
     const frame: IFrame = texture.firstFrame;
 
-    const textureIndex = SetTexture(renderPass, texture);
+    const textureIndex = renderPass.textures.set(texture);
 
     const frameWidth = frame.width;
     const frameHeight = frame.height;

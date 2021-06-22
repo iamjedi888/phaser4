@@ -55,6 +55,7 @@ export class RenderPass implements IRenderPass
         this.blendMode = new BlendModeStack(this);
         this.shader = new ShaderStack(this);
         this.viewport = new ViewportStack(this);
+        this.textures = new TextureStack(this);
 
         this.reset();
     }

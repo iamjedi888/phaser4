@@ -2,9 +2,6 @@ import { GetTexture } from '../../../textures/GetTexture';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { PackColor } from '../colors/PackColor';
-import { SetShader } from '../renderpass/SetShader';
-import { SetTexture } from '../renderpass/SetTexture';
-import { SetVertexBuffer } from '../renderpass/SetVertexBuffer';
 
 export function FillRect (renderPass: IRenderPass, x: number, y: number, width: number, height: number, color: number, alpha: number = 1): void
 {
@@ -17,7 +14,7 @@ export function FillRect (renderPass: IRenderPass, x: number, y: number, width: 
 
     const packedColor = PackColor(color, alpha);
 
-    const textureIndex = SetTexture(renderPass, GetTexture('__WHITE'));
+    const textureIndex = renderPass.textures.set(GetTexture('__WHITE'));
 
     //  top left
     F32[offset + 0] = x;

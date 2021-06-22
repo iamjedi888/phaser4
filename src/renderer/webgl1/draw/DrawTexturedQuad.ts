@@ -1,6 +1,5 @@
-import { BindTexture, Flush, UnbindTexture } from '../renderpass';
-
 import { BatchSingleQuad } from './BatchSingleQuad';
+import { Flush } from '../renderpass';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
 import { Texture } from '../../../textures';
@@ -14,7 +13,8 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
 
     const { u0, v0, u1, v1 } = texture.firstFrame;
 
-    BindTexture(texture, 0);
+    // BindTexture(texture, 0);
+    renderPass.textures.bind(texture, 0);
 
     // SetVertexBuffer(renderPass, renderPass.quadBuffer);
     renderPass.vertexbuffer.set(renderPass.quadBuffer);
@@ -33,5 +33,6 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
     // PopShader(renderPass);
     renderPass.shader.pop();
 
-    UnbindTexture(renderPass);
+    // UnbindTexture(renderPass);
+    renderPass.textures.unbind();
 }

@@ -47,7 +47,7 @@ export class MultiTextureQuadShader extends QuadShader
 
     bind (renderPass: IRenderPass): boolean
     {
-        this.uniforms.set('uTexture', renderPass.textureIndex);
+        this.uniforms.set('uTexture', renderPass.textures.textureIndex);
 
         return super.bind(renderPass);
     }
