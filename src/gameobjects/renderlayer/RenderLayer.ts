@@ -1,7 +1,7 @@
 import { GetHeight, GetResolution, GetWidth } from '../../config/size';
+import { SetWillCacheChildren, WillCacheChildren } from '../../components/permissions';
 
 import { CreateFramebuffer } from '../../renderer/webgl1/fbo/CreateFramebuffer';
-import { DIRTY_CONST } from '../DIRTY_CONST';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
@@ -26,11 +26,7 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         super();
 
-        this.willRender = true;
-        this.willRenderChildren = true;
-        this.willCacheChildren = true;
-
-        this.setDirty(DIRTY_CONST.CHILD_CACHE);
+        SetWillCacheChildren(true, this);
 
         const width = GetWidth();
         const height = GetHeight();
@@ -52,10 +48,26 @@ export class RenderLayer extends Layer implements IRenderLayer
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        if (this.numChildren > 0)
+        if (this.getNumChildren() > 0)
         {
             Flush(renderPass);
 
+            renderPass.framebuffer.set(this.framebuffer, true);
+
+            /*
+            if (!WillCacheChildren(this.id))
+            {
+                renderPass.framebuffer.set(this.framebuffer, true);
+
+            }
+            else
+            {
+                //  This RenderLayer doesn't have any dirty children, so we'll use the previous fbo contents
+                renderPass.framebuffer.set(this.framebuffer, false);
+            }
+            */
+
+            /*
             if (!this.willCacheChildren || this.isDirty(DIRTY_CONST.CHILD_CACHE))
             {
                 //  This RenderLayer has dirty children
@@ -70,6 +82,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
                 this.postRenderGL(renderPass);
             }
+            */
         }
     }
 

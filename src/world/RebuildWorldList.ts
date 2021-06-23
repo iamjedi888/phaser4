@@ -23,13 +23,10 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
             {
                 if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID))
                 {
-                    //  TODO
-                    // if (WillCacheChildren(nodeID))
+                    // if (!WillCacheChildren(nodeID))
                     // {
-                    //     cachedLayers.push(entry);
+                        RebuildWorldList(world, nodeID);
                     // }
-
-                    RebuildWorldList(world, nodeID);
                 }
                 else
                 {
