@@ -22,7 +22,7 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
             index = children.length;
         }
 
-        if (index >= 0 && index <= children.length && world)
+        if (index >= 0 && index <= children.length)
         {
             RemoveChild(child.getParent(), child);
 
@@ -31,7 +31,10 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
 
             InvalidateLocalMatrix2DComponent(child.id);
 
-            SetWorld(world, child);
+            if (world)
+            {
+                SetWorld(world, child);
+            }
 
             SetParentID(childID, parentID);
         }
