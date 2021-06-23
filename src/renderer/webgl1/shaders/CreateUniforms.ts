@@ -26,9 +26,9 @@ export function CreateUniforms (program: WebGLProgram): Map<string, Function>
             let isArray = false;
 
             //  If uniform name has [0] at the end, remove it
-            if (name.substr(-3) === '[0]')
+            if (name.endsWith('[0]'))
             {
-                name = name.substr(0, name.length - 3);
+                name = name.slice(0, -3);
 
                 isArray = (uniform.size > 1);
             }
