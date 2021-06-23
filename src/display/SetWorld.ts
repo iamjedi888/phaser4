@@ -1,5 +1,6 @@
 import { AddedToWorldEvent, RemovedFromWorldEvent } from '../gameobjects/events';
 
+import { DepthFirstSearchFromParentID } from '../components/hierarchy/DepthFirstSearchFromParentID';
 import { Emit } from '../events/Emit';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
@@ -8,28 +9,38 @@ import { IGameObject } from '../gameobjects/IGameObject';
 import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 import { addComponent } from 'bitecs';
 
-export function SetWorld <W extends IBaseWorld> (world: W, ...children: IGameObject[]): IGameObject[]
+export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObject[]): IGameObject[]
 {
     const worldID = world.id;
     const worldTag = world.tag;
 
-    children.forEach(child =>
+    entries.forEach(entry =>
     {
-        // if (child.world)
+        // if (entry.world)
         // {
-        //     Emit(child.world, RemovedFromWorldEvent, child, child.world);
-        //     Emit(child, RemovedFromWorldEvent, child, child.world);
+        //     Emit(entry.world, RemovedFromWorldEvent, entry, entry.world);
+        //     Emit(entry, RemovedFromWorldEvent, entry, entry.world);
         // }
 
-        addComponent(GameObjectWorld, worldTag, child.id);
+        addComponent(GameObjectWorld, worldTag, entry.id);
 
-        HierarchyComponent.worldID[child.id] = worldID;
+        HierarchyComponent.worldID[entry.id] = worldID;
 
-        // Emit(world, AddedToWorldEvent, child, world);
-        // Emit(child, AddedToWorldEvent, child, world);
+        // Emit(world, AddedToWorldEvent, entry, world);
+        // Emit(entry, AddedToWorldEvent, entry, world);
+
+        //  Now set the World on any children
+        const children = DepthFirstSearchFromParentID(entry.id);
+
+        children.map(id =>
+        {
+            addComponent(GameObjectWorld, worldTag, id);
+
+            HierarchyComponent.worldID[id] = worldID;
+        });
     });
 
     SetDirtyDisplayList(worldID);
 
-    return children;
+    return entries;
 }
