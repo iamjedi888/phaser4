@@ -1,4 +1,5 @@
 export type IVertexBufferConfig = {
+    name?: string;
     batchSize?: number;
     dataSize?: number;
     entryIndexSize?: number;

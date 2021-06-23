@@ -1,5 +1,6 @@
 export interface IVertexBuffer
 {
+    name: string;
     batchSize: number;
     dataSize: number;
     vertexElementSize: number;

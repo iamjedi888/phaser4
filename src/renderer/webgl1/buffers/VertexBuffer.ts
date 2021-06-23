@@ -5,6 +5,9 @@ import { gl } from '../GL';
 
 export class VertexBuffer implements IVertexBuffer
 {
+    //  Handy for debug tracing
+    name: string;
+
     /**
      * Maximum number of entries per batch before a flush takes place.
      * For a Mesh, this is the number of triangles / faces in the vertex buffer.
@@ -118,6 +121,7 @@ export class VertexBuffer implements IVertexBuffer
     constructor (config: IVertexBufferConfig = {})
     {
         const {
+            name = 'VBO',
             batchSize = 1,
             dataSize = 4,
             isDynamic = true,
@@ -125,6 +129,7 @@ export class VertexBuffer implements IVertexBuffer
             vertexElementSize = 6
         } = config;
 
+        this.name = name;
         this.batchSize = batchSize;
         this.dataSize = dataSize;
         this.vertexElementSize = vertexElementSize;
