@@ -17,7 +17,6 @@ export function Draw (renderPass: IRenderPass): void
 
     if (renderToFramebuffer)
     {
-        // SetFramebuffer(renderPass, currentShader.shader.framebuffer, true);
         renderPass.framebuffer.set(currentShader.shader.framebuffer, true);
     }
 
@@ -47,7 +46,6 @@ export function Draw (renderPass: IRenderPass): void
 
     if (renderToFramebuffer)
     {
-        // PopFramebuffer(renderPass);
         renderPass.framebuffer.pop();
     }
 }
