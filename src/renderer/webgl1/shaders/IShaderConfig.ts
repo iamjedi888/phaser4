@@ -1,12 +1,14 @@
+import { ShaderAttributeEntry } from './CreateAttributes';
+
 export type IShaderConfig = {
-    attributes?: Object;
+    attributes?: Record<string, ShaderAttributeEntry>;
     fragmentShader?: string;
     height?: number;
     maxTextures?: number;
     renderToFramebuffer?: boolean;
     renderToDepthbuffer?: boolean;
     resolution?: number;
-    uniforms?: Object;
+    uniforms?: Record<string, Number | Float32List>;
     vertexShader?: string;
     width?: number;
 };
