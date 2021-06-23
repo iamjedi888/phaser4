@@ -17,11 +17,7 @@ export function Flush (renderPass: IRenderPass, forceCount?: number): boolean
 
     Draw(renderPass);
 
-    renderPass.prevCount = count;
-
-    renderPass.count = 0;
-
-    renderPass.flushTotal++;
+    renderPass.flush();
 
     return true;
 }

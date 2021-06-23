@@ -34,5 +34,6 @@ export interface IRenderPass
     current2DCamera: IBaseCamera;
 
     reset (): void;
+    flush (): void;
     resize (width: number, height: number): void;
 }

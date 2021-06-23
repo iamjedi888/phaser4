@@ -60,6 +60,15 @@ export class RenderPass implements IRenderPass
         this.reset();
     }
 
+    flush (): void
+    {
+        this.prevCount = this.count;
+
+        this.count = 0;
+
+        this.flushTotal++;
+    }
+
     //  TODO - Call when context is lost and restored
     reset (): void
     {
@@ -72,7 +81,7 @@ export class RenderPass implements IRenderPass
         //  Default QuadShader (for FBO drawing)
 
         this.quadShader = new QuadShader();
-        this.quadBuffer = new IndexedVertexBuffer({ isDynamic: false, indexLayout });
+        this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout });
         this.quadCamera = new StaticCamera();
 
         //  Default settings
@@ -80,7 +89,7 @@ export class RenderPass implements IRenderPass
         this.textures.setDefault();
         this.framebuffer.setDefault();
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        this.vertexbuffer.setDefault(new IndexedVertexBuffer({ batchSize: GetBatchSize(), indexLayout }));
+        this.vertexbuffer.setDefault(new IndexedVertexBuffer({ name: 'sprite', batchSize: GetBatchSize(), indexLayout }));
         this.shader.setDefault(new MultiTextureQuadShader());
     }
 
