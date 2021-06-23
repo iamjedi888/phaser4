@@ -1,10 +1,10 @@
 import { GetParentID, GetWorldID, HierarchyComponent, UpdateNumChildren } from './';
+import { hasComponent, removeComponent } from 'bitecs';
 
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { IBaseWorld } from '../../world/IBaseWorld';
 import { SetDirtyDisplayList } from '../dirty';
-import { removeComponent } from 'bitecs';
 
 export function ClearWorldAndParentID (id: number): void
 {
@@ -15,7 +15,10 @@ export function ClearWorldAndParentID (id: number): void
     HierarchyComponent.worldID[id] = 0;
     HierarchyComponent.parentID[id] = 0;
 
-    removeComponent(GameObjectWorld, world.tag, id);
+    if (world && hasComponent(GameObjectWorld, world.tag, id))
+    {
+        removeComponent(GameObjectWorld, world.tag, id);
+    }
 
     UpdateNumChildren(parentID);
 
