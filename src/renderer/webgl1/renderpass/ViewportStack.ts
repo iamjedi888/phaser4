@@ -7,8 +7,9 @@ export class ViewportStack
     renderPass: IRenderPass;
 
     stack: Rectangle[];
-    current: Rectangle;
+    // current: Rectangle;
     default: Rectangle;
+    index: number;
 
     constructor (renderPass: IRenderPass)
     {
@@ -16,18 +17,35 @@ export class ViewportStack
         this.stack = [];
     }
 
+    get current (): Rectangle
+    {
+        return this.stack[this.index];
+    }
+
     add (x: number = 0, y: number = 0, width: number = 0, height: number = 0): Rectangle
     {
-        const viewport = new Rectangle(x, y, width, height);
+        const entry = new Rectangle(x, y, width, height);
 
-        this.stack.push(viewport);
+        this.index++;
 
-        return viewport;
+        //  cursor already at the end of the stack, so we need to grow it
+        if (this.index === this.stack.length)
+        {
+            this.stack.push(entry);
+        }
+        else
+        {
+            this.stack[this.index] = entry;
+        }
+
+        return entry;
     }
 
     bindDefault (): void
     {
-        this.bind(this.default);
+        this.index = 0;
+
+        this.bind();
     }
 
     bind (viewport?: Rectangle): void
@@ -52,15 +70,17 @@ export class ViewportStack
 
     pop (): void
     {
-        const stack = this.stack;
+        // const stack = this.stack;
 
-        //  > 1 because index 0 contains the default, which we don't want to remove
-        if (stack.length > 1)
-        {
-            stack.pop();
-        }
+        // //  > 1 because index 0 contains the default, which we don't want to remove
+        // if (stack.length > 1)
+        // {
+        //     stack.pop();
+        // }
 
-        this.current = stack[ stack.length - 1 ];
+        // this.current = stack[ stack.length - 1 ];
+
+        this.index--;
 
         this.bind();
     }
@@ -71,7 +91,7 @@ export class ViewportStack
 
         this.bind(entry);
 
-        this.current = entry;
+        // this.current = entry;
     }
 
     setDefault (x: number = 0, y: number = 0, width: number = 0, height: number = 0): void
@@ -81,7 +101,9 @@ export class ViewportStack
         //  The default entry always goes into index zero
         this.stack[0] = entry;
 
-        this.current = entry;
+        this.index = 0;
+
+        // this.current = entry;
         this.default = entry;
     }
 }

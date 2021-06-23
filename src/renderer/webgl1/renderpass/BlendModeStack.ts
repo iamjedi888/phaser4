@@ -12,8 +12,9 @@ export class BlendModeStack
     renderPass: IRenderPass;
 
     stack: BlendModeStackEntry[];
-    current: BlendModeStackEntry;
+    // current: BlendModeStackEntry;
     default: BlendModeStackEntry;
+    index: number;
 
     constructor (renderPass: IRenderPass)
     {
@@ -21,18 +22,35 @@ export class BlendModeStack
         this.stack = [];
     }
 
+    get current (): BlendModeStackEntry
+    {
+        return this.stack[this.index];
+    }
+
     add (enable: boolean, sfactor?: number, dfactor?: number): BlendModeStackEntry
     {
         const entry = { enable, sfactor, dfactor };
 
-        this.stack.push(entry);
+        this.index++;
+
+        //  cursor already at the end of the stack, so we need to grow it
+        if (this.index === this.stack.length)
+        {
+            this.stack.push(entry);
+        }
+        else
+        {
+            this.stack[this.index] = entry;
+        }
 
         return entry;
     }
 
     bindDefault (): void
     {
-        this.bind(this.default);
+        this.index = 0;
+
+        this.bind();
     }
 
     bind (entry?: BlendModeStackEntry): void
@@ -58,15 +76,17 @@ export class BlendModeStack
 
     pop (): void
     {
-        const stack = this.stack;
+        // const stack = this.stack;
 
-        //  > 1 because index 0 contains the default, which we don't want to remove
-        if (stack.length > 1)
-        {
-            stack.pop();
-        }
+        // //  > 1 because index 0 contains the default, which we don't want to remove
+        // if (stack.length > 1)
+        // {
+        //     stack.pop();
+        // }
 
-        this.current = stack[ stack.length - 1 ];
+        // this.current = stack[ stack.length - 1 ];
+
+        this.index--;
 
         this.bind();
     }
@@ -77,7 +97,7 @@ export class BlendModeStack
 
         this.bind(entry);
 
-        this.current = entry;
+        // this.current = entry;
     }
 
     setDefault (enable: boolean, sfactor?: number, dfactor?: number): void
@@ -87,7 +107,9 @@ export class BlendModeStack
         //  The default entry always goes into index zero
         this.stack[0] = entry;
 
-        this.current = entry;
+        this.index = 0;
+
+        // this.current = entry;
         this.default = entry;
     }
 }

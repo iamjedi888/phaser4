@@ -7,8 +7,9 @@ export class VertexBufferStack
     renderPass: IRenderPass;
 
     stack: IVertexBuffer[];
-    current: IVertexBuffer;
+    // current: IVertexBuffer;
     default: IVertexBuffer;
+    index: number;
 
     constructor (renderPass: IRenderPass)
     {
@@ -16,16 +17,33 @@ export class VertexBufferStack
         this.stack = [];
     }
 
+    get current (): IVertexBuffer
+    {
+        return this.stack[this.index];
+    }
+
     add (buffer: IVertexBuffer): IVertexBuffer
     {
-        this.stack.push(buffer);
+        this.index++;
+
+        //  cursor already at the end of the stack, so we need to grow it
+        if (this.index === this.stack.length)
+        {
+            this.stack.push(buffer);
+        }
+        else
+        {
+            this.stack[this.index] = buffer;
+        }
 
         return buffer;
     }
 
     bindDefault (): void
     {
-        this.bind(this.default);
+        this.index = 0;
+
+        this.bind();
     }
 
     bind (buffer?: IVertexBuffer): void
@@ -53,15 +71,17 @@ export class VertexBufferStack
 
     pop (): void
     {
-        const stack = this.stack;
+        // const stack = this.stack;
 
-        //  > 1 because index 0 contains the default, which we don't want to remove
-        if (stack.length > 1)
-        {
-            stack.pop();
-        }
+        // //  > 1 because index 0 contains the default, which we don't want to remove
+        // if (stack.length > 1)
+        // {
+        //     stack.pop();
+        // }
 
-        this.current = stack[ stack.length - 1 ];
+        // this.current = stack[ stack.length - 1 ];
+
+        this.index--;
 
         this.bind();
     }
@@ -72,7 +92,7 @@ export class VertexBufferStack
 
         this.bind(entry);
 
-        this.current = entry;
+        // this.current = entry;
     }
 
     setDefault (buffer: IVertexBuffer): void
@@ -80,7 +100,9 @@ export class VertexBufferStack
         //  The default entry always goes into index zero
         this.stack[0] = buffer;
 
-        this.current = buffer;
+        this.index = 0;
+
+        // this.current = buffer;
         this.default = buffer;
     }
 }
