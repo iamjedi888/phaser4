@@ -1,6 +1,6 @@
 import { IContainer } from '../gameobjects/container/IContainer';
 
-export function SetPosition <T extends IContainer> (x: number, y: number, ...children: T[]): T[]
+export function SetPosition (x: number, y: number, ...children: IContainer[]): IContainer[]
 {
     children.forEach(child =>
     {

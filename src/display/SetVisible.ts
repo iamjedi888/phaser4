@@ -1,6 +1,6 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function SetVisible <T extends IGameObject> (visible: boolean, ...children: T[]): T[]
+export function SetVisible (visible: boolean, ...children: IGameObject[]): IGameObject[]
 {
     children.forEach(child =>
     {

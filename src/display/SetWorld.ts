@@ -8,7 +8,7 @@ import { IGameObject } from '../gameobjects/IGameObject';
 import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 import { addComponent } from 'bitecs';
 
-export function SetWorld <W extends IBaseWorld, C extends IGameObject> (world: W, ...children: C[]): C[]
+export function SetWorld <W extends IBaseWorld> (world: W, ...children: IGameObject[]): IGameObject[]
 {
     const worldID = world.id;
     const worldTag = world.tag;

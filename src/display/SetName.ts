@@ -1,6 +1,6 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 
-export function SetName <T extends IGameObject> (name: string, ...children: T[]): T[]
+export function SetName (name: string, ...children: IGameObject[]): IGameObject[]
 {
     children.forEach(child =>
     {

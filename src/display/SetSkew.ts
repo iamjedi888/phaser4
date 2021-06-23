@@ -1,6 +1,6 @@
 import { IContainer } from '../gameobjects/container/IContainer';
 
-export function SetSkew <T extends IContainer> (skewX: number, skewY: number, ...children: T[]): T[]
+export function SetSkew (skewX: number, skewY: number, ...children: IContainer[]): IContainer[]
 {
     children.forEach(child =>
     {

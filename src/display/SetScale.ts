@@ -1,6 +1,6 @@
 import { IContainer } from '../gameobjects/container/IContainer';
 
-export function SetScale <T extends IContainer> (scaleX: number, scaleY: number, ...children: T[]): T[]
+export function SetScale (scaleX: number, scaleY: number, ...children: IContainer[]): IContainer[]
 {
     children.forEach(child =>
     {
