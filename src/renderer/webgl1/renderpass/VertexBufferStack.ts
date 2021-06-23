@@ -7,7 +7,7 @@ export class VertexBufferStack
     renderPass: IRenderPass;
 
     stack: IVertexBuffer[];
-    // current: IVertexBuffer;
+    active: IVertexBuffer;
     default: IVertexBuffer;
     index: number;
 
@@ -43,16 +43,12 @@ export class VertexBufferStack
     {
         this.index = 0;
 
-        this.bind();
+        this.bind(this.default);
     }
 
     bind (buffer?: IVertexBuffer): void
     {
-        if (buffer)
-        {
-            buffer.isBound = false;
-        }
-        else
+        if (!buffer)
         {
             buffer = this.current;
         }
@@ -66,21 +62,18 @@ export class VertexBufferStack
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertexBuffer);
 
             buffer.isBound = true;
+
+            if (this.active && this.active !== buffer)
+            {
+                this.active.isBound = false;
+            }
+
+            this.active = buffer;
         }
     }
 
     pop (): void
     {
-        // const stack = this.stack;
-
-        // //  > 1 because index 0 contains the default, which we don't want to remove
-        // if (stack.length > 1)
-        // {
-        //     stack.pop();
-        // }
-
-        // this.current = stack[ stack.length - 1 ];
-
         this.index--;
 
         this.bind();
@@ -91,8 +84,6 @@ export class VertexBufferStack
         const entry = this.add(buffer);
 
         this.bind(entry);
-
-        // this.current = entry;
     }
 
     setDefault (buffer: IVertexBuffer): void
@@ -102,7 +93,6 @@ export class VertexBufferStack
 
         this.index = 0;
 
-        // this.current = buffer;
         this.default = buffer;
     }
 }

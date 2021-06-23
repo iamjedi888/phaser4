@@ -12,7 +12,7 @@ export class FramebufferStack
     renderPass: IRenderPass;
 
     stack: FramebufferStackEntry[];
-    // current: FramebufferStackEntry;
+    active: WebGLFramebuffer;
     default: FramebufferStackEntry;
     index: number;
 
@@ -50,7 +50,7 @@ export class FramebufferStack
     {
         this.index = 0;
 
-        this.bind(false);
+        this.bind(false, this.default);
     }
 
     bind (clear: boolean = true, entry?: FramebufferStackEntry): void
@@ -62,7 +62,7 @@ export class FramebufferStack
 
         const { framebuffer, viewport } = entry;
 
-        if (this.current.framebuffer !== framebuffer)
+        if (this.active !== framebuffer)
         {
             gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
         }
@@ -77,26 +77,13 @@ export class FramebufferStack
         {
             this.renderPass.viewport.set(viewport.x, viewport.y, viewport.width, viewport.height);
         }
+
+        this.active = framebuffer;
     }
 
     pop (): void
     {
-        // const stack = this.stack;
-
-        // //  > 1 because index 0 contains the default, which we don't want to remove
-        // if (stack.length > 1)
-        // {
-        //     if (this.current.viewport)
-        //     {
-        //         this.renderPass.viewport.pop();
-        //     }
-
-        //     stack.pop();
-        // }
-
-        // this.current = stack[ stack.length - 1 ];
-
-        if (this.index > 0 && this.current.viewport)
+        if (this.current.viewport)
         {
             this.renderPass.viewport.pop();
         }
@@ -111,8 +98,6 @@ export class FramebufferStack
         const entry = this.add(framebuffer, viewport);
 
         this.bind(clear, entry);
-
-        // this.current = entry;
     }
 
     setDefault (framebuffer: WebGLFramebuffer = null, viewport?: Rectangle): void
@@ -124,7 +109,6 @@ export class FramebufferStack
 
         this.index = 0;
 
-        // this.current = entry;
         this.default = entry;
     }
 }

@@ -1,5 +1,6 @@
 import { IRenderPass } from './IRenderPass';
 import { Rectangle } from '../../../geom/rectangle/Rectangle';
+import { RectangleEquals } from '../../../geom/rectangle/RectangleEquals';
 import { gl } from '../GL';
 
 export class ViewportStack
@@ -7,7 +8,7 @@ export class ViewportStack
     renderPass: IRenderPass;
 
     stack: Rectangle[];
-    // current: Rectangle;
+    active: Rectangle;
     default: Rectangle;
     index: number;
 
@@ -45,7 +46,7 @@ export class ViewportStack
     {
         this.index = 0;
 
-        this.bind();
+        this.bind(this.default);
     }
 
     bind (viewport?: Rectangle): void
@@ -53,33 +54,18 @@ export class ViewportStack
         if (!viewport)
         {
             viewport = this.current;
-
-            if (!viewport)
-            {
-                return;
-            }
         }
 
-        const glv = gl.getParameter(gl.VIEWPORT);
-
-        if (glv[0] !== viewport.x || glv[1] !== viewport.y || glv[2] !== viewport.width || glv[3] !== viewport.height)
+        if (!this.active || !RectangleEquals(this.active, viewport))
         {
             gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
+
+            this.active = viewport;
         }
     }
 
     pop (): void
     {
-        // const stack = this.stack;
-
-        // //  > 1 because index 0 contains the default, which we don't want to remove
-        // if (stack.length > 1)
-        // {
-        //     stack.pop();
-        // }
-
-        // this.current = stack[ stack.length - 1 ];
-
         this.index--;
 
         this.bind();
@@ -90,8 +76,6 @@ export class ViewportStack
         const entry = this.add(x, y, width, height);
 
         this.bind(entry);
-
-        // this.current = entry;
     }
 
     setDefault (x: number = 0, y: number = 0, width: number = 0, height: number = 0): void
@@ -103,7 +87,6 @@ export class ViewportStack
 
         this.index = 0;
 
-        // this.current = entry;
         this.default = entry;
     }
 }

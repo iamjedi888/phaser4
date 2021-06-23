@@ -12,7 +12,6 @@ export class BlendModeStack
     renderPass: IRenderPass;
 
     stack: BlendModeStackEntry[];
-    // current: BlendModeStackEntry;
     default: BlendModeStackEntry;
     index: number;
 
@@ -50,7 +49,7 @@ export class BlendModeStack
     {
         this.index = 0;
 
-        this.bind();
+        this.bind(this.default);
     }
 
     bind (entry?: BlendModeStackEntry): void
@@ -76,16 +75,6 @@ export class BlendModeStack
 
     pop (): void
     {
-        // const stack = this.stack;
-
-        // //  > 1 because index 0 contains the default, which we don't want to remove
-        // if (stack.length > 1)
-        // {
-        //     stack.pop();
-        // }
-
-        // this.current = stack[ stack.length - 1 ];
-
         this.index--;
 
         this.bind();
@@ -96,8 +85,6 @@ export class BlendModeStack
         const entry = this.add(enable, sfactor, dfactor);
 
         this.bind(entry);
-
-        // this.current = entry;
     }
 
     setDefault (enable: boolean, sfactor?: number, dfactor?: number): void
@@ -109,7 +96,6 @@ export class BlendModeStack
 
         this.index = 0;
 
-        // this.current = entry;
         this.default = entry;
     }
 }
