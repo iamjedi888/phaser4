@@ -1,49 +1,62 @@
+import * as GL_CONST from '../GL_CONST';
+
 import { IVertexAttribPointer } from './IVertexAttribPointer';
 import { gl } from '../GL';
 
-export function CreateAttributes (program: WebGLProgram, config: Object): Map<string, IVertexAttribPointer>
+export type ShaderAttributeEntry = {
+    size: number;
+    type?: number;
+    normalized?: boolean;
+    stride?: number;
+};
+
+export function CreateAttributes (program: WebGLProgram, attribs: Record<string, ShaderAttributeEntry>): Map<string, IVertexAttribPointer>
 {
     const attributes = new Map();
 
     const defaultSettings =
     {
         size: 1,
-        type: gl.FLOAT,
+        type: GL_CONST.FLOAT,
         normalized: false,
-        stride: 0,
-        offset: 0
+        stride: 0
     };
 
-    const total = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+    let offset = 0;
 
-    for (let i = 0; i < total; i++)
+    for (const [ name, entry ] of Object.entries(attribs))
     {
-        const attrib = gl.getActiveAttrib(program, i);
-
-        if (!attrib)
-        {
-            break;
-        }
-
-        const name = attrib.name;
-
         const index = gl.getAttribLocation(program, name);
 
-        gl.enableVertexAttribArray(index);
+        if (index !== -1)
+        {
+            gl.enableVertexAttribArray(index);
 
-        const setting = config.hasOwnProperty(name) ? config[name] : {};
+            const {
 
-        const {
+                size = defaultSettings.size,
+                type = defaultSettings.type,
+                normalized = defaultSettings.normalized,
+                stride = defaultSettings.stride
 
-            size = defaultSettings.size,
-            type = defaultSettings.type,
-            normalized = defaultSettings.normalized,
-            stride = defaultSettings.stride,
-            offset = defaultSettings.offset
+            } = entry;
 
-        } = setting;
+            attributes.set(name, { index, size, type, normalized, stride, offset });
 
-        attributes.set(name, { index, size, type, normalized, stride, offset });
+            //  Default value as used by FLOAT, UNSIGNED_INT and INT
+            let typeSize = 4;
+
+            if (type === GL_CONST.UNSIGNED_SHORT || type === GL_CONST.SHORT)
+            {
+                typeSize = 2;
+            }
+            else if (type === GL_CONST.UNSIGNED_BYTE || type === GL_CONST.BYTE)
+            {
+                typeSize = 1;
+            }
+
+            offset += size * typeSize;
+        }
     }
 
     return attributes;
