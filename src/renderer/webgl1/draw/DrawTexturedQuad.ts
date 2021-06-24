@@ -13,6 +13,9 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
 
     const { u0, v0, u1, v1 } = texture.firstFrame;
 
+    //  Clear out anything already in the batch
+    Flush(renderPass);
+
     renderPass.textures.bind(texture, 0);
 
     renderPass.vertexbuffer.set(renderPass.quadBuffer);
@@ -21,6 +24,7 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
 
     BatchSingleQuad(renderPass, 0, 0, texture.width, texture.height, u0, v0, u1, v1, 0);
 
+    //  Flush our single quad
     Flush(renderPass);
 
     //  Should always pop the vbo first, so when the shader is popped the attributes are set correctly
