@@ -111,6 +111,7 @@ export class SceneManager
         }
     }
 
+    //  TODO - This isn't used internally - is used by debug panel - move out?
     getRenderList (): IGameObject[]
     {
         let output: IGameObject[] = [];
