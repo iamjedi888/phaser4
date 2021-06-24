@@ -1,7 +1,7 @@
-import { WillCacheChildren, WillRender, WillRenderChildren } from '../components/permissions';
+import { GetNumChildren, GetPostRenderType, GetRenderType } from '../components/hierarchy';
+import { WillRender, WillRenderChildren } from '../components/permissions';
 
 import { GameObjectTree } from '../gameobjects';
-import { GetNumChildren } from '../components/hierarchy';
 import { IBaseWorld } from './IBaseWorld';
 
 //  Rebuilds the World.renderList - a list of all entities that need to render.
@@ -15,14 +15,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
     {
         if (world.id !== parent)
         {
-            if (WillCacheChildren(parent))
-            {
-                world.addToRenderList(parent, 2);
-            }
-            else
-            {
-                world.addToRenderList(parent, 0);
-            }
+            world.addToRenderList(parent, GetRenderType(parent));
         }
 
         const children = GameObjectTree.get(parent);
@@ -47,14 +40,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
 
         if (world.id !== parent)
         {
-            if (WillCacheChildren(parent))
-            {
-                world.addToRenderList(parent, 3);
-            }
-            else
-            {
-                world.addToRenderList(parent, 1);
-            }
+            world.addToRenderList(parent, GetPostRenderType(parent));
         }
     }
 }
