@@ -7,7 +7,7 @@ import { IWorld } from './IWorld';
 
 export class World extends BaseWorld implements IWorld
 {
-    camera: ICamera;
+    declare camera: ICamera;
 
     enableCameraCull: boolean = true;
 

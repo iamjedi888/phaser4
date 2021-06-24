@@ -11,7 +11,7 @@ import { StaticCamera } from '../camera/StaticCamera';
 
 export class StaticWorld extends BaseWorld implements IStaticWorld
 {
-    camera: IStaticCamera;
+    declare camera: IStaticCamera;
 
     constructor (scene: IScene)
     {

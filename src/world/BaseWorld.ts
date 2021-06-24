@@ -1,11 +1,10 @@
 import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
-import { Changed, defineComponent, defineQuery, resetChangedQuery } from 'bitecs';
+import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
 import { ClearDirtyDisplayList, HasDirtyDisplayList } from '../components/dirty';
 import { Emit, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
-import { GetNumWorldTransforms, ResetWorldRenderData } from './ResetWorldRenderData';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
@@ -20,6 +19,7 @@ import { Mat2dEquals } from '../math/mat2d/Mat2dEquals';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RemoveChildren } from '../display';
+import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
@@ -48,8 +48,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
     private listLength: number;
 
     private totalChildren: number;
-    private totalChildrenQuery;
-    private dirtyWorldQuery;
+    private totalChildrenQuery: Query;
+    private dirtyWorldQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -186,9 +186,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.runRender = (this.listLength > 0);
 
-        //  So close, but so far ... doesn't work quite right in bitecs yet:
-        // const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld, false).length;
-        const dirtyWorld = GetNumWorldTransforms();
+        const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld).length;
 
         sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
 
@@ -247,8 +245,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
-
-        // resetChangedQuery(GameObjectWorld, this.dirtyWorldQuery);
     }
 
     shutdown (): void

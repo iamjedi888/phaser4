@@ -4,7 +4,6 @@ import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetParentID } from '../hierarchy';
 import { MultiplyLocalWithWorld } from './MultiplyLocalWithWorld';
 import { Transform2DComponent } from './Transform2DComponent';
-import { UpdateNumWorldTransforms } from '../../world/ResetWorldRenderData';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 import { hasComponent } from 'bitecs';
 
@@ -24,6 +23,4 @@ export function UpdateWorldTransform (id: number): void
     {
         MultiplyLocalWithWorld(parentID, id);
     }
-
-    UpdateNumWorldTransforms();
 }
