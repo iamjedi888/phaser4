@@ -5,7 +5,6 @@ import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
 import { ClearDirtyDisplayList, HasDirtyChildCache, HasDirtyDisplayList, SetDirtyParents } from '../components/dirty';
 import { Emit, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
-import { WillCacheChildren, WillUpdate } from '../components/permissions';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
@@ -25,6 +24,7 @@ import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetWorldID } from '../components/hierarchy';
+import { WillUpdate } from '../components/permissions';
 import { WorldList } from './WorldList';
 import { WorldMatrix2DComponent } from '../components/transform';
 
@@ -129,6 +129,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
     }
 
+    //  TODO - This isn't used internally - is used by debug panel - move out?
     getRenderList (): IGameObject[]
     {
         const list = this.renderList;
@@ -140,7 +141,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
             const eid = list[i];
             const type = list[i + 1];
 
-            if (type === 0)
+            if (type === 0 || type === 2)
             {
                 output.push(GameObjectCache.get(eid));
             }
@@ -198,12 +199,15 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         //  This is a list of all entities with a dirty world transform
         //  We need to go through and tell them to update their parents dirtyChild flags
-        for (let i = 0; i < dirtyWorld.length; i++)
-        {
-            const eid = dirtyWorld[i];
+        //  Also need to do the same if the color is dirty (alpha, tint)
+        //  Maybe move this into the component setters directly?
 
-            SetDirtyParents(eid);
-        }
+        // for (let i = 0; i < dirtyWorld.length; i++)
+        // {
+        //     const eid = dirtyWorld[i];
+
+        //     SetDirtyParents(eid);
+        // }
 
         sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld.length);
 
@@ -244,17 +248,17 @@ export class BaseWorld extends GameObject implements IBaseWorld
             const type = list[i + 1];
             const entry = GameObjectCache.get(eid);
 
-            if (type === 2 && !HasDirtyChildCache(eid))
+            if (type === 2)
             {
-                skip = true;
-
                 entry.renderGL(renderPass);
+
+                skip = !HasDirtyChildCache(eid);
             }
             else if (type === 3)
             {
-                skip = false;
-
                 entry.postRenderGL(renderPass);
+
+                skip = false;
             }
 
             if (skip)
@@ -266,7 +270,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
             {
                 entry.postRenderGL(renderPass);
             }
-            else
+            else if (type === 0)
             {
                 entry.renderGL(renderPass);
             }
