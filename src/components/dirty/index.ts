@@ -1,4 +1,5 @@
 import { AddDirtyComponent } from './AddDirtyComponent';
+import { ClearDirtyChildCache } from './ClearDirtyChildCache';
 import { ClearDirtyDisplayList } from './ClearDirtyDisplayList';
 import { DirtyComponent } from './DirtyComponent';
 import { GetDirtyFrame } from './GetDirtyFrame';
@@ -17,6 +18,7 @@ import { SetDirtyChild } from './SetDirtyChild';
 import { SetDirtyChildCache } from './SetDirtyChildCache';
 import { SetDirtyDisplayList } from './SetDirtyDisplayList';
 import { SetDirtyFrame } from './SetDirtyFrame';
+import { SetDirtyParents } from './SetDirtyParents';
 import { SetDirtyPostRender } from './SetDirtyPostRender';
 import { SetDirtyTexture } from './SetDirtyTexture';
 import { SetDirtyTextureFrame } from './SetDirtyTextureFrame';
@@ -26,6 +28,7 @@ import { SetDirtyWorldDisplayList } from './SetDirtyWorldDisplayList';
 
 export {
     AddDirtyComponent,
+    ClearDirtyChildCache,
     ClearDirtyDisplayList,
     DirtyComponent,
     GetDirtyFrame,
@@ -44,6 +47,7 @@ export {
     SetDirtyChildCache,
     SetDirtyDisplayList,
     SetDirtyFrame,
+    SetDirtyParents,
     SetDirtyPostRender,
     SetDirtyTexture,
     SetDirtyTextureFrame,
