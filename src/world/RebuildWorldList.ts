@@ -4,13 +4,25 @@ import { GameObjectTree } from '../gameobjects';
 import { GetNumChildren } from '../components/hierarchy';
 import { IBaseWorld } from './IBaseWorld';
 
+//  Rebuilds the World.renderList - a list of all entities that need to render.
+
+//  This is only called if the World has a dirty display list, otherwise the results
+//  are cached between frames
+
 export function RebuildWorldList (world: IBaseWorld, parent: number): void
 {
     if (WillRender(parent))
     {
         if (world.id !== parent)
         {
-            world.addToRenderList(parent, 0);
+            if (WillCacheChildren(parent))
+            {
+                world.addToRenderList(parent, 2);
+            }
+            else
+            {
+                world.addToRenderList(parent, 0);
+            }
         }
 
         const children = GameObjectTree.get(parent);
@@ -23,10 +35,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
             {
                 if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID))
                 {
-                    // if (!WillCacheChildren(nodeID))
-                    // {
-                        RebuildWorldList(world, nodeID);
-                    // }
+                    RebuildWorldList(world, nodeID);
                 }
                 else
                 {
@@ -38,7 +47,14 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
 
         if (world.id !== parent)
         {
-            world.addToRenderList(parent, 1);
+            if (WillCacheChildren(parent))
+            {
+                world.addToRenderList(parent, 3);
+            }
+            else
+            {
+                world.addToRenderList(parent, 1);
+            }
         }
     }
 }
