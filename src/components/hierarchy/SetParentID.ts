@@ -6,6 +6,4 @@ export function SetParentID (childID: number, parentID: number): void
     HierarchyComponent.parentID[childID] = parentID;
 
     UpdateNumChildren(parentID);
-
-    //  Emit add event?
 }
