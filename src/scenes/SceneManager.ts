@@ -1,4 +1,4 @@
-import { Changed, addEntity, defineQuery } from 'bitecs';
+import { Changed, Query, addEntity, defineQuery } from 'bitecs';
 
 import { AddRenderStatsComponent } from './AddRenderStatsComponent';
 import { Game } from '../Game';
@@ -31,7 +31,7 @@ export class SceneManager
     //  Force the renderer to fully redraw
     flush: boolean;
 
-    changedMatrixQuery = defineQuery([ Changed(LocalMatrix2DComponent) ]);
+    changedMatrixQuery: Query = defineQuery([ Changed(LocalMatrix2DComponent) ]);
 
     constructor ()
     {
