@@ -1,3 +1,4 @@
+import { ClearDirtyChildCache, HasDirtyChildCache } from '../../components/dirty';
 import { GetHeight, GetResolution, GetWidth } from '../../config/size';
 import { SetWillCacheChildren, WillCacheChildren } from '../../components/permissions';
 
@@ -50,39 +51,22 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         if (this.getNumChildren() > 0)
         {
+            //  TODO - We only need to flush if there are dirty children
             Flush(renderPass);
 
-            renderPass.framebuffer.set(this.framebuffer, true);
-
-            /*
-            if (!WillCacheChildren(this.id))
+            //  If this won't cache children OR has a dirty child
+            if (!WillCacheChildren(this.id) || HasDirtyChildCache(this.id))
             {
                 renderPass.framebuffer.set(this.framebuffer, true);
-
             }
             else
             {
                 //  This RenderLayer doesn't have any dirty children, so we'll use the previous fbo contents
+                //  Can we just skip setting the fbo? DrawTexturedQuad in postRender may be all we need
+
                 renderPass.framebuffer.set(this.framebuffer, false);
+                // renderPass.framebuffer.set(this.framebuffer, true);
             }
-            */
-
-            /*
-            if (!this.willCacheChildren || this.isDirty(DIRTY_CONST.CHILD_CACHE))
-            {
-                //  This RenderLayer has dirty children
-                renderPass.framebuffer.set(this.framebuffer, true);
-
-                // this.clearDirty(DIRTY_CONST.CHILD_CACHE);
-            }
-            else
-            {
-                //  This RenderLayer doesn't have any dirty children, so we'll use the previous fbo contents
-                renderPass.framebuffer.set(this.framebuffer, false);
-
-                this.postRenderGL(renderPass);
-            }
-            */
         }
     }
 
@@ -94,6 +78,6 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         DrawTexturedQuad(renderPass, this.texture);
 
-        // this.clearDirty(DIRTY_CONST.TRANSFORM);
+        ClearDirtyChildCache(this.id);
     }
 }
