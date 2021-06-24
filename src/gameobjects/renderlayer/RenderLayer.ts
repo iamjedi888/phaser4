@@ -49,35 +49,29 @@ export class RenderLayer extends Layer implements IRenderLayer
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        if (this.getNumChildren() > 0)
+        const id = this.id;
+
+        if (this.getNumChildren() && (!WillCacheChildren(id) || HasDirtyChildCache(id)))
         {
-            //  TODO - We only need to flush if there are dirty children
             Flush(renderPass);
 
-            //  If this won't cache children OR has a dirty child
-            if (!WillCacheChildren(this.id) || HasDirtyChildCache(this.id))
-            {
-                renderPass.framebuffer.set(this.framebuffer, true);
-            }
-            else
-            {
-                //  This RenderLayer doesn't have any dirty children, so we'll use the previous fbo contents
-                //  Can we just skip setting the fbo? DrawTexturedQuad in postRender may be all we need
-
-                renderPass.framebuffer.set(this.framebuffer, false);
-                // renderPass.framebuffer.set(this.framebuffer, true);
-            }
+            renderPass.framebuffer.set(this.framebuffer, true);
         }
     }
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
-        Flush(renderPass);
+        const id = this.id;
 
-        renderPass.framebuffer.pop();
+        if (!WillCacheChildren(id) || HasDirtyChildCache(id))
+        {
+            Flush(renderPass);
+
+            renderPass.framebuffer.pop();
+
+            ClearDirtyChildCache(id);
+        }
 
         DrawTexturedQuad(renderPass, this.texture);
-
-        ClearDirtyChildCache(this.id);
     }
 }
