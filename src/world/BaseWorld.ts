@@ -2,9 +2,10 @@ import * as WorldEvents from './events';
 
 import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
-import { ClearDirtyDisplayList, HasDirtyDisplayList } from '../components/dirty';
+import { ClearDirtyDisplayList, HasDirtyChildCache, HasDirtyDisplayList, SetDirtyParents } from '../components/dirty';
 import { Emit, Once } from '../events';
 import { GameObject, GameObjectCache } from '../gameobjects';
+import { WillCacheChildren, WillUpdate } from '../components/permissions';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
@@ -24,7 +25,6 @@ import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetWorldID } from '../components/hierarchy';
-import { WillUpdate } from '../components/permissions';
 import { WorldList } from './WorldList';
 import { WorldMatrix2DComponent } from '../components/transform';
 
@@ -99,6 +99,14 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, WorldEvents.WorldAfterUpdateEvent, delta, time, this);
     }
 
+    //  Called by RebuildWorldList as it sweeps the world children, looking to see what will render or not
+
+    //  renderType:
+
+    //  0 = render
+    //  1 = postRender
+    //  2 = render child cache
+    //  3 = postRender child cache
     addToRenderList (id: number, renderType: number): void
     {
         let len = this.listLength;
@@ -186,9 +194,18 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.runRender = (this.listLength > 0);
 
-        const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld).length;
+        const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld);
 
-        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
+        //  This is a list of all entities with a dirty world transform
+        //  We need to go through and tell them to update their parents dirtyChild flags
+        for (let i = 0; i < dirtyWorld.length; i++)
+        {
+            const eid = dirtyWorld[i];
+
+            SetDirtyParents(eid);
+        }
+
+        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld.length);
 
         return isDirty;
     }
@@ -219,12 +236,31 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         const list = this.renderList;
 
+        let skip = false;
+
         for (let i = 0; i < this.listLength; i += 2)
         {
             const eid = list[i];
             const type = list[i + 1];
-
             const entry = GameObjectCache.get(eid);
+
+            if (type === 2 && !HasDirtyChildCache(eid))
+            {
+                skip = true;
+
+                entry.renderGL(renderPass);
+            }
+            else if (type === 3)
+            {
+                skip = false;
+
+                entry.postRenderGL(renderPass);
+            }
+
+            if (skip)
+            {
+                continue;
+            }
 
             if (type === 1)
             {
