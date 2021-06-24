@@ -5,6 +5,7 @@ import { IGameObject } from '../gameobjects/IGameObject';
 import { InvalidateLocalMatrix2DComponent } from '../components/transform';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
+import { SetDirtyParents } from '../components/dirty';
 import { SetWorld } from './SetWorld';
 
 export function AddChildAt <P extends IGameObject, C extends IGameObject> (parent: P, child: C, index: number = -1): C
@@ -37,6 +38,8 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
             }
 
             SetParentID(childID, parentID);
+
+            SetDirtyParents(childID);
         }
     }
 
