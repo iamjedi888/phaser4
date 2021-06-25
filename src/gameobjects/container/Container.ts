@@ -3,9 +3,12 @@ import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
+import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
+import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
+import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
 
 export class Container extends GameObject implements IContainer
@@ -17,6 +20,8 @@ export class Container extends GameObject implements IContainer
     skew: Skew;
     origin: Origin;
     size: Size;
+
+    shader: IShader;
 
     constructor (x: number = 0, y: number = 0)
     {
@@ -33,6 +38,26 @@ export class Container extends GameObject implements IContainer
         this.skew = new Skew(id);
         this.size = new Size(id);
         this.origin = new Origin(id, GetDefaultOriginX(), GetDefaultOriginY());
+    }
+
+    renderGL <T extends IRenderPass> (renderPass: T): void
+    {
+        if (this.shader)
+        {
+            Flush(renderPass);
+
+            renderPass.shader.set(this.shader, 0);
+        }
+    }
+
+    postRenderGL <T extends IRenderPass> (renderPass: T): void
+    {
+        if (this.shader)
+        {
+            Flush(renderPass);
+
+            renderPass.shader.pop();
+        }
     }
 
     getBounds (): Rectangle

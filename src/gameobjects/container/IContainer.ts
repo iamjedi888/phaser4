@@ -1,6 +1,7 @@
 import { Origin, Position, Scale, Size, Skew } from '../../components/transform';
 
 import { IGameObject } from '../IGameObject';
+import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
 
 export interface IContainer extends IGameObject
@@ -15,6 +16,8 @@ export interface IContainer extends IGameObject
     y: number;
     rotation: number;
     alpha: number;
+
+    shader: IShader;
 
     // getBounds (): Rectangle;
 
