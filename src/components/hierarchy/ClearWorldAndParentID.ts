@@ -4,7 +4,7 @@ import { hasComponent, removeComponent } from 'bitecs';
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { IBaseWorld } from '../../world/IBaseWorld';
-import { SetDirtyDisplayList } from '../dirty';
+import { SetDirtyParents } from '../dirty';
 
 export function ClearWorldAndParentID (id: number): void
 {
@@ -22,5 +22,5 @@ export function ClearWorldAndParentID (id: number): void
 
     UpdateNumChildren(parentID);
 
-    SetDirtyDisplayList(worldID);
+    SetDirtyParents(id);
 }
