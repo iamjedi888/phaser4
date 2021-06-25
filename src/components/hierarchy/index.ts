@@ -7,8 +7,6 @@ import { GetDepth } from './GetDepth';
 import { GetNumChildren } from './GetNumChildren';
 import { GetParentGameObject } from './GetParentGameObject';
 import { GetParentID } from './GetParentID';
-import { GetPostRenderType } from './GetPostRenderType';
-import { GetRenderType } from './GetRenderType';
 import { GetSiblingIDs } from './GetSiblingIDs';
 import { GetWorldFromID } from './GetWorldFromID';
 import { GetWorldFromParentID } from './GetWorldFromParentID';
@@ -17,7 +15,6 @@ import { HierarchyComponent } from './HierarchyComponent';
 import { SetDepth } from './SetDepth';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
-import { SetRenderType } from './SetRenderType';
 import { SetWorldAndParentID } from './SetWorldAndParentID';
 import { SetWorldID } from './SetWorldID';
 import { UpdateNumChildren } from './UpdateNumChildren';
@@ -32,8 +29,6 @@ export {
     GetNumChildren,
     GetParentGameObject,
     GetParentID,
-    GetPostRenderType,
-    GetRenderType,
     GetSiblingIDs,
     GetWorldFromID,
     GetWorldFromParentID,
@@ -42,7 +37,6 @@ export {
     SetDepth,
     SetNumChildren,
     SetParentID,
-    SetRenderType,
     SetWorldAndParentID,
     SetWorldID,
     UpdateNumChildren
