@@ -1,4 +1,4 @@
-import { ClearDirtyChildCache, HasDirtyChildCache } from '../../components/dirty';
+import { ClearDirtyChildCache, HasDirtyChildCache, SetDirtyDisplayList, SetDirtyParents } from '../../components/dirty';
 import { GetHeight, GetResolution, GetWidth } from '../../config/size';
 import { SetWillCacheChildren, WillCacheChildren } from '../../components/permissions';
 
@@ -6,6 +6,7 @@ import { CreateFramebuffer } from '../../renderer/webgl1/fbo/CreateFramebuffer';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
+import { GetWorldID } from '../../components/hierarchy';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
@@ -20,6 +21,8 @@ import { Texture } from '../../textures/Texture';
 
 export class RenderLayer extends Layer implements IRenderLayer
 {
+    readonly type: string = 'RenderLayer';
+
     texture: Texture;
     framebuffer: WebGLFramebuffer;
 
@@ -70,6 +73,8 @@ export class RenderLayer extends Layer implements IRenderLayer
             renderPass.framebuffer.pop();
 
             ClearDirtyChildCache(id);
+
+            SetDirtyParents(id);
         }
 
         DrawTexturedQuad(renderPass, this.texture);
