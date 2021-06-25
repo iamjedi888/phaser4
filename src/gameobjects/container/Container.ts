@@ -10,6 +10,8 @@ import { Rectangle } from '../../geom/rectangle/Rectangle';
 
 export class Container extends GameObject implements IContainer
 {
+    readonly type: string = 'Container';
+
     position: Position;
     scale: Scale;
     skew: Skew;

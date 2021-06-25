@@ -1,4 +1,3 @@
-import { DIRTY_CONST } from '../DIRTY_CONST';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { IEffectLayer } from './IEffectLayer';
@@ -11,6 +10,8 @@ import { RenderLayer } from '../renderlayer/RenderLayer';
 
 export class EffectLayer extends RenderLayer implements IEffectLayer
 {
+    readonly type: string = 'EffectLayer';
+
     shaders: IShader[] = [];
 
     constructor (...shaders: IShader[])
@@ -53,7 +54,5 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
 
             DrawTexturedQuad(renderPass, prevTexture);
         }
-
-        // this.clearDirty(DIRTY_CONST.TRANSFORM);
     }
 }
