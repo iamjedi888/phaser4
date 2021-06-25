@@ -1,6 +1,8 @@
 import { Changed, IWorld, defineQuery, defineSystem } from 'bitecs';
 
+import { GetParentID } from '../hierarchy';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
+import { SetDirtyParents } from '../dirty';
 import { Transform2DComponent } from './Transform2DComponent';
 
 const changedLocalTransformQuery = defineQuery([ Changed(Transform2DComponent) ]);
@@ -9,6 +11,8 @@ let entities: number[];
 
 const updateLocalTransformSystem = defineSystem(world =>
 {
+    let prevParent: number = 0;
+
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
@@ -27,6 +31,13 @@ const updateLocalTransformSystem = defineSystem(world =>
         LocalMatrix2DComponent.d[id] = Math.cos(rotation - skewX) * scaleY;
         LocalMatrix2DComponent.tx[id] = x;
         LocalMatrix2DComponent.ty[id] = y;
+
+        if (GetParentID(id) !== prevParent)
+        {
+            SetDirtyParents(id);
+
+            prevParent = GetParentID(id);
+        }
     }
 
     return world;
