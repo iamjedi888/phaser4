@@ -20,27 +20,7 @@ export class MultiTextureQuadShader extends QuadShader
     {
         const maxTextures = GetMaxTextures();
 
-        let src = '';
-
-        for (let i = 1; i < maxTextures; i++)
-        {
-            if (i > 1)
-            {
-                src += '\n\telse ';
-            }
-
-            if (i < maxTextures - 1)
-            {
-                src += `if (vTextureId < ${i}.5)`;
-            }
-
-            src += '\n\t{';
-            src += `\n\t\tcolor = texture2D(uTexture[${i}], vTextureCoord);`;
-            src += '\n\t}';
-        }
-
         fragmentShaderSource = fragmentShaderSource.replace(/%count%/gi, `${maxTextures}`);
-        fragmentShaderSource = fragmentShaderSource.replace(/%forloop%/gi, src);
 
         super.create(fragmentShaderSource, vertexShaderSource, uniforms, attribs);
     }
