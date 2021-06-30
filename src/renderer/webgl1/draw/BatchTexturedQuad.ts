@@ -6,9 +6,9 @@ import { QuadVertexComponent } from '../../../components/vertices/QuadVertexComp
 
 export function BatchTexturedQuad <T extends ITexture> (texture: T, id: number, renderPass: IRenderPass): void
 {
-    const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
-
     const textureIndex = renderPass.textures.set(texture);
+
+    const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
 
     let vertOffset = AddVertexToBatch(QuadVertexComponent.v1[id], offset, textureIndex, F32, U32);
     vertOffset = AddVertexToBatch(QuadVertexComponent.v2[id], vertOffset, textureIndex, F32, U32);

@@ -6,7 +6,7 @@ import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { Matrix4 } from '../../../math/mat4/Matrix4';
 import { ShaderStack } from './ShaderStack';
-import { TextureStack } from './TextureStack';
+import { SingleTextureStack } from './SingleTextureStack';
 import { VertexBufferStack } from './VertexBufferStack';
 import { ViewportStack } from './ViewportStack';
 
@@ -25,7 +25,7 @@ export interface IRenderPass
     blendMode: BlendModeStack;
     shader: ShaderStack;
     viewport: ViewportStack;
-    textures: TextureStack;
+    textures: SingleTextureStack;
 
     quadShader: IShader;
     quadBuffer: IVertexBuffer;

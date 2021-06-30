@@ -12,8 +12,8 @@ import { Matrix4 } from '../../../math/mat4/Matrix4';
 import { MultiTextureQuadShader } from '../shaders';
 import { QuadShader } from '../shaders/QuadShader';
 import { ShaderStack } from './ShaderStack';
+import { SingleTextureStack } from './SingleTextureStack';
 import { StaticCamera } from '../../../camera';
-import { TextureStack } from './TextureStack';
 import { VertexBufferStack } from './VertexBufferStack';
 import { ViewportStack } from './ViewportStack';
 
@@ -34,7 +34,7 @@ export class RenderPass implements IRenderPass
     blendMode: BlendModeStack;
     shader: ShaderStack;
     viewport: ViewportStack;
-    textures: TextureStack;
+    textures: SingleTextureStack;
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
@@ -55,7 +55,7 @@ export class RenderPass implements IRenderPass
         this.blendMode = new BlendModeStack(this);
         this.shader = new ShaderStack(this);
         this.viewport = new ViewportStack(this);
-        this.textures = new TextureStack(this);
+        this.textures = new SingleTextureStack(this);
 
         this.reset();
     }
@@ -90,7 +90,9 @@ export class RenderPass implements IRenderPass
         this.framebuffer.setDefault();
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         this.vertexbuffer.setDefault(new IndexedVertexBuffer({ name: 'sprite', batchSize: GetBatchSize(), indexLayout }));
-        this.shader.setDefault(new MultiTextureQuadShader());
+
+        // this.shader.setDefault(new MultiTextureQuadShader());
+        this.shader.setDefault(new QuadShader());
     }
 
     resize (width: number, height: number): void
