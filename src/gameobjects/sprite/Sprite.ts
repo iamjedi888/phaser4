@@ -1,10 +1,9 @@
 import { ColorComponent, SetTint } from '../../components/color';
 
-import { AddVertex } from '../../components/vertices/AddVertex';
+import { AddQuadVertex } from '../../components/vertices';
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { Container } from '../container/Container';
 import { Frame } from '../../textures/Frame';
-import { GameObjectWorld } from '../../GameObjectWorld';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IFrame } from '../../textures/IFrame';
 import { IGameObject } from '../IGameObject';
@@ -12,12 +11,10 @@ import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
-import { QuadVertexComponent } from '../../components/vertices/QuadVertexComponent';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
 import { WillRender } from '../../components/permissions';
-import { addComponent } from 'bitecs';
 
 export class Sprite extends Container implements ISprite
 {
@@ -31,14 +28,7 @@ export class Sprite extends Container implements ISprite
     {
         super(x, y);
 
-        const id = this.id;
-
-        addComponent(GameObjectWorld, QuadVertexComponent, id);
-
-        QuadVertexComponent.tl[id] = AddVertex();
-        QuadVertexComponent.bl[id] = AddVertex();
-        QuadVertexComponent.br[id] = AddVertex();
-        QuadVertexComponent.tr[id] = AddVertex();
+        AddQuadVertex(this.id);
 
         this.setTexture(texture, frame);
     }

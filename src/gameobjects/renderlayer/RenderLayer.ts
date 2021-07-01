@@ -1,4 +1,4 @@
-import { AddVertex, QuadVertexComponent } from '../../components/vertices';
+import { AddQuadVertex, AddVertex, QuadVertexComponent } from '../../components/vertices';
 import { ClearDirtyChildCache, HasDirtyChildCache, SetDirtyParents } from '../../components/dirty';
 import { GetHeight, GetResolution, GetWidth } from '../../config/size';
 import { SetWillCacheChildren, WillCacheChildren } from '../../components/permissions';
@@ -49,13 +49,7 @@ export class RenderLayer extends Layer implements IRenderLayer
             flipY: true
         });
 
-        addComponent(GameObjectWorld, QuadVertexComponent, id);
-
-        //  inversed UV coordinates:
-        QuadVertexComponent.tl[id] = AddVertex(0, 0, 0, 0, 1);
-        QuadVertexComponent.bl[id] = AddVertex(0, height, 0, 0, 0);
-        QuadVertexComponent.br[id] = AddVertex(width, height, 0, 1, 0);
-        QuadVertexComponent.tr[id] = AddVertex(width, 0, 0, 1, 1);
+        AddQuadVertex(id, width, height, true);
 
         this.texture = texture;
         this.framebuffer = binding.framebuffer;
