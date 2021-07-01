@@ -1,16 +1,22 @@
+import { AddVertex, QuadVertexComponent } from '../../components/vertices';
+
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
+import { ColorComponent } from '../../components/color/ColorComponent';
 import { Container } from '../container/Container';
-import { DIRTY_CONST } from '../DIRTY_CONST';
-import { DrawImage } from '../../renderer/canvas/draw/DrawImage';
 import { Frame } from '../../textures/Frame';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRectangle } from './IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
+import { SetExtent } from '../../components/transform';
+import { SetTexture } from '../sprite/SetTexture';
+import { SetTint } from '../../components/color/SetTint';
 import { Texture } from '../../textures/Texture';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
-import { Vertex } from '../../components/Vertex';
+import { WillRender } from '../../components/permissions/WillRender';
+import { addComponent } from 'bitecs';
 
 export class Rectangle extends Container implements IRectangle
 {
@@ -19,27 +25,32 @@ export class Rectangle extends Container implements IRectangle
     private texture: Texture;
     private frame: Frame;
 
-    protected _color: number = 0xffffff;
-
     constructor (x: number, y: number, width: number = 64, height: number = 64, color: number = 0xffffff)
     {
         super(x, y);
 
-        this.vertices = [ new Vertex(), new Vertex(), new Vertex(), new Vertex() ];
+        const id = this.id;
+
+        addComponent(GameObjectWorld, QuadVertexComponent, id);
+
+        // QuadVertexComponent.tl[id] = AddVertex(x, y, 0, 0, 1);
+        // QuadVertexComponent.bl[id] = AddVertex(x, y + height, 0, 0, 0);
+        // QuadVertexComponent.br[id] = AddVertex(x + width, y + height, 0, 1, 0);
+        // QuadVertexComponent.tr[id] = AddVertex(x + width, y, 0, 1, 1);
+
+        QuadVertexComponent.tl[id] = AddVertex();
+        QuadVertexComponent.bl[id] = AddVertex();
+        QuadVertexComponent.br[id] = AddVertex();
+        QuadVertexComponent.tr[id] = AddVertex();
+
+        this.size.set(width, height);
+
+        SetTexture('__WHITE', null, this);
+
+        // this.texture = TextureManagerInstance.get().get('__WHITE');
+        // this.frame = this.texture.getFrame();
 
         this.color = color;
-
-        this.setWhiteTexture();
-        this.setSize(width, height);
-    }
-
-    private setWhiteTexture (): void
-    {
-        this.texture = TextureManagerInstance.get().get('__WHITE');
-        this.frame = this.texture.getFrame();
-
-        this.frame.copyToExtent(this);
-        this.frame.copyToVertices(this.vertices);
     }
 
     setColor (color: number): this
@@ -51,41 +62,39 @@ export class Rectangle extends Container implements IRectangle
 
     isRenderable (): boolean
     {
-        return (this.visible && this.willRender && this.alpha > 0);
+        return (this.visible && WillRender(this.id) && this.alpha > 0);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        PreRenderVertices(this);
-
-        BatchTexturedQuad(this.texture, this.vertices, renderPass);
+        BatchTexturedQuad(this.texture, this.id, renderPass);
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
     {
         PreRenderVertices(this);
 
-        DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+        // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+    }
+
+    get tint (): number
+    {
+        return ColorComponent.tint[this.id];
+    }
+
+    set tint (value: number)
+    {
+        SetTint(this.id, value);
     }
 
     get color (): number
     {
-        return this._color;
+        return ColorComponent.tint[this.id];
     }
 
     set color (value: number)
     {
-        if (value !== this._color)
-        {
-            this._color = value;
-
-            this.vertices.forEach(vertex =>
-            {
-                vertex.setTint(value);
-            });
-
-            this.setDirty(DIRTY_CONST.COLORS);
-        }
+        SetTint(this.id, value);
     }
 
     destroy (reparentChildren?: IGameObject): void
