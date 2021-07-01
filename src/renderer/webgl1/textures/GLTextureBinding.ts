@@ -1,3 +1,4 @@
+import { CreateFramebuffer } from '../fbo/CreateFramebuffer';
 import { CreateGLTexture } from './CreateGLTexture';
 import { DeleteFramebuffer } from '../fbo/DeleteFramebuffer';
 import { DeleteGLTexture } from './DeleteGLTexture';
@@ -40,6 +41,7 @@ export class GLTextureBinding implements IGLTextureBinding
         const {
             texture = null,
             framebuffer = null,
+            createFramebuffer = false,
             depthbuffer = null,
             unpackPremultiplyAlpha = true,
             minFilter = (this.isPOT) ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR,
@@ -58,16 +60,6 @@ export class GLTextureBinding implements IGLTextureBinding
         this.flipY = flipY;
         this.unpackPremultiplyAlpha = unpackPremultiplyAlpha;
 
-        if (framebuffer)
-        {
-            this.framebuffer = framebuffer;
-        }
-
-        if (depthbuffer)
-        {
-            this.depthbuffer = depthbuffer;
-        }
-
         if (texture)
         {
             this.texture = texture;
@@ -76,6 +68,22 @@ export class GLTextureBinding implements IGLTextureBinding
         {
             CreateGLTexture(this);
         }
+
+        if (framebuffer)
+        {
+            this.framebuffer = framebuffer;
+        }
+        else if (createFramebuffer)
+        {
+            this.framebuffer = CreateFramebuffer(this.texture);
+        }
+
+        if (depthbuffer)
+        {
+            this.depthbuffer = depthbuffer;
+        }
+
+        parent.binding = this;
     }
 
     //  Needed?
