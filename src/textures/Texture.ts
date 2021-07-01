@@ -107,6 +107,7 @@ export class Texture implements ITexture
 
         this.frames.clear();
 
+        this.binding = null;
         this.data = null;
         this.image = null;
         this.firstFrame = null;
