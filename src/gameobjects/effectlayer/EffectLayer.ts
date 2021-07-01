@@ -1,3 +1,4 @@
+import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { IEffectLayer } from './IEffectLayer';
@@ -26,6 +27,7 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
+        const id = this.id;
         const shaders = this.shaders;
         const texture = this.texture;
 
@@ -37,10 +39,12 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
 
         if (shaders.length === 0)
         {
-            DrawTexturedQuad(renderPass, texture);
+            BatchTexturedQuad(texture, id, renderPass);
         }
         else
         {
+            renderPass.textures.clear();
+
             let prevTexture = texture;
 
             for (let i: number = 0; i < shaders.length; i++)
