@@ -62,6 +62,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.totalChildrenQuery = defineQuery([ this.tag ]);
         this.dirtyWorldQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent) ]);
 
+        // TODO - Check if bitecs fixes this in future version
+        this.dirtyWorldQuery(GameObjectWorld);
+
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
         this.listLength = 0;
