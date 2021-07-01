@@ -4,6 +4,7 @@ import { CheckShaderMaxIfStatements } from '../shaders/CheckShaderMaxIfStatement
 import { gl } from '../GL';
 
 //  As per the WebGL spec, the browser should always support at least 8 texture units
+//  However, the user can set this to any value they like (lower than this)
 
 export function CreateTempTextures (): Array<[ number, WebGLTexture ]>
 {
@@ -11,15 +12,16 @@ export function CreateTempTextures (): Array<[ number, WebGLTexture ]>
 
     const maxConfigTextures = GetMaxTextures();
 
+    console.log('maxConfigTextures', maxConfigTextures);
+
     if (maxConfigTextures === 0 || maxConfigTextures > maxGPUTextures)
     {
         //  Insert gpu limit into config value
         SetMaxTextures(maxGPUTextures);
     }
-    else if (maxConfigTextures > 0 && maxConfigTextures < maxGPUTextures)
+    else
     {
-        //  Limit to config setting, or 8, whichever is higher
-        maxGPUTextures = Math.max(8, maxConfigTextures);
+        maxGPUTextures = maxConfigTextures;
     }
 
     const textures: Array<[ number, WebGLTexture ]> = [];
