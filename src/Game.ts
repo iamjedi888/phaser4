@@ -64,8 +64,8 @@ export class Game extends EventEmitter
 
         const renderer = GetRenderer();
 
-        this.renderer = new renderer();
         this.textureManager = new TextureManager();
+        this.renderer = new renderer();
         this.sceneManager = new SceneManager();
 
         //  Only add to the DOM if they either didn't set a Parent, or expressly set it to be non-null
@@ -90,12 +90,14 @@ export class Game extends EventEmitter
 
         Emit(this, 'boot');
 
-        this.lastTick = performance.now();
-        this.prevFrame = performance.now();
+        const now = performance.now();
+
+        this.lastTick = now;
+        this.prevFrame = now;
 
         this.renderStats = GetRenderStatsAsObject();
 
-        this.step(this.lastTick);
+        this.step(now);
     }
 
     pause (): void
