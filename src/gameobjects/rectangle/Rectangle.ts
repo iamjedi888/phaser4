@@ -38,8 +38,6 @@ export class Rectangle extends Container implements IRectangle
         this.size.set(width, height);
 
         this.color = color;
-
-        console.log('Rect created', id);
     }
 
     setColor (color: number): this
@@ -57,8 +55,6 @@ export class Rectangle extends Container implements IRectangle
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
         BatchTexturedQuad(this.texture, this.id, renderPass);
-
-        debugger;
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
