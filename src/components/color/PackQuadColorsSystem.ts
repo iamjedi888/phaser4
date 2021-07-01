@@ -14,10 +14,10 @@ const packQuadColorsSystem = defineSystem(world =>
     {
         const id = entities[i];
 
-        const v1 = QuadVertexComponent.v1[id];
-        const v2 = QuadVertexComponent.v2[id];
-        const v3 = QuadVertexComponent.v3[id];
-        const v4 = QuadVertexComponent.v4[id];
+        const v1 = QuadVertexComponent.tl[id];
+        const v2 = QuadVertexComponent.bl[id];
+        const v3 = QuadVertexComponent.br[id];
+        const v4 = QuadVertexComponent.tr[id];
 
         const color = PackColor(ColorComponent.tint[id], ColorComponent.alpha[id]);
 

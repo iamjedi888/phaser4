@@ -35,10 +35,10 @@ export class Sprite extends Container implements ISprite
 
         addComponent(GameObjectWorld, QuadVertexComponent, id);
 
-        QuadVertexComponent.v1[id] = AddVertex();
-        QuadVertexComponent.v2[id] = AddVertex();
-        QuadVertexComponent.v3[id] = AddVertex();
-        QuadVertexComponent.v4[id] = AddVertex();
+        QuadVertexComponent.tl[id] = AddVertex();
+        QuadVertexComponent.bl[id] = AddVertex();
+        QuadVertexComponent.br[id] = AddVertex();
+        QuadVertexComponent.tr[id] = AddVertex();
 
         this.setTexture(texture, frame);
     }

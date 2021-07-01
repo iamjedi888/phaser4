@@ -10,10 +10,10 @@ export function BatchTexturedQuad <T extends ITexture> (texture: T, id: number, 
 
     const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
 
-    let vertOffset = AddVertexToBatch(QuadVertexComponent.v1[id], offset, textureIndex, F32, U32);
-    vertOffset = AddVertexToBatch(QuadVertexComponent.v2[id], vertOffset, textureIndex, F32, U32);
-    vertOffset = AddVertexToBatch(QuadVertexComponent.v3[id], vertOffset, textureIndex, F32, U32);
-    AddVertexToBatch(QuadVertexComponent.v4[id], vertOffset, textureIndex, F32, U32);
+    let vertOffset = AddVertexToBatch(QuadVertexComponent.tl[id], offset, textureIndex, F32, U32);
+    vertOffset = AddVertexToBatch(QuadVertexComponent.bl[id], vertOffset, textureIndex, F32, U32);
+    vertOffset = AddVertexToBatch(QuadVertexComponent.br[id], vertOffset, textureIndex, F32, U32);
+    AddVertexToBatch(QuadVertexComponent.tr[id], vertOffset, textureIndex, F32, U32);
 }
 
 /*

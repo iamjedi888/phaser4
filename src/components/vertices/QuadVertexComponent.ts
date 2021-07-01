@@ -1,10 +1,10 @@
 import { Types, defineComponent } from 'bitecs';
 
 const QuadVertex = defineComponent({
-    v1: Types.ui32,
-    v2: Types.ui32,
-    v3: Types.ui32,
-    v4: Types.ui32
+    tl: Types.ui32,
+    bl: Types.ui32,
+    br: Types.ui32,
+    tr: Types.ui32
 });
 
 export const QuadVertexComponent = QuadVertex;

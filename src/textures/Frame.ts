@@ -156,16 +156,10 @@ export class Frame implements IFrame
     {
         const { u0, u1, v0, v1 } = this;
 
-        //  TODO: Move to a system based on frame change
-        SetUV(QuadVertexComponent.v1[id], u0, v0);
-        SetUV(QuadVertexComponent.v2[id], u0, v1);
-        SetUV(QuadVertexComponent.v3[id], u1, v1);
-        SetUV(QuadVertexComponent.v4[id], u1, v0);
-
-        // vertices[offset + 0].setUV(u0, v0);
-        // vertices[offset + 1].setUV(u0, v1);
-        // vertices[offset + 2].setUV(u1, v1);
-        // vertices[offset + 3].setUV(u1, v0);
+        SetUV(QuadVertexComponent.tl[id], u0, v0);
+        SetUV(QuadVertexComponent.bl[id], u0, v1);
+        SetUV(QuadVertexComponent.br[id], u1, v1);
+        SetUV(QuadVertexComponent.tr[id], u1, v0);
 
         return this;
     }

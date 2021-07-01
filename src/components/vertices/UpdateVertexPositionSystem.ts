@@ -31,10 +31,10 @@ const updateVertexPositionSystem = defineSystem(world =>
         const right = Extent2DComponent.right[id];
         const bottom = Extent2DComponent.bottom[id];
 
-        const v1 = QuadVertexComponent.v1[id];
-        const v2 = QuadVertexComponent.v2[id];
-        const v3 = QuadVertexComponent.v3[id];
-        const v4 = QuadVertexComponent.v4[id];
+        const v1 = QuadVertexComponent.tl[id];
+        const v2 = QuadVertexComponent.bl[id];
+        const v3 = QuadVertexComponent.br[id];
+        const v4 = QuadVertexComponent.tr[id];
 
         const x0 = (x * a) + (y * c) + tx;
         const y0 = (x * b) + (y * d) + ty;
