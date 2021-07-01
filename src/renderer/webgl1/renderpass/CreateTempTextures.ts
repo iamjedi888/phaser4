@@ -12,8 +12,6 @@ export function CreateTempTextures (): Array<[ number, WebGLTexture ]>
 
     const maxConfigTextures = GetMaxTextures();
 
-    console.log('maxConfigTextures', maxConfigTextures);
-
     if (maxConfigTextures === 0 || maxConfigTextures > maxGPUTextures)
     {
         //  Insert gpu limit into config value
