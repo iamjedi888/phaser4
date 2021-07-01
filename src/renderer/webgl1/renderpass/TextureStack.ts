@@ -41,7 +41,7 @@ export class TextureStack
     //  returns the new ID
     set (texture: ITexture): number
     {
-        if (!texture.image)
+        if (!texture.binding)
         {
             return -1;
         }
@@ -50,16 +50,14 @@ export class TextureStack
         const textures = this.textures;
 
         //  Make sure texture isn't already bound
-        if (binding && !binding.isBound)
+        if (!binding.isBound)
         {
             //  Is the current texture Map full? If so, flush it all
             if (textures.size === this.maxTextures)
             {
                 Flush(this.renderPass);
 
-                textures.forEach(texture => texture.binding.unbind());
-
-                textures.clear();
+                this.clear();
             }
 
             // Add texture to the map
@@ -98,6 +96,13 @@ export class TextureStack
         });
     }
 
+    clear (): void
+    {
+        this.textures.forEach(texture => texture.binding.unbind());
+
+        this.textures.clear();
+    }
+
     reset (): void
     {
         this.tempTextures.forEach((texture, index) =>
@@ -107,8 +112,6 @@ export class TextureStack
             gl.bindTexture(gl.TEXTURE_2D, texture);
         });
 
-        this.textures.forEach(texture => texture.binding.unbind());
-
-        this.textures.clear();
+        this.clear();
     }
 }
