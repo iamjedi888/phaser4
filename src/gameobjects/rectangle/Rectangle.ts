@@ -37,12 +37,12 @@ export class Rectangle extends Container implements IRectangle
 
         this.size.set(width, height);
 
-        this.color = color;
+        this.tint = color;
     }
 
     setColor (color: number): this
     {
-        this.color = color;
+        this.tint = color;
 
         return this;
     }
@@ -64,12 +64,12 @@ export class Rectangle extends Container implements IRectangle
         // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }
 
-    get color (): number
+    get tint (): number
     {
         return ColorComponent.tint[this.id];
     }
 
-    set color (value: number)
+    set tint (value: number)
     {
         SetTint(this.id, value);
     }

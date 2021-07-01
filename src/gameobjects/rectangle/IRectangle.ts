@@ -2,7 +2,7 @@ import { IContainer } from '../container/IContainer';
 
 export interface IRectangle extends IContainer
 {
-    color: number;
+    tint: number;
 
     setColor (color: number): this;
 }
