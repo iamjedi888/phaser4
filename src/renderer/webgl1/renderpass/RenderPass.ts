@@ -1,6 +1,7 @@
 import { BlendModeStack } from './BlendModeStack';
 import { FramebufferStack } from './FramebufferStack';
 import { GetBatchSize } from '../../../config/batchsize/GetBatchSize';
+import { GetMaxTextures } from '../../../config/maxtextures';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
 import { IShader } from '../shaders/IShader';
@@ -12,8 +13,8 @@ import { Matrix4 } from '../../../math/mat4/Matrix4';
 import { MultiTextureQuadShader } from '../shaders';
 import { QuadShader } from '../shaders/QuadShader';
 import { ShaderStack } from './ShaderStack';
-import { SingleTextureStack } from './SingleTextureStack';
 import { StaticCamera } from '../../../camera';
+import { TextureStack } from './TextureStack';
 import { VertexBufferStack } from './VertexBufferStack';
 import { ViewportStack } from './ViewportStack';
 
@@ -34,7 +35,7 @@ export class RenderPass implements IRenderPass
     blendMode: BlendModeStack;
     shader: ShaderStack;
     viewport: ViewportStack;
-    textures: SingleTextureStack;
+    textures: TextureStack;
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
@@ -55,7 +56,7 @@ export class RenderPass implements IRenderPass
         this.blendMode = new BlendModeStack(this);
         this.shader = new ShaderStack(this);
         this.viewport = new ViewportStack(this);
-        this.textures = new SingleTextureStack(this);
+        this.textures = new TextureStack(this);
 
         this.reset();
     }
@@ -91,8 +92,14 @@ export class RenderPass implements IRenderPass
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         this.vertexbuffer.setDefault(new IndexedVertexBuffer({ name: 'sprite', batchSize: GetBatchSize(), indexLayout }));
 
-        // this.shader.setDefault(new MultiTextureQuadShader());
-        this.shader.setDefault(new QuadShader());
+        if (GetMaxTextures() === 1)
+        {
+            this.shader.setDefault(new QuadShader());
+        }
+        else
+        {
+            this.shader.setDefault(new MultiTextureQuadShader());
+        }
     }
 
     resize (width: number, height: number): void

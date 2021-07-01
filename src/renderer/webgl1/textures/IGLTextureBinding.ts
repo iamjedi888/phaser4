@@ -6,20 +6,25 @@ export interface IGLTextureBinding
     texture: WebGLTexture;
     framebuffer: WebGLFramebuffer;
     depthbuffer?: WebGLRenderbuffer;
-    index: number;
-    indexCounter: number;
+
+    isBound: boolean;
+    textureUnit: number;
+
     unpackPremultiplyAlpha: boolean;
+
     minFilter: GLenum;
     magFilter: GLenum;
     wrapS: GLenum;
     wrapT: GLenum;
+
     flipY: boolean;
     isPOT: boolean;
     generateMipmap: boolean;
-    dirtyIndex: boolean;
+
     setFilter (linear: boolean): void;
-    setIndex (index: number): void;
     create (): WebGLTexture;
     update (): WebGLTexture;
+    bind(index: number): void;
+    unbind(): void;
     destroy (): void;
 }

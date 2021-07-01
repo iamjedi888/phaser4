@@ -17,10 +17,9 @@ export class GLTextureBinding implements IGLTextureBinding
     framebuffer: WebGLFramebuffer;
     depthbuffer: WebGLRenderbuffer;
 
-    index: number = 0;
-    indexCounter: number = -1;
+    isBound: boolean = false;
+    textureUnit: number = 0;
 
-    dirtyIndex: boolean = true;
     unpackPremultiplyAlpha: boolean = true;
 
     minFilter: GLenum;
@@ -114,14 +113,22 @@ export class GLTextureBinding implements IGLTextureBinding
         }
     }
 
-    setIndex (index: number): void
+    bind (index: number): void
     {
-        this.dirtyIndex = (index !== this.index);
-        this.index = index;
+        this.isBound = true;
+        this.textureUnit = index;
+    }
+
+    unbind (): void
+    {
+        this.isBound = false;
+        this.textureUnit = 0;
     }
 
     destroy (): void
     {
+        this.unbind();
+
         DeleteGLTexture(this.texture);
         DeleteFramebuffer(this.framebuffer);
 

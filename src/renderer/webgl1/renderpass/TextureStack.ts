@@ -9,13 +9,11 @@ export class TextureStack
 {
     renderPass: IRenderPass;
 
-    //  The maximum number of combined image units the GPU supports
-    //  According to the WebGL spec the minimum is 8
-    maxTextures: number = 0;
-    currentActiveTexture: number = 0;
-    startActiveTexture: number = 0;
-    tempTextures: WebGLTexture[] = [];
-    textureIndex: number[] = [];
+    textures: Map<number, ITexture>;
+    tempTextures: Map<number, WebGLTexture>;
+    textureIndex: number[];
+
+    maxTextures: number;
 
     constructor (renderPass: IRenderPass)
     {
@@ -27,7 +25,7 @@ export class TextureStack
     {
         const binding = texture.binding;
 
-        binding.setIndex(index);
+        binding.bind(index);
 
         gl.activeTexture(gl.TEXTURE0 + index);
         gl.bindTexture(gl.TEXTURE_2D, binding.texture);
@@ -37,72 +35,80 @@ export class TextureStack
     {
         gl.activeTexture(gl.TEXTURE0 + index);
         gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
-
-        if (index > 0)
-        {
-            this.startActiveTexture++;
-        }
     }
 
     //  request the next available texture and bind it
     //  returns the new ID
     set (texture: ITexture): number
     {
-        const binding = texture.binding;
-        const currentActiveTexture = this.currentActiveTexture;
-
-        if (binding.indexCounter < this.startActiveTexture)
+        if (!texture.image)
         {
-            binding.indexCounter = this.startActiveTexture;
-
-            if (currentActiveTexture < this.maxTextures)
-            {
-                binding.setIndex(currentActiveTexture);
-
-                gl.activeTexture(gl.TEXTURE0 + currentActiveTexture);
-                gl.bindTexture(gl.TEXTURE_2D, binding.texture);
-
-                this.currentActiveTexture++;
-            }
-            else
-            {
-                //  We're out of textures, so flush the batch and reset back to 1
-                Flush(this.renderPass);
-
-                this.startActiveTexture++;
-
-                binding.indexCounter = this.startActiveTexture;
-
-                binding.setIndex(1);
-
-                gl.activeTexture(gl.TEXTURE1);
-                gl.bindTexture(gl.TEXTURE_2D, binding.texture);
-
-                this.currentActiveTexture = 2;
-            }
+            return -1;
         }
 
-        return binding.index;
+        const binding = texture.binding;
+        const textures = this.textures;
+
+        //  Make sure texture isn't already bound
+        if (binding && !binding.isBound)
+        {
+            //  Is the current texture Map full? If so, flush it all
+            if (textures.size === this.maxTextures)
+            {
+                Flush(this.renderPass);
+
+                textures.forEach(texture => texture.binding.unbind());
+
+                textures.clear();
+            }
+
+            // Add texture to the map
+            const textureUnit = textures.size;
+
+            gl.activeTexture(gl.TEXTURE0 + textureUnit);
+            gl.bindTexture(gl.TEXTURE_2D, binding.texture);
+
+            textures.set(textureUnit, texture);
+
+            binding.bind(textureUnit);
+        }
+
+        return binding.textureUnit;
     }
 
     setDefault (): void
     {
-        CreateTempTextures(this);
+        if (this.textures)
+        {
+            this.reset();
+        }
+
+        const tempTextures = CreateTempTextures();
+
+        this.maxTextures = tempTextures.length;
+
+        this.tempTextures = new Map(tempTextures);
+        this.textures = new Map();
+
+        this.textureIndex = [];
+
+        this.tempTextures.forEach((texture, index) =>
+        {
+            this.textureIndex.push(index);
+        });
     }
 
     reset (): void
     {
-        const temp = this.tempTextures;
-
-        for (let i: number = 0; i < temp.length; i++)
+        this.tempTextures.forEach((texture, index) =>
         {
-            gl.activeTexture(gl.TEXTURE0 + i);
+            gl.activeTexture(gl.TEXTURE0 + index);
 
-            gl.bindTexture(gl.TEXTURE_2D, temp[i]);
-        }
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+        });
 
-        this.currentActiveTexture = 1;
+        this.textures.forEach(texture => texture.binding.unbind());
 
-        this.startActiveTexture++;
+        this.textures.clear();
     }
 }
