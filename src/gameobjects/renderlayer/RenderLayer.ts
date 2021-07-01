@@ -1,16 +1,17 @@
-import { ClearDirtyChildCache, HasDirtyChildCache, SetDirtyDisplayList, SetDirtyParents } from '../../components/dirty';
+import { AddVertex, QuadVertexComponent } from '../../components/vertices';
+import { ClearDirtyChildCache, HasDirtyChildCache, SetDirtyParents } from '../../components/dirty';
 import { GetHeight, GetResolution, GetWidth } from '../../config/size';
 import { SetWillCacheChildren, WillCacheChildren } from '../../components/permissions';
 
-import { CreateFramebuffer } from '../../renderer/webgl1/fbo/CreateFramebuffer';
-import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
+import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
-import { GetWorldID } from '../../components/hierarchy';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
 import { Texture } from '../../textures/Texture';
+import { addComponent } from 'bitecs';
 
 //  The RenderLayer works like a normal Layer, except it automatically caches
 //  all of its renderable children to its own texture. The children are drawn
@@ -36,15 +37,25 @@ export class RenderLayer extends Layer implements IRenderLayer
         const height = GetHeight();
         const resolution = GetResolution();
 
+        const id = this.id;
+
         //  TODO: Allow them to set this via a filterArea
-        //  TODO: This code is duplicate of Shader constructor, consolidate
         const texture = new Texture(null, width * resolution, height * resolution);
 
-        const binding = new GLTextureBinding(texture);
+        texture.key = this.type + id.toString();
 
-        texture.binding = binding;
+        const binding = new GLTextureBinding(texture, {
+            createFramebuffer: true,
+            flipY: true
+        });
 
-        binding.framebuffer = CreateFramebuffer(binding.texture);
+        addComponent(GameObjectWorld, QuadVertexComponent, id);
+
+        //  inversed UV coordinates:
+        QuadVertexComponent.tl[id] = AddVertex(0, 0, 0, 0, 1);
+        QuadVertexComponent.bl[id] = AddVertex(0, height, 0, 0, 0);
+        QuadVertexComponent.br[id] = AddVertex(width, height, 0, 1, 0);
+        QuadVertexComponent.tr[id] = AddVertex(width, 0, 0, 1, 1);
 
         this.texture = texture;
         this.framebuffer = binding.framebuffer;
@@ -77,6 +88,6 @@ export class RenderLayer extends Layer implements IRenderLayer
             SetDirtyParents(id);
         }
 
-        DrawTexturedQuad(renderPass, this.texture);
+        BatchTexturedQuad(this.texture, id, renderPass);
     }
 }
