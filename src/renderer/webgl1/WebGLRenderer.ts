@@ -55,6 +55,9 @@ export class WebGLRenderer
         this.renderPass = new RenderPass(this);
 
         this.resize(this.width, this.height, this.resolution);
+
+        //  Process default textures from the Texture Manager
+        ProcessBindingQueue();
     }
 
     initContext (): void
