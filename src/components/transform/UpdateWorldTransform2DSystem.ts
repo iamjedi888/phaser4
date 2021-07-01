@@ -32,6 +32,8 @@ const updateWorldTransformSystem = defineSystem(world =>
             MultiplyLocalWithWorld(parent.id, id);
         }
     }
+
+    return world;
 });
 
 export const UpdateWorldTransform2DSystem = updateWorldTransformSystem;
