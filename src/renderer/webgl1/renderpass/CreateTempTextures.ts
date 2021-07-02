@@ -1,6 +1,5 @@
 import { GetMaxTextures, SetMaxTextures } from '../../../config/maxtextures/';
 
-import { CheckShaderMaxIfStatements } from '../shaders/CheckShaderMaxIfStatements';
 import { gl } from '../GL';
 
 //  As per the WebGL spec, the browser should always support at least 8 texture units
@@ -8,7 +7,7 @@ import { gl } from '../GL';
 
 export function CreateTempTextures (): Array<[ number, WebGLTexture ]>
 {
-    let maxGPUTextures: number = CheckShaderMaxIfStatements(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
+    let maxGPUTextures: number = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 
     const maxConfigTextures = GetMaxTextures();
 

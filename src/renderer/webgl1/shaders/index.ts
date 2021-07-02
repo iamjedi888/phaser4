@@ -1,4 +1,3 @@
-import { CheckShaderMaxIfStatements } from './CheckShaderMaxIfStatements';
 import { CreateAttributes } from './CreateAttributes';
 import { CreateProgram } from './CreateProgram';
 import { CreateShader } from './CreateShader';
@@ -13,7 +12,6 @@ import { QuadShader } from './QuadShader';
 import { Shader } from './Shader';
 
 export {
-    CheckShaderMaxIfStatements,
     CreateAttributes,
     CreateProgram,
     CreateShader,
