@@ -14,7 +14,7 @@ export class FXShader extends QuadShader implements IShader
     private timeVar: string;
     private resolutionVar: string;
 
-    timeScale: number = 1;
+    timeScale: number;
 
     constructor (config: IFXShaderConfig = {})
     {
@@ -26,7 +26,8 @@ export class FXShader extends QuadShader implements IShader
 
         const {
             timeUniform = 'uTime',
-            resolutionUniform = 'uResolution'
+            resolutionUniform = 'uResolution',
+            timeScale = 1
         } = config;
 
         const uniforms = [ ... this.uniformSetters.keys() ];
@@ -43,6 +44,8 @@ export class FXShader extends QuadShader implements IShader
         {
             this.resolutionVar = undefined;
         }
+
+        this.timeScale = timeScale;
     }
 
     bind (renderPass: IRenderPass): boolean
