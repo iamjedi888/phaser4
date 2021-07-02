@@ -7,6 +7,7 @@ import { JSONGeometryFile } from './JSONGeometryFile';
 import { OBJFile } from './OBJFile';
 import { OBJGeometryFile } from './OBJGeometryFile';
 import { SpriteSheetFile } from './SpriteSheetFile';
+import { TextureFile } from './TextureFile';
 import { XMLFile } from './XMLFile';
 
 export {
@@ -19,5 +20,6 @@ export {
     OBJFile,
     OBJGeometryFile,
     SpriteSheetFile,
+    TextureFile,
     XMLFile
 };
