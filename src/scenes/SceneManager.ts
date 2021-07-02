@@ -46,12 +46,6 @@ export class SceneManager
 
     boot (): void
     {
-        // TODO - Check if bitecs fixes this in future version
-        this.changedMatrixQuery(GameObjectWorld);
-        UpdateLocalTransform2DSystem(GameObjectWorld);
-        PackQuadColorsSystem(GameObjectWorld);
-        UpdateVertexPositionSystem(GameObjectWorld);
-
         GetScenes().forEach(scene => new scene());
     }
 
