@@ -4,6 +4,8 @@ import { IShader } from './IShader';
 import { IShaderConfig } from './IShaderConfig';
 import { Shader } from './Shader';
 
+//  Do we even need this class? As Shader defaults to this anyway :)
+
 export class QuadShader extends Shader implements IShader
 {
     constructor (config: IShaderConfig = {})
@@ -13,6 +15,7 @@ export class QuadShader extends Shader implements IShader
         super(config);
     }
 
+    /*
     bind (renderPass: IRenderPass): boolean
     {
         const uniforms = this.uniforms;
@@ -22,4 +25,5 @@ export class QuadShader extends Shader implements IShader
 
         return super.bind(renderPass);
     }
+    */
 }
