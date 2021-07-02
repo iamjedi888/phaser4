@@ -8,11 +8,9 @@ export class QuadShader extends Shader implements IShader
 {
     constructor (config: IShaderConfig = {})
     {
-        const shaderConfig = config;
+        config.attributes = config?.attributes || DefaultQuadAttributes;
 
-        shaderConfig.attributes = (!shaderConfig.attributes) ? DefaultQuadAttributes : shaderConfig.attributes;
-
-        super(shaderConfig);
+        super(config);
     }
 
     bind (renderPass: IRenderPass): boolean
