@@ -48,6 +48,8 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
         {
             renderPass.textures.clear();
 
+            // renderPass.viewport.set(0, 0, 400, 600);
+
             let prevTexture = texture;
 
             for (let i: number = 0; i < shaders.length; i++)
@@ -60,6 +62,8 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
             }
 
             DrawTexturedQuad(renderPass, prevTexture);
+
+            // renderPass.viewport.pop();
         }
     }
 }
