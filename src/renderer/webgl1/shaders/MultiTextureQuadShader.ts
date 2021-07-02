@@ -8,10 +8,7 @@ export class MultiTextureQuadShader extends QuadShader
 {
     constructor (config: IShaderConfig = {})
     {
-        if (!config.fragmentShader)
-        {
-            config.fragmentShader = MULTI_QUAD_FRAG;
-        }
+        config.fragmentShader = config?.fragmentShader || MULTI_QUAD_FRAG;
 
         super(config);
     }
