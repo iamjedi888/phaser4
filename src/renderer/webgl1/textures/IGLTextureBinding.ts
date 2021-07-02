@@ -3,9 +3,13 @@ import { ITexture } from '../../../textures/ITexture';
 export interface IGLTextureBinding
 {
     parent: ITexture;
+
     texture: WebGLTexture;
     framebuffer: WebGLFramebuffer;
     depthbuffer?: WebGLRenderbuffer;
+
+    format: GLenum;
+    compressed: boolean;
 
     isBound: boolean;
     textureUnit: number;

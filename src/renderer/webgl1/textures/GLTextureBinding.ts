@@ -18,6 +18,9 @@ export class GLTextureBinding implements IGLTextureBinding
     framebuffer: WebGLFramebuffer;
     depthbuffer: WebGLRenderbuffer;
 
+    format: GLenum;
+    compressed: boolean;
+
     isBound: boolean = false;
     textureUnit: number = 0;
 
@@ -39,6 +42,9 @@ export class GLTextureBinding implements IGLTextureBinding
         this.isPOT = IsSizePowerOfTwo(parent.width, parent.height);
 
         const {
+            data = null,
+            compressed = false,
+            format = gl.COMPRESSED_TEXTURE_FORMATS,
             texture = null,
             framebuffer = null,
             createFramebuffer = false,
@@ -51,6 +57,9 @@ export class GLTextureBinding implements IGLTextureBinding
             generateMipmap = this.isPOT,
             flipY = false
         } = config;
+
+        this.compressed = compressed;
+        this.format = format;
 
         this.minFilter = minFilter;
         this.magFilter = magFilter;
@@ -66,7 +75,7 @@ export class GLTextureBinding implements IGLTextureBinding
         }
         else
         {
-            CreateGLTexture(this);
+            CreateGLTexture(this, data);
         }
 
         if (framebuffer)
