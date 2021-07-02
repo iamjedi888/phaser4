@@ -72,8 +72,6 @@ export class Shader implements IShader
             const texture = new Texture(null, width * resolution, height * resolution);
             const binding = new GLTextureBinding(texture);
 
-            texture.binding = binding;
-
             binding.framebuffer = CreateFramebuffer(binding.texture);
 
             if (renderToDepthbuffer)
