@@ -1,6 +1,7 @@
 import { ShaderAttributeEntry } from './CreateAttributes';
 
-export type IShaderConfig = {
+export interface IShaderConfig
+{
     attributes?: Record<string, ShaderAttributeEntry>;
     fragmentShader?: string;
     height?: number;
@@ -11,4 +12,4 @@ export type IShaderConfig = {
     uniforms?: Record<string, Number | Float32List>;
     vertexShader?: string;
     width?: number;
-};
+}
