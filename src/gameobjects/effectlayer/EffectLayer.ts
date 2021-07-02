@@ -2,6 +2,7 @@ import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad'
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { IEffectLayer } from './IEffectLayer';
+import { IRectangle } from '../../geom/rectangle/IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { RenderLayer } from '../renderlayer/RenderLayer';
@@ -12,6 +13,8 @@ import { RenderLayer } from '../renderlayer/RenderLayer';
 export class EffectLayer extends RenderLayer implements IEffectLayer
 {
     readonly type: string = 'EffectLayer';
+
+    filterArea: IRectangle;
 
     shaders: IShader[] = [];
 
