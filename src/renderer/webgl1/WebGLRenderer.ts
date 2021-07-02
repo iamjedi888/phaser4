@@ -32,6 +32,8 @@ export class WebGLRenderer
 
     contextLost: boolean = false;
 
+    compression: { ETC1: boolean, PVRTC: boolean, S3TC: boolean };
+
     constructor ()
     {
         this.width = GetWidth();
@@ -67,6 +69,16 @@ export class WebGLRenderer
         GL.set(gl);
 
         this.gl = gl;
+
+        const extString = 'WEBGL_compressed_texture_';
+        const wkExtString = 'WEBKIT_' + extString;
+        const hasExt = (format: string) => gl.getExtension(format);
+
+        this.compression = {
+            ETC1: hasExt(extString + 'etc1') || hasExt(wkExtString + 'etc1'),
+            PVRTC: hasExt(extString + 'pvrtc') || hasExt(wkExtString + 'pvrtc'),
+            S3TC: hasExt(extString + 's3tc') || hasExt(wkExtString + 's3tc')
+        };
 
         gl.disable(gl.DEPTH_TEST);
         gl.disable(gl.CULL_FACE);
