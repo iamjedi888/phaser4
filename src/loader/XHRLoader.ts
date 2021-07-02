@@ -12,7 +12,9 @@ export function XHRLoader (file: File): Promise<File>
     {
         xhr.onload = (): void =>
         {
-            file.data = xhr.responseText;
+            const type = file.responseType;
+
+            file.data = (type === 'text' || type === '') ? xhr.responseText : xhr.response;
             file.hasLoaded = true;
 
             resolve(file);
