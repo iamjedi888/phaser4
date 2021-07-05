@@ -36,6 +36,11 @@ function pvrtc4bppSize (width: number, height: number): number
     return width * height / 2;
 }
 
+function GetSize (width: number, height: number, x: number, y: number, dx: number, dy: number, mult: number = 16): number
+{
+    return Math.floor((width + x) / dx) * Math.floor((height + y) / dy) * mult;
+}
+
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_etc/
 // Size for:
@@ -48,7 +53,8 @@ function pvrtc4bppSize (width: number, height: number): number
 // COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2
 function dxtEtcSmallSize (width: number, height: number): number
 {
-    return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 8;
+    return GetSize(width, height, 3, 3, 4, 4, 8);
+    // return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 8;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/
@@ -64,87 +70,100 @@ function dxtEtcSmallSize (width: number, height: number): number
 // COMPRESSED_RGBA_ASTC_4x4_KHR
 function dxtEtcAstcBigSize (width: number, height: number): number
 {
-    return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 16;
+    return GetSize(width, height, 3, 3, 4, 4);
+    // return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc5x4Size (width: number, height: number): number
 {
-    return Math.floor((width + 4) / 5) * Math.floor((height + 3) / 4) * 16;
+    return GetSize(width, height, 4, 3, 5, 4);
+    // return Math.floor((width + 4) / 5) * Math.floor((height + 3) / 4) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc5x5Size (width: number, height: number): number
 {
-    return Math.floor((width + 4) / 5) * Math.floor((height + 4) / 5) * 16;
+    return GetSize(width, height, 4, 4, 5, 5);
+    // return Math.floor((width + 4) / 5) * Math.floor((height + 4) / 5) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc6x5Size (width: number, height: number): number
 {
-    return Math.floor((width + 5) / 6) * Math.floor((height + 4) / 5) * 16;
+    return GetSize(width, height, 5, 4, 6, 5);
+    // return Math.floor((width + 5) / 6) * Math.floor((height + 4) / 5) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc6x6Size (width: number, height: number): number
 {
-    return Math.floor((width + 5) / 6) * Math.floor((height + 5) / 6) * 16;
+    return GetSize(width, height, 5, 5, 6, 6);
+    // return Math.floor((width + 5) / 6) * Math.floor((height + 5) / 6) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc8x5Size (width: number, height: number): number
 {
-    return Math.floor((width + 7) / 8) * Math.floor((height + 4) / 5) * 16;
+    return GetSize(width, height, 7, 4, 8, 5);
+    // return Math.floor((width + 7) / 8) * Math.floor((height + 4) / 5) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc8x6Size (width: number, height: number): number
 {
-    return Math.floor((width + 7) / 8) * Math.floor((height + 5) / 6) * 16;
+    return GetSize(width, height, 7, 5, 8, 6);
+    // return Math.floor((width + 7) / 8) * Math.floor((height + 5) / 6) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc8x8Size (width: number, height: number): number
 {
-    return Math.floor((width + 7) / 8) * Math.floor((height + 7) / 8) * 16;
+    return GetSize(width, height, 7, 7, 8, 8);
+    // return Math.floor((width + 7) / 8) * Math.floor((height + 7) / 8) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc10x5Size (width: number, height: number): number
 {
-    return Math.floor((width + 9) / 10) * Math.floor((height + 4) / 5) * 16;
+    return GetSize(width, height, 9, 4, 10, 5);
+    // return Math.floor((width + 9) / 10) * Math.floor((height + 4) / 5) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc10x6Size (width: number, height: number): number
 {
-    return Math.floor((width + 9) / 10) * Math.floor((height + 5) / 6) * 16;
+    return GetSize(width, height, 9, 5, 10, 6);
+    // return Math.floor((width + 9) / 10) * Math.floor((height + 5) / 6) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc10x8Size (width: number, height: number): number
 {
-    return Math.floor((width + 9) / 10) * Math.floor((height + 7) / 8) * 16;
+    return GetSize(width, height, 9, 7, 10, 8);
+    // return Math.floor((width + 9) / 10) * Math.floor((height + 7) / 8) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc10x10Size (width: number, height: number): number
 {
-    return Math.floor((width + 9) / 10) * Math.floor((height + 9) / 10) * 16;
+    return GetSize(width, height, 9, 9, 10, 10);
+    // return Math.floor((width + 9) / 10) * Math.floor((height + 9) / 10) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc12x10Size (width: number, height: number): number
 {
-    return Math.floor((width + 11) / 12) * Math.floor((height + 9) / 10) * 16;
+    return GetSize(width, height, 11, 9, 12, 10);
+    // return Math.floor((width + 11) / 12) * Math.floor((height + 9) / 10) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 function atc12x12Size (width: number, height: number): number
 {
-    return Math.floor((width + 11) / 12) * Math.floor((height + 11) / 12) * 16;
+    return GetSize(width, height, 11, 11, 12, 12);
+    // return Math.floor((width + 11) / 12) * Math.floor((height + 11) / 12) * 16;
 }
-
 
 const PVR_CONSTANTS = {
     MAGIC_NUMBER: 0x03525650,
@@ -157,64 +176,42 @@ const PVR_CONSTANTS = {
     MIPMAPCOUNT_INDEX: 11,
     METADATA_SIZE_INDEX: 12,
     FORMATS: {
-        0: 'COMPRESSED_RGB_PVRTC_2BPPV1_IMG',
-        1: 'COMPRESSED_RGBA_PVRTC_2BPPV1_IMG',
-        2: 'COMPRESSED_RGB_PVRTC_4BPPV1_IMG',
-        3: 'COMPRESSED_RGBA_PVRTC_4BPPV1_IMG',
-        6: 'COMPRESSED_RGB8_ETC2',
-        7: 'COMPRESSED_RGB_S3TC_DXT1_EXT',
-        9: 'COMPRESSED_RGBA_S3TC_DXT3_EXT',
-        11: 'COMPRESSED_RGBA_S3TC_DXT5_EXT',
-        22: 'COMPRESSED_RGB8_ETC2',
-        23: 'COMPRESSED_RGBA8_ETC2_EAC',
-        24: 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2',
-        25: 'COMPRESSED_R11_EAC',
-        26: 'COMPRESSED_RG11_EAC',
-        27: 'COMPRESSED_RGBA_ASTC_4x4_KHR',
-        28: 'COMPRESSED_RGBA_ASTC_5x4_KHR',
-        29: 'COMPRESSED_RGBA_ASTC_5x5_KHR',
-        30: 'COMPRESSED_RGBA_ASTC_6x5_KHR',
-        31: 'COMPRESSED_RGBA_ASTC_6x6_KHR',
-        32: 'COMPRESSED_RGBA_ASTC_8x5_KHR',
-        33: 'COMPRESSED_RGBA_ASTC_8x6_KHR',
-        34: 'COMPRESSED_RGBA_ASTC_8x8_KHR',
-        35: 'COMPRESSED_RGBA_ASTC_10x5_KHR',
-        36: 'COMPRESSED_RGBA_ASTC_10x6_KHR',
-        37: 'COMPRESSED_RGBA_ASTC_10x8_KHR',
-        38: 'COMPRESSED_RGBA_ASTC_10x10_KHR',
-        39: 'COMPRESSED_RGBA_ASTC_12x10_KHR',
-        40: 'COMPRESSED_RGBA_ASTC_12x12_KHR'
-    },
-    SIZE_FUNCTIONS: {
-        0: pvrtc2bppSize,
-        1: pvrtc2bppSize,
-        2: pvrtc4bppSize,
-        3: pvrtc4bppSize,
-        6: dxtEtcSmallSize,
-        7: dxtEtcSmallSize,
-        9: dxtEtcAstcBigSize,
-        11: dxtEtcAstcBigSize,
-        22: dxtEtcSmallSize,
-        23: dxtEtcAstcBigSize,
-        24: dxtEtcSmallSize,
-        25: dxtEtcSmallSize,
-        26: dxtEtcAstcBigSize,
-        27: dxtEtcAstcBigSize,
-        28: atc5x4Size,
-        29: atc5x5Size,
-        30: atc6x5Size,
-        31: atc6x6Size,
-        32: atc8x5Size,
-        33: atc8x6Size,
-        34: atc8x8Size,
-        35: atc10x5Size,
-        36: atc10x6Size,
-        37: atc10x8Size,
-        38: atc10x10Size,
-        39: atc12x10Size,
-        40: atc12x12Size
+        0: { format: 'COMPRESSED_RGB_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 35841 },
+        1: { format: 'COMPRESSED_RGBA_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 35843 },
+        2: { format: 'COMPRESSED_RGB_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 35840 },
+        3: { format: 'COMPRESSED_RGBA_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 35842 },
+
+        6: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0 },
+
+        7: { format: 'COMPRESSED_RGB_S3TC_DXT1_EXT', sizeFunc: dxtEtcSmallSize, glFormat: 33776 },
+        9: { format: 'COMPRESSED_RGBA_S3TC_DXT3_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 35778 },
+        11: { format: 'COMPRESSED_RGBA_S3TC_DXT5_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 33779 },
+
+        22: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0 },
+        23: { format: 'COMPRESSED_RGBA8_ETC2_EAC', sizeFunc: dxtEtcAstcBigSize, glFormat: 0 },
+
+        24: { format: 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2', sizeFunc: dxtEtcSmallSize, glFormat: 0 },
+        25: { format: 'COMPRESSED_R11_EAC', sizeFunc: dxtEtcSmallSize, glFormat: 0 },
+        26: { format: 'COMPRESSED_RG11_EAC', sizeFunc: dxtEtcAstcBigSize, glFormat: 0 },
+
+        27: { format: 'COMPRESSED_RGBA_ASTC_4x4_KHR', sizeFunc: dxtEtcAstcBigSize, glFormat: 0 },
+        28: { format: 'COMPRESSED_RGBA_ASTC_5x4_KHR', sizeFunc: atc5x4Size, glFormat: 0 },
+        29: { format: 'COMPRESSED_RGBA_ASTC_5x5_KHR', sizeFunc: atc5x5Size, glFormat: 0 },
+        30: { format: 'COMPRESSED_RGBA_ASTC_6x5_KHR', sizeFunc: atc6x5Size, glFormat: 0 },
+        31: { format: 'COMPRESSED_RGBA_ASTC_6x6_KHR', sizeFunc: atc6x6Size, glFormat: 0 },
+        32: { format: 'COMPRESSED_RGBA_ASTC_8x5_KHR', sizeFunc: atc8x5Size, glFormat: 0 },
+        33: { format: 'COMPRESSED_RGBA_ASTC_8x6_KHR', sizeFunc: atc8x6Size, glFormat: 0 },
+        34: { format: 'COMPRESSED_RGBA_ASTC_8x8_KHR', sizeFunc: atc8x8Size, glFormat: 0 },
+        35: { format: 'COMPRESSED_RGBA_ASTC_10x5_KHR', sizeFunc: atc10x5Size, glFormat: 0 },
+        36: { format: 'COMPRESSED_RGBA_ASTC_10x6_KHR', sizeFunc: atc10x6Size, glFormat: 0 },
+        37: { format: 'COMPRESSED_RGBA_ASTC_10x8_KHR', sizeFunc: atc10x8Size, glFormat: 0 },
+        38: { format: 'COMPRESSED_RGBA_ASTC_10x10_KHR', sizeFunc: atc10x10Size, glFormat: 0 },
+        39: { format: 'COMPRESSED_RGBA_ASTC_12x10_KHR', sizeFunc: atc12x10Size, glFormat: 0 },
+        40: { format: 'COMPRESSED_RGBA_ASTC_12x12_KHR', sizeFunc: atc12x12Size, glFormat: 0 }
     }
 };
+
+//  Add the S3TC ALPHA formats to the above list and get gl enums for them
 
 function parsePVR (data)
 {
