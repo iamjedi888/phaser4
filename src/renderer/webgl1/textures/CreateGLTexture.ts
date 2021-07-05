@@ -50,17 +50,7 @@ export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, data?
             COMPRESSED_RGBA_PVRTC_2BPPV1_IMG: 0x8C03
         };
 
-        const ext = (
-            gl.getExtension('WEBGL_compressed_texture_s3tc') ||
-            gl.getExtension('MOZ_WEBGL_compressed_texture_s3tc') ||
-            gl.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc')
-        );
-
-        console.log('Formats:', format, formats[format], ext.COMPRESSED_RGB_PVRTC_2BPPV1_IMG);
-
         gl.compressedTexImage2D(gl.TEXTURE_2D, 0, formats[ format ], width, height, 0, data);
-
-        // gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ext.COMPRESSED_RGB_S3TC_DXT1_EXT, width, height, 0, data);
 
         //  If you don't set minFilter to LINEAR then the compressed textures don't work!
         minFilter = gl.LINEAR;
