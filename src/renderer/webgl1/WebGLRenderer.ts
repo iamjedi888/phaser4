@@ -32,7 +32,7 @@ export class WebGLRenderer
 
     contextLost: boolean = false;
 
-    compression: { ETC1: boolean, PVRTC: boolean, S3TC: boolean };
+    compression: { ETC: boolean, ETC1: boolean, ATC: boolean, ASTC: boolean, BPTC: boolean, RGTC: boolean, PVRTC: boolean, S3TC: boolean, S3TCSRGB: boolean };
 
     constructor ()
     {
@@ -75,10 +75,18 @@ export class WebGLRenderer
         const hasExt = (format: string) => gl.getExtension(format);
 
         this.compression = {
+            ETC: hasExt(extString + 'etc') || hasExt(wkExtString + 'etc'),
             ETC1: hasExt(extString + 'etc1') || hasExt(wkExtString + 'etc1'),
+            ATC: hasExt(extString + 'atc') || hasExt(wkExtString + 'atc'),
+            ASTC: hasExt(extString + 'astc') || hasExt(wkExtString + 'astc'),
+            BPTC: hasExt(extString + 'bptc') || hasExt(wkExtString + 'bptc'),
+            RGTC: hasExt(extString + 'rgtc') || hasExt(wkExtString + 'rgtc'),
             PVRTC: hasExt(extString + 'pvrtc') || hasExt(wkExtString + 'pvrtc'),
-            S3TC: hasExt(extString + 's3tc') || hasExt(wkExtString + 's3tc')
+            S3TC: hasExt(extString + 's3tc') || hasExt(wkExtString + 's3tc'),
+            S3TCSRGB: hasExt(extString + 's3tc_srgb') || hasExt(wkExtString + 's3tc_srgb')
         };
+
+        console.log(this.compression);
 
         gl.disable(gl.DEPTH_TEST);
         gl.disable(gl.CULL_FACE);
