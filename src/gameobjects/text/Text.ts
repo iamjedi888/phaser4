@@ -8,6 +8,8 @@ export type VerticalTextAlignment = 'ascent' | 'lineheight';
 
 export class Text extends Sprite
 {
+    readonly type: string = 'Text';
+
     private _text: string;
 
     preRenderCallback: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void;
@@ -180,7 +182,8 @@ export class Text extends Sprite
             canvas.height = canvasHeight;
 
             this.texture.setSize(displayWidth, displayHeight);
-            this.setSize(displayWidth, displayHeight);
+
+            this.size.set(displayWidth, displayHeight);
         }
 
         ctx.save();
@@ -254,7 +257,7 @@ export class Text extends Sprite
             this.texture.binding.update();
         }
 
-        this.setDirty(DIRTY_CONST.TEXTURE);
+        // this.setDirty(DIRTY_CONST.TEXTURE);
 
         return this;
     }
