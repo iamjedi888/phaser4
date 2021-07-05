@@ -174,41 +174,38 @@ const PVR_CONSTANTS = {
     HEIGHT_INDEX: 6,
     WIDTH_INDEX: 7,
     MIPMAPCOUNT_INDEX: 11,
-    METADATA_SIZE_INDEX: 12,
-    FORMATS: {
-        0: { format: 'COMPRESSED_RGB_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 35841 },
-        1: { format: 'COMPRESSED_RGBA_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 35843 },
-        2: { format: 'COMPRESSED_RGB_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 35840 },
-        3: { format: 'COMPRESSED_RGBA_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 35842 },
+    METADATA_SIZE_INDEX: 12
+};
 
-        6: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0 },
-
-        7: { format: 'COMPRESSED_RGB_S3TC_DXT1_EXT', sizeFunc: dxtEtcSmallSize, glFormat: 33776 },
-        9: { format: 'COMPRESSED_RGBA_S3TC_DXT3_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 35778 },
-        11: { format: 'COMPRESSED_RGBA_S3TC_DXT5_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 33779 },
-
-        22: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0 },
-        23: { format: 'COMPRESSED_RGBA8_ETC2_EAC', sizeFunc: dxtEtcAstcBigSize, glFormat: 0 },
-
-        24: { format: 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2', sizeFunc: dxtEtcSmallSize, glFormat: 0 },
-        25: { format: 'COMPRESSED_R11_EAC', sizeFunc: dxtEtcSmallSize, glFormat: 0 },
-        26: { format: 'COMPRESSED_RG11_EAC', sizeFunc: dxtEtcAstcBigSize, glFormat: 0 },
-
-        27: { format: 'COMPRESSED_RGBA_ASTC_4x4_KHR', sizeFunc: dxtEtcAstcBigSize, glFormat: 0 },
-        28: { format: 'COMPRESSED_RGBA_ASTC_5x4_KHR', sizeFunc: atc5x4Size, glFormat: 0 },
-        29: { format: 'COMPRESSED_RGBA_ASTC_5x5_KHR', sizeFunc: atc5x5Size, glFormat: 0 },
-        30: { format: 'COMPRESSED_RGBA_ASTC_6x5_KHR', sizeFunc: atc6x5Size, glFormat: 0 },
-        31: { format: 'COMPRESSED_RGBA_ASTC_6x6_KHR', sizeFunc: atc6x6Size, glFormat: 0 },
-        32: { format: 'COMPRESSED_RGBA_ASTC_8x5_KHR', sizeFunc: atc8x5Size, glFormat: 0 },
-        33: { format: 'COMPRESSED_RGBA_ASTC_8x6_KHR', sizeFunc: atc8x6Size, glFormat: 0 },
-        34: { format: 'COMPRESSED_RGBA_ASTC_8x8_KHR', sizeFunc: atc8x8Size, glFormat: 0 },
-        35: { format: 'COMPRESSED_RGBA_ASTC_10x5_KHR', sizeFunc: atc10x5Size, glFormat: 0 },
-        36: { format: 'COMPRESSED_RGBA_ASTC_10x6_KHR', sizeFunc: atc10x6Size, glFormat: 0 },
-        37: { format: 'COMPRESSED_RGBA_ASTC_10x8_KHR', sizeFunc: atc10x8Size, glFormat: 0 },
-        38: { format: 'COMPRESSED_RGBA_ASTC_10x10_KHR', sizeFunc: atc10x10Size, glFormat: 0 },
-        39: { format: 'COMPRESSED_RGBA_ASTC_12x10_KHR', sizeFunc: atc12x10Size, glFormat: 0 },
-        40: { format: 'COMPRESSED_RGBA_ASTC_12x12_KHR', sizeFunc: atc12x12Size, glFormat: 0 }
-    }
+const FORMATS = {
+    0: { format: 'COMPRESSED_RGB_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 0x8C01 },
+    1: { format: 'COMPRESSED_RGBA_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 0x8C03 },
+    2: { format: 'COMPRESSED_RGB_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 0x8C00 },
+    3: { format: 'COMPRESSED_RGBA_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 0x8C02 },
+    6: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0x8D64 },
+    7: { format: 'COMPRESSED_RGB_S3TC_DXT1_EXT', sizeFunc: dxtEtcSmallSize, glFormat: 0x83F0 },
+    8: { format: 'COMPRESSED_RGBA_S3TC_DXT1_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x83F1 },
+    9: { format: 'COMPRESSED_RGBA_S3TC_DXT3_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x83F2 },
+    11: { format: 'COMPRESSED_RGBA_S3TC_DXT5_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x83F3 },
+    22: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0x9274 },
+    23: { format: 'COMPRESSED_RGBA8_ETC2_EAC', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x9278 },
+    24: { format: 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2', sizeFunc: dxtEtcSmallSize, glFormat: 0x9276 },
+    25: { format: 'COMPRESSED_R11_EAC', sizeFunc: dxtEtcSmallSize, glFormat: 0x9270 },
+    26: { format: 'COMPRESSED_RG11_EAC', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x9272 },
+    27: { format: 'COMPRESSED_RGBA_ASTC_4x4_KHR', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x93B0 },
+    28: { format: 'COMPRESSED_RGBA_ASTC_5x4_KHR', sizeFunc: atc5x4Size, glFormat: 0x93B1 },
+    29: { format: 'COMPRESSED_RGBA_ASTC_5x5_KHR', sizeFunc: atc5x5Size, glFormat: 0x93B2 },
+    30: { format: 'COMPRESSED_RGBA_ASTC_6x5_KHR', sizeFunc: atc6x5Size, glFormat: 0x93B3 },
+    31: { format: 'COMPRESSED_RGBA_ASTC_6x6_KHR', sizeFunc: atc6x6Size, glFormat: 0x93B4 },
+    32: { format: 'COMPRESSED_RGBA_ASTC_8x5_KHR', sizeFunc: atc8x5Size, glFormat: 0x93B5 },
+    33: { format: 'COMPRESSED_RGBA_ASTC_8x6_KHR', sizeFunc: atc8x6Size, glFormat: 0x93B6 },
+    34: { format: 'COMPRESSED_RGBA_ASTC_8x8_KHR', sizeFunc: atc8x8Size, glFormat: 0x93B7 },
+    35: { format: 'COMPRESSED_RGBA_ASTC_10x5_KHR', sizeFunc: atc10x5Size, glFormat: 0x93B8 },
+    36: { format: 'COMPRESSED_RGBA_ASTC_10x6_KHR', sizeFunc: atc10x6Size, glFormat: 0x93B9 },
+    37: { format: 'COMPRESSED_RGBA_ASTC_10x8_KHR', sizeFunc: atc10x8Size, glFormat: 0x93BA },
+    38: { format: 'COMPRESSED_RGBA_ASTC_10x10_KHR', sizeFunc: atc10x10Size, glFormat: 0x93BB },
+    39: { format: 'COMPRESSED_RGBA_ASTC_12x10_KHR', sizeFunc: atc12x10Size, glFormat: 0x93BC },
+    40: { format: 'COMPRESSED_RGBA_ASTC_12x12_KHR', sizeFunc: atc12x12Size, glFormat: 0x93BD }
 };
 
 //  Add the S3TC ALPHA formats to the above list and get gl enums for them
@@ -219,8 +216,12 @@ function parsePVR (data)
 
     const pvrFormat = header[PVR_CONSTANTS.PIXEL_FORMAT_INDEX];
 
-    const formatEnum = PVR_CONSTANTS.FORMATS[pvrFormat];
-    const sizeFunction = PVR_CONSTANTS.SIZE_FUNCTIONS[pvrFormat];
+    console.log('pvrFormat', pvrFormat);
+
+    const format = FORMATS[pvrFormat];
+
+    const formatEnum = format.format;
+    const sizeFunction = format.sizeFunc;
 
     const mipMapLevels = header[PVR_CONSTANTS.MIPMAPCOUNT_INDEX];
 
