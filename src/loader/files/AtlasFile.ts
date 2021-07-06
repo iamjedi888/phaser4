@@ -1,10 +1,10 @@
 import { AtlasParser } from '../../textures/parsers/AtlasParser';
 import { File } from '../File';
+import { GetTexture } from '../../textures/GetTexture';
 import { GetURL } from '../GetURL';
 import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
-import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 
 export function AtlasFile (key: string, textureURL?: string, atlasURL?: string, glConfig?: IGLTextureBindingConfig): File
 {
@@ -28,8 +28,7 @@ export function AtlasFile (key: string, textureURL?: string, atlasURL?: string, 
                 image.load().then(() =>
                 {
                     //  By this stage, the JSON and image are loaded and in the texture manager
-
-                    AtlasParser(TextureManagerInstance.get().get(key), json.data);
+                    AtlasParser(GetTexture(key), json.data);
 
                     resolve(file);
 
