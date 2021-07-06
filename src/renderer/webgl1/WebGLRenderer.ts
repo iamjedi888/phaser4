@@ -3,8 +3,10 @@ import { GetHeight, GetResolution, GetWidth } from '../../config/size/';
 import { End } from './renderpass/End';
 import { GL } from './GL';
 import { GetBackgroundColor } from '../../config/backgroundcolor/GetBackgroundColor';
+import { GetCompressedTextures } from './textures/GetCompressedTextures';
 import { GetRGBArray } from './colors/GetRGBArray';
 import { GetWebGLContext } from '../../config/webglcontext/GetWebGLContext';
+import { ICompressedTextures } from './textures/ICompressedTextures';
 import { IRenderPass } from './renderpass/IRenderPass';
 import { IScene } from '../../scenes/IScene';
 import { ProcessBindingQueue } from './renderpass/ProcessBindingQueue';
@@ -32,7 +34,7 @@ export class WebGLRenderer
 
     contextLost: boolean = false;
 
-    compression: { ETC: boolean, ETC1: boolean, ATC: boolean, ASTC: boolean, BPTC: boolean, RGTC: boolean, PVRTC: boolean, S3TC: boolean, S3TCSRGB: boolean };
+    compression: ICompressedTextures;
 
     constructor ()
     {
@@ -70,21 +72,7 @@ export class WebGLRenderer
 
         this.gl = gl;
 
-        const extString = 'WEBGL_compressed_texture_';
-        const wkExtString = 'WEBKIT_' + extString;
-        const hasExt = (format: string) => gl.getExtension(format);
-
-        this.compression = {
-            ETC: hasExt(extString + 'etc') || hasExt(wkExtString + 'etc'),
-            ETC1: hasExt(extString + 'etc1') || hasExt(wkExtString + 'etc1'),
-            ATC: hasExt(extString + 'atc') || hasExt(wkExtString + 'atc'),
-            ASTC: hasExt(extString + 'astc') || hasExt(wkExtString + 'astc'),
-            BPTC: hasExt(extString + 'bptc') || hasExt(wkExtString + 'bptc'),
-            RGTC: hasExt(extString + 'rgtc') || hasExt(wkExtString + 'rgtc'),
-            PVRTC: hasExt(extString + 'pvrtc') || hasExt(wkExtString + 'pvrtc'),
-            S3TC: hasExt(extString + 's3tc') || hasExt(wkExtString + 's3tc'),
-            S3TCSRGB: hasExt(extString + 's3tc_srgb') || hasExt(wkExtString + 's3tc_srgb')
-        };
+        this.compression = GetCompressedTextures(gl);
 
         console.log(this.compression);
 
