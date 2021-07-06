@@ -21,6 +21,7 @@ export class GLTextureBinding implements IGLTextureBinding
     format: string;
     internalFormat: GLenum;
     compressed: boolean;
+    mipmaps: Uint8Array[];
 
     isBound: boolean = false;
     textureUnit: number = 0;
@@ -42,8 +43,10 @@ export class GLTextureBinding implements IGLTextureBinding
 
         this.isPOT = IsSizePowerOfTwo(parent.width, parent.height);
 
+        //  Add option to dump the mipmaps arrays after binding - but prevents context loss restoration
+
         const {
-            data = null,
+            mipmaps = null,
             compressed = false,
             format = '',
             internalFormat = 0,
@@ -63,8 +66,18 @@ export class GLTextureBinding implements IGLTextureBinding
         this.compressed = compressed;
         this.format = format;
         this.internalFormat = internalFormat;
+        this.mipmaps = mipmaps;
 
-        this.minFilter = minFilter;
+        //  If you don't set minFilter to LINEAR then the compressed textures don't work!
+        if (compressed)
+        {
+            this.minFilter = gl.LINEAR;
+        }
+        else
+        {
+            this.minFilter = minFilter;
+        }
+
         this.magFilter = magFilter;
         this.wrapS = wrapS;
         this.wrapT = wrapT;
@@ -78,7 +91,7 @@ export class GLTextureBinding implements IGLTextureBinding
         }
         else
         {
-            CreateGLTexture(this, data);
+            CreateGLTexture(this, mipmaps);
         }
 
         if (framebuffer)

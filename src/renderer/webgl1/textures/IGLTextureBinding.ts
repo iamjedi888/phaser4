@@ -11,6 +11,7 @@ export interface IGLTextureBinding
     format: string;
     internalFormat: GLenum;
     compressed: boolean;
+    mipmaps: Uint8Array[];
 
     isBound: boolean;
     textureUnit: number;
@@ -29,7 +30,7 @@ export interface IGLTextureBinding
     setFilter (linear: boolean): void;
     create (): WebGLTexture;
     update (): WebGLTexture;
-    bind(index: number): void;
-    unbind(): void;
+    bind (index: number): void;
+    unbind (): void;
     destroy (): void;
 }

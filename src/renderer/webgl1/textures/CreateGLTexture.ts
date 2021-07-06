@@ -1,7 +1,7 @@
 import { IGLTextureBinding } from './IGLTextureBinding';
 import { gl } from '../GL';
 
-export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, data?: Uint8Array): WebGLTexture
+export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, data?: Uint8Array[]): WebGLTexture
 {
     const { generateMipmap, minFilter, parent, compressed, internalFormat, flipY, unpackPremultiplyAlpha, magFilter, wrapS, wrapT, isPOT } = binding;
 
@@ -25,11 +25,12 @@ export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, data?
         width = source.width;
         height = source.height;
     }
-    else if (compressed)
+    else if (compressed && data)
     {
-        gl.compressedTexImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, data);
-
-        //  If you don't set minFilter to LINEAR then the compressed textures don't work!
+        for (let i = 0; i < data.length; i++)
+        {
+            gl.compressedTexImage2D(gl.TEXTURE_2D, i, internalFormat, width, height, 0, data[i]);
+        }
     }
     else
     {
