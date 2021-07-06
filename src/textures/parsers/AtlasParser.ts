@@ -7,7 +7,7 @@ import { Texture } from '../Texture';
 
 export function AtlasParser (texture: Texture, data: any): void
 {
-    let frames;
+    let frames: any[];
 
     if (Array.isArray(data.textures))
     {
@@ -22,7 +22,15 @@ export function AtlasParser (texture: Texture, data: any): void
     else if (data.hasOwnProperty('frames'))
     {
         //  TP2 Format Hash
-        frames = Object.values(data.frames);
+        frames = [];
+
+        for (const [ filename, frame ] of Object.entries(data.frames))
+        {
+            //  Inject the filename into the frame object
+            frame['filename'] = filename;
+
+            frames.push(frame);
+        }
     }
     else
     {
