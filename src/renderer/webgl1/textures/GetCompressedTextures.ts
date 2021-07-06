@@ -31,6 +31,7 @@ export function GetCompressedTextures (gl: WebGLRenderingContext): ICompressedTe
         RGTC: hasExt('rgtc'),
         PVRTC: hasExt('pvrtc'),
         S3TC: hasExt('s3tc'),
-        S3TCSRGB: hasExt('s3tc_srgb')
+        S3TCSRGB: hasExt('s3tc_srgb'),
+        IMG: true
     };
 }
