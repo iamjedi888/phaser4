@@ -1,6 +1,6 @@
-import { ICompressedParserResults } from './ICompressedParserResults';
+import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
 
-export function KTXParser (data: ArrayBuffer): ICompressedParserResults
+export function KTXParser (data: ArrayBuffer): IGLTextureBindingConfig
 {
     const idCheck = [ 0xab, 0x4b, 0x54, 0x58, 0x20, 0x31, 0x31, 0xbb, 0x0d, 0x0a, 0x1a, 0x0a ];
 
@@ -36,31 +36,31 @@ export function KTXParser (data: ArrayBuffer): ICompressedParserResults
     const height = head.getUint32(7 * size, littleEndian);
 
     // const numberOfFaces = head.getUint32(10 * size, littleEndian);
-    const mipMapLevels = Math.max(1, head.getUint32(11 * size, littleEndian));
+    const mipmapLevels = Math.max(1, head.getUint32(11 * size, littleEndian));
 
     const bytesOfKeyValueData = head.getUint32(12 * size, littleEndian);
 
-    const mipMaps = new Array(mipMapLevels);
+    const mipmaps = new Array(mipmapLevels);
 
     let offset = 12 + 13 * 4 + bytesOfKeyValueData;
     let levelWidth = width;
     let levelHeight = height;
 
-    for (let i = 0; i < mipMapLevels; i++)
+    for (let i = 0; i < mipmapLevels; i++)
     {
         const levelSize = new Int32Array(data, offset, 1)[0];
 
         // levelSize field
         offset += 4;
 
-        mipMaps[i] = new Uint8Array(data, offset, levelSize);
+        mipmaps[i] = new Uint8Array(data, offset, levelSize);
 
         offset += levelSize;
 
         // add padding for odd sized image
         offset += 3 - ((levelSize + 3) % 4);
 
-        // mipMaps[i] = new Uint8Array(image.buffer, image.byteOffset + offset, levelSize);
+        // mipmaps[i] = new Uint8Array(image.buffer, image.byteOffset + offset, levelSize);
 
         // for (let face = 0; face < out.numberOfFaces; face++) {
         //     const data = new Uint8Array(buffer, offset, levelSize);
@@ -74,9 +74,11 @@ export function KTXParser (data: ArrayBuffer): ICompressedParserResults
     }
 
     return {
-        data: mipMaps,
+        mipmaps,
         width,
         height,
-        internalFormat
+        internalFormat,
+        compressed: true,
+        generateMipmap: false
     };
 }

@@ -3,7 +3,7 @@
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_etc/
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
 
-import { ICompressedParserResults } from './ICompressedParserResults';
+import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
 
 function GetSize (width: number, height: number, x: number, y: number, dx: number, dy: number, mult: number = 16): number
 {
@@ -161,7 +161,7 @@ const FORMATS = {
     40: { sizeFunc: ATC12x12Size, glFormat: 0x93BD }
 };
 
-export function PVRParser (data: ArrayBuffer): ICompressedParserResults
+export function PVRParser (data: ArrayBuffer): IGLTextureBindingConfig
 {
     const header = new Uint32Array(data, 0, 13);
 
@@ -172,7 +172,7 @@ export function PVRParser (data: ArrayBuffer): ICompressedParserResults
     const sizeFunction = FORMATS[pvrFormat].sizeFunc;
 
     //  MIPMAPCOUNT_INDEX
-    const mipMapLevels = header[11];
+    const mipmapLevels = header[11];
 
     //  WIDTH_INDEX
     const width = header[7];
@@ -185,17 +185,17 @@ export function PVRParser (data: ArrayBuffer): ICompressedParserResults
 
     const image = new Uint8Array(data, dataOffset);
 
-    const mipMaps = new Array(mipMapLevels);
+    const mipmaps = new Array(mipmapLevels);
 
     let offset = 0;
     let levelWidth = width;
     let levelHeight = height;
 
-    for (let i = 0; i < mipMapLevels; i++)
+    for (let i = 0; i < mipmapLevels; i++)
     {
         const levelSize = sizeFunction(levelWidth, levelHeight);
 
-        mipMaps[i] = new Uint8Array(image.buffer, image.byteOffset + offset, levelSize);
+        mipmaps[i] = new Uint8Array(image.buffer, image.byteOffset + offset, levelSize);
 
         levelWidth = Math.max(1, levelWidth >> 1);
         levelHeight = Math.max(1, levelHeight >> 1);
@@ -204,9 +204,11 @@ export function PVRParser (data: ArrayBuffer): ICompressedParserResults
     }
 
     return {
-        data: mipMaps,
+        mipmaps,
         width,
         height,
-        internalFormat
+        internalFormat,
+        compressed: true,
+        generateMipmap: false
     };
 }
