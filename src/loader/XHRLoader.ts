@@ -25,7 +25,6 @@ export function XHRLoader (file: File): Promise<File>
             file.hasLoaded = true;
 
             reject(file);
-
         };
 
         xhr.send();
