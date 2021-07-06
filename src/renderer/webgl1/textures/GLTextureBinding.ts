@@ -48,7 +48,7 @@ export class GLTextureBinding implements IGLTextureBinding
         const {
             mipmaps = null,
             compressed = false,
-            format = '',
+            format = 'IMG',
             internalFormat = 0,
             texture = null,
             framebuffer = null,
