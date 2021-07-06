@@ -9,4 +9,5 @@ export interface ICompressedTextures
     PVRTC: Record<GLenum, string>;
     S3TC: Record<GLenum, string>;
     S3TCSRGB: Record<GLenum, string>;
+    IMG: boolean;
 }
