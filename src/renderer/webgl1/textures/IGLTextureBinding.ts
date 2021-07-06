@@ -9,6 +9,7 @@ export interface IGLTextureBinding
     depthbuffer?: WebGLRenderbuffer;
 
     format: GLenum;
+    internalFormat: number;
     compressed: boolean;
 
     isBound: boolean;

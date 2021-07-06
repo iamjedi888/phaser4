@@ -1,7 +1,8 @@
 export interface IGLTextureBindingConfig
 {
     data?: Uint8Array;
-    format?: GLenum;
+    format?: string;
+    internalFormat?: GLenum;
     compressed?: boolean;
     texture?: WebGLTexture;
     framebuffer?: WebGLFramebuffer;
