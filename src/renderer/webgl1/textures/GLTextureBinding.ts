@@ -18,7 +18,8 @@ export class GLTextureBinding implements IGLTextureBinding
     framebuffer: WebGLFramebuffer;
     depthbuffer: WebGLRenderbuffer;
 
-    format: GLenum;
+    format: string;
+    internalFormat: GLenum;
     compressed: boolean;
 
     isBound: boolean = false;
@@ -44,7 +45,8 @@ export class GLTextureBinding implements IGLTextureBinding
         const {
             data = null,
             compressed = false,
-            format = gl.COMPRESSED_TEXTURE_FORMATS,
+            format = '',
+            internalFormat = 0,
             texture = null,
             framebuffer = null,
             createFramebuffer = false,
@@ -60,6 +62,7 @@ export class GLTextureBinding implements IGLTextureBinding
 
         this.compressed = compressed;
         this.format = format;
+        this.internalFormat = internalFormat;
 
         this.minFilter = minFilter;
         this.magFilter = magFilter;

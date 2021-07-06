@@ -8,8 +8,8 @@ export interface IGLTextureBinding
     framebuffer: WebGLFramebuffer;
     depthbuffer?: WebGLRenderbuffer;
 
-    format: GLenum;
-    internalFormat: number;
+    format: string;
+    internalFormat: GLenum;
     compressed: boolean;
 
     isBound: boolean;
