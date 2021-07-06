@@ -105,6 +105,11 @@ module.exports = {
                 "leadingUnderscore": "forbid"
             },
             {
+                "selector": "enumMember",
+                "format": [ "PascalCase", "UPPER_CASE" ],
+                "leadingUnderscore": "forbid"
+            },
+            {
                 "selector": "property",
                 "modifiers": [ "private" ],
                 "format": [ "camelCase" ],
