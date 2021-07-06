@@ -70,8 +70,8 @@ function dxtEtcSmallSize (width: number, height: number): number
 // COMPRESSED_RGBA_ASTC_4x4_KHR
 function dxtEtcAstcBigSize (width: number, height: number): number
 {
-    return GetSize(width, height, 3, 3, 4, 4);
-    // return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 16;
+    // return GetSize(width, height, 3, 3, 4, 4);
+    return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 16;
 }
 
 // https://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_astc/
@@ -177,12 +177,56 @@ const PVR_CONSTANTS = {
     METADATA_SIZE_INDEX: 12
 };
 
+// COMPRESSED_RGBA_ASTC_4x4_KHR: 37808
+// COMPRESSED_RGBA_ASTC_5x4_KHR: 37809
+// COMPRESSED_RGBA_ASTC_5x5_KHR: 37810
+// COMPRESSED_RGBA_ASTC_6x5_KHR: 37811
+// COMPRESSED_RGBA_ASTC_6x6_KHR: 37812
+// COMPRESSED_RGBA_ASTC_8x5_KHR: 37813
+// COMPRESSED_RGBA_ASTC_8x6_KHR: 37814
+// COMPRESSED_RGBA_ASTC_8x8_KHR: 37815
+// COMPRESSED_RGBA_ASTC_10x5_KHR: 37816
+// COMPRESSED_RGBA_ASTC_10x6_KHR: 37817
+// COMPRESSED_RGBA_ASTC_10x8_KHR: 37818
+// COMPRESSED_RGBA_ASTC_10x10_KHR: 37819
+// COMPRESSED_RGBA_ASTC_12x10_KHR: 37820
+// COMPRESSED_RGBA_ASTC_12x12_KHR: 37821
+//
+// COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR: 37840
+// COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR: 37841
+// COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR: 37842
+// COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR: 37843
+// COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR: 37844
+// COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR: 37845
+// COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR: 37846
+// COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR: 37847
+// COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR: 37848
+// COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR: 37849
+// COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR: 37850
+// COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR: 37851
+// COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR: 37852
+// COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR: 37853
+
+//  Safari:
+
+//  COMPRESSED_RGB_ETC1_WEBGL: 36196
+// COMPRESSED_R11_EAC: 37488 (red channel only)
+// COMPRESSED_RG11_EAC: 37490 (red and green channels only)
+// COMPRESSED_RGB8_ETC2: 37492
+// COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2: 37494
+// COMPRESSED_RGBA8_ETC2_EAC: 37496
+// COMPRESSED_SIGNED_R11_EAC: 37489
+// COMPRESSED_SIGNED_RG11_EAC: 37491
+// COMPRESSED_SRGB8_ALPHA8_ETC2_EAC: 37497
+// COMPRESSED_SRGB8_ETC2: 37493
+// COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: 37495
+
 const FORMATS = {
     0: { format: 'COMPRESSED_RGB_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 0x8C01 },
     1: { format: 'COMPRESSED_RGBA_PVRTC_2BPPV1_IMG', sizeFunc: pvrtc2bppSize, glFormat: 0x8C03 },
     2: { format: 'COMPRESSED_RGB_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 0x8C00 },
     3: { format: 'COMPRESSED_RGBA_PVRTC_4BPPV1_IMG', sizeFunc: pvrtc4bppSize, glFormat: 0x8C02 },
-    6: { format: 'COMPRESSED_RGB8_ETC2', sizeFunc: dxtEtcSmallSize , glFormat: 0x8D64 },
+    6: { format: 'COMPRESSED_RGB_ETC1', sizeFunc: dxtEtcSmallSize , glFormat: 0x8D64 },
     7: { format: 'COMPRESSED_RGB_S3TC_DXT1_EXT', sizeFunc: dxtEtcSmallSize, glFormat: 0x83F0 },
     8: { format: 'COMPRESSED_RGBA_S3TC_DXT1_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x83F1 },
     9: { format: 'COMPRESSED_RGBA_S3TC_DXT3_EXT', sizeFunc: dxtEtcAstcBigSize, glFormat: 0x83F2 },
@@ -216,11 +260,10 @@ function parsePVR (data)
 
     const pvrFormat = header[PVR_CONSTANTS.PIXEL_FORMAT_INDEX];
 
-    console.log('pvrFormat', pvrFormat);
-
     const format = FORMATS[pvrFormat];
 
     const formatEnum = format.format;
+    const internalFormat = format.glFormat;
     const sizeFunction = format.sizeFunc;
 
     const mipMapLevels = header[PVR_CONSTANTS.MIPMAPCOUNT_INDEX];
@@ -253,7 +296,8 @@ function parsePVR (data)
         width,
         height,
         pvrFormat,
-        format: formatEnum
+        format: formatEnum,
+        internalFormat
     };
 }
 
@@ -306,9 +350,11 @@ export function TextureFile (key: string, url?: string, glConfig?: IGLTextureBin
 
                     const texture = new Texture(null, textureData.width, textureData.height, {
                         data: textureData.data[0],
+                        internalFormat: textureData.internalFormat,
                         format: textureData.format,
                         compressed: true,
-                        generateMipmap: false
+                        generateMipmap: false,
+                        minFilter: 0x2601
                     });
 
                     console.log(textureData);
