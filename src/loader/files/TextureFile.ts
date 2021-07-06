@@ -1,9 +1,12 @@
-import { KTXParser, PVRParser } from '../../textures/parsers';
+import { AtlasParser, KTXParser, PVRParser } from '../../textures/parsers';
 
+import { AtlasFile } from './AtlasFile';
 import { File } from '../File';
+import { GetTexture } from '../../textures/GetTexture';
 import { GetURL } from '../GetURL';
 import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
-import { ImageTagLoader } from '../ImageLoader';
+import { ImageFile } from './ImageFile';
+import { JSONFile } from './JSONFile';
 import { Texture } from '../../textures';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 import { WebGLRendererInstance } from '../../renderer/webgl1/WebGLRendererInstance';
@@ -11,59 +14,101 @@ import { XHRLoader } from '../XHRLoader';
 
 /*
     //  key = Compression Format (ETC, ASTC, etc) that the browser must support
-    //  container = The Container Format (PVR or KTX) - if not given will try to extract from textureURL extension
+    //  type = The Container Format (PVR or KTX) - if not given will try to extract from textureURL extension
     //  textureURL = URL of the texture file (todo: could also be base64 data?)
     //  atlasURL = optional - if given, will treat as an AtlasFile and load as JSON, otherwise an ImageFile
 
+    ASTCs have to have
+    Channel Type: Unsigned Normalized Bytes (UNorm)
+    Color Space: Linear RGB
+
+    Texture Formats should be ordered in alphabetical / GPU priority order, with IMG last
+
     TextureFile('pic', {
-        ETC: { container: string, textureURL?: string, atlasURL?: string },
-        ASTC: { container: string, textureURL?: string, atlasURL?: string },
-        S3TC: { container: string, textureURL?: string, atlasURL?: string },
-        IMG: { container: string, textureURL?: string, atlasURL?: string }
+        ASTC: { type: string, textureURL?: string, atlasURL?: string },
+        ETC: { type: string, textureURL?: string, atlasURL?: string },
+        S3TC: { type: string, textureURL?: string, atlasURL?: string },
+        IMG: { type: string, textureURL?: string, atlasURL?: string }
     });
 */
 
-export enum TextureFormat { ETC = 'ETC', ETC1 = 'ETC1', ATC = 'ATC', ASTC = 'ASTC', BPTC = 'BPTC', RGTC = 'RGTC', PVRTC = 'PVRTC', S3TC = 'S3TC', S3TCSRGB = 'S3TCSRGB' }
-export enum TextureContainer { PVR = 'PVR', KTX = 'KTX' }
+export type TextureFormat = 'ETC' | 'ETC1' | 'ATC' | 'ASTC' | 'BPTC' | 'RGTC' | 'PVRTC' | 'S3TC' | 'S3TCSRGB' | 'IMG';
+export type TextureContainer = 'PVR' | 'KTX';
 
-type TextureFileEntry = {
-    container: TextureContainer,
+export interface ITextureFileEntry
+{
+    format?: TextureFormat,
+    type?: (TextureContainer | string),
     textureURL?: string,
     atlasURL?: string
-};
+}
 
-export function TextureFile (key: string, urls: Record<TextureFormat, TextureFileEntry>, glConfig?: IGLTextureBindingConfig): File
+export interface ITextureFormat
+{
+    ETC?: ITextureFileEntry,
+    ETC1?: ITextureFileEntry,
+    ATC?: ITextureFileEntry,
+    ASTC?: ITextureFileEntry,
+    BPTC?: ITextureFileEntry,
+    RGTC?: ITextureFileEntry,
+    PVRTC?: ITextureFileEntry,
+    S3TC?: ITextureFileEntry,
+    S3TCSRGB?: ITextureFileEntry,
+    IMG?: ITextureFileEntry
+}
+
+export function TextureFile (key: string, urls: ITextureFormat, glConfig: IGLTextureBindingConfig = {}): File
 {
     //  Find out what compression formats the renderer supports
     const renderer = WebGLRendererInstance.get();
 
-    if (!renderer)
+    //  No WebGL, but we have an IMG entry, so use that
+    if (!renderer && urls[ 'IMG' ])
     {
-        //  Fallback to ImageFile for truecolor entry?
+        //  Fallback to ImageFile for truecolor entry
+        return ImageFile(key, urls[ 'IMG' ].textureURL);
     }
 
-    let container: string;
-    let url: string;
     let formats: Record<GLenum, string>;
+    let entry: ITextureFileEntry;
 
-    for (const type in urls)
+    for (const textureFormat in urls)
     {
-        formats = renderer.compression[type.toUpperCase()];
+        formats = renderer.compression[ textureFormat.toUpperCase() ];
 
         if (formats)
         {
-            //  Found supported format
-            url = urls[type];
+            //  Found supported texture format
+            entry = urls[ textureFormat ];
 
-            console.log('Browser supports', type, 'loading', url);
+            entry.format = textureFormat.toUpperCase() as TextureFormat;
 
-            continue;
+            console.log('Browser supports', textureFormat, 'entry:', entry);
+
+            break;
         }
     }
 
-    //  Fallback to ImageFile loader?
+    if (!entry)
+    {
+        console.warn(`TextureFile: ${key} = No supported format or IMG fallback`);
 
-    const file = new File(key, url);
+        return;
+    }
+
+    if (entry.format === 'IMG')
+    {
+        if (entry.atlasURL)
+        {
+            return AtlasFile(key, entry.textureURL, entry.atlasURL, glConfig);
+        }
+        else
+        {
+            return ImageFile(key, entry.textureURL, glConfig);
+        }
+    }
+
+    const file = new File(key, entry.textureURL);
 
     file.load = (): Promise<File> =>
     {
@@ -86,20 +131,55 @@ export function TextureFile (key: string, urls: Record<TextureFormat, TextureFil
             }
             else
             {
-                XHRLoader(file).then(file =>
+                XHRLoader(file).then(async file =>
                 {
-                    if (type === '')
+                    if (file.hasLoaded)
+                    {
+                        let textureData;
 
-                    const textureData = PVRParser(file.data);
+                        if (entry.type === 'PVR')
+                        {
+                            textureData = PVRParser(file.data);
+                        }
+                        else if (entry.type === 'KTX')
+                        {
+                            textureData = KTXParser(file.data);
+                        }
 
-                    console.log(textureData);
+                        if (textureData && textureData.internalFormat in formats)
+                        {
+                            textureData.format = formats[ textureData.internalFormat ];
 
-                    const texture = new Texture(null, textureData.width, textureData.height, Object.assign(glConfig, textureData));
+                            const texture = new Texture(null, textureData.width, textureData.height, Object.assign(glConfig, textureData));
 
-                    textureManager.add(file.key, texture);
+                            textureManager.add(file.key, texture);
 
-                    resolve(file);
+                            if (entry.atlasURL)
+                            {
+                                const json = JSONFile(key, entry.atlasURL);
 
+                                json.url = GetURL(json.key, json.url, '.json', file.loader);
+                                json.skipCache = true;
+
+                                await json.load();
+
+                                if (json.data)
+                                {
+                                    AtlasParser(texture, json.data);
+
+                                    resolve(file);
+                                }
+                            }
+                            else
+                            {
+                                resolve(file);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        reject(file);
+                    }
                 }).catch(file =>
                 {
                     reject(file);
