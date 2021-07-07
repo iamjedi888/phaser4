@@ -106,6 +106,41 @@ export class Container extends GameObject implements IContainer
         SetAlpha(this.id, value);
     }
 
+    setPosition (x: number, y?: number): this
+    {
+        this.position.set(x, y);
+
+        return this;
+    }
+
+    setScale (x: number, y?: number): this
+    {
+        this.scale.set(x, y);
+
+        return this;
+    }
+
+    setRotation (value: number): this
+    {
+        this.rotation = value;
+
+        return this;
+    }
+
+    setSkew (x: number, y?: number): this
+    {
+        this.skew.set(x, y);
+
+        return this;
+    }
+
+    setOrigin (x: number, y?: number): this
+    {
+        this.origin.set(x, y);
+
+        return this;
+    }
+
     destroy (reparentChildren?: IGameObject): void
     {
         super.destroy(reparentChildren);

@@ -19,6 +19,12 @@ export interface IContainer extends IGameObject
 
     shader: IShader;
 
+    setPosition (x: number, y?: number): this;
+    setScale (x: number, y?: number): this;
+    setRotation (value: number): this;
+    setSkew (x: number, y: number): this;
+    setOrigin (x: number, y: number): this;
+
     // getBounds (): Rectangle;
 
     // setAlpha (value?: number): this;
