@@ -8,6 +8,7 @@ import { GetURL } from '../GetURL';
 import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
+import { ProcessBindingQueue } from '../../renderer/webgl1/renderpass';
 import { SupportsCompressedTexture } from '../../renderer/webgl1/textures/SupportsCompressedTexture';
 import { Texture } from '../../textures';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
@@ -135,6 +136,8 @@ export function TextureFile (key: string, urls: ITextureFileFormat, glConfig: IG
                             const texture = new Texture(null, textureData.width, textureData.height, Object.assign(glConfig, textureData));
 
                             textureManager.add(file.key, texture);
+
+                            ProcessBindingQueue();
 
                             if (entry.atlasURL)
                             {
