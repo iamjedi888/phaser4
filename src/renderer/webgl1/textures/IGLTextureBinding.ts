@@ -1,3 +1,4 @@
+import { IGLMipmapType } from './IGLTextureBindingConfig';
 import { ITexture } from '../../../textures/ITexture';
 
 export interface IGLTextureBinding
@@ -11,7 +12,7 @@ export interface IGLTextureBinding
     format: string;
     internalFormat: GLenum;
     compressed: boolean;
-    mipmaps: Uint8Array[];
+    mipmaps: IGLMipmapType[];
 
     isBound: boolean;
     textureUnit: number;

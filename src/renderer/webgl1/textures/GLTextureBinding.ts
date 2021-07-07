@@ -1,9 +1,10 @@
+import { IGLMipmapType, IGLTextureBindingConfig } from './IGLTextureBindingConfig';
+
 import { CreateFramebuffer } from '../fbo/CreateFramebuffer';
 import { CreateGLTexture } from './CreateGLTexture';
 import { DeleteFramebuffer } from '../fbo/DeleteFramebuffer';
 import { DeleteGLTexture } from './DeleteGLTexture';
 import { IGLTextureBinding } from './IGLTextureBinding';
-import { IGLTextureBindingConfig } from './IGLTextureBindingConfig';
 import { ITexture } from '../../../textures/ITexture';
 import { IsSizePowerOfTwo } from '../../../math/pow2/IsSizePowerOfTwo';
 import { SetGLTextureFilterMode } from './SetGLTextureFilterMode';
@@ -21,7 +22,7 @@ export class GLTextureBinding implements IGLTextureBinding
     format: string;
     internalFormat: GLenum;
     compressed: boolean;
-    mipmaps: Uint8Array[];
+    mipmaps: IGLMipmapType[];
 
     isBound: boolean = false;
     textureUnit: number = 0;

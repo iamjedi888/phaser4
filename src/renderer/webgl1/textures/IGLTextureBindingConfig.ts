@@ -1,9 +1,16 @@
+export interface IGLMipmapType
+{
+    data: Uint8Array;
+    width: number;
+    height: number;
+}
+
 export interface IGLTextureBindingConfig
 {
     format?: string;
     internalFormat?: GLenum;
     compressed?: boolean;
-    mipmaps?: Uint8Array[];
+    mipmaps?: IGLMipmapType[];
 
     width?: number;
     height?: number;
