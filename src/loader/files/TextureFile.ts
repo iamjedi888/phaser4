@@ -42,29 +42,45 @@ export interface ITextureFileEntry
     atlasURL?: string
 }
 
+//  TODO - Allow them to pass in an ArrayBuffer directly?
+
 export interface ITextureFileFormat
 {
-    ETC?: ITextureFileEntry,
-    ETC1?: ITextureFileEntry,
-    ATC?: ITextureFileEntry,
-    ASTC?: ITextureFileEntry,
-    BPTC?: ITextureFileEntry,
-    RGTC?: ITextureFileEntry,
-    PVRTC?: ITextureFileEntry,
-    S3TC?: ITextureFileEntry,
-    S3TCSRGB?: ITextureFileEntry,
-    IMG?: ITextureFileEntry
+    ETC?: ITextureFileEntry | string,
+    ETC1?: ITextureFileEntry | string,
+    ATC?: ITextureFileEntry | string,
+    ASTC?: ITextureFileEntry | string,
+    BPTC?: ITextureFileEntry | string,
+    RGTC?: ITextureFileEntry | string,
+    PVRTC?: ITextureFileEntry | string,
+    S3TC?: ITextureFileEntry | string,
+    S3TCSRGB?: ITextureFileEntry | string,
+    IMG?: ITextureFileEntry | string
 }
 
 export function TextureFile (key: string, urls: ITextureFileFormat, glConfig: IGLTextureBindingConfig = {}): File
 {
-    let entry: ITextureFileEntry;
+    const entry: ITextureFileEntry = {
+        format: null,
+        type: null,
+        textureURL: null,
+        atlasURL: null
+    };
 
     for (const textureBaseFormat in urls)
     {
         if (SupportsCompressedTexture(textureBaseFormat))
         {
-            entry = urls[ textureBaseFormat ];
+            const urlEntry = urls[ textureBaseFormat ];
+
+            if (typeof urlEntry === 'string')
+            {
+                entry.textureURL = urlEntry;
+            }
+            else
+            {
+                Object.assign(entry, urlEntry);
+            }
 
             entry.format = textureBaseFormat.toUpperCase() as TextureBaseFormat;
 
@@ -102,6 +118,11 @@ export function TextureFile (key: string, urls: ITextureFileFormat, glConfig: IG
         if (file.loader)
         {
             file.crossOrigin = file.loader.crossOrigin;
+        }
+
+        if (!entry.type)
+        {
+            entry.type = (file.url.endsWith('.ktx')) ? 'KTX' : 'PVR';
         }
 
         return new Promise((resolve, reject) =>
