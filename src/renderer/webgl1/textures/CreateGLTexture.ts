@@ -1,7 +1,8 @@
+import { IGLMipmapType } from './IGLTextureBindingConfig';
 import { IGLTextureBinding } from './IGLTextureBinding';
 import { gl } from '../GL';
 
-export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, data?: Uint8Array[]): WebGLTexture
+export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, mipmaps?: IGLMipmapType[]): WebGLTexture
 {
     const { generateMipmap, minFilter, parent, compressed, internalFormat, flipY, unpackPremultiplyAlpha, magFilter, wrapS, wrapT, isPOT } = binding;
 
@@ -25,11 +26,11 @@ export function CreateGLTexture <T extends IGLTextureBinding> (binding: T, data?
         width = source.width;
         height = source.height;
     }
-    else if (compressed && data)
+    else if (compressed && mipmaps)
     {
-        for (let i = 0; i < data.length; i++)
+        for (let i = 0; i < mipmaps.length; i++)
         {
-            gl.compressedTexImage2D(gl.TEXTURE_2D, i, internalFormat, width, height, 0, data[i]);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, i, internalFormat, mipmaps[i].width, mipmaps[i].height, 0, mipmaps[i].data);
         }
     }
     else
