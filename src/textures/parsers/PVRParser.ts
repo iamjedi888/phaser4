@@ -195,7 +195,11 @@ export function PVRParser (data: ArrayBuffer): IGLTextureBindingConfig
     {
         const levelSize = sizeFunction(levelWidth, levelHeight);
 
-        mipmaps[i] = new Uint8Array(image.buffer, image.byteOffset + offset, levelSize);
+        mipmaps[i] = {
+            data: new Uint8Array(image.buffer, image.byteOffset + offset, levelSize),
+            width: levelWidth,
+            height: levelHeight
+        };
 
         levelWidth = Math.max(1, levelWidth >> 1);
         levelHeight = Math.max(1, levelHeight >> 1);

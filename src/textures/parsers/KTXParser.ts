@@ -35,7 +35,6 @@ export function KTXParser (data: ArrayBuffer): IGLTextureBindingConfig
     const width = head.getUint32(6 * size, littleEndian);
     const height = head.getUint32(7 * size, littleEndian);
 
-    // const numberOfFaces = head.getUint32(10 * size, littleEndian);
     const mipmapLevels = Math.max(1, head.getUint32(11 * size, littleEndian));
 
     const bytesOfKeyValueData = head.getUint32(12 * size, littleEndian);
@@ -53,24 +52,21 @@ export function KTXParser (data: ArrayBuffer): IGLTextureBindingConfig
         // levelSize field
         offset += 4;
 
-        mipmaps[i] = new Uint8Array(data, offset, levelSize);
+        mipmaps[i] = {
+            data: new Uint8Array(data, offset, levelSize),
+            width: levelWidth,
+            height: levelHeight
+        };
 
-        offset += levelSize;
+        console.log('KTX', i, 'size', levelWidth, levelHeight);
 
         // add padding for odd sized image
-        offset += 3 - ((levelSize + 3) % 4);
-
-        // mipmaps[i] = new Uint8Array(image.buffer, image.byteOffset + offset, levelSize);
-
-        // for (let face = 0; face < out.numberOfFaces; face++) {
-        //     const data = new Uint8Array(buffer, offset, levelSize);
-        //     out.mipmaps.push({ data, width, height });
-        //     offset += levelSize;
-        //     offset += 3 - ((levelSize + 3) % 4); // add padding for odd sized image
-        // }
+        // offset += 3 - ((levelSize + 3) % 4);
 
         levelWidth = Math.max(1, levelWidth >> 1);
         levelHeight = Math.max(1, levelHeight >> 1);
+
+        offset += levelSize;
     }
 
     return {
