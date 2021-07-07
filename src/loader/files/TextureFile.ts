@@ -1,15 +1,16 @@
 import { AtlasParser, KTXParser, PVRParser } from '../../textures/parsers';
+import { TextureBaseFormat, TextureContainer } from '../../renderer/webgl1/textures/ICompressedTextures';
 
 import { AtlasFile } from './AtlasFile';
 import { File } from '../File';
-import { GetTexture } from '../../textures/GetTexture';
+import { GetCompressedTextureName } from '../../renderer/webgl1/textures/GetCompressedTextureName';
 import { GetURL } from '../GetURL';
 import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
+import { SupportsCompressedTexture } from '../../renderer/webgl1/textures/SupportsCompressedTexture';
 import { Texture } from '../../textures';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
-import { WebGLRendererInstance } from '../../renderer/webgl1/WebGLRendererInstance';
 import { XHRLoader } from '../XHRLoader';
 
 /*
@@ -18,7 +19,7 @@ import { XHRLoader } from '../XHRLoader';
     //  textureURL = URL of the texture file (todo: could also be base64 data?)
     //  atlasURL = optional - if given, will treat as an AtlasFile and load as JSON, otherwise an ImageFile
 
-    ASTCs have to have
+    ASTCs must be:
     Channel Type: Unsigned Normalized Bytes (UNorm)
     Color Space: Linear RGB
 
@@ -32,18 +33,15 @@ import { XHRLoader } from '../XHRLoader';
     });
 */
 
-export type TextureFormat = 'ETC' | 'ETC1' | 'ATC' | 'ASTC' | 'BPTC' | 'RGTC' | 'PVRTC' | 'S3TC' | 'S3TCSRGB' | 'IMG';
-export type TextureContainer = 'PVR' | 'KTX';
-
 export interface ITextureFileEntry
 {
-    format?: TextureFormat,
+    format?: TextureBaseFormat,
     type?: (TextureContainer | string),
     textureURL?: string,
     atlasURL?: string
 }
 
-export interface ITextureFormat
+export interface ITextureFileFormat
 {
     ETC?: ITextureFileEntry,
     ETC1?: ITextureFileEntry,
@@ -57,33 +55,17 @@ export interface ITextureFormat
     IMG?: ITextureFileEntry
 }
 
-export function TextureFile (key: string, urls: ITextureFormat, glConfig: IGLTextureBindingConfig = {}): File
+export function TextureFile (key: string, urls: ITextureFileFormat, glConfig: IGLTextureBindingConfig = {}): File
 {
-    //  Find out what compression formats the renderer supports
-    const renderer = WebGLRendererInstance.get();
-
-    //  No WebGL, but we have an IMG entry, so use that
-    if (!renderer && urls[ 'IMG' ])
-    {
-        //  Fallback to ImageFile for truecolor entry
-        return ImageFile(key, urls[ 'IMG' ].textureURL);
-    }
-
-    let formats: Record<GLenum, string>;
     let entry: ITextureFileEntry;
 
-    for (const textureFormat in urls)
+    for (const textureBaseFormat in urls)
     {
-        formats = renderer.compression[ textureFormat.toUpperCase() ];
-
-        if (formats)
+        if (SupportsCompressedTexture(textureBaseFormat))
         {
-            //  Found supported texture format
-            entry = urls[ textureFormat ];
+            entry = urls[ textureBaseFormat ];
 
-            entry.format = textureFormat.toUpperCase() as TextureFormat;
-
-            console.log('Browser supports', textureFormat, 'entry:', entry);
+            entry.format = textureBaseFormat.toUpperCase() as TextureBaseFormat;
 
             break;
         }
@@ -146,9 +128,9 @@ export function TextureFile (key: string, urls: ITextureFormat, glConfig: IGLTex
                             textureData = KTXParser(file.data);
                         }
 
-                        if (textureData && textureData.internalFormat in formats)
+                        if (textureData && SupportsCompressedTexture(entry.format, textureData.internalFormat))
                         {
-                            textureData.format = formats[ textureData.internalFormat ];
+                            textureData.format = GetCompressedTextureName(entry.format, textureData.internalFormat);
 
                             const texture = new Texture(null, textureData.width, textureData.height, Object.assign(glConfig, textureData));
 
