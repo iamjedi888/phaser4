@@ -11,3 +11,19 @@ export interface ICompressedTextures
     S3TCSRGB: Record<GLenum, string>;
     IMG: boolean;
 }
+
+export type TextureBaseFormat =
+    'ETC' |
+    'ETC1' |
+    'ATC' |
+    'ASTC' |
+    'BPTC' |
+    'RGTC' |
+    'PVRTC' |
+    'S3TC' |
+    'S3TCSRGB' |
+    'IMG';
+
+export type TextureContainer =
+    'PVR' |
+    'KTX';
