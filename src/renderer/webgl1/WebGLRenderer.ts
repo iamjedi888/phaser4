@@ -74,8 +74,6 @@ export class WebGLRenderer
 
         this.compression = GetCompressedTextures(gl);
 
-        console.log(this.compression);
-
         gl.disable(gl.DEPTH_TEST);
         gl.disable(gl.CULL_FACE);
     }
