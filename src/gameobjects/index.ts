@@ -2,6 +2,7 @@ import * as Components from '../components/';
 
 import { AnimatedSprite } from './animatedsprite/AnimatedSprite';
 import { Container } from './container/Container';
+import { DirectDraw } from './directdraw/DirectDraw';
 import { EffectLayer } from './effectlayer/EffectLayer';
 import { GameObject } from './GameObject';
 import { GameObjectCache } from './GameObjectCache';
@@ -17,6 +18,7 @@ export {
     AnimatedSprite,
     Components,
     Container,
+    DirectDraw,
     EffectLayer,
     GameObject,
     GameObjectCache,
