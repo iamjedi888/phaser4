@@ -14,7 +14,7 @@ export function CreateAttributes (program: WebGLProgram, attribs: Record<string,
 {
     const attributes = new Map();
 
-    const defaultSettings =
+    const defaultSettings: ShaderAttributeEntry =
     {
         size: 1,
         type: GL_CONST.FLOAT,
