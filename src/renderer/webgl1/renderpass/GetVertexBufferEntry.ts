@@ -2,6 +2,12 @@ import { BufferEntry } from '../draw/BufferEntry';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 
+const bufferEntry: BufferEntry = {
+    buffer: null,
+    F32: null,
+    offset: 0
+};
+
 export function GetVertexBufferEntry (renderPass: IRenderPass, addToCount: number = 0): BufferEntry
 {
     const buffer = renderPass.vertexbuffer.current;
@@ -12,14 +18,11 @@ export function GetVertexBufferEntry (renderPass: IRenderPass, addToCount: numbe
         Flush(renderPass);
     }
 
-    const offset = renderPass.count * buffer.entryElementSize;
+    bufferEntry.buffer = buffer;
+    bufferEntry.F32 = buffer.vertexViewF32;
+    bufferEntry.offset = renderPass.count * buffer.entryElementSize;
 
     renderPass.count += addToCount;
 
-    return {
-        buffer,
-        F32: buffer.vertexViewF32,
-        U32: buffer.vertexViewU32,
-        offset
-    };
+    return bufferEntry;
 }
