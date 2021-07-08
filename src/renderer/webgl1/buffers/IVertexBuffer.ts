@@ -9,7 +9,6 @@ export interface IVertexBuffer
     bufferByteSize: number;
     data: ArrayBuffer;
     vertexViewF32: Float32Array;
-    vertexViewU32: Uint32Array;
     indexed: boolean;
     isDynamic: boolean;
     count: number;

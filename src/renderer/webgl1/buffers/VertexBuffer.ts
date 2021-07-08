@@ -80,13 +80,6 @@ export class VertexBuffer implements IVertexBuffer
     vertexViewF32: Float32Array;
 
     /**
-     * Uint32 View of the Array Buffer.
-     *
-     * @type {Uint32Array}
-     */
-    vertexViewU32: Uint32Array;
-
-    /**
      * The data array buffer.
      *
      * @type {WebGLBuffer}
@@ -181,7 +174,6 @@ export class VertexBuffer implements IVertexBuffer
         this.data = data;
 
         this.vertexViewF32 = new Float32Array(data);
-        this.vertexViewU32 = new Uint32Array(data);
 
         this.vertexBuffer = gl.createBuffer();
 
@@ -230,7 +222,6 @@ export class VertexBuffer implements IVertexBuffer
 
         this.data = null;
         this.vertexViewF32 = null;
-        this.vertexViewU32 = null;
         this.vertexBuffer = null;
     }
 }
