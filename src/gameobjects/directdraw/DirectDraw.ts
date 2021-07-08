@@ -2,6 +2,7 @@ import { DrawFrame } from '../../renderer/webgl1/draw/DrawFrame';
 import { DrawImage } from '../../renderer/webgl1/draw/DrawImage';
 import { DrawImagePart } from '../../renderer/webgl1/draw/DrawImagePart';
 import { DrawQuad } from '../../renderer/webgl1/draw/DrawQuad';
+import { FillArc } from '../../renderer/webgl1/draw/FillArc';
 import { FillLine } from '../../renderer/webgl1/draw/FillLine';
 import { FillRect } from '../../renderer/webgl1/draw/FillRect';
 import { FillTriangle } from '../../renderer/webgl1/draw/FillTriangle';
@@ -21,6 +22,13 @@ export class DirectDraw extends GameObject
     constructor ()
     {
         super();
+    }
+
+    circle (x: number, y: number, radius: number, color: number, alpha: number = 1): this
+    {
+        FillArc(this.renderPass, x, y, radius, 0, 0, false, color, alpha);
+
+        return this;
     }
 
     plot (x: number, y: number, color: number, alpha: number = 1): this
