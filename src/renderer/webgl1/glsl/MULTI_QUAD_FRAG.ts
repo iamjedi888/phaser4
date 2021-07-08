@@ -30,5 +30,5 @@ void main (void)
 {
     vec4 color = getSampler(int(vTextureId), vTextureCoord);
 
-    gl_FragColor = color * vec4(vTintColor.bgr * vTintColor.a, vTintColor.a);
+    gl_FragColor = color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a);
 }`;

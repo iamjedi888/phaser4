@@ -15,6 +15,7 @@ import { QuadShader } from '../shaders/QuadShader';
 import { ShaderStack } from './ShaderStack';
 import { StaticCamera } from '../../../camera';
 import { TextureStack } from './TextureStack';
+import { VertexBuffer } from '../buffers';
 import { VertexBufferStack } from './VertexBufferStack';
 import { ViewportStack } from './ViewportStack';
 
@@ -90,7 +91,9 @@ export class RenderPass implements IRenderPass
         this.textures.setDefault();
         this.framebuffer.setDefault();
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        this.vertexbuffer.setDefault(new IndexedVertexBuffer({ name: 'sprite', batchSize: GetBatchSize(), indexLayout }));
+
+        // this.vertexbuffer.setDefault(new IndexedVertexBuffer({ name: 'sprite', batchSize: GetBatchSize(), indexLayout }));
+        this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize(), vertexElementSize: 9 }));
 
         if (GetMaxTextures() === 1)
         {
