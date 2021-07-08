@@ -28,7 +28,7 @@ export function Draw (renderPass: IRenderPass): void
     }
     else
     {
-        const subsize = (currentBuffer.indexed) ? count * currentBuffer.entryElementSize : count * currentBuffer.vertexElementSize;
+        const subsize = count * currentBuffer.entryElementSize;
 
         const view = currentBuffer.vertexViewF32.subarray(0, subsize);
 
@@ -41,7 +41,7 @@ export function Draw (renderPass: IRenderPass): void
     }
     else
     {
-        gl.drawArrays(gl.TRIANGLES, 0, count);
+        gl.drawArrays(gl.TRIANGLES, 0, count * currentBuffer.elementsPerEntry);
     }
 
     if (renderToFramebuffer)
