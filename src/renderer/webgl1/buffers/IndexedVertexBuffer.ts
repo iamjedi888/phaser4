@@ -14,15 +14,6 @@ export class IndexedVertexBuffer extends VertexBuffer implements IIndexedVertexB
     indexSize: number;
 
     /**
-     * The size, in quantity of elements, of a single entry in the element index array.
-     *
-     * This is `vertexElementSize * 4` for a quad.
-     *
-     * @type {number}
-     */
-    entryElementSize: number;
-
-    /**
      * The total number of entries per entry in the element index array.
      *
      * For a quad, the IBO contains 6 entries per entry:
@@ -65,9 +56,6 @@ export class IndexedVertexBuffer extends VertexBuffer implements IIndexedVertexB
         this.indexSize = indexSize;
         this.entryIndexSize = entryIndexSize;
 
-        //  Derive the remaining values
-        this.entryElementSize = this.vertexElementSize * this.elementsPerEntry;
-
         const seededIndexBuffer = [];
 
         if (indexLayout)
@@ -84,7 +72,8 @@ export class IndexedVertexBuffer extends VertexBuffer implements IIndexedVertexB
             }
         }
 
-        this.create();
+        // this.create();
+
         this.createIndexBuffer(seededIndexBuffer);
     }
 

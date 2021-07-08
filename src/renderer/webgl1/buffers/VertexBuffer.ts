@@ -93,6 +93,15 @@ export class VertexBuffer implements IVertexBuffer
      */
     vertexBuffer: WebGLBuffer;
 
+    /**
+     * The size, in quantity of elements, of a single entry in the element index array.
+     *
+     * This is `vertexElementSize * elementsPerEntry`
+     *
+     * @type {number}
+     */
+    entryElementSize: number;
+
     indexed: boolean = false;
 
     isDynamic: boolean = false;
@@ -114,6 +123,13 @@ export class VertexBuffer implements IVertexBuffer
      */
     offset: number = 0;
 
+    /**
+     * The number of elements per entry in the buffer.
+     *
+     * This is 3 for a tri and 4 for a quad in an indexed buffer.
+     *
+     * @type {number}
+     */
     elementsPerEntry: number;
 
     isBound: boolean = false;
@@ -125,7 +141,7 @@ export class VertexBuffer implements IVertexBuffer
             batchSize = 1,
             dataSize = 4,
             isDynamic = true,
-            elementsPerEntry = 4,
+            elementsPerEntry = 3,
             vertexElementSize = 6
         } = config;
 
@@ -140,6 +156,7 @@ export class VertexBuffer implements IVertexBuffer
         this.vertexByteSize = vertexElementSize * dataSize;
         this.entryByteSize = this.vertexByteSize * elementsPerEntry;
         this.bufferByteSize = batchSize * this.entryByteSize;
+        this.entryElementSize = this.vertexElementSize * this.elementsPerEntry;
 
         this.create();
     }
