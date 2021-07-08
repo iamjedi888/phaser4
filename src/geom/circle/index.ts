@@ -17,6 +17,7 @@ import { GetCircleCircumference } from './GetCircleCircumference';
 import { GetCircleCircumferencePoint } from './GetCircleCircumferencePoint';
 import { GetCirclePoint } from './GetCirclePoint';
 import { GetCirclePoints } from './GetCirclePoints';
+import { GetCirclePointsBetween } from './GetCirclePointsBetween';
 import { GetCircleRandomPoint } from './GetCircleRandomPoint';
 import { TranslateCircle } from './TranslateCircle';
 import { TranslateCirclePoint } from './TranslateCirclePoint';
@@ -36,6 +37,7 @@ export {
     GetCircleCircumferencePoint,
     GetCirclePoint,
     GetCirclePoints,
+    GetCirclePointsBetween,
     TranslateCircle,
     TranslateCirclePoint
 };
