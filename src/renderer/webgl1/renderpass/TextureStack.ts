@@ -1,8 +1,9 @@
+import { Texture, WhiteTexture } from '../../../textures';
+
 import { CreateTempTextures } from './CreateTempTextures';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
-import { Texture } from '../../../textures';
 import { gl } from '../GL';
 
 export class TextureStack
@@ -35,6 +36,11 @@ export class TextureStack
     {
         gl.activeTexture(gl.TEXTURE0 + index);
         gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
+    }
+
+    setWhite (): number
+    {
+        return this.set(WhiteTexture.get());
     }
 
     //  request the next available texture and bind it
