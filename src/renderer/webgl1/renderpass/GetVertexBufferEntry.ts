@@ -12,7 +12,7 @@ export function GetVertexBufferEntry (renderPass: IRenderPass, addToCount: numbe
         Flush(renderPass);
     }
 
-    const offset = (buffer.indexed) ? renderPass.count * buffer.entryElementSize : renderPass.count * buffer.vertexElementSize;
+    const offset = renderPass.count * buffer.entryElementSize;
 
     renderPass.count += addToCount;
 
