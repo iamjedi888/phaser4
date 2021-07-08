@@ -2,6 +2,7 @@ import { CreateCanvas } from './CreateCanvas';
 import { IGLTextureBindingConfig } from '../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { Texture } from './Texture';
 import { TextureManagerInstance } from './TextureManagerInstance';
+import { WhiteTexture } from './WhiteTexture';
 
 export class TextureManager
 {
@@ -30,12 +31,15 @@ export class TextureManager
 
         this.add('__MISSING', new Texture(missing.canvas));
 
-        const white = CreateCanvas(32, 32);
+        const white = CreateCanvas(2, 2);
 
         white.fillStyle = '#fff';
-        white.fillRect(0, 0, 32, 32);
+        white.fillRect(0, 0, 2, 2);
 
-        this.add('__WHITE', new Texture(white.canvas));
+        const whiteTexture = this.add('__WHITE', new Texture(white.canvas));
+
+        //  Because this is used frequently by Graphics and Shapes
+        WhiteTexture.set(whiteTexture);
     }
 
     get (key: string): Texture
