@@ -3,6 +3,7 @@ import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
+import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
 import { IContainer } from './IContainer';
@@ -20,6 +21,7 @@ export class Container extends GameObject implements IContainer
     skew: Skew;
     origin: Origin;
     size: Size;
+    color: Color;
 
     shader: IShader;
 
@@ -38,6 +40,7 @@ export class Container extends GameObject implements IContainer
         this.skew = new Skew(id);
         this.size = new Size(id);
         this.origin = new Origin(id, GetDefaultOriginX(), GetDefaultOriginY());
+        this.color = new Color(id);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
@@ -98,12 +101,19 @@ export class Container extends GameObject implements IContainer
 
     get alpha (): number
     {
-        return ColorComponent.alpha[this.id];
+        return this.color.alpha;
     }
 
     set alpha (value: number)
     {
-        SetAlpha(this.id, value);
+        this.color.alpha = value;
+    }
+
+    setAlpha (value: number): this
+    {
+        this.alpha = value;
+
+        return this;
     }
 
     setPosition (x: number, y?: number): this
