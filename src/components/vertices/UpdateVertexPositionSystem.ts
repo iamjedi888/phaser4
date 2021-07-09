@@ -3,7 +3,7 @@ import { Changed, IWorld, defineQuery, defineSystem } from 'bitecs';
 import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
 import { QuadVertexComponent } from './QuadVertexComponent';
-import { VertexComponent } from './VertexComponent';
+import { SetQuadPosition } from './SetQuadPosition';
 import { WorldMatrix2DComponent } from '../transform/WorldMatrix2DComponent';
 
 const changedWorldExtentQuery = defineQuery([
@@ -31,11 +31,6 @@ const updateVertexPositionSystem = defineSystem(world =>
         const right = Extent2DComponent.right[id];
         const bottom = Extent2DComponent.bottom[id];
 
-        const v1 = QuadVertexComponent.tl[id];
-        const v2 = QuadVertexComponent.bl[id];
-        const v3 = QuadVertexComponent.br[id];
-        const v4 = QuadVertexComponent.tr[id];
-
         const x0 = (x * a) + (y * c) + tx;
         const y0 = (x * b) + (y * d) + ty;
 
@@ -48,17 +43,29 @@ const updateVertexPositionSystem = defineSystem(world =>
         const x3 = (right * a) + (y * c) + tx;
         const y3 = (right * b) + (y * d) + ty;
 
-        VertexComponent.x[v1] = x0;
-        VertexComponent.y[v1] = y0;
+        SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
 
-        VertexComponent.x[v2] = x1;
-        VertexComponent.y[v2] = y1;
+        /*
+        const data = QuadVertexComponent.values[id];
 
-        VertexComponent.x[v3] = x2;
-        VertexComponent.y[v3] = y2;
+        data[0] = x0;
+        data[1] = y0;
 
-        VertexComponent.x[v4] = x3;
-        VertexComponent.y[v4] = y3;
+        data[9] = x1;
+        data[10] = y1;
+
+        data[18] = x2;
+        data[19] = y2;
+
+        data[27] = x0;
+        data[28] = y0;
+
+        data[36] = x2;
+        data[37] = y2;
+
+        data[45] = x3;
+        data[46] = y3;
+        */
 
         BoundsComponent.x[id] = Math.min(x0, x1, x2, x3);
         BoundsComponent.y[id] = Math.min(y0, y1, y2, y3);
