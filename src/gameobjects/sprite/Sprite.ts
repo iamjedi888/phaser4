@@ -1,7 +1,7 @@
 import { ColorComponent, SetTint } from '../../components/color';
 
 import { AddQuadVertex } from '../../components/vertices';
-import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
+import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw';
 import { Container } from '../container/Container';
 import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
@@ -54,7 +54,7 @@ export class Sprite extends Container implements ISprite
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        // BatchTexturedQuad(this.texture, this.id, renderPass);
+        BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void

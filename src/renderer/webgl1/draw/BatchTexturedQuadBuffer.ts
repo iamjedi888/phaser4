@@ -1,32 +1,16 @@
+import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
-import { ISpriteBatch } from '../../../gameobjects/spritebatch/ISpriteBatch';
+import { ITexture } from '../../../textures/ITexture';
+import { QuadVertexComponent } from '../../../components/vertices';
+import { SetQuadTextureIndex } from '../../../components/vertices/SetQuadTextureIndex';
 
-export function BatchTexturedQuadBuffer <T extends ISpriteBatch> (batch: T, renderPass: IRenderPass): void
+export function BatchTexturedQuadBuffer <T extends ITexture> (texture: T, id: number, renderPass: IRenderPass): void
 {
-    /*
-    const texture = batch.texture;
-    const shader = renderer.shaders.current;
-    const buffer = shader.buffer;
+    const { F32, offset } = GetVertexBufferEntry(renderPass, 2);
 
-    renderer.flush();
+    const textureIndex = renderPass.textures.set(texture);
 
-    renderer.textures.request(texture);
+    SetQuadTextureIndex(id, textureIndex);
 
-    batch.updateTextureIndex();
-
-    //const gl = renderer.gl; - use GL.gl
-
-    shader.setBuffers(batch.vertexBuffer, batch.indexBuffer);
-
-    gl.bufferData(gl.ARRAY_BUFFER, batch.data, gl.STATIC_DRAW);
-
-    gl.drawElements(gl.TRIANGLES, batch.count * buffer.entryIndexSize, gl.UNSIGNED_SHORT, 0);
-
-    shader.prevCount = batch.count;
-
-    renderer.flushTotal++;
-
-    //  Restore
-    shader.bindBuffers();
-    */
+    F32.set(QuadVertexComponent.values[id], offset);
 }
