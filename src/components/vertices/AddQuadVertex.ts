@@ -1,6 +1,5 @@
-import { AddVertex, QuadVertexComponent } from '.';
-
 import { GameObjectWorld } from '../../GameObjectWorld';
+import { QuadVertexComponent } from './QuadVertexComponent';
 import { addComponent } from 'bitecs';
 
 export function AddQuadVertex (id: number, width: number = 0, height: number = 0, flipY: boolean = true): void
