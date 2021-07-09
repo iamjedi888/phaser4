@@ -1,10 +1,8 @@
 import { IContainer } from '../gameobjects/container/IContainer';
 import { IFrame } from './IFrame';
-import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { SetExtent } from '../components/transform/SetExtent';
 import { SetUV } from '../components/vertices/SetUV';
 import { Texture } from './Texture';
-import { Vertex } from '../components';
 
 export class Frame implements IFrame
 {
@@ -154,12 +152,7 @@ export class Frame implements IFrame
 
     copyToVertices (id: number): this
     {
-        const { u0, u1, v0, v1 } = this;
-
-        SetUV(QuadVertexComponent.tl[id], u0, v0);
-        SetUV(QuadVertexComponent.bl[id], u0, v1);
-        SetUV(QuadVertexComponent.br[id], u1, v1);
-        SetUV(QuadVertexComponent.tr[id], u1, v0);
+        SetUV(id, this.u0, this.v0, this.u1, this.v1);
 
         return this;
     }
