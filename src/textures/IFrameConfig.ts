@@ -5,5 +5,6 @@ export interface IFrameConfig
     startFrame?: number;
     endFrame?: number;
     margin?: number;
-    spacing?: number;
+    spacingX?: number;
+    spacingY?: number;
 }

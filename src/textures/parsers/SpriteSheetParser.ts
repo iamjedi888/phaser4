@@ -7,7 +7,8 @@ export function SpriteSheetParser (texture: Texture, x: number, y: number, width
         frameWidth = null,
         endFrame = -1,
         margin = 0,
-        spacing = 0
+        spacingX = 0,
+        spacingY = 0
     } = frameConfig;
 
     let {
@@ -26,8 +27,8 @@ export function SpriteSheetParser (texture: Texture, x: number, y: number, width
         throw new Error('SpriteSheetParser: Invalid frameWidth');
     }
 
-    const row: number = Math.floor((width - margin + spacing) / (frameWidth + spacing));
-    const column: number = Math.floor((height - margin + spacing) / (frameHeight + spacing));
+    const row: number = Math.floor((width - margin + spacingX) / (frameWidth + spacingX));
+    const column: number = Math.floor((height - margin + spacingY) / (frameHeight + spacingY));
     let total: number = row * column;
 
     if (total === 0)
@@ -76,12 +77,12 @@ export function SpriteSheetParser (texture: Texture, x: number, y: number, width
 
         texture.addFrame(i, x + fx, y + fy, frameWidth - ax, frameHeight - ay);
 
-        fx += frameWidth + spacing;
+        fx += frameWidth + spacingX;
 
         if (fx + frameWidth > width)
         {
             fx = margin;
-            fy += frameHeight + spacing;
+            fy += frameHeight + spacingY;
         }
     }
 }
