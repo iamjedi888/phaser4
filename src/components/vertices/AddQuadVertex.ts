@@ -7,6 +7,7 @@ export function AddQuadVertex (id: number, width: number = 0, height: number = 0
 {
     addComponent(GameObjectWorld, QuadVertexComponent, id);
 
+    /*
     if (width || height)
     {
         QuadVertexComponent.tl[id] = AddVertex(0, 0, 0, 0, 1);
@@ -21,4 +22,5 @@ export function AddQuadVertex (id: number, width: number = 0, height: number = 0
         QuadVertexComponent.br[id] = AddVertex();
         QuadVertexComponent.tr[id] = AddVertex();
     }
+    */
 }
