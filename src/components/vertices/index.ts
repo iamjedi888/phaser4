@@ -1,17 +1,13 @@
 import { AddQuadVertex } from './AddQuadVertex';
-import { AddVertex } from './AddVertex';
 import { QuadVertexComponent } from './QuadVertexComponent';
+import { SetQuadPosition } from './SetQuadPosition';
 import { SetUV } from './SetUV';
 import { UpdateVertexPositionSystem } from './UpdateVertexPositionSystem';
-import { VertexComponent } from './VertexComponent';
-import { VertexWorld } from './VertexWorld';
 
 export {
     AddQuadVertex,
-    AddVertex,
     QuadVertexComponent,
+    SetQuadPosition,
     SetUV,
-    UpdateVertexPositionSystem,
-    VertexComponent,
-    VertexWorld
+    UpdateVertexPositionSystem
 };
