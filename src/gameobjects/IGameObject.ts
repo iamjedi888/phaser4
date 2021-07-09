@@ -22,9 +22,11 @@ export interface IGameObject
     update (delta: number, time: number): void;
     afterUpdate (delta: number, time: number): void;
 
+    preRenderGL <T extends IRenderPass> (renderPass: T): void;
     renderGL <T extends IRenderPass> (renderPass: T): void;
-    renderCanvas <T extends ICanvasRenderer> (renderer: T): void;
     postRenderGL <T extends IRenderPass> (renderPass: T): void;
+
+    renderCanvas <T extends ICanvasRenderer> (renderer: T): void;
     postRenderCanvas <T extends ICanvasRenderer> (renderer: T): void;
 
     hasParent (id?: number): boolean;

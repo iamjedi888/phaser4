@@ -54,6 +54,8 @@ export class Sprite extends Container implements ISprite
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
+        this.preRenderGL(renderPass);
+
         BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
     }
 

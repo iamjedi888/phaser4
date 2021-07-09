@@ -83,6 +83,13 @@ export class GameObject implements IGameObject
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    preRenderGL <T extends IRenderPass> (renderPass: T): void
+    {
+        //  Called before this GameObject and all of its children have been rendered.
+        //  If this Game Object won't render, this method is never called.
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
     }
