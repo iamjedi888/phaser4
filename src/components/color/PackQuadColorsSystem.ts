@@ -1,8 +1,8 @@
 import { Changed, defineQuery, defineSystem } from 'bitecs';
-import { QuadVertexComponent, VertexComponent } from '../vertices';
 
 import { ColorComponent } from './ColorComponent';
-import { PackColor } from '../../renderer/webgl1';
+import { QuadVertexComponent } from '../vertices';
+import { SetQuadColor } from '../vertices/SetQuadColor';
 
 const changedColorQuery = defineQuery([ Changed(ColorComponent), QuadVertexComponent ]);
 
@@ -14,17 +14,12 @@ const packQuadColorsSystem = defineSystem(world =>
     {
         const id = entities[i];
 
-        const v1 = QuadVertexComponent.tl[id];
-        const v2 = QuadVertexComponent.bl[id];
-        const v3 = QuadVertexComponent.br[id];
-        const v4 = QuadVertexComponent.tr[id];
+        const red = ColorComponent.red[id];
+        const green = ColorComponent.green[id];
+        const blue = ColorComponent.blue[id];
+        const alpha = ColorComponent.alpha[id];
 
-        const color = PackColor(ColorComponent.tint[id], ColorComponent.alpha[id]);
-
-        VertexComponent.color[v1] = color;
-        VertexComponent.color[v2] = color;
-        VertexComponent.color[v3] = color;
-        VertexComponent.color[v4] = color;
+        SetQuadColor(id, red, green, blue, alpha);
     }
 
     return world;
