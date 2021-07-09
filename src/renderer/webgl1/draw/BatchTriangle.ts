@@ -38,12 +38,4 @@ export function BatchTriangle (
     F32.set(buffer, offset);
 
     return offset + 27;
-
-    //  The above is more verbose but doesn't create any garbage, unlike the following way of doing it:
-
-    // F32.set([
-    //     x1, y1, 0, 1, textureIndex, red, green, blue, alpha,
-    //     x2, y2, 0, 0, textureIndex, red, green, blue, alpha,
-    //     x3, y3, 1, 0, textureIndex, red, green, blue, alpha
-    // ], offset);
 }
