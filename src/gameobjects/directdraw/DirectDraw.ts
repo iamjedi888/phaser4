@@ -2,6 +2,7 @@ import { DrawFrame } from '../../renderer/webgl1/draw/DrawFrame';
 import { DrawImage } from '../../renderer/webgl1/draw/DrawImage';
 import { DrawImagePart } from '../../renderer/webgl1/draw/DrawImagePart';
 import { DrawQuad } from '../../renderer/webgl1/draw/DrawQuad';
+import { DrawTiles } from '../../renderer/webgl1/draw/DrawTiles';
 import { FillArc } from '../../renderer/webgl1/draw/FillArc';
 import { FillLine } from '../../renderer/webgl1/draw/FillLine';
 import { FillRect } from '../../renderer/webgl1/draw/FillRect';
@@ -168,35 +169,7 @@ export class DirectDraw extends GameObject
 
     tiles (texture: ITexture, tileWidth: number, tileHeight: number, mapData: number[], mapWidth: number, x: number = 0, y: number = 0): this
     {
-        let tx = 0;
-        let ty = 0;
-        let i = 0;
-
-        const renderPass = this.renderPass;
-        const alpha = this.alpha;
-
-        mapData.forEach(tile =>
-        {
-            if (tile !== -1)
-            {
-                DrawFrame(
-                    renderPass,
-                    texture, tile,
-                    Math.floor(x + tx), Math.floor(y + ty),
-                    alpha
-                );
-            }
-
-            i++;
-            tx += tileWidth;
-
-            if (i === mapWidth)
-            {
-                tx = 0;
-                ty += tileHeight;
-                i = 0;
-            }
-        });
+        DrawTiles(this.renderPass, texture, tileWidth, tileHeight, mapData, mapWidth, x, y, this.alpha);
 
         return this;
     }
