@@ -1,4 +1,3 @@
-import { AddVertexToBatch } from './AddVertexToBatch';
 import { BatchQuad } from './BatchQuad';
 import { BatchSingleQuad } from './BatchSingleQuad';
 import { BatchTexturedQuad } from './BatchTexturedQuad';
@@ -17,11 +16,10 @@ import { GetQuadBuffer } from './GetQuadBuffer';
 import { GetTriBuffer } from './GetTriBuffer';
 
 export {
-    AddVertexToBatch,
+    BatchQuad,
     BatchSingleQuad,
     BatchTexturedQuad,
     BatchTexturedQuadBuffer,
-    BatchQuad,
     BatchTriangle,
     DrawFrame,
     DrawImage,
