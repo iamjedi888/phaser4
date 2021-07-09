@@ -8,6 +8,9 @@ export function FillRect (renderPass: IRenderPass, x: number, y: number, width: 
 
     const textureIndex = renderPass.textures.setWhite();
 
+    x = Math.round(x);
+    y = Math.round(y);
+
     BatchQuad(
         F32, offset, textureIndex,
         x, y,
