@@ -1,15 +1,13 @@
+import { BatchTexturedQuad } from './BatchTexturedQuad';
 import { Clamp } from '../../../math';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IFrame } from '../../../textures/IFrame';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
-import { PackColor } from '../colors/PackColor';
 
-export function DrawImagePart (renderPass: IRenderPass, texture: ITexture, x0: number, y0: number, x1: number, y1: number, dx: number, dy: number, dw?: number, dh?: number, alpha: number = 1): void
+export function DrawImagePart <T extends ITexture> (renderPass: IRenderPass, texture: T, x0: number, y0: number, x1: number, y1: number, dx: number, dy: number, dw?: number, dh?: number, alpha: number = 1): void
 {
-    const { F32, U32, offset } = GetVertexBufferEntry(renderPass, 1);
-
-    const packedColor = PackColor(0xffffff, alpha);
+    const { F32, offset } = GetVertexBufferEntry(renderPass, 2);
 
     const frame: IFrame = texture.firstFrame;
 
@@ -42,35 +40,13 @@ export function DrawImagePart (renderPass: IRenderPass, texture: ITexture, x0: n
         dh = y1 - y0;
     }
 
-    //  top left
-    F32[offset + 0] = dx;
-    F32[offset + 1] = dy;
-    F32[offset + 2] = u0;
-    F32[offset + 3] = v0;
-    F32[offset + 4] = textureIndex;
-    U32[offset + 5] = packedColor;
-
-    //  bottom left
-    F32[offset + 6] = dx;
-    F32[offset + 7] = dy + dh;
-    F32[offset + 8] = u0;
-    F32[offset + 9] = v1;
-    F32[offset + 10] = textureIndex;
-    U32[offset + 11] = packedColor;
-
-    //  bottom right
-    F32[offset + 12] = dx + dw;
-    F32[offset + 13] = dy + dh;
-    F32[offset + 14] = u1;
-    F32[offset + 15] = v1;
-    F32[offset + 16] = textureIndex;
-    U32[offset + 17] = packedColor;
-
-    //  top right
-    F32[offset + 18] = dx + dw;
-    F32[offset + 19] = dy;
-    F32[offset + 20] = u1;
-    F32[offset + 21] = v0;
-    F32[offset + 22] = textureIndex;
-    U32[offset + 23] = packedColor;
+    BatchTexturedQuad(
+        F32, offset, textureIndex,
+        dx, dy,
+        dx, dy + dh,
+        dx + dw, dy + dh,
+        dx + dw, dy,
+        u0, v0, u1, v1,
+        1, 1, 1, alpha
+    );
 }
