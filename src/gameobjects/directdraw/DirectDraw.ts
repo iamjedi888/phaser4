@@ -140,28 +140,63 @@ export class DirectDraw extends GameObject
 
     image (texture: ITexture, x: number, y: number, alpha: number = 1, scaleX: number = 1, scaleY: number = 1): this
     {
-        DrawImage(this.renderPass, texture, x, y, this.alpha * alpha, scaleX, scaleY);
+        DrawImage(this.renderPass, texture, x, y, alpha, scaleX, scaleY);
 
         return this;
     }
 
     imagePart (texture: ITexture, x0: number, y0: number, x1: number, y1: number, dx: number, dy: number, dw?: number, dh?: number, alpha: number = 1): this
     {
-        DrawImagePart(this.renderPass, texture, x0, y0, x1, y1, dx, dy, dw, dh, this.alpha * alpha);
+        DrawImagePart(this.renderPass, texture, x0, y0, x1, y1, dx, dy, dw, dh, alpha);
 
         return this;
     }
 
     frame (texture: ITexture, frame: string | number | IFrame, x: number, y: number, alpha: number = 1, scaleX: number = 1, scaleY: number = 1): this
     {
-        DrawFrame(this.renderPass, texture, frame, x, y, this.alpha * alpha, scaleX, scaleY);
+        DrawFrame(this.renderPass, texture, frame, x, y, alpha, scaleX, scaleY);
 
         return this;
     }
 
     quad (texture: ITexture, frame: string | number | IFrame, x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, alpha: number = 1): this
     {
-        DrawQuad(this.renderPass, texture, frame, x0, y0, x1, y1, x2, y2, x3, y3, this.alpha * alpha);
+        DrawQuad(this.renderPass, texture, frame, x0, y0, x1, y1, x2, y2, x3, y3, alpha);
+
+        return this;
+    }
+
+    tiles (texture: ITexture, tileWidth: number, tileHeight: number, mapData: number[], mapWidth: number, x: number = 0, y: number = 0): this
+    {
+        let tx = 0;
+        let ty = 0;
+        let i = 0;
+
+        const renderPass = this.renderPass;
+        const alpha = this.alpha;
+
+        mapData.forEach(tile =>
+        {
+            if (tile !== -1)
+            {
+                DrawFrame(
+                    renderPass,
+                    texture, tile,
+                    Math.floor(x + tx), Math.floor(y + ty),
+                    alpha
+                );
+            }
+
+            i++;
+            tx += tileWidth;
+
+            if (i === mapWidth)
+            {
+                tx = 0;
+                ty += tileHeight;
+                i = 0;
+            }
+        });
 
         return this;
     }
