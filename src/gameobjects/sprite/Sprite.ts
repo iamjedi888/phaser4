@@ -56,6 +56,8 @@ export class Sprite extends Container implements ISprite
     {
         this.preRenderGL(renderPass);
 
+        renderPass.shader.current.shader.setColorMatrix(this.color, renderPass);
+
         BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
     }
 
@@ -66,6 +68,7 @@ export class Sprite extends Container implements ISprite
         // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }
 
+    /*
     get tint (): number
     {
         return ColorComponent.tint[this.id];
@@ -75,6 +78,7 @@ export class Sprite extends Container implements ISprite
     {
         SetTint(this.id, value);
     }
+    */
 
     destroy (reparentChildren?: IGameObject): void
     {
