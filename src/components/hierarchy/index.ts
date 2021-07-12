@@ -16,6 +16,7 @@ import { SetDepth } from './SetDepth';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
 import { SetWorldAndParentID } from './SetWorldAndParentID';
+import { SetWorldDepth } from './SetWorldDepth';
 import { SetWorldID } from './SetWorldID';
 import { UpdateNumChildren } from './UpdateNumChildren';
 
@@ -38,6 +39,7 @@ export {
     SetNumChildren,
     SetParentID,
     SetWorldAndParentID,
+    SetWorldDepth,
     SetWorldID,
     UpdateNumChildren
 };

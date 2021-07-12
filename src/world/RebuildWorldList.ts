@@ -1,7 +1,7 @@
+import { GetNumChildren, SetWorldDepth } from '../components/hierarchy';
 import { WillCacheChildren, WillRender, WillRenderChildren } from '../components/permissions';
 
 import { GameObjectTree } from '../gameobjects';
-import { GetNumChildren } from '../components/hierarchy';
 import { HasDirtyChildCache } from '../components/dirty';
 import { IBaseWorld } from './IBaseWorld';
 
@@ -10,7 +10,7 @@ import { IBaseWorld } from './IBaseWorld';
 //  This is only called if the World has a dirty display list, otherwise the results
 //  are cached between frames
 
-export function RebuildWorldList (world: IBaseWorld, parent: number): void
+export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth: number): void
 {
     if (WillRender(parent))
     {
@@ -18,6 +18,8 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
         {
             world.addToRenderList(parent, 0);
         }
+
+        SetWorldDepth(parent, worldDepth);
 
         const children = GameObjectTree.get(parent);
 
@@ -32,7 +34,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
                     //  Is a Child Cache, like a Render Layer, or doesn't cache children, like a Container
                     if (!WillCacheChildren(nodeID) || HasDirtyChildCache(nodeID))
                     {
-                        RebuildWorldList(world, nodeID);
+                        RebuildWorldList(world, nodeID, worldDepth + 1);
                     }
                     else
                     {

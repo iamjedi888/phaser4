@@ -173,7 +173,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         {
             this.listLength = 0;
 
-            RebuildWorldList(this, id);
+            RebuildWorldList(this, id, 0);
 
             ClearDirtyDisplayList(id);
 
