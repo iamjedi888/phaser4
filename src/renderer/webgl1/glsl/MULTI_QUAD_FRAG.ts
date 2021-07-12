@@ -9,6 +9,8 @@ varying float vTextureId;
 varying vec4 vTintColor;
 
 uniform sampler2D uTexture[%count%];
+uniform mat4 uColorMatrix;
+uniform vec4 uColorOffset;
 
 vec4 getSampler (int index, vec2 uv)
 {
@@ -30,5 +32,5 @@ void main (void)
 {
     vec4 color = getSampler(int(vTextureId), vTextureCoord);
 
-    gl_FragColor = color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a);
+    gl_FragColor = color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a) * uColorMatrix + uColorOffset;
 }`;

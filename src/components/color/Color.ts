@@ -7,6 +7,8 @@ export class Color
 {
     private id: number;
 
+    useColorMatrix: boolean = false;
+
     constructor (id: number, red: number = 255, green: number = 255, blue: number = 255, alpha: number = 1)
     {
         this.id = id;
@@ -20,6 +22,28 @@ export class Color
         this.green = green;
         this.blue = blue;
         this.alpha = alpha;
+    }
+
+    //  16 element array (4x4)
+    set colorMatrix (value: number[])
+    {
+        ColorComponent.colorMatrix[this.id].set(value);
+    }
+
+    get colorMatrix (): number[]
+    {
+        return ColorComponent.colorMatrix[this.id];
+    }
+
+    //  4 element array (vec4)
+    set colorOffset (value: number[])
+    {
+        ColorComponent.colorOffset[this.id].set(value);
+    }
+
+    get colorOffset (): number[]
+    {
+        return ColorComponent.colorOffset[this.id];
     }
 
     //  All in the range 0-255 or 0x00-0xFF
