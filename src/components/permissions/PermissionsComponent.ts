@@ -8,7 +8,8 @@ const Permissions = defineComponent({
     willRender: Types.ui8,
     willRenderChildren: Types.ui8,
     willCacheChildren: Types.ui8,
-    willTransformChildren: Types.ui8
+    willTransformChildren: Types.ui8,
+    willColorChildren: Types.ui8
 });
 
 export const PermissionsComponent = Permissions;
