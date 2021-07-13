@@ -1,8 +1,8 @@
-import { AddColorComponent, ColorComponent, SetAlpha } from '../../components/color';
 import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform2DComponent } from '../../components/transform/';
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
+import { AddColorComponent } from '../../components/color';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
@@ -51,6 +51,13 @@ export class Container extends GameObject implements IContainer
 
             renderPass.shader.set(this.shader, 0);
         }
+
+        if (this.color.useColorMatrix)
+        {
+            renderPass.colorMatrix.set(this.color);
+        }
+
+        this.preRenderGL(renderPass);
     }
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
@@ -60,6 +67,11 @@ export class Container extends GameObject implements IContainer
             Flush(renderPass);
 
             renderPass.shader.pop();
+        }
+
+        if (this.color.useColorMatrix)
+        {
+            renderPass.colorMatrix.pop();
         }
     }
 
