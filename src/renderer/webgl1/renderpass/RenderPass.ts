@@ -1,3 +1,5 @@
+import { DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET } from '../../../colormatrix/consts';
+
 import { BlendModeStack } from './BlendModeStack';
 import { ColorMatrixStack } from './ColorMatrixStack';
 import { FramebufferStack } from './FramebufferStack';
@@ -96,7 +98,7 @@ export class RenderPass implements IRenderPass
         this.textures.setDefault();
         this.framebuffer.setDefault();
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        this.colorMatrix.setDefault(new Float32Array([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]), new Float32Array(4));
+        this.colorMatrix.setDefault(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
         this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize() }));
         this.shader.setDefault((GetMaxTextures() === 1) ? new QuadShader() : new MultiTextureQuadShader());
     }
