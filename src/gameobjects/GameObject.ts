@@ -103,14 +103,14 @@ export class GameObject implements IGameObject
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
         //  Called after this GameObject and all of its children have been rendered.
-        //  If it doesn't have any children, this method is never called.
+        //  If this Game Object won't render, this method is never called.
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     postRenderCanvas <T extends ICanvasRenderer> (renderer: T): void
     {
         //  Called after this GameObject and all of its children have been rendered.
-        //  If it doesn't have any children, this method is never called.
+        //  If this Game Object won't render, this method is never called.
     }
 
     set visible (value: boolean)
