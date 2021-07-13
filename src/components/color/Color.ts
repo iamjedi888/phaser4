@@ -1,13 +1,16 @@
 import { ColorComponent } from './ColorComponent';
+import { PermissionsComponent } from '../permissions/PermissionsComponent';
 
 //  red, green, blue in the range 0-255
 //  alpha in the range 0-1
+//  colorMatrix Float32Array of length 16, values are 0 to 1
+//  colorOffset Float32Array of length 4, values are integer
 
 export class Color
 {
     private id: number;
 
-    useColorMatrix: boolean = false;
+    colorMatrixEnabled: boolean = false;
 
     constructor (id: number, red: number = 255, green: number = 255, blue: number = 255, alpha: number = 1)
     {
@@ -24,10 +27,22 @@ export class Color
         this.alpha = alpha;
     }
 
+    set willColorChildren (value: boolean)
+    {
+        PermissionsComponent.willColorChildren[this.id] = Number(value);
+    }
+
+    get willColorChildren (): boolean
+    {
+        return Boolean(PermissionsComponent.willColorChildren[this.id]);
+    }
+
     //  16 element array (4x4)
     set colorMatrix (value: Float32List)
     {
         ColorComponent.colorMatrix[this.id].set(value);
+
+        this.colorMatrixEnabled = true;
     }
 
     get colorMatrix (): Float32Array
