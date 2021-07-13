@@ -14,9 +14,9 @@ const packQuadColorsSystem = defineSystem(world =>
     {
         const id = entities[i];
 
-        const red = ColorComponent.red[id];
-        const green = ColorComponent.green[id];
-        const blue = ColorComponent.blue[id];
+        const red = ColorComponent.red[id] / 255;
+        const green = ColorComponent.green[id] / 255;
+        const blue = ColorComponent.blue[id] / 255;
         const alpha = ColorComponent.alpha[id];
 
         SetQuadColor(id, red, green, blue, alpha);
