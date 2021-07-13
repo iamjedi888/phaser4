@@ -1,5 +1,3 @@
-import { ColorComponent, SetTint } from '../../components/color';
-
 import { AddQuadVertex } from '../../components/vertices';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw';
 import { Container } from '../container/Container';
@@ -54,9 +52,7 @@ export class Sprite extends Container implements ISprite
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        this.preRenderGL(renderPass);
-
-        renderPass.shader.current.shader.setColorMatrix(this.color, renderPass);
+        super.renderGL(renderPass);
 
         BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
     }
@@ -67,18 +63,6 @@ export class Sprite extends Container implements ISprite
 
         // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }
-
-    /*
-    get tint (): number
-    {
-        return ColorComponent.tint[this.id];
-    }
-
-    set tint (value: number)
-    {
-        SetTint(this.id, value);
-    }
-    */
 
     destroy (reparentChildren?: IGameObject): void
     {
