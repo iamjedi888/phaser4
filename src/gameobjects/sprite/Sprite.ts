@@ -1,6 +1,7 @@
 import { AddQuadVertex } from '../../components/vertices';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw';
 import { Container } from '../container/Container';
+import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IFrame } from '../../textures/IFrame';
@@ -52,9 +53,30 @@ export class Sprite extends Container implements ISprite
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        super.renderGL(renderPass);
+        const color = this.color;
+
+        if (this.shader)
+        {
+            Flush(renderPass);
+
+            renderPass.shader.set(this.shader, 0);
+        }
+
+        if (color.colorMatrixEnabled)
+        {
+            renderPass.colorMatrix.set(color);
+        }
+
+        this.preRenderGL(renderPass);
 
         BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
+
+        if (color.colorMatrixEnabled && !color.willColorChildren)
+        {
+            Flush(renderPass);
+
+            renderPass.colorMatrix.pop();
+        }
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void

@@ -45,6 +45,8 @@ export class Container extends GameObject implements IContainer
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
+        const color = this.color;
+
         if (this.shader)
         {
             Flush(renderPass);
@@ -52,9 +54,9 @@ export class Container extends GameObject implements IContainer
             renderPass.shader.set(this.shader, 0);
         }
 
-        if (this.color.useColorMatrix)
+        if (color.colorMatrixEnabled && color.willColorChildren)
         {
-            renderPass.colorMatrix.set(this.color);
+            renderPass.colorMatrix.set(color);
         }
 
         this.preRenderGL(renderPass);
@@ -62,6 +64,8 @@ export class Container extends GameObject implements IContainer
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
+        const color = this.color;
+
         if (this.shader)
         {
             Flush(renderPass);
@@ -69,7 +73,7 @@ export class Container extends GameObject implements IContainer
             renderPass.shader.pop();
         }
 
-        if (this.color.useColorMatrix)
+        if (color.colorMatrixEnabled && color.willColorChildren)
         {
             renderPass.colorMatrix.pop();
         }
