@@ -1,8 +1,8 @@
 import { BlackWhite } from './BlackWhite';
 import { Brightness } from './Brightness';
 import { Brown } from './Brown';
+import { ColorTone } from './ColorTone';
 import { Contrast } from './Contrast';
-import { DefaultColorMatrix } from './DefaultColorMatrix';
 import { Desaturate } from './Desaturate';
 import { DesaturateLuminance } from './DesaturateLuminance';
 import { Grayscale } from './Grayscale';
@@ -12,19 +12,23 @@ import { LSD } from './LSD';
 import { Negative } from './Negative';
 import { Night } from './Night';
 import { Polaroid } from './Polaroid';
+import { Predator } from './Predator';
+import { Reset } from './Reset';
 import { Saturate } from './Saturate';
 import { Sepia } from './Sepia';
 import { SetColorMatrix } from './SetColorMatrix';
 import { ShiftToBGR } from './ShiftToBGR';
 import { Technicolor } from './Technicolor';
+import { Tint } from './Tint';
 import { VintagePinhole } from './VintagePinhole';
 
 export {
     BlackWhite,
     Brightness,
     Brown,
+    ColorTone,
     Contrast,
-    DefaultColorMatrix,
+    Reset,
     Desaturate,
     DesaturateLuminance,
     Grayscale,
@@ -34,10 +38,12 @@ export {
     Negative,
     Night,
     Polaroid,
+    Predator,
     Saturate,
     Sepia,
     SetColorMatrix,
     ShiftToBGR,
     Technicolor,
+    Tint,
     VintagePinhole
 };
