@@ -7,17 +7,15 @@ export function Contrast <T extends IContainer> (gameObject: T, value: number, m
     const o = -0.5 * (v - 1);
 
     const values = [
-        v, 0, 0, 0, o,
-        0, v, 0, 0, o,
-        0, 0, v, 0, o,
-        0, 0, 0, 1, 0
+        v, 0, 0, 0,
+        0, v, 0, 0,
+        0, 0, v, 0,
+        0, 0, 0, 1
     ];
 
-    //  TODO - Need to pass the constants here after values
-
-    if (SetColorMatrix(gameObject.id, values, multiply))
+    if (SetColorMatrix(gameObject.id, values, [ o, o, o, 0 ], multiply))
     {
-        gameObject.color.useColorMatrix = true;
+        gameObject.color.colorMatrixEnabled = true;
     }
 
     return gameObject;
