@@ -15,5 +15,16 @@ void main (void)
 {
     vec4 color = texture2D(uTexture, vTextureCoord);
 
-    gl_FragColor = color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a) * uColorMatrix + (uColorOffset / 255.0);
+    //  Un pre-mult alpha
+    if (color.a > 0.0)
+    {
+        color.rgb /= color.a;
+    }
+
+    vec4 result = color * uColorMatrix + (uColorOffset / 255.0);
+
+    //  Pre-mult alpha
+    result.rgb *= result.a;
+
+    gl_FragColor = vec4(result.rgb, result.a);
 }`;
