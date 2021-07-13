@@ -11,7 +11,7 @@ export class VertexBuffer implements IVertexBuffer
     /**
      * Maximum number of entries per batch before a flush takes place.
      * For a Mesh, this is the number of triangles / faces in the vertex buffer.
-     * Typically each face consists of 3 verticies.
+     * Typically each face consists of 3 verts.
      *
      * @type {number}
      */
@@ -27,12 +27,15 @@ export class VertexBuffer implements IVertexBuffer
     /**
      * The amount of elements / floats a single vertex consists of.
      *
-     * The default is 6:
+     * The default is 9:
      *
      * position (x,y - 2 floats)
      * texture coord (x,y - 2 floats)
      * texture index (uint)
-     * packed color (uint)
+     * red channel (float)
+     * green channel (float)
+     * blue channel (float)
+     * alpha channel (float)
      *
      * @type {number}
      */
@@ -50,7 +53,7 @@ export class VertexBuffer implements IVertexBuffer
     /**
      * The size, in bytes, of a single entry in the array buffer.
      *
-     * This is `vertexByteSize * 4` for a quad.
+     * This is `vertexByteSize * elementsPerEntry` for a quad.
      *
      * @type {number}
      */
@@ -135,7 +138,7 @@ export class VertexBuffer implements IVertexBuffer
             dataSize = 4,
             isDynamic = true,
             elementsPerEntry = 3,
-            vertexElementSize = 6
+            vertexElementSize = 9
         } = config;
 
         this.name = name;
