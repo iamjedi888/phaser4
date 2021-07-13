@@ -45,15 +45,15 @@ export function SetColorMatrix (id: number, values: Float32List, constants?: Flo
 
             if (constants)
             {
-                const r = constants[0];
-                const g = constants[1];
-                const b = constants[2];
-                const a = constants[3];
+                const r = constants[0]; // 4
+                const g = constants[1]; // 9
+                const b = constants[2]; // 14
+                const a = constants[3]; // 19
 
-                colorOffset[0] = (copy[ 0 ] * r) + (copy[ 1 ] * g) + (copy[ 2 ] * b) + (copy[ 3 ] * a) + colorOffset[ 0 ];
-                colorOffset[1] = (copy[ 4 ] * r) + (copy[ 5 ] * g) + (copy[ 6 ] * b) + (copy[ 7 ] * a) + colorOffset[ 1 ];
-                colorOffset[2] = (copy[ 8 ] * r) + (copy[ 9 ] * g) + (copy[ 10 ] * b) + (copy[ 11 ] * a) + colorOffset[ 2 ];
-                colorOffset[3] = (copy[ 12 ] * r) + (copy[ 13 ] * g) + (copy[ 14 ] * b) + (copy[ 15 ] * a) + colorOffset[ 3 ];
+                colorOffset[0] = (copy[0] * r) + (copy[1] * g) + (copy[2] * b) + (copy[3] * a) + colorOffset[0];
+                colorOffset[1] = (copy[4] * r) + (copy[5] * g) + (copy[6] * b) + (copy[7] * a) + colorOffset[1];
+                colorOffset[2] = (copy[8] * r) + (copy[9] * g) + (copy[10] * b) + (copy[11] * a) + colorOffset[2];
+                colorOffset[3] = (copy[12] * r) + (copy[13] * g) + (copy[14] * b) + (copy[15] * a) + colorOffset[3];
             }
         }
 
