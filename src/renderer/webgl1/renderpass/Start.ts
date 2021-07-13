@@ -13,4 +13,5 @@ export function Start (renderPass: IRenderPass): void
     renderPass.viewport.bindDefault();
     renderPass.vertexbuffer.bindDefault();
     renderPass.shader.bindDefault();
+    renderPass.colorMatrix.bindDefault();
 }

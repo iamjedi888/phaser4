@@ -1,4 +1,5 @@
 import { BlendModeStack } from './BlendModeStack';
+import { ColorMatrixStack } from './ColorMatrixStack';
 import { FramebufferStack } from './FramebufferStack';
 import { GetBatchSize } from '../../../config/batchsize/GetBatchSize';
 import { GetMaxTextures } from '../../../config/maxtextures';
@@ -37,6 +38,7 @@ export class RenderPass implements IRenderPass
     shader: ShaderStack;
     viewport: ViewportStack;
     textures: TextureStack;
+    colorMatrix: ColorMatrixStack;
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
@@ -58,8 +60,14 @@ export class RenderPass implements IRenderPass
         this.shader = new ShaderStack(this);
         this.viewport = new ViewportStack(this);
         this.textures = new TextureStack(this);
+        this.colorMatrix = new ColorMatrixStack(this);
 
         this.reset();
+    }
+
+    getCurrentShader (): IShader
+    {
+        return this.shader.current.shader;
     }
 
     flush (): void
@@ -72,18 +80,15 @@ export class RenderPass implements IRenderPass
     }
 
     //  TODO - Call when context is lost and restored
+    //  TODO - If already created, delete shaders / buffers first (i.e. during context loss)
     reset (): void
     {
         const gl = this.renderer.gl;
 
-        const indexLayout = [ 0, 1, 2, 2, 3, 0 ];
-
-        //  TODO - If already created, delete shaders / buffers first (i.e. during context loss)
-
         //  Default QuadShader (for FBO drawing)
 
         this.quadShader = new QuadShader();
-        this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout });
+        this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
         this.quadCamera = new StaticCamera();
 
         //  Default settings
@@ -91,18 +96,9 @@ export class RenderPass implements IRenderPass
         this.textures.setDefault();
         this.framebuffer.setDefault();
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-        // this.vertexbuffer.setDefault(new IndexedVertexBuffer({ name: 'sprite', batchSize: GetBatchSize(), indexLayout }));
-        this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize(), vertexElementSize: 9 }));
-
-        if (GetMaxTextures() === 1)
-        {
-            this.shader.setDefault(new QuadShader());
-        }
-        else
-        {
-            this.shader.setDefault(new MultiTextureQuadShader());
-        }
+        this.colorMatrix.setDefault(new Float32Array([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]), new Float32Array(4));
+        this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize() }));
+        this.shader.setDefault((GetMaxTextures() === 1) ? new QuadShader() : new MultiTextureQuadShader());
     }
 
     resize (width: number, height: number): void

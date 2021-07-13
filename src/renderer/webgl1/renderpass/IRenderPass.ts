@@ -1,4 +1,5 @@
 import { BlendModeStack } from './BlendModeStack';
+import { ColorMatrixStack } from './ColorMatrixStack';
 import { FramebufferStack } from './FramebufferStack';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IShader } from '../shaders/IShader';
@@ -26,6 +27,7 @@ export interface IRenderPass
     shader: ShaderStack;
     viewport: ViewportStack;
     textures: TextureStack;
+    colorMatrix: ColorMatrixStack;
 
     quadShader: IShader;
     quadBuffer: IVertexBuffer;
@@ -35,5 +37,6 @@ export interface IRenderPass
 
     reset (): void;
     flush (): void;
+    getCurrentShader (): IShader;
     resize (width: number, height: number): void;
 }
