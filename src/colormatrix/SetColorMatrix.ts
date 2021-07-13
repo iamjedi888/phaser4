@@ -2,15 +2,21 @@ import { ColorComponent } from '../components/color';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { hasComponent } from 'bitecs';
 
-export function SetColorMatrix (id: number, values: number[], multiply: boolean = false): boolean
+export function SetColorMatrix (id: number, values: Float32List, constants?: Float32List, multiply?: boolean): boolean
 {
     if (hasComponent(GameObjectWorld, ColorComponent, id))
     {
-        const colorMatrix = ColorComponent.colorMatrix[id];
+        const colorMatrix: Float32Array = ColorComponent.colorMatrix[id];
+        const colorOffset: Float32Array = ColorComponent.colorOffset[id];
 
         if (!multiply)
         {
             colorMatrix.set(values);
+
+            if (constants)
+            {
+                colorOffset.set(constants);
+            }
         }
         else
         {
@@ -36,15 +42,22 @@ export function SetColorMatrix (id: number, values: number[], multiply: boolean 
                     c = 0;
                 }
             });
+
+            if (constants)
+            {
+                const r = constants[0];
+                const g = constants[1];
+                const b = constants[2];
+                const a = constants[3];
+
+                colorOffset[0] = (copy[ 0 ] * r) + (copy[ 1 ] * g) + (copy[ 2 ] * b) + (copy[ 3 ] * a) + colorOffset[ 0 ];
+                colorOffset[1] = (copy[ 4 ] * r) + (copy[ 5 ] * g) + (copy[ 6 ] * b) + (copy[ 7 ] * a) + colorOffset[ 1 ];
+                colorOffset[2] = (copy[ 8 ] * r) + (copy[ 9 ] * g) + (copy[ 10 ] * b) + (copy[ 11 ] * a) + colorOffset[ 2 ];
+                colorOffset[3] = (copy[ 12 ] * r) + (copy[ 13 ] * g) + (copy[ 14 ] * b) + (copy[ 15 ] * a) + colorOffset[ 3 ];
+            }
         }
 
         return true;
-
-        // The constants:
-        // m[4] = (c[0] * a[4]) + (c[1] * a[9]) + (c[2] * a[14]) + (c[3] * a[19]) + c[4];
-        // m[9] = (c[5] * a[4]) + (c[6] * a[9]) + (c[7] * a[14]) + (c[8] * a[19]) + c[9];
-        // m[14] = (c[10] * a[4]) + (c[11] * a[9]) + (c[12] * a[14]) + (c[13] * a[19]) + c[14];
-        // m[19] = (c[15] * a[4]) + (c[16] * a[9]) + (c[17] * a[14]) + (c[18] * a[19]) + c[19];
     }
 
     return false;
