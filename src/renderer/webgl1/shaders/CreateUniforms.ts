@@ -19,7 +19,7 @@ export function CreateUniforms (program: WebGLProgram): Map<string, Function>
             continue;
         }
 
-        const location = gl.getUniformLocation(program, uniform.name);
+        const location = gl.getUniformLocation(program, name);
 
         if (location)
         {
