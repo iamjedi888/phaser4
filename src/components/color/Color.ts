@@ -25,23 +25,23 @@ export class Color
     }
 
     //  16 element array (4x4)
-    set colorMatrix (value: number[])
+    set colorMatrix (value: Float32List)
     {
         ColorComponent.colorMatrix[this.id].set(value);
     }
 
-    get colorMatrix (): number[]
+    get colorMatrix (): Float32Array
     {
         return ColorComponent.colorMatrix[this.id];
     }
 
     //  4 element array (vec4)
-    set colorOffset (value: number[])
+    set colorOffset (value: Float32List)
     {
         ColorComponent.colorOffset[this.id].set(value);
     }
 
-    get colorOffset (): number[]
+    get colorOffset (): Float32Array
     {
         return ColorComponent.colorOffset[this.id];
     }
@@ -49,32 +49,32 @@ export class Color
     //  All in the range 0-255 or 0x00-0xFF
     set red (value: number)
     {
-        ColorComponent.red[this.id] = value / 255;
+        ColorComponent.red[this.id] = value;
     }
 
     get red (): number
     {
-        return ColorComponent.red[this.id] * 255;
+        return ColorComponent.red[this.id];
     }
 
     set green (value: number)
     {
-        ColorComponent.green[this.id] = value / 255;
+        ColorComponent.green[this.id] = value;
     }
 
     get green (): number
     {
-        return ColorComponent.green[this.id] * 255;
+        return ColorComponent.green[this.id];
     }
 
     set blue (value: number)
     {
-        ColorComponent.blue[this.id] = value / 255;
+        ColorComponent.blue[this.id] = value;
     }
 
     get blue (): number
     {
-        return ColorComponent.blue[this.id] * 255;
+        return ColorComponent.blue[this.id];
     }
 
     set alpha (value: number)
