@@ -113,10 +113,13 @@ export class Shader implements IShader
 
         this.uniforms = new Map();
 
-        //  Copy starting values from the config object to the uniforms map
+        //  Copy starting values from the config object to the uniforms map but only if a setter exists
         for (const [ key, value ] of Object.entries(uniforms))
         {
-            this.uniforms.set(key, value);
+            if (this.uniformSetters.has(key))
+            {
+                this.uniforms.set(key, value);
+            }
         }
 
         this.attributes = CreateAttributes(program, attribs);
