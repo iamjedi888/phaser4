@@ -15,5 +15,5 @@ void main (void)
 {
     vec4 color = texture2D(uTexture, vTextureCoord);
 
-    gl_FragColor = color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a) * uColorMatrix + uColorOffset;
+    gl_FragColor = color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a) * uColorMatrix + (uColorOffset / 255.0);
 }`;
