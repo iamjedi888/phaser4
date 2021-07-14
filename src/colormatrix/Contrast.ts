@@ -1,7 +1,8 @@
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
-export function Contrast <T extends IContainer> (gameObject: T, value: number, multiply: boolean = false): T
+export function Contrast <T extends IGameObject & IColorComponent> (gameObject: T, value: number, multiply: boolean = false): T
 {
     const v = value + 1;
     const o = -0.5 * (v - 1);

@@ -1,8 +1,9 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
-export function Saturate <T extends IContainer> (gameObject: T, value: number, multiply: boolean = false): T
+export function Saturate <T extends IGameObject & IColorComponent> (gameObject: T, value: number, multiply: boolean = false): T
 {
     const x = (value * 2 / 3) + 1;
     const y = ((x - 1) * -0.5);

@@ -1,8 +1,9 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
-export function Night <T extends IContainer> (gameObject: T, intensity: number = 0.1, multiply: boolean = false): T
+export function Night <T extends IGameObject & IColorComponent> (gameObject: T, intensity: number = 0.1, multiply: boolean = false): T
 {
     const values = [
         intensity * (-2.0), -intensity, 0, 0,

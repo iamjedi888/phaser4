@@ -1,8 +1,9 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
-export function Tint <T extends IContainer> (gameObject: T, color: number, multiply: boolean = false): T
+export function Tint <T extends IGameObject & IColorComponent> (gameObject: T, color: number, multiply: boolean = false): T
 {
     const r = (color >> 16) & 0xff;
     const g = (color >> 8) & 0xff;

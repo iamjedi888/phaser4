@@ -1,8 +1,9 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
-export function Predator <T extends IContainer> (gameObject: T, amount: number, multiply: boolean = false): T
+export function Predator <T extends IGameObject & IColorComponent> (gameObject: T, amount: number, multiply: boolean = false): T
 {
     const values = [
         11.224130630493164 * amount,

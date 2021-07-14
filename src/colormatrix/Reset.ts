@@ -1,9 +1,10 @@
 import { DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET } from './consts';
 
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
-export function Reset <T extends IContainer> (gameObject: T): T
+export function Reset <T extends IGameObject & IColorComponent> (gameObject: T): T
 {
     if (SetColorMatrix(gameObject.id, DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET, false))
     {

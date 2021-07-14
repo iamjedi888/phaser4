@@ -1,5 +1,6 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
 const values = [
@@ -9,7 +10,7 @@ const values = [
     0, 0, 0, 1
 ];
 
-export function ShiftToBGR <T extends IContainer> (gameObject: T, multiply: boolean = false): T
+export function ShiftToBGR <T extends IGameObject & IColorComponent> (gameObject: T, multiply: boolean = false): T
 {
     if (SetColorMatrix(gameObject.id, values, DEFAULT_COLOR_OFFSET, multiply))
     {

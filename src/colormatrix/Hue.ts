@@ -1,10 +1,11 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
 //  See http://stackoverflow.com/questions/8507885/shift-hue-of-an-rgb-color/8510751#8510751
 
-export function Hue <T extends IContainer> (gameObject: T, rotation: number = 0, multiply: boolean = false): T
+export function Hue <T extends IGameObject & IColorComponent> (gameObject: T, rotation: number = 0, multiply: boolean = false): T
 {
     rotation /= 180 * Math.PI;
 

@@ -1,10 +1,11 @@
 import { DEFAULT_COLOR_OFFSET } from './consts';
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
 //  From Pixi.js
 
-export function ColorTone <T extends IContainer> (gameObject: T, desaturation: number = 0.2, toned: number = 0.15, lightColor: number = 0xffe580, darkColor: number = 0x338000, multiply: boolean = false): T
+export function ColorTone <T extends IGameObject & IColorComponent> (gameObject: T, desaturation: number = 0.2, toned: number = 0.15, lightColor: number = 0xffe580, darkColor: number = 0x338000, multiply: boolean = false): T
 {
     const lR = ((lightColor >> 16) & 0xFF) / 255;
     const lG = ((lightColor >> 8) & 0xFF) / 255;

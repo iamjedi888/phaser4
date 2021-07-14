@@ -1,4 +1,5 @@
-import { IContainer } from '../gameobjects/container/IContainer';
+import { IColorComponent } from '../components/color/IColorComponent';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';
 
 const values = [
@@ -15,7 +16,7 @@ const offsets = [
     0
 ];
 
-export function VintagePinhole <T extends IContainer> (gameObject: T, multiply: boolean = false): T
+export function VintagePinhole <T extends IGameObject & IColorComponent> (gameObject: T, multiply: boolean = false): T
 {
     if (SetColorMatrix(gameObject.id, values, offsets, multiply))
     {
