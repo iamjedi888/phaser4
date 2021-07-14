@@ -33,7 +33,7 @@
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.0",
         "@swc/cli": "^0.1.46",
-        "@swc/core": "^1.2.63",
+        "@swc/core": "^1.2.64",
         "@types/jest": "^26.0.24",
         "@typescript-eslint/eslint-plugin": "4.28.3",
         "@typescript-eslint/parser": "4.28.3",
