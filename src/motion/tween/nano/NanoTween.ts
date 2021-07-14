@@ -84,6 +84,11 @@ export class NanoTween
     listener: IEventInstance;
     emitter: IEventEmitter;
 
+    onStart: () => void = () => {};
+    onUpdate: () => void = () => {};
+    onRepeat: () => void = () => {};
+    onComplete: () => void = () => {};
+
     private properties: TweenProperty[] = [];
 
     constructor (target: unknown, emitter: IEventEmitter, autoStart: boolean = true)
@@ -166,6 +171,8 @@ export class NanoTween
 
         this.listener = On(this.emitter, UpdateEvent, (delta: number) => this.update(delta));
 
+        this.onStart();
+
         return this;
     }
 
@@ -237,6 +244,8 @@ export class NanoTween
             property.update(target, v);
         });
 
+        this.onUpdate();
+
         //  Nothing more to do here
         if (progress < 1)
         {
@@ -269,11 +278,13 @@ export class NanoTween
 
             state.yoyoing = false;
 
+            this.onRepeat();
+
             return false;
         }
 
         //  If we got this far, the tween is complete
-        // console.log('Tween Complete');
+        this.onComplete();
 
         this.destroy();
 
