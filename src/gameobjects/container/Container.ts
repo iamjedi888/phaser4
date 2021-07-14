@@ -2,6 +2,7 @@ import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
+import { BoundsComponent } from '../../components/bounds';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
@@ -79,8 +80,14 @@ export class Container extends GameObject implements IContainer
 
     getBounds (): Rectangle
     {
-        // return this.bounds.get();
-        return new Rectangle();
+        const id = this.id;
+
+        return new Rectangle(
+            BoundsComponent.x[id],
+            BoundsComponent.y[id],
+            BoundsComponent.width[id],
+            BoundsComponent.height[id]
+        );
     }
 
     set x (value: number)
