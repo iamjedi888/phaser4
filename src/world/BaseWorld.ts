@@ -8,6 +8,7 @@ import { GameObject, GameObjectCache } from '../gameobjects';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
+import { Color } from '../components/color/Color';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetWorldSize } from '../config/worldsize';
 import { IBaseCamera } from '../camera/IBaseCamera';
@@ -44,6 +45,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     runRender: boolean = false;
 
+    color: Color;
+
     private renderList: Uint32Array;
     private listLength: number;
 
@@ -73,6 +76,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
         SetWorldID(id, id);
 
         WorldList.get(scene).push(this);
+
+        this.color = new Color(id);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
@@ -212,6 +217,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
+        const color = this.color;
+
+        if (color.colorMatrixEnabled && color.willColorChildren)
+        {
+            renderPass.colorMatrix.set(color);
+        }
+
         Emit(this, WorldEvents.WorldRenderEvent, this);
 
         const currentCamera = renderPass.current2DCamera;
@@ -245,6 +257,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
+        const color = this.color;
+
+        if (color.colorMatrixEnabled && color.willColorChildren)
+        {
+            renderPass.colorMatrix.pop();
+        }
+
         if (!this.runRender)
         {
             Begin(renderPass, this.camera);
