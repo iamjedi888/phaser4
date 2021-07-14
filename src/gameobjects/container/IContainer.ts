@@ -1,6 +1,5 @@
 import { Origin, Position, Scale, Size, Skew } from '../../components/transform';
 
-import { Color } from '../../components/color/Color';
 import { IColorComponent } from '../../components/color/IColorComponent';
 import { IGameObject } from '../IGameObject';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
