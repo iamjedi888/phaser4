@@ -22,10 +22,10 @@ export function FillLine (renderPass: IRenderPass, x1: number, y1: number, x2: n
 
     BatchQuad(
         F32, offset, textureIndex,
-        Math.round(x1 + al0), Math.round(y1 + al1),
-        Math.round(x1 - al0), Math.round(y1 - al1),
-        Math.round(x2 - bl0), Math.round(y2 - bl1),
-        Math.round(x2 + bl0), Math.round(y2 + bl1),
+        Math.floor(x1 + al0), Math.floor(y1 + al1),
+        Math.floor(x1 - al0), Math.floor(y1 - al1),
+        Math.floor(x2 - bl0), Math.floor(y2 - bl1),
+        Math.floor(x2 + bl0), Math.floor(y2 + bl1),
         red, green, blue, alpha
     );
 }
