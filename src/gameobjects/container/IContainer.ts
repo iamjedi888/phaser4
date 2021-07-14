@@ -1,18 +1,18 @@
 import { Origin, Position, Scale, Size, Skew } from '../../components/transform';
 
 import { Color } from '../../components/color/Color';
+import { IColorComponent } from '../../components/color/IColorComponent';
 import { IGameObject } from '../IGameObject';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
 
-export interface IContainer extends IGameObject
+export interface IContainer extends IGameObject, IColorComponent
 {
     position: Position;
     scale: Scale;
     skew: Skew;
     origin: Origin;
     size: Size;
-    color: Color;
 
     x: number;
     y: number;

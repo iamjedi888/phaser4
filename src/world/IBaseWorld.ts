@@ -1,11 +1,12 @@
 import { ComponentType, ISchema } from 'bitecs';
 
 import { IBaseCamera } from '../camera/IBaseCamera';
+import { IColorComponent } from '../components/color/IColorComponent';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 
-export interface IBaseWorld extends IGameObject
+export interface IBaseWorld extends IGameObject, IColorComponent
 {
     tag: ComponentType<ISchema>;
     scene: IScene;
