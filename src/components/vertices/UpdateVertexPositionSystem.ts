@@ -1,14 +1,9 @@
-import { Changed, IWorld, defineQuery, defineSystem } from 'bitecs';
+import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
 import { SetQuadPosition } from './SetQuadPosition';
 import { WorldMatrix2DComponent } from '../transform/WorldMatrix2DComponent';
-
-const changedWorldExtentQuery = defineQuery([
-    Changed(WorldMatrix2DComponent),
-    Changed(Extent2DComponent)
-]);
 
 let entities: number[];
 
@@ -44,20 +39,25 @@ const updateVertexPositionSystem = defineSystem(world =>
 
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
 
-        BoundsComponent.x[id] = Math.min(x0, x1, x2, x3);
-        BoundsComponent.y[id] = Math.min(y0, y1, y2, y3);
-        BoundsComponent.right[id] = Math.max(x0, x1, x2, x3);
-        BoundsComponent.bottom[id] = Math.max(y0, y1, y2, y3);
-        BoundsComponent.width[id] = BoundsComponent.right[id] - BoundsComponent.x[id];
-        BoundsComponent.height[id] = BoundsComponent.bottom[id] - BoundsComponent.y[id];
+        const boundsX = Math.min(x0, x1, x2, x3);
+        const boundsY = Math.min(y0, y1, y2, y3);
+        const boundsRight = Math.max(x0, x1, x2, x3);
+        const boundsBottom = Math.max(y0, y1, y2, y3);
+
+        BoundsComponent.x[id] = boundsX;
+        BoundsComponent.y[id] = boundsY;
+        BoundsComponent.right[id] = boundsRight;
+        BoundsComponent.bottom[id] = boundsBottom;
+        BoundsComponent.width[id] = boundsRight - boundsX;
+        BoundsComponent.height[id] = boundsBottom - boundsY;
     }
 
     return world;
 });
 
-export const UpdateVertexPositionSystem = (world: IWorld): number[] =>
+export const UpdateVertexPositionSystem = (world: IWorld, query: Query): number[] =>
 {
-    entities = changedWorldExtentQuery(world);
+    entities = query(world);
 
     updateVertexPositionSystem(world);
 
