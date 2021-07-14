@@ -2,7 +2,6 @@ import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
-import { AddColorComponent } from '../../components/color';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
@@ -32,7 +31,6 @@ export class Container extends GameObject implements IContainer
         const id = this.id;
 
         AddTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
-        AddColorComponent(id);
         AddBoundsComponent(id);
 
         this.position = new Position(id, x, y);

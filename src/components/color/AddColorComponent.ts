@@ -7,9 +7,9 @@ export function AddColorComponent (id: number): void
 {
     addComponent(GameObjectWorld, ColorComponent, id);
 
-    ColorComponent.red[id] = 255;
-    ColorComponent.green[id] = 255;
-    ColorComponent.blue[id] = 255;
-    ColorComponent.alpha[id] = 1;
+    ColorComponent.r[id] = 255;
+    ColorComponent.g[id] = 255;
+    ColorComponent.b[id] = 255;
+    ColorComponent.a[id] = 1;
     ColorComponent.colorMatrix[id].set(DEFAULT_COLOR_MATRIX);
 }

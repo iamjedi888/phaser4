@@ -1,3 +1,4 @@
+import { AddColorComponent } from './AddColorComponent';
 import { ColorComponent } from './ColorComponent';
 import { PermissionsComponent } from '../permissions/PermissionsComponent';
 
@@ -14,6 +15,8 @@ export class Color
 
     constructor (id: number, red: number = 255, green: number = 255, blue: number = 255, alpha: number = 1)
     {
+        AddColorComponent(id);
+
         this.id = id;
 
         this.set(red, green, blue, alpha);
@@ -25,6 +28,19 @@ export class Color
         this.green = green;
         this.blue = blue;
         this.alpha = alpha;
+    }
+
+    //  In the range 0x000000 to 0xffffff (alpha is ignored)
+    set tint (value: number)
+    {
+        this.red = (value >> 16) & 0xff;
+        this.green = (value >> 8) & 0xff;
+        this.blue = value & 0xff;
+    }
+
+    get tint (): number
+    {
+        return this.red << 16 | this.green << 8 | this.blue;
     }
 
     set willColorChildren (value: boolean)
@@ -64,41 +80,41 @@ export class Color
     //  All in the range 0-255 or 0x00-0xFF
     set red (value: number)
     {
-        ColorComponent.red[this.id] = value;
+        ColorComponent.r[this.id] = value;
     }
 
     get red (): number
     {
-        return ColorComponent.red[this.id];
+        return ColorComponent.r[this.id];
     }
 
     set green (value: number)
     {
-        ColorComponent.green[this.id] = value;
+        ColorComponent.g[this.id] = value;
     }
 
     get green (): number
     {
-        return ColorComponent.green[this.id];
+        return ColorComponent.g[this.id];
     }
 
     set blue (value: number)
     {
-        ColorComponent.blue[this.id] = value;
+        ColorComponent.b[this.id] = value;
     }
 
     get blue (): number
     {
-        return ColorComponent.blue[this.id];
+        return ColorComponent.b[this.id];
     }
 
     set alpha (value: number)
     {
-        ColorComponent.alpha[this.id] = value;
+        ColorComponent.a[this.id] = value;
     }
 
     get alpha (): number
     {
-        return ColorComponent.alpha[this.id];
+        return ColorComponent.a[this.id];
     }
 }

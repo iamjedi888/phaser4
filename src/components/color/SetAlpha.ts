@@ -3,7 +3,7 @@ import { SetDirtyParents } from '../dirty';
 
 export function SetAlpha (id: number, value: number): void
 {
-    ColorComponent.alpha[id] = value;
+    ColorComponent.a[id] = value;
 
     SetDirtyParents(id);
 }
