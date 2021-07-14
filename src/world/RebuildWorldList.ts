@@ -14,12 +14,19 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
 {
     if (WillRender(parent))
     {
+        let entityAdded = true;
+
         if (world.id !== parent)
         {
-            world.addToRenderList(parent, 0);
+            entityAdded = world.addToRenderList(parent, 0);
         }
 
         SetWorldDepth(parent, worldDepth);
+
+        if (!entityAdded)
+        {
+            return;
+        }
 
         const children = GameObjectTree.get(parent);
 
@@ -36,16 +43,18 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
                     {
                         RebuildWorldList(world, nodeID, worldDepth + 1);
                     }
-                    else
+                    else if (world.addToRenderList(nodeID, 0))
                     {
-                        world.addToRenderList(nodeID, 0);
                         world.addToRenderList(nodeID, 1);
+
+                        SetWorldDepth(nodeID, worldDepth);
                     }
                 }
-                else if (!WillCacheChildren(nodeID))
+                else if (!WillCacheChildren(nodeID) && world.addToRenderList(nodeID, 0))
                 {
-                    world.addToRenderList(nodeID, 0);
                     world.addToRenderList(nodeID, 1);
+
+                    SetWorldDepth(nodeID, worldDepth);
                 }
             }
         }
