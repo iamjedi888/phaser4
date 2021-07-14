@@ -101,6 +101,10 @@ export class SceneManager
         PackQuadColorsSystem(GameObjectWorld);
 
         //  Update all vertices across the whole game, ready for rendering
+
+        //  TODO - This Query needs to run on a WORLD level, so same query + World Tag ID.
+        //  Then we can cull based on camera, user function, etc. because a GO in another World will
+        //  never influence the position of one in a different world.
         const updatedEntities = UpdateVertexPositionSystem(GameObjectWorld);
 
         RenderStatsComponent.numDirtyVertices[this.id] = updatedEntities.length * 4;
