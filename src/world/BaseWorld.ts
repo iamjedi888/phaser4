@@ -4,9 +4,11 @@ import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
 import { ClearDirtyDisplayList, HasDirtyChildCache, HasDirtyDisplayList, SetDirtyParents } from '../components/dirty';
 import { Emit, Once } from '../events';
+import { Extent2DComponent, WorldMatrix2DComponent } from '../components/transform';
 import { GameObject, GameObjectCache } from '../gameobjects';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
+import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { CheckDirtyTransforms } from './CheckDirtyTransforms';
 import { Color } from '../components/color/Color';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -25,9 +27,9 @@ import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetWorldID } from '../components/hierarchy';
+import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillUpdate } from '../components/permissions';
 import { WorldList } from './WorldList';
-import { WorldMatrix2DComponent } from '../components/transform';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
@@ -48,11 +50,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
     color: Color;
 
     private renderList: Uint32Array;
-    private listLength: number;
+    private listLength: number = 0;
 
-    private totalChildren: number;
+    private totalChildren: number = 0;
     private totalChildrenQuery: Query;
     private dirtyWorldQuery: Query;
+
+    private vertexPositionQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -61,13 +65,12 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.scene = scene;
         this.sceneManager = SceneManagerInstance.get();
 
-        this.totalChildren = 0;
         this.totalChildrenQuery = defineQuery([ this.tag ]);
         this.dirtyWorldQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent) ]);
+        this.vertexPositionQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
-        this.listLength = 0;
 
         const id = this.id;
 
@@ -104,14 +107,29 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, WorldEvents.WorldAfterUpdateEvent, delta, time, this);
     }
 
+    //  Here we can check if the entity SHOULD be added to the render list, or not.
+    //  Return true to add it to the render list, or return false to skip it AND all its children
+    checkWorldEntity (id: number): boolean
+    {
+        //  TODO - Needs to use the World Bounds of course :)
+        //  But for testing, this is fine for now.
+        return BoundsIntersects(id, 0, 0, 800, 600);
+    }
+
     //  Called by RebuildWorldList as it sweeps the world children, looking to see what will render or not
 
     //  renderType:
 
     //  0 = render
     //  1 = postRender
-    addToRenderList (id: number, renderType: number): void
+    addToRenderList (id: number, renderType: number): boolean
     {
+        if (renderType === 0 && !this.checkWorldEntity(id))
+        {
+            //  This entity and its children was NOT added to the render list
+            return false;
+        }
+
         let len = this.listLength;
         const list = this.renderList;
 
@@ -130,6 +148,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
             this.renderList = newList;
         }
+
+        //  This entity WAS added to the render list
+        return true;
     }
 
     //  TODO - This isn't used internally - is used by debug panel - move out?
@@ -174,10 +195,32 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         let isDirty = false;
 
+        //  Run the World Transform Update first, then Vertex Positions, finally the Render List
+
+        if (dirtyDisplayList || CheckDirtyTransforms(id, transformList))
+        {
+            //  TODO - This should only run over the branches that are dirty, not the whole World
+            RebuildWorldTransforms(this, id, transformList, false);
+
+            isDirty = true;
+        }
+
+        //  Update all vertices across this World, ready for render list checking
+        //  This will only update entities that had their WorldTransform actually changed
+
+        UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
+
+        //  TODO - We need to update the world bounds, factoring in all children
+
+        //  We now have accurate World Bounds for all children of this World, so let's build the render list
+
         if (dirtyDisplayList)
         {
             this.listLength = 0;
 
+            //  This will call addToRenderList, which in turn will call checkWorldEntity
+            //  As long as this function, which the user can override, returns 'true',
+            //  the entity will be added to the render list
             RebuildWorldList(this, id, 0);
 
             ClearDirtyDisplayList(id);
@@ -187,14 +230,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
             this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
         }
 
-        if (dirtyDisplayList || CheckDirtyTransforms(id, transformList))
-        {
-            RebuildWorldTransforms(this, id, transformList, false);
-
-            isDirty = true;
-        }
-
-        this.camera.dirtyRender = false;
+        //  TODO - Send total verts to RenderStats component
+        // RenderStatsComponent.numDirtyVertices[this.id] = updatedEntities.length * 4;
 
         this.runRender = (this.listLength > 0);
 
@@ -226,13 +263,14 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         Emit(this, WorldEvents.WorldRenderEvent, this);
 
-        const currentCamera = renderPass.current2DCamera;
-        const camera = this.camera;
+        const camera = renderPass.current2DCamera;
 
-        if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform))
-        {
-            Flush(renderPass);
-        }
+        // const camera = this.camera;
+
+        // if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform))
+        // {
+        //     Flush(renderPass);
+        // }
 
         Begin(renderPass, camera);
 

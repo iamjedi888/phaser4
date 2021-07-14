@@ -16,7 +16,8 @@ export interface IBaseWorld extends IGameObject, IColorComponent
     is3D: boolean;
     runRender: boolean;
 
-    addToRenderList (id: number, renderType: number): void;
+    addToRenderList (id: number, renderType: number): boolean;
+    checkWorldEntity (id: number): boolean;
     getRenderList (): IGameObject[];
 
     beforeUpdate (delta: number, time: number): void;
