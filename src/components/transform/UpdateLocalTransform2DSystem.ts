@@ -1,5 +1,5 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
-import { SetDirtyParents, SetDirtyTransform } from '../dirty';
+import { SetDirtyChild, SetDirtyParents, SetDirtyTransform } from '../dirty';
 
 import { GetParentID } from '../hierarchy';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
@@ -43,12 +43,18 @@ const updateLocalTransformSystem = defineSystem(world =>
     return world;
 });
 
-export const UpdateLocalTransform2DSystem = (world: IWorld, query: Query): number[] =>
+export const UpdateLocalTransform2DSystem = (world: IWorld, query: Query): number =>
 {
-    //  TODO - This function only needs to return the total, not store them in an array
     entities = query(world);
 
-    updateLocalTransformSystem(world);
+    const total = entities.length;
 
-    return entities;
+    if (total > 0)
+    {
+        SetDirtyChild(world.id);
+
+        updateLocalTransformSystem(world);
+    }
+
+    return total;
 };
