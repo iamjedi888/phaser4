@@ -1,4 +1,5 @@
 import { BaseWorld } from './BaseWorld';
+import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
@@ -18,5 +19,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         super(scene);
 
         this.camera = new StaticCamera();
+    }
+
+    checkWorldEntity (id: number): boolean
+    {
+        //  TODO - Needs to use the Camera Bounds of course :)
+        return BoundsIntersects(id, 0, 0, 800, 600);
     }
 }
