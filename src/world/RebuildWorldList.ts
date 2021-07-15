@@ -1,6 +1,7 @@
 import { GetNumChildren, SetWorldDepth } from '../components/hierarchy';
 import { WillCacheChildren, WillRender, WillRenderChildren } from '../components/permissions';
 
+import { AddToRenderList } from './AddToRenderList';
 import { GameObjectTree } from '../gameobjects';
 import { HasDirtyChildCache } from '../components/dirty';
 import { IBaseWorld } from './IBaseWorld';
@@ -18,7 +19,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
 
         if (world.id !== parent)
         {
-            entityAdded = world.addToRenderList(parent, 0);
+            entityAdded = AddToRenderList(world, parent, 0);
         }
 
         SetWorldDepth(parent, worldDepth);
@@ -43,16 +44,16 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
                     {
                         RebuildWorldList(world, nodeID, worldDepth + 1);
                     }
-                    else if (world.addToRenderList(nodeID, 0))
+                    else if (AddToRenderList(world, nodeID, 0))
                     {
-                        world.addToRenderList(nodeID, 1);
+                        AddToRenderList(world, nodeID, 1);
 
                         SetWorldDepth(nodeID, worldDepth);
                     }
                 }
-                else if (!WillCacheChildren(nodeID) && world.addToRenderList(nodeID, 0))
+                else if (!WillCacheChildren(nodeID) && AddToRenderList(world, nodeID, 0))
                 {
-                    world.addToRenderList(nodeID, 1);
+                    AddToRenderList(world, nodeID, 1);
 
                     SetWorldDepth(nodeID, worldDepth);
                 }
@@ -61,7 +62,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
 
         if (world.id !== parent)
         {
-            world.addToRenderList(parent, 1);
+            AddToRenderList(world, parent, 1);
         }
     }
 }
