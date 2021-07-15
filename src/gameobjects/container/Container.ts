@@ -10,7 +10,9 @@ import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
+import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
+import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 
 export class Container extends GameObject implements IContainer
 {
@@ -44,8 +46,6 @@ export class Container extends GameObject implements IContainer
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        const color = this.color;
-
         if (this.shader)
         {
             Flush(renderPass);
@@ -53,18 +53,13 @@ export class Container extends GameObject implements IContainer
             renderPass.shader.set(this.shader, 0);
         }
 
-        if (color.colorMatrixEnabled && color.willColorChildren)
-        {
-            renderPass.colorMatrix.set(color);
-        }
+        SetColor(renderPass, this.color);
 
         this.preRenderGL(renderPass);
     }
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
-        const color = this.color;
-
         if (this.shader)
         {
             Flush(renderPass);
@@ -72,10 +67,7 @@ export class Container extends GameObject implements IContainer
             renderPass.shader.pop();
         }
 
-        if (color.colorMatrixEnabled && color.willColorChildren)
-        {
-            renderPass.colorMatrix.pop();
-        }
+        PopColor(renderPass, this.color);
     }
 
     getBounds (): Rectangle
