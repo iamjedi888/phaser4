@@ -1,57 +1,35 @@
 import { AddDirtyComponent } from './AddDirtyComponent';
+import { ClearDirtyChild } from './ClearDirtyChild';
 import { ClearDirtyChildCache } from './ClearDirtyChildCache';
 import { ClearDirtyDisplayList } from './ClearDirtyDisplayList';
+import { ClearDirtyTransform } from './ClearDirtyTransform';
 import { DirtyComponent } from './DirtyComponent';
-import { GetDirtyFrame } from './GetDirtyFrame';
-import { HasDirtyBounds } from './HasDirtyBounds';
 import { HasDirtyChild } from './HasDirtyChild';
 import { HasDirtyChildCache } from './HasDirtyChildCache';
 import { HasDirtyDisplayList } from './HasDirtyDisplayList';
-import { HasDirtyPostRender } from './HasDirtyPostRender';
-import { HasDirtyTexture } from './HasDirtyTexture';
-import { HasDirtyTextureFrame } from './HasDirtyTextureFrame';
 import { HasDirtyTransform } from './HasDirtyTransform';
-import { HasDirtyUpdate } from './HasDirtyUpdate';
-import { IsDirtyFrame } from './IsDirtyFrame';
-import { SetDirtyBounds } from './SetDirtyBounds';
 import { SetDirtyChild } from './SetDirtyChild';
 import { SetDirtyChildCache } from './SetDirtyChildCache';
 import { SetDirtyDisplayList } from './SetDirtyDisplayList';
-import { SetDirtyFrame } from './SetDirtyFrame';
 import { SetDirtyParents } from './SetDirtyParents';
-import { SetDirtyPostRender } from './SetDirtyPostRender';
-import { SetDirtyTexture } from './SetDirtyTexture';
-import { SetDirtyTextureFrame } from './SetDirtyTextureFrame';
 import { SetDirtyTransform } from './SetDirtyTransform';
-import { SetDirtyUpdate } from './SetDirtyUpdate';
 import { SetDirtyWorldDisplayList } from './SetDirtyWorldDisplayList';
 
 export {
     AddDirtyComponent,
+    ClearDirtyChild,
     ClearDirtyChildCache,
     ClearDirtyDisplayList,
+    ClearDirtyTransform,
     DirtyComponent,
-    GetDirtyFrame,
-    HasDirtyBounds,
     HasDirtyChild,
     HasDirtyChildCache,
     HasDirtyDisplayList,
-    HasDirtyPostRender,
-    HasDirtyTexture,
-    HasDirtyTextureFrame,
     HasDirtyTransform,
-    HasDirtyUpdate,
-    IsDirtyFrame,
-    SetDirtyBounds,
     SetDirtyChild,
     SetDirtyChildCache,
     SetDirtyDisplayList,
-    SetDirtyFrame,
     SetDirtyParents,
-    SetDirtyPostRender,
-    SetDirtyTexture,
-    SetDirtyTextureFrame,
     SetDirtyTransform,
-    SetDirtyUpdate,
     SetDirtyWorldDisplayList
 };
