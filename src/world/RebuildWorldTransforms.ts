@@ -4,15 +4,16 @@ import { WillRender, WillRenderChildren } from '../components/permissions';
 import { GameObjectTree } from '../gameobjects';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetNumChildren } from '../components/hierarchy';
+import { HasDirtyTransform } from '../components/dirty';
 import { IBaseWorld } from './IBaseWorld';
 import { WillTransformChildren } from '../components/permissions/WillTransformChildren';
 import { hasComponent } from 'bitecs';
 
-export function RebuildWorldTransforms (world: IBaseWorld, parent: number, transformList: number[], forceUpdate: boolean): void
+export function RebuildWorldTransforms (world: IBaseWorld, parent: number, forceUpdate: boolean): void
 {
     if (WillRender(parent))
     {
-        if (!forceUpdate && transformList.indexOf(parent) > -1)
+        if (!forceUpdate && HasDirtyTransform(parent))
         {
             forceUpdate = true;
         }
@@ -34,10 +35,10 @@ export function RebuildWorldTransforms (world: IBaseWorld, parent: number, trans
                 {
                     if (WillRenderChildren(nodeID) && WillTransformChildren(nodeID))
                     {
-                        RebuildWorldTransforms(world, nodeID, transformList, forceUpdate);
+                        RebuildWorldTransforms(world, nodeID, forceUpdate);
                     }
                 }
-                else if (forceUpdate || transformList.indexOf(nodeID) > -1)
+                else if (forceUpdate || HasDirtyTransform(nodeID))
                 {
                     UpdateWorldTransform(nodeID);
                 }
