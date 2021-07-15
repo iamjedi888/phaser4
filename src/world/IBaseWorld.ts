@@ -24,7 +24,7 @@ export interface IBaseWorld extends IGameObject, IColorComponent
     update (delta: number, time: number): void;
     afterUpdate (delta: number, time: number): void;
 
-    preRender (gameFrame: number, transformList: number[]): boolean;
+    preRender (gameFrame: number): boolean;
     renderGL <T extends IRenderPass> (renderPass: T): void;
     postRenderGL <T extends IRenderPass> (renderPass: T): void;
 
