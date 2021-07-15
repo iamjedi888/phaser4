@@ -8,6 +8,8 @@ import { GameObject, GameObjectCache } from '../gameobjects';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { Begin } from '../renderer/webgl1/renderpass';
+import { BoundsComponent } from '../components/bounds';
+import { CalculateWorldBounds } from './CalculateWorldBounds';
 import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { Color } from '../components/color/Color';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -58,6 +60,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     private totalChildrenQuery: Query;
     private dirtyLocalQuery: Query;
     private vertexPositionQuery: Query;
+    private dirtyBoundsQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -71,6 +74,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.totalChildrenQuery = defineQuery([ tag ]);
         this.dirtyLocalQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
         this.vertexPositionQuery = defineQuery([ tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
+        this.dirtyBoundsQuery = defineQuery([ tag, Changed(BoundsComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -184,9 +188,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         const dirtyWorldTotal = UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
 
-        //  TODO - We need to update the world bounds, factoring in all children
-
-
+        const dirtyBoundsTotal = CalculateWorldBounds(GameObjectWorld, this.dirtyBoundsQuery);
 
         //  We now have accurate World Bounds for all children of this World, so let's build the render list
 
