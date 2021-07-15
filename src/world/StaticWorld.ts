@@ -23,7 +23,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     checkWorldEntity (id: number): boolean
     {
-        //  TODO - Needs to use the Camera Bounds of course :)
-        return BoundsIntersects(id, 0, 0, 800, 600);
+        const cameraBounds = this.camera.bounds;
+
+        return BoundsIntersects(id, cameraBounds.x, cameraBounds.y, cameraBounds.right, cameraBounds.bottom);
     }
 }
