@@ -1,15 +1,14 @@
 import * as WorldEvents from './events';
 
-import { Begin, Flush } from '../renderer/webgl1/renderpass';
 import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
-import { ClearDirtyDisplayList, HasDirtyChildCache, HasDirtyDisplayList, SetDirtyParents } from '../components/dirty';
+import { ClearDirtyDisplayList, HasDirtyChild, HasDirtyDisplayList } from '../components/dirty';
 import { Emit, Once } from '../events';
 import { Extent2DComponent, Transform2DComponent, UpdateLocalTransform2DSystem, WorldMatrix2DComponent } from '../components/transform';
 import { GameObject, GameObjectCache } from '../gameobjects';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
-import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
-import { CheckDirtyTransforms } from './CheckDirtyTransforms';
+import { Begin } from '../renderer/webgl1/renderpass';
+import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { Color } from '../components/color/Color';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetWorldSize } from '../config/worldsize';
@@ -18,11 +17,11 @@ import { IBaseWorld } from './IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
-import { Mat2dEquals } from '../math/mat2d/Mat2dEquals';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RemoveChildren } from '../display';
+import { RenderStatsComponent } from '../scenes';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneDestroyEvent } from '../scenes/events';
 import { SceneManager } from '../scenes/SceneManager';
@@ -51,14 +50,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     color: Color;
 
-    private renderList: Uint32Array;
-    private listLength: number = 0;
+    renderList: Uint32Array;
+    listLength: number = 0;
 
     private totalChildren: number = 0;
+
     private totalChildrenQuery: Query;
     private dirtyLocalQuery: Query;
-    private dirtyWorldQuery: Query;
-
     private vertexPositionQuery: Query;
 
     constructor (scene: IScene)
@@ -68,10 +66,11 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.scene = scene;
         this.sceneManager = SceneManagerInstance.get();
 
-        this.totalChildrenQuery = defineQuery([ this.tag ]);
-        this.dirtyLocalQuery = defineQuery([ this.tag, Changed(Transform2DComponent) ]);
-        this.dirtyWorldQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent) ]);
-        this.vertexPositionQuery = defineQuery([ this.tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
+        const tag = this.tag;
+
+        this.totalChildrenQuery = defineQuery([ tag ]);
+        this.dirtyLocalQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
+        this.vertexPositionQuery = defineQuery([ tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -109,56 +108,14 @@ export class BaseWorld extends GameObject implements IBaseWorld
     afterUpdate (delta: number, time: number): void
     {
         Emit(this, WorldEvents.WorldAfterUpdateEvent, delta, time, this);
-
-        //  Process all dirty 2D transforms and update their local matrix
-        UpdateLocalTransform2DSystem(GameObjectWorld, this.dirtyLocalQuery);
-
-        //  TODO - Return length from above function and add to RenderStats
     }
 
     //  Here we can check if the entity SHOULD be added to the render list, or not.
     //  Return true to add it to the render list, or return false to skip it AND all its children
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     checkWorldEntity (id: number): boolean
     {
-        //  TODO - Needs to use the World Bounds of course :)
-        //  But for testing, this is fine for now.
-        return BoundsIntersects(id, 0, 0, 800, 600);
-    }
-
-    //  Called by RebuildWorldList as it sweeps the world children, looking to see what will render or not
-
-    //  renderType:
-
-    //  0 = render
-    //  1 = postRender
-    addToRenderList (id: number, renderType: number): boolean
-    {
-        if (renderType === 0 && !this.checkWorldEntity(id))
-        {
-            //  This entity and its children was NOT added to the render list
-            return false;
-        }
-
-        let len = this.listLength;
-        const list = this.renderList;
-
-        list[len] = id;
-        list[len + 1] = renderType;
-
-        this.listLength += 2;
-
-        len += 2;
-
-        if (len === list.length)
-        {
-            const newList = new Uint32Array(len + (GetWorldSize() * 4));
-
-            newList.set(list, 0);
-
-            this.renderList = newList;
-        }
-
-        //  This entity WAS added to the render list
         return true;
     }
 
@@ -185,6 +142,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     preRender (gameFrame: number): boolean
     {
+        const id = this.id;
+
+        ClearDirtyChild(id);
+
         const sceneManager = this.sceneManager;
 
         if (!this.isRenderable())
@@ -196,7 +157,12 @@ export class BaseWorld extends GameObject implements IBaseWorld
             return false;
         }
 
-        const id = this.id;
+        //  Process all dirty 2D transforms and update their local matrix
+        //  Also if there are any dirty objects, it flags this World as being dirty
+        const dirtyLocalTotal = UpdateLocalTransform2DSystem(GameObjectWorld, this.dirtyLocalQuery);
+
+        RenderStatsComponent.numWorlds[sceneManager.id]++;
+        RenderStatsComponent.numDirtyLocalTransforms[sceneManager.id] += dirtyLocalTotal;
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
@@ -204,12 +170,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         let isDirty = false;
 
-        //  Run the World Transform Update first, then Vertex Positions, finally the Render List
-
-        //  TODO - We can SetDirtyTransform on this World just once
-        //  during the UpdateLocalTransform function
-
-        if (dirtyDisplayList || CheckDirtyTransforms(id))
+        if (dirtyDisplayList || HasDirtyChild(id))
         {
             //  TODO - This should only run over the branches that are dirty, not the whole World
             RebuildWorldTransforms(this, id, false);
@@ -217,12 +178,15 @@ export class BaseWorld extends GameObject implements IBaseWorld
             isDirty = true;
         }
 
-        //  Update all vertices across this World, ready for render list checking
+        //  Update all vertices and bounds across this World, ready for render list checking
         //  This will only update entities that had their WorldTransform actually changed
+        //  We cannot control the order of these entities, children may be updated before parents, etc
 
-        UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
+        const dirtyWorldTotal = UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
 
         //  TODO - We need to update the world bounds, factoring in all children
+
+
 
         //  We now have accurate World Bounds for all children of this World, so let's build the render list
 
@@ -230,7 +194,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         {
             this.listLength = 0;
 
-            //  This will call addToRenderList, which in turn will call checkWorldEntity
+            //  This will call AddToRenderList, which in turn will call World.checkWorldEntity
             //  As long as this function, which the user can override, returns 'true',
             //  the entity will be added to the render list
             RebuildWorldList(this, id, 0);
@@ -242,14 +206,9 @@ export class BaseWorld extends GameObject implements IBaseWorld
             this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
         }
 
-        //  TODO - Send total verts to RenderStats component
-        // RenderStatsComponent.numDirtyVertices[sceneManager.id] = updatedEntities.length * 4;
-
         this.runRender = (this.listLength > 0);
 
-        const dirtyWorld = this.dirtyWorldQuery(GameObjectWorld).length;
-
-        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorld);
+        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorldTotal);
 
         return isDirty;
     }
