@@ -7,9 +7,6 @@ import { WorldMatrix2DComponent } from '../transform/WorldMatrix2DComponent';
 
 let entities: number[];
 
-//  Temporary bounds array, used to set BoundsComponent.global array
-const bounds = new Float32Array(6);
-
 const updateVertexPositionSystem = defineSystem(world =>
 {
     for (let i = 0; i < entities.length; i++)
@@ -42,14 +39,14 @@ const updateVertexPositionSystem = defineSystem(world =>
 
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
 
+        const bounds = BoundsComponent.global[id];
+
         bounds[0] = Math.min(x0, x1, x2, x3);
         bounds[1] = Math.min(y0, y1, y2, y3);
         bounds[4] = Math.max(x0, x1, x2, x3);
         bounds[5] = Math.max(y0, y1, y2, y3);
         bounds[2] = bounds[4] - bounds[0];
         bounds[3] = bounds[5] - bounds[1];
-
-        BoundsComponent.global[id].set(bounds);
     }
 
     return world;
