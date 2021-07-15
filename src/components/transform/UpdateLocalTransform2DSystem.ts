@@ -1,11 +1,9 @@
-import { Changed, IWorld, defineQuery, defineSystem } from 'bitecs';
+import { IWorld, Query, defineSystem } from 'bitecs';
+import { SetDirtyParents, SetDirtyTransform } from '../dirty';
 
 import { GetParentID } from '../hierarchy';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
-import { SetDirtyParents } from '../dirty';
 import { Transform2DComponent } from './Transform2DComponent';
-
-const changedLocalTransformQuery = defineQuery([ Changed(Transform2DComponent) ]);
 
 let entities: number[];
 
@@ -32,6 +30,8 @@ const updateLocalTransformSystem = defineSystem(world =>
         LocalMatrix2DComponent.tx[id] = x;
         LocalMatrix2DComponent.ty[id] = y;
 
+        SetDirtyTransform(id);
+
         if (GetParentID(id) !== prevParent)
         {
             SetDirtyParents(id);
@@ -43,9 +43,10 @@ const updateLocalTransformSystem = defineSystem(world =>
     return world;
 });
 
-export const UpdateLocalTransform2DSystem = (world: IWorld): number[] =>
+export const UpdateLocalTransform2DSystem = (world: IWorld, query: Query): number[] =>
 {
-    entities = changedLocalTransformQuery(world);
+    //  TODO - This function only needs to return the total, not store them in an array
+    entities = query(world);
 
     updateLocalTransformSystem(world);
 
