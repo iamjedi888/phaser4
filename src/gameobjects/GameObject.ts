@@ -174,6 +174,20 @@ export class GameObject implements IGameObject
         return GetNumChildren(this.id);
     }
 
+    getDisplayData (): any
+    {
+        const id = this.id;
+
+        return {
+            id,
+            parent: HierarchyComponent.parentID[id],
+            world: HierarchyComponent.worldID[id],
+            worldDepth: HierarchyComponent.worldDepth[id],
+            numChildren: HierarchyComponent.numChildren[id],
+            children: GameObjectTree.get(id)
+        };
+    }
+
     toString (): string
     {
         return `${this.type} id="${this.id}" name="${this.name}"`;
