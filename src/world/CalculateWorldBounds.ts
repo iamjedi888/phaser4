@@ -1,16 +1,52 @@
+import { GetNumChildren, GetParentID, HasParent } from '../components/hierarchy';
 import { IWorld, Query } from 'bitecs';
+
+import { BoundsComponent } from '../components/bounds';
 
 export function CalculateWorldBounds (world: IWorld, query: Query): number
 {
     //  Run query to get the objects with dirty bounds for this world
-    //  Go through them all and get the list of parent IDs, make it unique, order by world depth
 
-    const entities = query(world);
+    let total = 0;
+    const parentIDs: number[] = [];
+
+    const entities = query(world).filter(id =>
+    {
+        const parent = GetParentID(id);
+        const numChildren = GetNumChildren(id);
+
+        if (parent > 0)
+        {
+            //  Add to Set
+        }
+
+        if (HasParent(id) || GetNumChildren(id) > 0)
+        {
+            return true;
+        }
+        else
+        {
+            //  Copy global bounds to world bounds
+            BoundsComponent.world[id].set(BoundsComponent.global[id]);
+
+            total++;
+
+            return false;
+        }
+    });
+
+    //  The entities left need further processing, either down or up
 
 
 
 
-    return 1;
+
+
+    // entities.forEach(id =>
+    // {
+    // });
+
+    return total;
 
 
     /*
