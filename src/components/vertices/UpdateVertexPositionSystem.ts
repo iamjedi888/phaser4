@@ -41,14 +41,13 @@ const updateVertexPositionSystem = defineSystem(world =>
 
         const bounds = BoundsComponent.global[id];
 
-        //  TODO - If the entity doesn't have a parent or any children, could we just write directly to world bounds?
-
+        //  x, y, right, bottom:
         bounds[0] = Math.min(x0, x1, x2, x3);
         bounds[1] = Math.min(y0, y1, y2, y3);
-        bounds[4] = Math.max(x0, x1, x2, x3);
-        bounds[5] = Math.max(y0, y1, y2, y3);
-        bounds[2] = bounds[4] - bounds[0];
-        bounds[3] = bounds[5] - bounds[1];
+        bounds[2] = Math.max(x0, x1, x2, x3) - bounds[0];
+        bounds[3] = Math.max(y0, y1, y2, y3) - bounds[1];
+
+        //  Insert into r-tree
     }
 
     return world;
