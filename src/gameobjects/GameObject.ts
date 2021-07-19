@@ -174,7 +174,7 @@ export class GameObject implements IGameObject
         return GetNumChildren(this.id);
     }
 
-    getDisplayData (): any
+    getDisplayData (): { id: number, parent: number, world: number, worldDepth: number, numChildren: number, children: number[] }
     {
         const id = this.id;
 
