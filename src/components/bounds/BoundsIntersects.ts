@@ -13,8 +13,8 @@ export function BoundsIntersects (id: number, x: number, y: number, right: numbe
 
     const bx = global[0];
     const by = global[1];
-    const br = global[4];
-    const bb = global[5];
+    const br = global[2];
+    const bb = global[3];
 
     return !(right < bx || bottom < by || x > br || y > bb);
 }
