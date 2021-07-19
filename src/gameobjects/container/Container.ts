@@ -2,7 +2,6 @@ import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform
 import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
 
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
-import { BoundsComponent } from '../../components/bounds';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
@@ -11,7 +10,6 @@ import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
-import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 
 export class Container extends GameObject implements IContainer
@@ -68,18 +66,6 @@ export class Container extends GameObject implements IContainer
         }
 
         PopColor(renderPass, this.color);
-    }
-
-    getBounds (): Rectangle
-    {
-        const id = this.id;
-
-        return new Rectangle(
-            BoundsComponent.x[id],
-            BoundsComponent.y[id],
-            BoundsComponent.width[id],
-            BoundsComponent.height[id]
-        );
     }
 
     set x (value: number)
