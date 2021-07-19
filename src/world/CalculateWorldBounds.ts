@@ -1,52 +1,59 @@
-import { GetNumChildren, GetParentID, HasParent } from '../components/hierarchy';
+import { GetNumChildren, GetParentID, GetParents, HasParent } from '../components/hierarchy';
 import { IWorld, Query } from 'bitecs';
 
 import { BoundsComponent } from '../components/bounds';
 
+const processList = new Set();
+
 export function CalculateWorldBounds (world: IWorld, query: Query): number
 {
-    //  Run query to get the objects with dirty bounds for this world
+    return 1;
 
+    /*
     let total = 0;
-    const parentIDs: number[] = [];
 
-    const entities = query(world).filter(id =>
+    // processList.clear();
+
+    //  The query is all entities in the world with a changed bounds component
+    const entities = query(world);
+
+    let prevParent = -1;
+
+    entities.forEach(id =>
     {
         const parent = GetParentID(id);
         const numChildren = GetNumChildren(id);
 
-        if (parent > 0)
-        {
-            //  Add to Set
-        }
-
-        if (HasParent(id) || GetNumChildren(id) > 0)
-        {
-            return true;
-        }
-        else
+        if (parent === 0 && numChildren === 0)
         {
             //  Copy global bounds to world bounds
             BoundsComponent.world[id].set(BoundsComponent.global[id]);
 
             total++;
 
-            return false;
+            return;
+        }
+
+        if (parent > 0 && parent !== prevParent)
+        {
+            //  Only run this if we are dealing with a different parent
+            GetParents(id).forEach(parentID => processList.add(parentID));
+
+            prevParent = parent;
+        }
+
+        if (numChildren > 0)
+        {
+            processList.add(id);
         }
     });
 
-    //  The entities left need further processing, either down or up
-
-
-
-
-
-
-    // entities.forEach(id =>
-    // {
-    // });
+    if (processList.size > 0)
+    {
+    }
 
     return total;
+    */
 
 
     /*

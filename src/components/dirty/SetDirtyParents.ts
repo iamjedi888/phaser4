@@ -1,22 +1,20 @@
-import { GetParentID, GetWorldID } from '../hierarchy';
+import { GetParents, GetWorldID } from '../hierarchy';
 
 import { SetDirtyChildCache } from './SetDirtyChildCache';
-import { SetDirtyDisplayList } from '.';
+import { SetDirtyDisplayList } from './SetDirtyDisplayList';
 import { WillCacheChildren } from '../permissions';
 
 export function SetDirtyParents (childID: number): void
 {
-    let currentParent = GetParentID(childID);
+    const parents = GetParents(childID);
 
-    while (currentParent)
+    parents.forEach(id =>
     {
-        if (WillCacheChildren(currentParent))
+        if (WillCacheChildren(id))
         {
-            SetDirtyChildCache(currentParent);
+            SetDirtyChildCache(id);
         }
-
-        currentParent = GetParentID(currentParent);
-    }
+    });
 
     SetDirtyDisplayList(GetWorldID(childID));
 }

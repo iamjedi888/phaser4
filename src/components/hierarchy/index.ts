@@ -7,6 +7,7 @@ import { GetDepth } from './GetDepth';
 import { GetNumChildren } from './GetNumChildren';
 import { GetParentGameObject } from './GetParentGameObject';
 import { GetParentID } from './GetParentID';
+import { GetParents } from './GetParents';
 import { GetRootID } from './GetRootID';
 import { GetSiblingIDs } from './GetSiblingIDs';
 import { GetWorldFromID } from './GetWorldFromID';
@@ -33,6 +34,7 @@ export {
     GetNumChildren,
     GetParentGameObject,
     GetParentID,
+    GetParents,
     GetRootID,
     GetSiblingIDs,
     GetWorldFromID,
