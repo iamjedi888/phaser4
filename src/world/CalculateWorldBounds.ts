@@ -1,4 +1,4 @@
-import { GetNumChildren, GetParentID, GetParents, HasParent } from '../components/hierarchy';
+import { GetNumChildren, GetParentID, GetParents, GetWorldDepth, HasParent } from '../components/hierarchy';
 import { IWorld, Query } from 'bitecs';
 
 import { BoundsComponent } from '../components/bounds';
@@ -7,15 +7,20 @@ const processList = new Set();
 
 export function CalculateWorldBounds (world: IWorld, query: Query): number
 {
-    return 1;
+    // return 1;
 
-    /*
     let total = 0;
 
     // processList.clear();
 
     //  The query is all entities in the world with a changed bounds component
     const entities = query(world);
+
+    //  Now sort them based on worldDepth
+    entities.sort((a, b) =>
+    {
+        return GetWorldDepth(a) - GetWorldDepth(b);
+    });
 
     let prevParent = -1;
 
