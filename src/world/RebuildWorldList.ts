@@ -22,8 +22,6 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
             entityAdded = AddToRenderList(world, parent, 0);
         }
 
-        SetWorldDepth(parent, worldDepth);
-
         if (!entityAdded)
         {
             return;
@@ -42,22 +40,29 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
                     //  Is a Child Cache, like a Render Layer, or doesn't cache children, like a Container
                     if (!WillCacheChildren(nodeID) || HasDirtyChildCache(nodeID))
                     {
+                        SetWorldDepth(nodeID, worldDepth);
+
                         RebuildWorldList(world, nodeID, worldDepth + 1);
                     }
                     else if (AddToRenderList(world, nodeID, 0))
                     {
-                        AddToRenderList(world, nodeID, 1);
-
                         SetWorldDepth(nodeID, worldDepth);
+
+                        AddToRenderList(world, nodeID, 1);
                     }
                 }
                 else if (!WillCacheChildren(nodeID) && AddToRenderList(world, nodeID, 0))
                 {
-                    AddToRenderList(world, nodeID, 1);
-
                     SetWorldDepth(nodeID, worldDepth);
+
+                    AddToRenderList(world, nodeID, 1);
                 }
             }
+        }
+
+        if (children.length === 0)
+        {
+            SetWorldDepth(parent, worldDepth);
         }
 
         if (world.id !== parent)
