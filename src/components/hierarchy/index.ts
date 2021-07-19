@@ -10,6 +10,7 @@ import { GetParentID } from './GetParentID';
 import { GetParents } from './GetParents';
 import { GetRootID } from './GetRootID';
 import { GetSiblingIDs } from './GetSiblingIDs';
+import { GetWorldDepth } from './GetWorldDepth';
 import { GetWorldFromID } from './GetWorldFromID';
 import { GetWorldFromParentID } from './GetWorldFromParentID';
 import { GetWorldID } from './GetWorldID';
@@ -37,6 +38,7 @@ export {
     GetParents,
     GetRootID,
     GetSiblingIDs,
+    GetWorldDepth,
     GetWorldFromID,
     GetWorldFromParentID,
     GetWorldID,
