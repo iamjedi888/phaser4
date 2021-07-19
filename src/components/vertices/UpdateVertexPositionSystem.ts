@@ -44,8 +44,8 @@ const updateVertexPositionSystem = defineSystem(world =>
         //  x, y, right, bottom:
         bounds[0] = Math.min(x0, x1, x2, x3);
         bounds[1] = Math.min(y0, y1, y2, y3);
-        bounds[2] = Math.max(x0, x1, x2, x3) - bounds[0];
-        bounds[3] = Math.max(y0, y1, y2, y3) - bounds[1];
+        bounds[2] = Math.max(x0, x1, x2, x3);
+        bounds[3] = Math.max(y0, y1, y2, y3);
 
         //  Insert into r-tree
     }
