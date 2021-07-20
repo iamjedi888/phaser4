@@ -65,8 +65,6 @@ export class SpatialHashGrid
         //  Quick abort if entity fits into 1 cell
         if (topLeft === bottomRight)
         {
-            console.log('easyout', topLeft);
-
             cells[ topLeft ].add(id);
 
             return;
@@ -75,43 +73,51 @@ export class SpatialHashGrid
         const topRight = this.getIndex(bounds[2], bounds[1]);
         const bottomLeft = this.getIndex(bounds[0], bounds[3]);
 
-        const width = topRight - topLeft;
-        const height = (bottomLeft - topLeft) / this.height;
+        const width = (topRight - topLeft) + 1;
+        const height = Math.max(1, Math.ceil((bottomLeft - topLeft) / this.height));
 
-        console.log('w/h', width, height, 'tl', topLeft, 'tr', topRight, 'bl', bottomLeft, 'br', bottomRight);
+        // console.log('width', width, 'height', height);
+        // console.log('topleft', topLeft, 'topright', topRight, 'bottomleft', bottomLeft, 'bottomright', bottomRight);
 
-        // let x = topLeft;
-        let offset = 0;
+        const startX = Math.floor(bounds[0] / this.cellSize);
+        const startY = Math.floor(bounds[1] / this.cellSize);
+
+        let gridX = startX;
+        let gridY = startY;
+        let placed = 0;
 
         for (let i = 0; i < width * height; i++)
         {
-            const index = i + offset;
+            const index = gridX + (gridY * this.width);
 
-            console.log('adding to index', index, 'offset', offset);
+            console.log('adding to index', index);
 
-            offset++;
+            cells[ index ].add(id);
 
-            if (i % width === 0)
+            gridX++;
+            placed++;
+
+            if (placed === width)
             {
-                offset += this.height - width;
+                gridX = startX;
+                gridY++;
+                placed = 0;
             }
         }
-
-        // for (let y = topLeft; y < topLeft + height; y++)
-        // {
-        //     for (let x = topLeft; x < topLeft + width; x++)
-        //     {
-        //         const index = x + (y * this.height);
-
-        //         console.log('adding to', x, y, 'index', index);
-
-        //         cells[ index ].add(id);
-        //     }
-        // }
     }
 
     getIndex (x: number, y: number): number
     {
         return Math.floor(x / this.cellSize) + (Math.floor(y / this.cellSize) * this.width);
+    }
+
+    getBounds (x: number, y: number, right: number, bottom: number): number[]
+    {
+        const topLeft = this.getIndex(x, y);
+        const topRight = this.getIndex(right, y);
+        const bottomLeft = this.getIndex(x, bottom);
+        const bottomRight = this.getIndex(right, bottom);
+
+        return [ topLeft, topRight, bottomLeft, bottomRight ];
     }
 }
