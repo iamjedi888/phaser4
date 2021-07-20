@@ -3,7 +3,7 @@ import * as WorldEvents from './events';
 import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
 import { ClearDirtyDisplayList, HasDirtyChild, HasDirtyDisplayList } from '../components/dirty';
 import { Emit, Once } from '../events';
-import { Extent2DComponent, Transform2DComponent, UpdateLocalTransform2DSystem, WorldMatrix2DComponent } from '../components/transform';
+import { Extent2DComponent, Transform2DComponent, UpdateExtent, UpdateLocalTransform2DSystem, WorldMatrix2DComponent } from '../components/transform';
 import { GameObject, GameObjectCache } from '../gameobjects';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
@@ -30,6 +30,7 @@ import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWorldID } from '../components/hierarchy';
+import { SpatialHashGrid } from '../math/spatialgrid/SpatialHashGrid';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillUpdate } from '../components/permissions';
 import { WorldList } from './WorldList';
@@ -54,6 +55,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     renderList: Uint32Array;
     listLength: number = 0;
+
+    spatialGrid: SpatialHashGrid;
 
     private totalChildren: number = 0;
 
@@ -88,6 +91,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
         WorldList.get(scene).push(this);
 
         this.color = new Color(id);
+
+        this.spatialGrid = new SpatialHashGrid(0, 0, 800, 600, 200);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
@@ -186,9 +191,16 @@ export class BaseWorld extends GameObject implements IBaseWorld
         //  This will only update entities that had their WorldTransform actually changed
         //  We cannot control the order of these entities, children may be updated before parents, etc
 
-        const dirtyWorldTotal = UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
+        const updatedEntities = UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
 
-        const dirtyBoundsTotal = CalculateWorldBounds(GameObjectWorld, this.dirtyBoundsQuery);
+        const dirtyWorldTotal = updatedEntities.length;
+
+        updatedEntities.forEach(entity =>
+        {
+            this.spatialGrid.insert(entity);
+        });
+
+        // const dirtyBoundsTotal = CalculateWorldBounds(GameObjectWorld, this.dirtyBoundsQuery);
 
         //  We now have accurate World Bounds for all children of this World, so let's build the render list
 
