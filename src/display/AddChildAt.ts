@@ -1,4 +1,4 @@
-import { GetWorldFromParentID, SetParentID } from '../components/hierarchy';
+import { GetWorldFromParentID, SetIndex, SetParentID, UpdateIndexes } from '../components/hierarchy';
 
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
@@ -38,6 +38,8 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
             }
 
             SetParentID(childID, parentID);
+
+            UpdateIndexes(childID);
 
             SetDirtyParents(childID);
         }
