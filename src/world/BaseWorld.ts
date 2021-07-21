@@ -63,7 +63,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     private totalChildrenQuery: Query;
     private dirtyLocalQuery: Query;
     private vertexPositionQuery: Query;
-    private dirtyBoundsQuery: Query;
+    // private dirtyBoundsQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -77,7 +77,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.totalChildrenQuery = defineQuery([ tag ]);
         this.dirtyLocalQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
         this.vertexPositionQuery = defineQuery([ tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
-        this.dirtyBoundsQuery = defineQuery([ tag, Changed(BoundsComponent) ]);
+        // this.dirtyBoundsQuery = defineQuery([ tag, Changed(BoundsComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -92,7 +92,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.color = new Color(id);
 
-        this.spatialGrid = new SpatialHashGrid(0, 0, 800, 600, 200);
+        this.spatialGrid = new SpatialHashGrid(-1600, -1200, 1600, 1200, 400, 400);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
@@ -195,10 +195,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         const dirtyWorldTotal = updatedEntities.length;
 
-        updatedEntities.forEach(entity =>
-        {
-            this.spatialGrid.insert(entity);
-        });
+        // updatedEntities.forEach(entity =>
+        // {
+        //     this.spatialGrid.insert(entity);
+        // });
 
         // const dirtyBoundsTotal = CalculateWorldBounds(GameObjectWorld, this.dirtyBoundsQuery);
 

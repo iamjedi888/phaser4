@@ -1,35 +1,48 @@
+import { IWorld, createWorld } from 'bitecs';
+
 import { BoundsComponent } from '../../components/bounds';
 
 export class SpatialHashGrid
 {
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-    cellSize: number;
+    cellWidth: number;
+    cellHeight: number;
+
     width: number;
     height: number;
 
-    cells: Array<Set<number>>;
+    cells: Map<string, Set<number>>;
 
-    debug: Array<{ x: number, y: number, width: number, height: number }>;
+    // cells: Array<Set<number>>;
+    // debug: Array<{ x: number, y: number, width: number, height: number }>;
 
-    constructor (minX: number, minY: number, maxX: number, maxY: number, cellSize: number)
+    constructor (minX: number, minY: number, maxX: number, maxY: number, cellWidth: number, cellHeight: number)
     {
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.cellSize = cellSize;
+        cellWidth = Math.abs(cellWidth);
+        cellHeight = Math.abs(cellHeight);
 
-        const width = Math.floor((maxX - minX) / cellSize);
-        const height = Math.floor((maxY - minY) / cellSize);
+        const width = Math.floor((maxX - minX) / cellWidth);
+        const height = Math.floor((maxY - minY) / cellHeight);
 
         this.width = width;
         this.height = height;
 
-        console.log('grid size', this.width, this.height);
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
 
+        this.cells = new Map();
+
+        for (let y = minY; y < maxX; y += cellHeight)
+        {
+            for (let x = minX; x < maxX; x += cellWidth)
+            {
+                this.cells.set(this.getKey(x, y), new Set());
+
+                // this.cells.push(new Set());
+                // this.debug.push({ x: x * cellSize, y: y * cellSize, width: cellSize, height: cellSize });
+            }
+        }
+
+        /*
         this.cells = [];
         this.debug = [];
 
@@ -43,7 +56,9 @@ export class SpatialHashGrid
             }
         }
 
-        console.log('hash', this.cells);
+        */
+
+        console.log('grid', this);
     }
 
     clear (): void
@@ -51,6 +66,15 @@ export class SpatialHashGrid
         this.cells.forEach(cell => cell.clear());
     }
 
+    getKey (x: number, y: number): string
+    {
+        const gx = Math.floor(x / this.cellWidth);
+        const gy = (Math.floor(y / this.cellHeight) * this.width);
+
+        return `${gx} ${gy}`;
+    }
+
+    /*
     insert (id: number): void
     {
         const cells = this.cells;
@@ -105,7 +129,9 @@ export class SpatialHashGrid
             }
         }
     }
+    */
 
+    /*
     getIndex (x: number, y: number): number
     {
         return Math.floor(x / this.cellSize) + (Math.floor(y / this.cellSize) * this.width);
@@ -120,4 +146,5 @@ export class SpatialHashGrid
 
         return [ topLeft, topRight, bottomLeft, bottomRight ];
     }
+    */
 }
