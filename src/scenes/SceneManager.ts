@@ -40,7 +40,12 @@ export class SceneManager
 
     boot (): void
     {
-        GetScenes().forEach(scene => new scene());
+        const scenes = GetScenes();
+
+        if (scenes)
+        {
+            scenes.forEach(scene => new scene());
+        }
     }
 
     update (delta: number, time: number, gameFrame: number): void
@@ -85,8 +90,6 @@ export class SceneManager
                 }
             }
         }
-
-        PackQuadColorsSystem(GameObjectWorld);
     }
 
     //  TODO - This isn't used internally - is used by debug panel - move out?
