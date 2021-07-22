@@ -10,6 +10,7 @@ import { GetRenderStatsAsObject } from './scenes';
 import { GetRenderer } from './config/renderer';
 import { IRenderStats } from './scenes/IRenderStats';
 import { IRenderer } from './renderer/IRenderer';
+import { PackQuadColorsSystem } from './components/color';
 import { SceneManager } from './scenes/SceneManager';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
 import { TextureManager } from './textures/TextureManager';
@@ -88,14 +89,14 @@ export class Game extends EventEmitter
 
         GetBanner();
 
-        Emit(this, 'boot');
-
         const now = performance.now();
 
         this.lastTick = now;
         this.prevFrame = now;
 
         this.renderStats = GetRenderStatsAsObject();
+
+        Emit(this, 'boot');
 
         this.step(now);
     }
@@ -124,15 +125,23 @@ export class Game extends EventEmitter
             if (this.willUpdate)
             {
                 sceneManager.update(this.delta, time, this.frame);
-            }
 
-            Emit(this, 'update', this.framems, time);
+                Emit(this, 'update', this.framems, time);
+            }
 
             if (this.willRender)
             {
+                renderer.renderBegin(sceneManager.flush);
+
                 sceneManager.preRender(this.frame);
 
-                renderer.render(sceneManager.flush, sceneManager.scenes);
+                renderer.renderScenes(sceneManager.scenes);
+
+                PackQuadColorsSystem(GameObjectWorld);
+
+                Emit(this, 'render', renderer.renderPass, this.framems, time);
+
+                renderer.renderEnd();
 
                 sceneManager.flush = false;
             }
