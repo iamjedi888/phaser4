@@ -195,10 +195,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         const dirtyWorldTotal = updatedEntities.length;
 
-        updatedEntities.forEach(entity =>
-        {
-            this.spatialGrid.insert(entity);
-        });
+        // updatedEntities.forEach(entity =>
+        // {
+        //     this.spatialGrid.insert(entity);
+        // });
 
         // const dirtyBoundsTotal = CalculateWorldBounds(GameObjectWorld, this.dirtyBoundsQuery);
 
