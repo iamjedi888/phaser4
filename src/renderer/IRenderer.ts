@@ -15,6 +15,8 @@ export interface IRenderer
     initContext (): void;
     resize (width: number, height: number, resolution?: number): void;
     setBackgroundColor (color: number): this;
-    render (willRedraw: boolean, scenes: Map<string, IScene>): void;
+    renderBegin (willRedraw: boolean): void;
+    renderScenes (scenes: Map<string, IScene>): void;
+    renderEnd (): void;
     destroy (): void;
 }

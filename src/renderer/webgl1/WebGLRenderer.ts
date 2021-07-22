@@ -128,7 +128,7 @@ export class WebGLRenderer
         // this.renderPass.reset();
     }
 
-    render (willRedraw: boolean, scenes: Map<string, IScene>): void
+    renderBegin (willRedraw: boolean): void
     {
         if (this.contextLost)
         {
@@ -136,7 +136,6 @@ export class WebGLRenderer
         }
 
         const gl = this.gl;
-        const renderPass = this.renderPass;
 
         //  This is only here because if we don't do _something_ with the context,
         //  GL Spector can't see it!
@@ -158,7 +157,12 @@ export class WebGLRenderer
             gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
-        Start(renderPass);
+        Start(this.renderPass);
+    }
+
+    renderScenes (scenes: Map<string, IScene>): void
+    {
+        const renderPass = this.renderPass;
 
         for (const scene of scenes.values())
         {
@@ -174,8 +178,11 @@ export class WebGLRenderer
                 world.postRenderGL(renderPass);
             }
         }
+    }
 
-        End(renderPass);
+    renderEnd (): void
+    {
+        End(this.renderPass);
 
         // eslint-disable-next-line no-debugger
         // debugger;
