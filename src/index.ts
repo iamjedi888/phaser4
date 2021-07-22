@@ -23,6 +23,7 @@ import * as WebGL1 from './renderer/webgl1/';
 import * as World from './world/';
 import * as World3D from './world3d/';
 
+import { CreateGame } from './CreateGame';
 import { Game } from './Game';
 import { Scene } from './scenes/Scene';
 
@@ -37,6 +38,7 @@ export {
     Display,
     Display3D,
     Events,
+    CreateGame,
     Game,
     Scene,
     GameObjects,
