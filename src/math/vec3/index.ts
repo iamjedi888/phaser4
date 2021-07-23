@@ -1,5 +1,3 @@
-import { BACKWARD, DOWN, FORWARD, LEFT, RIGHT, UP, ZERO } from './const';
-
 import { GetVec3Angle } from './GetVec3Angle';
 import { GetVec3Distance } from './GetVec3Distance';
 import { GetVec3DistanceSquared } from './GetVec3DistanceSquared';
@@ -137,13 +135,5 @@ export {
     Vec3TransformQuat,
     Vec3Unproject,
     Vec3Up,
-    Vec3Zero,
-
-    BACKWARD,
-    DOWN,
-    FORWARD,
-    LEFT,
-    RIGHT,
-    UP,
-    ZERO
+    Vec3Zero
 };
