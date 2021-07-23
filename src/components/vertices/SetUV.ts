@@ -1,6 +1,6 @@
 import { QuadVertexComponent } from './QuadVertexComponent';
 
-export function SetUV (id: number, u0: number, v0: number,u1: number, v1: number): void
+export function SetUV (id: number, u0: number, v0: number, u1: number, v1: number): void
 {
     const data = QuadVertexComponent.values[id];
 
