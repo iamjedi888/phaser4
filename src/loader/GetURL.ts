@@ -1,6 +1,6 @@
-import { Loader } from './Loader';
+// import { Loader } from './Loader';
 
-export function GetURL (key: string, url: string, extension: string, loader?: Loader): string
+export function GetURL (key: string, url: string, extension: string): string
 {
     if (!url)
     {
@@ -11,10 +11,10 @@ export function GetURL (key: string, url: string, extension: string, loader?: Lo
     {
         return url;
     }
-    else if (loader)
-    {
-        return loader.baseURL + loader.path + url;
-    }
+    // else if (loader)
+    // {
+    //     return loader.baseURL + loader.path + url;
+    // }
     else
     {
         return url;
