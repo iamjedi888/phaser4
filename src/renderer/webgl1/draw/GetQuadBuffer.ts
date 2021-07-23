@@ -80,14 +80,15 @@
 
 export function GetQuadBuffer (): Float32Array
 {
-    return new Float32Array([
-        //  tri 1
-        0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 1, 0, 0, 0, 0, 0,
-        0, 0, 1, 1, 0, 0, 0, 0, 0,
-        //  tri 2
-        0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 1, 1, 0, 0, 0, 0, 0,
-        0, 0, 1, 0, 0, 0, 0, 0, 0
-    ]);
+    const quad = new Float32Array(54);
+
+    //  Set default UVs
+    quad[12] = 1;
+    quad[20] = 1;
+    quad[21] = 1;
+    quad[38] = 1;
+    quad[39] = 1;
+    quad[47] = 1;
+
+    return quad;
 }
