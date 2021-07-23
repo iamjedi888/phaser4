@@ -1,44 +1,47 @@
 import { Cache } from '../../cache/Cache';
-import { File } from '../File';
+import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
-import { XHRLoader } from '../XHRLoader';
+import { IFile } from '../IFile';
 
-export function JSONFile (key: string, url?: string): File
+export async function JSONFile (key: string, url?: string, requestInit?: RequestInit): Promise<IFile>
 {
-    const file = new File(key, url);
+    const file = CreateFile(key, GetURL(key, url, '.json'));
 
-    file.load = (): Promise<File> =>
+    const cache = Cache.get('JSON');
+
+    if (!cache || cache.has(key) && !file.skipCache)
     {
-        file.url = GetURL(file.key, file.url, '.json', file.loader);
-
-        return new Promise((resolve, reject) =>
+        return Promise.reject(file);
+    }
+    else
+    {
+        try
         {
-            const cache = Cache.get('JSON');
+            const request = new Request(file.url, Object.assign({}, requestInit));
 
-            if (!file.skipCache && cache.has(file.key))
+            file.response = await fetch(request);
+
+            if (file.response.ok)
             {
-                resolve(file);
+                file.data = await file.response.json();
+
+                if (!file.skipCache)
+                {
+                    cache.set(key, file.data);
+                }
+
+                return Promise.resolve(file);
             }
             else
             {
-                XHRLoader(file).then(file =>
-                {
-                    file.data = JSON.parse(file.data);
-
-                    if (!file.skipCache)
-                    {
-                        cache.set(file.key, file.data);
-                    }
-
-                    resolve(file);
-
-                }).catch(file =>
-                {
-                    reject(file);
-                });
+                return Promise.reject(file);
             }
-        });
-    };
+        }
+        catch (error)
+        {
+            file.error = error;
 
-    return file;
+            return Promise.reject(file);
+        }
+    }
 }

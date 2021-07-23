@@ -1,45 +1,47 @@
-import { File } from '../File';
+import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
+import { IFile } from '../IFile';
 import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
-import { ImageTagLoader } from '../ImageLoader';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 
-export function ImageFile (key: string, url?: string, glConfig?: IGLTextureBindingConfig): File
+export async function ImageFile (key: string, url?: string, requestInit?: RequestInit, glConfig?: IGLTextureBindingConfig): Promise<IFile>
 {
-    const file = new File(key, url);
+    const file = CreateFile(key, GetURL(key, url, '.png'));
 
-    file.load = (): Promise<File> =>
+    const textureManager = TextureManagerInstance.get();
+
+    if (!textureManager || textureManager.has(key))
     {
-        file.url = GetURL(file.key, file.url, '.png', file.loader);
-
-        if (file.loader)
+        return Promise.reject(file);
+    }
+    else
+    {
+        try
         {
-            file.crossOrigin = file.loader.crossOrigin;
-        }
+            const request = new Request(file.url, Object.assign({}, requestInit));
 
-        return new Promise((resolve, reject) =>
-        {
-            const textureManager = TextureManagerInstance.get();
+            file.response = await fetch(request);
 
-            if (textureManager.has(file.key))
+            if (file.response.ok)
             {
-                resolve(file);
+                const blob = await file.response.blob();
+
+                const image = await createImageBitmap(blob);
+
+                file.data = textureManager.add(key, image, glConfig);
+
+                return Promise.resolve(file);
             }
             else
             {
-                ImageTagLoader(file).then(file =>
-                {
-                    textureManager.add(file.key, file.data, glConfig);
-
-                    resolve(file);
-
-                }).catch(file =>
-                {
-                    reject(file);
-                });
+                return Promise.reject(file);
             }
-        });
-    };
+        }
+        catch (error)
+        {
+            file.error = error;
 
-    return file;
+            return Promise.reject(file);
+        }
+    }
 }
