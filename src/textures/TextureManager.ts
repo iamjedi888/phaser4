@@ -10,6 +10,11 @@ export class TextureManager
 
     constructor ()
     {
+        if (TextureManagerInstance.get())
+        {
+            throw new Error('Only 1 instance of TextureManager allowed');
+        }
+
         this.textures = new Map();
 
         this.createDefaultTextures();
@@ -61,12 +66,11 @@ export class TextureManager
         return this.textures.has(key);
     }
 
-    add (key: string, source: Texture | HTMLImageElement, glConfig?: IGLTextureBindingConfig): Texture
+    add (key: string, source: Texture | TexImageSource, glConfig?: IGLTextureBindingConfig): Texture
     {
         let texture: Texture;
-        const textures = this.textures;
 
-        if (!textures.has(key))
+        if (!this.textures.has(key))
         {
             if (source instanceof Texture)
             {
@@ -79,7 +83,7 @@ export class TextureManager
 
             texture.key = key;
 
-            textures.set(key, texture);
+            this.textures.set(key, texture);
         }
 
         return texture;
