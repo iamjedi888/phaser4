@@ -74,27 +74,27 @@ export class Matrix4
      */
     set (m00: number, m01: number, m02: number, m03: number, m10: number, m11: number, m12: number, m13: number, m20: number, m21: number, m22: number, m23: number, m30: number, m31: number, m32: number, m33: number): this
     {
-        const data = this.data;
+        this.data.set([
+            m00,
+            m01,
+            m02,
+            m03,
 
-        data[ 0 ] = m00;
-        data[ 1 ] = m01;
-        data[ 2 ] = m02;
-        data[ 3 ] = m03;
+            m10,
+            m11,
+            m12,
+            m13,
 
-        data[ 4 ] = m10;
-        data[ 5 ] = m11;
-        data[ 6 ] = m12;
-        data[ 7 ] = m13;
+            m20,
+            m21,
+            m22,
+            m23,
 
-        data[ 8 ] = m20;
-        data[ 9 ] = m21;
-        data[ 10 ] = m22;
-        data[ 11 ] = m23;
-
-        data[ 12 ] = m30;
-        data[ 13 ] = m31;
-        data[ 14 ] = m32;
-        data[ 15 ] = m33;
+            m30,
+            m31,
+            m32,
+            m33
+        ]);
 
         this.onChange(this);
 
