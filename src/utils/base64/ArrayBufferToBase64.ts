@@ -5,8 +5,6 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
 /**
  * Converts an ArrayBuffer into a base64 string.
  *
@@ -24,6 +22,8 @@ const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
  */
 export function ArrayBufferToBase64 (arrayBuffer: ArrayBuffer, mediaType: string): string
 {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
     const bytes = new Uint8Array(arrayBuffer);
     const len = bytes.length;
 
