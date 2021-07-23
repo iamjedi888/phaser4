@@ -5,10 +5,15 @@ import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { Triangulate } from '../../../geom/PolyPartition';
 
-const circle = new Circle();
+let circle: Circle;
 
 export function FillArc (renderPass: IRenderPass, x: number, y: number, radius: number, startAngle: number, endAngle: number, steps: number, anticlockwise: boolean, includeCenter: boolean, red: number, green: number, blue: number, alpha: number): void
 {
+    if (!circle)
+    {
+        circle = new Circle();
+    }
+
     circle.set(x, y, radius);
 
     const points = GetCirclePointsBetween(circle, startAngle, endAngle, steps, anticlockwise, includeCenter);
