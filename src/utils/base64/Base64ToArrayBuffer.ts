@@ -5,15 +5,7 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-//  Use a lookup table to find the index.
-const lookup = new Uint8Array(256);
-
-for (let i = 0; i < chars.length; i++)
-{
-    lookup[chars.charCodeAt(i)] = i;
-}
+let lookup: Uint8Array;
 
 /**
  * Converts a base64 string, either with or without a data uri, into an Array Buffer.
@@ -27,6 +19,19 @@ for (let i = 0; i < chars.length; i++)
  */
 export function Base64ToArrayBuffer (base64: string): ArrayBuffer
 {
+    if (!lookup)
+    {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+        //  Use a lookup table to find the index.
+        lookup = new Uint8Array(256);
+
+        for (let i = 0; i < chars.length; i++)
+        {
+            lookup[chars.charCodeAt(i)] = i;
+        }
+    }
+
     //  Is it a data uri? if so, strip the header away
     base64 = base64.substr(base64.indexOf(',') + 1);
 
