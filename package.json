@@ -31,7 +31,7 @@
     },
     "homepage": "https://github.com/phaserjs/phaser#readme",
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^13.0.2",
+        "@rollup/plugin-node-resolve": "^13.0.3",
         "@swc/cli": "^0.1.46",
         "@swc/core": "^1.2.66",
         "@types/jest": "^26.0.24",
