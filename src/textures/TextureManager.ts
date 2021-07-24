@@ -88,4 +88,16 @@ export class TextureManager
 
         return texture;
     }
+
+    update (key: string, source: TexImageSource, glConfig?: IGLTextureBindingConfig): Texture
+    {
+        const texture = this.textures.get(key);
+
+        if (texture)
+        {
+            texture.update(source, glConfig);
+        }
+
+        return texture;
+    }
 }
