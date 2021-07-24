@@ -10,7 +10,7 @@ export async function ImageFile (key: string, url?: string, requestInit?: Reques
 
     const textureManager = TextureManagerInstance.get();
 
-    if (!textureManager || textureManager.has(key))
+    if (!textureManager || textureManager.has(key) && textureManager.get(key).locked)
     {
         return Promise.reject(file);
     }
@@ -28,7 +28,14 @@ export async function ImageFile (key: string, url?: string, requestInit?: Reques
 
                 const image = await createImageBitmap(blob);
 
-                file.data = textureManager.add(key, image, glConfig);
+                if (textureManager.has(key))
+                {
+                    file.data = textureManager.update(key, image, glConfig);
+                }
+                else
+                {
+                    file.data = textureManager.add(key, image, glConfig);
+                }
 
                 return Promise.resolve(file);
             }
