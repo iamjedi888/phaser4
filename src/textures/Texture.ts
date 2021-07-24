@@ -9,6 +9,8 @@ export class Texture implements ITexture
     //  Unique identifier of this Texture, if stored in the Texture Manager
     key: string = '';
 
+    locked: boolean = true;
+
     width: number;
     height: number;
 
@@ -96,6 +98,15 @@ export class Texture implements ITexture
         const frame = this.frames.get('__BASE');
 
         frame.setSize(width, height);
+    }
+
+    update (image: TexImageSource, glConfig?: IGLTextureBindingConfig): void
+    {
+        this.image = image;
+
+        this.setSize(image.width, image.height);
+
+        BindingQueue.add(this, glConfig);
     }
 
     destroy (): void

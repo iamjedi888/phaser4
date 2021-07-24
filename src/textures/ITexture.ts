@@ -4,6 +4,7 @@ import { IGLTextureBinding } from '../renderer/webgl1/textures/IGLTextureBinding
 export interface ITexture
 {
     key: string;
+    locked: boolean;
     width: number;
     height: number;
     image?: TexImageSource;
