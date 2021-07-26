@@ -1,5 +1,5 @@
 import { Color } from '../../../components/color/Color';
-import { CompareColorMatrix } from '../../../components/color';
+import { CompareColorMatrix } from '../../../components/color/CompareColorMatrix';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 

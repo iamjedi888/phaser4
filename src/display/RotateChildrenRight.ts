@@ -1,8 +1,8 @@
-import { GetChildIDsFromParent, UpdateChildIndexes } from '../components/hierarchy';
-
-import { GameObjectCache } from '../gameobjects';
+import { GameObjectCache } from '../gameobjects/GameObjectCache';
+import { GetChildIDsFromParent } from '../components/hierarchy/GetChildIDsFromParent';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty';
+import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
+import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
 
 export function RotateChildrenRight <P extends IGameObject> (parent: P, total: number = 1): IGameObject | undefined
 {

@@ -6,7 +6,7 @@ import { IColorComponent } from '../components/color/IColorComponent';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
-import { SceneManager } from '../scenes';
+import { SceneManager } from '../scenes/SceneManager';
 
 export interface IBaseWorld extends IGameObject, IColorComponent
 {

@@ -1,10 +1,13 @@
-import { GetParentID, GetWorldID, HierarchyComponent, UpdateNumChildren } from './';
 import { hasComponent, removeComponent } from 'bitecs';
 
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../../GameObjectWorld';
+import { GetParentID } from './GetParentID';
+import { GetWorldID } from './GetWorldID';
+import { HierarchyComponent } from './HierarchyComponent';
 import { IBaseWorld } from '../../world/IBaseWorld';
-import { SetDirtyParents } from '../dirty';
+import { SetDirtyParents } from '../dirty/SetDirtyParents';
+import { UpdateNumChildren } from './UpdateNumChildren';
 
 export function ClearWorldAndParentID (id: number): void
 {

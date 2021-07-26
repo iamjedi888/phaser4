@@ -1,5 +1,5 @@
-import { DepthFirstSearchFromParentID } from '../components/hierarchy';
-import { GameObjectCache } from '../gameobjects';
+import { DepthFirstSearchFromParentID } from '../components/hierarchy/DepthFirstSearchFromParentID';
+import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 //  Returns all children of the parent, no matter what depth they go to, using an iterative search.

@@ -1,4 +1,4 @@
-import { AddQuadVertex } from '../../components/vertices';
+import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { ColorComponent } from '../../components/color/ColorComponent';
 import { Container } from '../container/Container';

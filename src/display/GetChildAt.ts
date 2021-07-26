@@ -1,5 +1,5 @@
-import { GameObjectCache, GameObjectTree } from '../gameobjects';
-
+import { GameObjectCache } from '../gameobjects/GameObjectCache';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function GetChildAt <P extends IGameObject> (parent: P, index: number): IGameObject

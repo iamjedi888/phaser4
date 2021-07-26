@@ -1,8 +1,11 @@
-import { Origin, Position, Scale, Size, Skew } from '../../components/transform';
-
 import { IColorComponent } from '../../components/color/IColorComponent';
 import { IGameObject } from '../IGameObject';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
+import { Origin } from '../../components/transform/Origin';
+import { Position } from '../../components/transform/Position';
+import { Scale } from '../../components/transform/Scale';
+import { Size } from '../../components/transform/Size';
+import { Skew } from '../../components/transform/Skew';
 
 export interface IContainer extends IGameObject, IColorComponent
 {

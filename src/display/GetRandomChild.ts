@@ -1,6 +1,6 @@
-import { GameObjectCache, GameObjectTree } from '../gameobjects';
-
-import { GetRandom } from '../utils/array';
+import { GameObjectCache } from '../gameobjects/GameObjectCache';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
+import { GetRandom } from '../utils/array/GetRandom';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function GetRandomChild <P extends IGameObject> (parent: P, startIndex: number = 0, length?: number): IGameObject

@@ -1,8 +1,9 @@
-import { GetHeight, GetResolution, GetWidth } from '../../config/size/';
-
 import { BindingQueue } from '../BindingQueue';
 import { GetBackgroundColor } from '../../config/backgroundcolor/GetBackgroundColor';
 import { GetCanvasContext } from '../../config/canvascontext/GetCanvasContext';
+import { GetHeight } from '../../config/size/GetHeight';
+import { GetResolution } from '../../config/size/GetResolution';
+import { GetWidth } from '../../config/size/GetWidth';
 import { ICamera } from '../../camera/ICamera';
 import { ISceneRenderData } from '../../scenes/ISceneRenderData';
 import { SearchEntry } from '../../display/SearchEntryType';

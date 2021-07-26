@@ -1,8 +1,8 @@
-import { ClearWorldAndParentID, UpdateChildIndexes } from '../components/hierarchy';
-
+import { ClearWorldAndParentID } from '../components/hierarchy/ClearWorldAndParentID';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
 
 export function RemoveChildAt <T extends IGameObject> (parent: T, index: number): IGameObject | undefined
 {

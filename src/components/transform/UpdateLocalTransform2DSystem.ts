@@ -1,8 +1,10 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
-import { SetDirtyChild, SetDirtyParents, SetDirtyTransform } from '../dirty';
 
-import { GetParentID } from '../hierarchy';
+import { GetParentID } from '../hierarchy/GetParentID';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
+import { SetDirtyChild } from '../dirty/SetDirtyChild';
+import { SetDirtyParents } from '../dirty/SetDirtyParents';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];

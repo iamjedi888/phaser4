@@ -1,9 +1,9 @@
-import { Texture, WhiteTexture } from '../../../textures';
-
 import { CreateTempTextures } from './CreateTempTextures';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
+import { Texture } from '../../../textures/Texture';
+import { WhiteTexture } from '../../../textures/WhiteTexture';
 import { gl } from '../GL';
 
 export class TextureStack

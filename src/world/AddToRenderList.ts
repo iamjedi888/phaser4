@@ -1,4 +1,4 @@
-import { GetWorldSize } from '../config/worldsize';
+import { GetWorldSize } from '../config/worldsize/GetWorldSize';
 import { IBaseWorld } from './IBaseWorld';
 
 //  Called by RebuildWorldList as it sweeps the world children, looking to see what will render or not

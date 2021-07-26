@@ -1,5 +1,5 @@
 import { IBaseCamera } from './IBaseCamera';
-import { Vec2Callback } from '../math/vec2';
+import { Vec2Callback } from '../math/vec2/Vec2Callback';
 
 export interface ICamera extends IBaseCamera
 {

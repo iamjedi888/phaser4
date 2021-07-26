@@ -1,5 +1,5 @@
 import { IQuaternionLike } from './IQuaternionLike';
-import { Vec3 } from '../vec3';
+import { Vec3 } from '../vec3/Vec3';
 
 //  Fixed to the YZX order
 

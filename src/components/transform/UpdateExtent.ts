@@ -1,5 +1,5 @@
 import { Extent2DComponent } from './Extent2DComponent';
-import { SetDirtyTransform } from '../dirty';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 import { Transform2DComponent } from './Transform2DComponent';
 
 export function UpdateExtent (id: number, width: number, height: number): void

@@ -1,4 +1,4 @@
-import { GameObjectTree } from '../../gameobjects';
+import { GameObjectTree } from '../../gameobjects/GameObjectTree';
 import { SetIndex } from './SetIndex';
 
 export function UpdateChildIndexes (parentID: number): void

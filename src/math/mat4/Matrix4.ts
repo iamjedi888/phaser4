@@ -1,4 +1,4 @@
-import { NOOP } from '../../utils';
+import { NOOP } from '../../utils/NOOP';
 
 //  4x4 Matrix in column-major format
 

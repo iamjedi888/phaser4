@@ -28,10 +28,10 @@ import { GetLineWidth } from './GetLineWidth';
 import { GetShortestLineDistance } from './GetShortestLineDistance';
 import { Line } from './Line';
 import { LineEquals } from './LineEquals';
-import { LineSetToAngle } from './SetLineToAngle';
 import { RotateLine } from './RotateLine';
 import { RotateLineAround } from './RotateLineAround';
 import { RotateLineAroundPoint } from './RotateLineAroundPoint';
+import { SetLineToAngle } from './SetLineToAngle';
 import { TranslateLine } from './TranslateLine';
 import { TranslateLinePoint } from './TranslateLinePoint';
 
@@ -53,17 +53,17 @@ export {
     GetLinePerpSlope,
     GetLinePoint,
     GetLinePoints,
+    GetLineRandomPoint,
     GetLineReflectAngle,
     GetLineSlope,
     GetLineWidth,
-    GetLineRandomPoint,
     GetShortestLineDistance,
     Line,
     LineEquals,
-    LineSetToAngle,
     RotateLine,
     RotateLineAround,
     RotateLineAroundPoint,
+    SetLineToAngle,
     TranslateLine,
     TranslateLinePoint
 };

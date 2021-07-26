@@ -1,6 +1,6 @@
 import { IVec3Like } from '../vec3/IVec3Like';
 import { Quaternion } from './Quaternion';
-import { Vec3Dot } from '../vec3';
+import { Vec3Dot } from '../vec3/Vec3Dot';
 
 // assumes direction vectors are normalized
 

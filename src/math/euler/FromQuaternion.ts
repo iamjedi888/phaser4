@@ -1,8 +1,8 @@
-import { Mat4FromQuat, Matrix4 } from '../mat4';
-
 import { Euler } from './Euler';
 import { FromRotationMatrix } from './FromRotationMatrix';
-import { Quaternion } from '../quaternion';
+import { Mat4FromQuat } from '../mat4/Mat4FromQuat';
+import { Matrix4 } from '../mat4/Matrix4';
+import { Quaternion } from '../quaternion/Quaternion';
 
 const tempMat4 = new Matrix4();
 

@@ -2,12 +2,12 @@ import { GameInstance } from '../GameInstance';
 import { ICamera } from './ICamera';
 import { IRenderer } from '../renderer/IRenderer';
 import { IWorld } from '../world/IWorld';
-import { Mat4Identity } from '../math/mat4';
+import { Mat4Identity } from '../math/mat4/Mat4Identity';
 import { Matrix2D } from '../math/mat2d/Matrix2D';
 import { Matrix4 } from '../math/mat4/Matrix4';
 import { Rectangle } from '../geom/rectangle/Rectangle';
 import { Vec2Callback } from '../math/vec2/Vec2Callback';
-import { WrapAngle } from '../math/angle';
+import { WrapAngle } from '../math/angle/WrapAngle';
 
 export class Camera implements ICamera
 {

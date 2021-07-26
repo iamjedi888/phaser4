@@ -1,5 +1,5 @@
 import { Extent2DComponent } from './Extent2DComponent';
-import { SetDirtyTransform } from '../dirty';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 
 //  The area covered by this transform component + origin + size (usually from a Frame)
 

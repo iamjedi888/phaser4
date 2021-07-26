@@ -1,6 +1,6 @@
 import { File } from './File';
 
-export function ImageTagLoader (file: File<string>): Promise<File<HTMLImageElement>>
+export function ImageLoader (file: File<string>): Promise<File<HTMLImageElement>>
 {
     const fileCast = file as unknown as File<HTMLImageElement>;
 

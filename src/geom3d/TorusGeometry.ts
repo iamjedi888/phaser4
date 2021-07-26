@@ -1,6 +1,7 @@
-import { Vec3, Vec3Normalize, Vec3Subtract } from '../math/vec3';
-
 import { CreateVertexSet } from '../gameobjects3d/geometry/CreateVertexSet';
+import { Vec3 } from '../math/vec3/Vec3';
+import { Vec3Normalize } from '../math/vec3/Vec3Normalize';
+import { Vec3Subtract } from '../math/vec3/Vec3Subtract';
 import { VertexSet } from '../gameobjects3d/geometry/VertexSet';
 
 export function TorusGeometry (radius: number = 1, tube: number = 0.4, radialSegments: number = 8, tubularSegments: number = 6, arc: number = Math.PI * 2): VertexSet

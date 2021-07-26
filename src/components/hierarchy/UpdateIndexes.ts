@@ -1,4 +1,4 @@
-import { GameObjectTree } from '../../gameobjects';
+import { GameObjectTree } from '../../gameobjects/GameObjectTree';
 import { GetParentID } from './GetParentID';
 import { SetIndex } from './SetIndex';
 

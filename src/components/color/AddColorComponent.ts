@@ -1,5 +1,5 @@
 import { ColorComponent } from './ColorComponent';
-import { DEFAULT_COLOR_MATRIX } from '../../colormatrix/consts';
+import { DEFAULT_COLOR_MATRIX } from '../../colormatrix/const';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { addComponent } from 'bitecs';
 

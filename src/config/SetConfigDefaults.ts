@@ -4,7 +4,7 @@ import { SetBatchSize } from './batchsize/SetBatchSize';
 import { SetDefaultOrigin } from './defaultorigin/SetDefaultOrigin';
 import { SetMaxTextures } from './maxtextures/SetMaxTextures';
 import { SetSize } from './size/SetSize';
-import { SetWebGLContext } from './webglcontext';
+import { SetWebGLContext } from './webglcontext/SetWebGLContext';
 import { SetWorldSize } from './worldsize/SetWorldSize';
 
 //  Phaser 4 defaults

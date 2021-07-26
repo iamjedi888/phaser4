@@ -1,7 +1,7 @@
 import { IGameObject } from '../gameobjects/IGameObject';
 import { RemoveChildrenBetween } from './RemoveChildrenBetween';
-import { SetDirtyWorldDisplayList } from '../components/dirty';
-import { UpdateChildIndexes } from '../components/hierarchy';
+import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
+import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
 
 export function DestroyChildren <T extends IGameObject> (parent: T, beginIndex: number = 0, endIndex?: number): void
 {

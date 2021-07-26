@@ -1,5 +1,5 @@
-import { AddQuadVertex } from '../../components/vertices';
-import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw';
+import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
+import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { Container } from '../container/Container';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { Frame } from '../../textures/Frame';
@@ -13,7 +13,7 @@ import { PreRenderVertices } from '../../components/transform/PreRenderVertices'
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
-import { WillRender } from '../../components/permissions';
+import { WillRender } from '../../components/permissions/WillRender';
 
 export class Sprite extends Container implements ISprite
 {

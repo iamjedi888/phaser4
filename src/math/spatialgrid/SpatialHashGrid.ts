@@ -1,4 +1,4 @@
-import { BoundsComponent } from '../../components/bounds';
+import { BoundsComponent } from '../../components/bounds/BoundsComponent';
 
 export class SpatialHashGrid
 {

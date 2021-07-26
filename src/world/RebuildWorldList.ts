@@ -1,10 +1,12 @@
-import { GetNumChildren, SetWorldDepth } from '../components/hierarchy';
-import { WillCacheChildren, WillRender, WillRenderChildren } from '../components/permissions';
-
 import { AddToRenderList } from './AddToRenderList';
-import { GameObjectTree } from '../gameobjects';
-import { HasDirtyChildCache } from '../components/dirty';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
+import { HasDirtyChildCache } from '../components/dirty/HasDirtyChildCache';
 import { IBaseWorld } from './IBaseWorld';
+import { SetWorldDepth } from '../components/hierarchy/SetWorldDepth';
+import { WillCacheChildren } from '../components/permissions/WillCacheChildren';
+import { WillRender } from '../components/permissions/WillRender';
+import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
 
 //  Rebuilds the World.renderList - a list of all entities that need to render.
 

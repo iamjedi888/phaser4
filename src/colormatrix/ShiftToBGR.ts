@@ -1,4 +1,4 @@
-import { DEFAULT_COLOR_OFFSET } from './consts';
+import { DEFAULT_COLOR_OFFSET } from './const';
 import { IColorComponent } from '../components/color/IColorComponent';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { SetColorMatrix } from './SetColorMatrix';

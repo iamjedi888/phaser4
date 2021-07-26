@@ -1,6 +1,6 @@
 import { BoundsComponent } from './BoundsComponent';
-import { GameObjectTree } from '../../gameobjects';
-import { GetNumChildren } from '../hierarchy';
+import { GameObjectTree } from '../../gameobjects/GameObjectTree';
+import { GetNumChildren } from '../hierarchy/GetNumChildren';
 
 export function GetBounds (id: number): number[]
 {

@@ -1,16 +1,18 @@
-import { AtlasParser, KTXParser, PVRParser } from '../../textures/parsers';
-import { TextureBaseFormat, TextureContainer } from '../../renderer/webgl1/textures/ICompressedTextures';
-
 import { AtlasFile } from './AtlasFile';
+import { AtlasParser } from '../../textures/parsers/AtlasParser';
 import { File } from '../File';
 import { GetCompressedTextureName } from '../../renderer/webgl1/textures/GetCompressedTextureName';
 import { GetURL } from '../GetURL';
 import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
-import { ProcessBindingQueue } from '../../renderer/webgl1/renderpass';
+import { KTXParser } from '../../textures/parsers/KTXParser';
+import { PVRParser } from '../../textures/parsers/PVRParser';
+import { ProcessBindingQueue } from '../../renderer/webgl1/renderpass/ProcessBindingQueue';
 import { SupportsCompressedTexture } from '../../renderer/webgl1/textures/SupportsCompressedTexture';
-import { Texture } from '../../textures';
+import { Texture } from '../../textures/Texture';
+import { TextureBaseFormat } from '../../renderer/webgl1/textures/ICompressedTextures';
+import { TextureContainer } from '../../renderer/webgl1/textures/ICompressedTextures';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 import { XHRLoader } from '../XHRLoader';
 

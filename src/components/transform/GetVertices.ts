@@ -1,5 +1,5 @@
-import { Matrix2D } from '../../math/mat2d';
-import { Rectangle } from '../../geom/rectangle';
+import { Matrix2D } from '../../math/mat2d/Matrix2D';
+import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { Vertices } from './Vertices';
 
 export function GetVertices (worldTransform: Matrix2D, transformExtent: Rectangle): Vertices

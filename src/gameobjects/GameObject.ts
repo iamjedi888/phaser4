@@ -1,19 +1,26 @@
-import { AddHierarchyComponent, GetChildrenFromParentID, GetNumChildren, GetParentGameObject, HierarchyComponent } from '../components/hierarchy';
-import { AddPermissionsComponent, PermissionsComponent, WillRender, WillUpdate, WillUpdateChildren } from '../components/permissions';
-
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
+import { AddHierarchyComponent } from '../components/hierarchy/AddHierarchyComponent';
+import { AddPermissionsComponent } from '../components/permissions/AddPermissionsComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from './GameObjectCache';
 import { GameObjectTree } from './GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
+import { GetChildrenFromParentID } from '../components/hierarchy/GetChildrenFromParentID';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
+import { GetParentGameObject } from '../components/hierarchy/GetParentGameObject';
+import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
+import { PermissionsComponent } from '../components/permissions/PermissionsComponent';
 import { ReparentChildren } from '../display/ReparentChildren';
-import { SetDirtyParents } from '../components/dirty';
+import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
+import { WillRender } from '../components/permissions/WillRender';
+import { WillUpdate } from '../components/permissions/WillUpdate';
+import { WillUpdateChildren } from '../components/permissions/WillUpdateChildren';
 import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject

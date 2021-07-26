@@ -1,11 +1,11 @@
-import { AddedToWorldEvent, RemovedFromWorldEvent } from '../gameobjects/events';
-
+import { AddedToWorldEvent } from '../gameobjects/events/AddedToWorldEvent';
 import { DepthFirstSearchFromParentID } from '../components/hierarchy/DepthFirstSearchFromParentID';
 import { Emit } from '../events/Emit';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { RemovedFromWorldEvent } from '../gameobjects/events/RemovedFromWorldEvent';
 import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 import { addComponent } from 'bitecs';
 

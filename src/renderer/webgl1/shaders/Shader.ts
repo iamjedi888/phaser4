@@ -1,5 +1,3 @@
-import { GetHeight, GetResolution, GetWidth } from '../../../config/size/';
-
 import { CreateAttributes } from './CreateAttributes';
 import { CreateDepthBuffer } from '../fbo/CreateDepthBuffer';
 import { CreateFramebuffer } from '../fbo/CreateFramebuffer';
@@ -12,6 +10,9 @@ import { DeleteFramebuffer } from '../fbo/DeleteFramebuffer';
 import { DeleteGLTexture } from '../textures/DeleteGLTexture';
 import { DeleteShaders } from './DeleteShaders';
 import { GLTextureBinding } from '../textures/GLTextureBinding';
+import { GetHeight } from '../../../config/size/GetHeight';
+import { GetResolution } from '../../../config/size/GetResolution';
+import { GetWidth } from '../../../config/size/GetWidth';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from './IShader';
 import { IShaderConfig } from './IShaderConfig';

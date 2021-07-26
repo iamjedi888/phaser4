@@ -1,39 +1,46 @@
 import * as WorldEvents from './events';
 
 import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
-import { ClearDirtyDisplayList, HasDirtyChild, HasDirtyDisplayList } from '../components/dirty';
-import { Emit, Once } from '../events';
-import { Extent2DComponent, Transform2DComponent, UpdateExtent, UpdateLocalTransform2DSystem, WorldMatrix2DComponent } from '../components/transform';
-import { GameObject, GameObjectCache } from '../gameobjects';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
-import { Begin } from '../renderer/webgl1/renderpass';
-import { BoundsComponent } from '../components/bounds';
-import { CalculateWorldBounds } from './CalculateWorldBounds';
+import { Begin } from '../renderer/webgl1/renderpass/Begin';
+import { BoundsComponent } from '../components/bounds/BoundsComponent';
 import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
+import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { Color } from '../components/color/Color';
+import { Emit } from '../events/Emit';
+import { Extent2DComponent } from '../components/transform/Extent2DComponent';
+import { GameObject } from '../gameobjects/GameObject';
+import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
-import { GetWorldSize } from '../config/worldsize';
+import { GetWorldSize } from '../config/worldsize/GetWorldSize';
+import { HasDirtyChild } from '../components/dirty/HasDirtyChild';
+import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
+import { Once } from '../events/Once';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
-import { RemoveChildren } from '../display';
-import { RenderStatsComponent } from '../scenes';
+import { RemoveChildren } from '../display/RemoveChildren';
+import { RenderStatsComponent } from '../scenes/RenderStatsComponent';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
-import { SceneDestroyEvent } from '../scenes/events';
+import { SceneDestroyEvent } from '../scenes/events/SceneDestroyEvent';
 import { SceneManager } from '../scenes/SceneManager';
 import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
-import { SetWorldID } from '../components/hierarchy';
+import { SetWorldID } from '../components/hierarchy/SetWorldID';
 import { SpatialHashGrid } from '../math/spatialgrid/SpatialHashGrid';
+import { Transform2DComponent } from '../components/transform/Transform2DComponent';
+import { UpdateExtent } from '../components/transform/UpdateExtent';
+import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
-import { WillUpdate } from '../components/permissions';
+import { WillUpdate } from '../components/permissions/WillUpdate';
 import { WorldList } from './WorldList';
+import { WorldMatrix2DComponent } from '../components/transform/WorldMatrix2DComponent';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {

@@ -1,5 +1,5 @@
 import { Euler } from './Euler';
-import { Matrix4 } from '../mat4';
+import { Matrix4 } from '../mat4/Matrix4';
 
 //  Assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 

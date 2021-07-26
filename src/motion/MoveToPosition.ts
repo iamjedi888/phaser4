@@ -1,5 +1,5 @@
 import { AddTimer } from '../time/AddTimer';
-import { AngleBetween } from '../math/angle';
+import { AngleBetween } from '../math/angle/AngleBetween';
 import { GetVec2Distance } from '../math/vec2/GetVec2Distance';
 import { IGameObject } from '../gameobjects/IGameObject';
 

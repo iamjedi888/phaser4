@@ -2,7 +2,7 @@ import { GameInstance } from '../GameInstance';
 import { IRenderer } from '../renderer/IRenderer';
 import { IStaticCamera } from './IStaticCamera';
 import { IStaticWorld } from '../world/IStaticWorld';
-import { Mat4Identity } from '../math/mat4';
+import { Mat4Identity } from '../math/mat4/Mat4Identity';
 import { Matrix2D } from '../math/mat2d/Matrix2D';
 import { Matrix4 } from '../math/mat4/Matrix4';
 import { Rectangle } from '../geom/rectangle/Rectangle';

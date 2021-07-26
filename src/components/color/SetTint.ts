@@ -1,5 +1,5 @@
 import { ColorComponent } from './ColorComponent';
-import { SetDirtyParents } from '../dirty';
+import { SetDirtyParents } from '../dirty/SetDirtyParents';
 
 export function SetTint (id: number, value: number): void
 {

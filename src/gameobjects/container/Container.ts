@@ -1,16 +1,22 @@
-import { AddTransform2DComponent, Origin, Position, Scale, Size, Skew, Transform2DComponent } from '../../components/transform/';
-import { GetDefaultOriginX, GetDefaultOriginY } from '../../config/defaultorigin';
-
 import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
+import { AddTransform2DComponent } from '../../components/transform/AddTransform2DComponent';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
+import { GetDefaultOriginX } from '../../config/defaultorigin/GetDefaultOriginX';
+import { GetDefaultOriginY } from '../../config/defaultorigin/GetDefaultOriginY';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
+import { Origin } from '../../components/transform/Origin';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
+import { Position } from '../../components/transform/Position';
+import { Scale } from '../../components/transform/Scale';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
+import { Size } from '../../components/transform/Size';
+import { Skew } from '../../components/transform/Skew';
+import { Transform2DComponent } from '../../components/transform/Transform2DComponent';
 
 export class Container extends GameObject implements IContainer
 {

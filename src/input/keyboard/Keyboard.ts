@@ -1,5 +1,5 @@
-import { Emit, EventEmitter } from '../../events';
-
+import { Emit } from '../../events/Emit';
+import { EventEmitter } from '../../events/EventEmitter';
 import { IKey } from './IKey';
 
 export class Keyboard extends EventEmitter

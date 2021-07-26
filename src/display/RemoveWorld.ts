@@ -1,11 +1,12 @@
-import { AddedToWorldEvent, RemovedFromWorldEvent } from '../gameobjects/events';
 import { addComponent, removeComponent } from 'bitecs';
 
+import { AddedToWorldEvent } from '../gameobjects/events/AddedToWorldEvent';
 import { Emit } from '../events/Emit';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { RemovedFromWorldEvent } from '../gameobjects/events/RemovedFromWorldEvent';
 
 export function RemoveWorld <W extends IBaseWorld, C extends IGameObject> (world: W, ...children: C[]): C[]
 {

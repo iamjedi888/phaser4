@@ -1,6 +1,6 @@
 import { Frame } from '../../textures/Frame';
 import { ISprite } from './ISprite';
-import { Texture } from '../../textures';
+import { Texture } from '../../textures/Texture';
 
 export function SetFrame <T extends ISprite> (texture: Texture, key?: string | number | Frame, ...children: T[]): T[]
 {

@@ -1,5 +1,5 @@
 import { BatchTexturedQuad } from './BatchTexturedQuad';
-import { Clamp } from '../../../math';
+import { Clamp } from '../../../math/Clamp';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IFrame } from '../../../textures/IFrame';
 import { IRenderPass } from '../renderpass/IRenderPass';

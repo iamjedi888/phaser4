@@ -1,16 +1,20 @@
-import { AddQuadVertex, AddVertex, QuadVertexComponent } from '../../components/vertices';
-import { ClearDirtyChildCache, HasDirtyChildCache, SetDirtyParents } from '../../components/dirty';
-import { GetHeight, GetResolution, GetWidth } from '../../config/size';
-import { SetWillCacheChildren, WillCacheChildren } from '../../components/permissions';
-
+import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
-import { Flush } from '../../renderer/webgl1/renderpass';
+import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
+import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
 import { GameObjectWorld } from '../../GameObjectWorld';
+import { GetHeight } from '../../config/size/GetHeight';
+import { GetResolution } from '../../config/size/GetResolution';
+import { GetWidth } from '../../config/size/GetWidth';
+import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
+import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
+import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { Texture } from '../../textures/Texture';
+import { WillCacheChildren } from '../../components/permissions/WillCacheChildren';
 import { addComponent } from 'bitecs';
 
 //  The RenderLayer works like a normal Layer, except it automatically caches

@@ -1,4 +1,4 @@
-import { GetChildrenFromParentID } from '../components/hierarchy';
+import { GetChildrenFromParentID } from '../components/hierarchy/GetChildrenFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function GetLastChild <P extends IGameObject> (parent: P, property?: string | symbol, value?: never): IGameObject | undefined

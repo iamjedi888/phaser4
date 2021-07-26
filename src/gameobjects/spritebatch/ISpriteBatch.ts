@@ -1,6 +1,6 @@
 import { IGameObject } from '../IGameObject';
 import { SpriteBatchAddConfig } from './SpriteBatchAddConfig';
-import { Texture } from '../../textures';
+import { Texture } from '../../textures/Texture';
 
 export interface ISpriteBatch extends IGameObject
 {

@@ -1,4 +1,4 @@
-import { Game } from '..';
+import { Game } from '../Game';
 import { IEventInstance } from '../events/IEventInstance';
 
 export interface IScene

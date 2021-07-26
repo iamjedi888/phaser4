@@ -1,4 +1,4 @@
-import { GetChildrenFromParentID } from '../components/hierarchy';
+import { GetChildrenFromParentID } from '../components/hierarchy/GetChildrenFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 /**

@@ -1,4 +1,4 @@
-import { GameObjectTree } from '../../gameobjects';
+import { GameObjectTree } from '../../gameobjects/GameObjectTree';
 
 //  Returns ALL children IDs based on the given Parent, to any depth
 

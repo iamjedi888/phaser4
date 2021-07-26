@@ -1,10 +1,10 @@
-import { DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET } from '../../../colormatrix/consts';
+import { DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET } from '../../../colormatrix/const';
 
 import { BlendModeStack } from './BlendModeStack';
 import { ColorMatrixStack } from './ColorMatrixStack';
 import { FramebufferStack } from './FramebufferStack';
 import { GetBatchSize } from '../../../config/batchsize/GetBatchSize';
-import { GetMaxTextures } from '../../../config/maxtextures';
+import { GetMaxTextures } from '../../../config/maxtextures/GetMaxTextures';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
 import { IShader } from '../shaders/IShader';
@@ -13,12 +13,12 @@ import { IWebGLRenderer } from '../IWebGLRenderer';
 import { IndexedVertexBuffer } from '../buffers/IndexedVertexBuffer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { Matrix4 } from '../../../math/mat4/Matrix4';
-import { MultiTextureQuadShader } from '../shaders';
+import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
 import { QuadShader } from '../shaders/QuadShader';
 import { ShaderStack } from './ShaderStack';
-import { StaticCamera } from '../../../camera';
+import { StaticCamera } from '../../../camera/StaticCamera';
 import { TextureStack } from './TextureStack';
-import { VertexBuffer } from '../buffers';
+import { VertexBuffer } from '../buffers/VertexBuffer';
 import { VertexBufferStack } from './VertexBufferStack';
 import { ViewportStack } from './ViewportStack';
 

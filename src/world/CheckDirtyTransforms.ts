@@ -1,4 +1,4 @@
-import { GetWorldID } from '../components/hierarchy';
+import { GetWorldID } from '../components/hierarchy/GetWorldID';
 
 export function CheckDirtyTransforms (worldID: number, list: number[]): boolean
 {

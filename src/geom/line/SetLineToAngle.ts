@@ -9,7 +9,7 @@ import { ILine } from './ILine';
 /**
  * Set a line to a given position, angle and length.
  */
-export function LineSetToAngle (line: ILine, x: number, y: number, angle: number, length: number): ILine
+export function SetLineToAngle (line: ILine, x: number, y: number, angle: number, length: number): ILine
 {
     line.x1 = x;
     line.y1 = y;

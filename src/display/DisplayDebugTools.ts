@@ -1,15 +1,15 @@
-import { Container, GameObjectTree, Sprite } from '../gameobjects';
-
 import { AddChild } from './AddChild';
 import { AddChildAt } from './AddChildAt';
 import { AddChildren } from './AddChildren';
 import { BringChildToTop } from './BringChildToTop';
 import { ConsoleTreeChildren } from './ConsoleTreeChildren';
+import { Container } from '../gameobjects/container/Container';
 import { CountMatchingChildren } from './CountMatchingChildren';
 import { DepthFirstSearch } from './DepthFirstSearch';
 import { DepthFirstSearchRecursive } from './DepthFirstSearchRecursive';
 import { DestroyChildren } from './DestroyChildren';
 import { FindChildrenByName } from './FindChildrenByName';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GetAllChildren } from './GetAllChildren';
 import { GetChildAt } from './GetChildAt';
 import { GetChildIndex } from './GetChildIndex';
@@ -19,7 +19,7 @@ import { GetFirstChild } from './GetFirstChild';
 import { GetFirstChildByName } from './GetFirstChildByName';
 import { GetFurthestChild } from './GetFurthestChild';
 import { GetLastChild } from './GetLastChild';
-import { GetParentID } from '../components/hierarchy';
+import { GetParentID } from '../components/hierarchy/GetParentID';
 import { GetParents } from './GetParents';
 import { GetRandomChild } from './GetRandomChild';
 import { IBaseWorld } from '../world/IBaseWorld';
@@ -54,6 +54,7 @@ import { SetValue } from './SetValue';
 import { SetVisible } from './SetVisible';
 import { SetWorld } from './SetWorld';
 import { ShuffleChildren } from './ShuffleChildren';
+import { Sprite } from '../gameobjects/sprite/Sprite';
 import { SwapChildren } from './SwapChildren';
 import { TextureManagerInstance } from '../textures/TextureManagerInstance';
 

@@ -1,4 +1,4 @@
-import { Emit } from '../../events';
+import { Emit } from '../../events/Emit';
 import { IEventInstance } from '../../events/IEventInstance';
 import { IKey } from './IKey';
 

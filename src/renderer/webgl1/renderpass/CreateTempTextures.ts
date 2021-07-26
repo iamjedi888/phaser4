@@ -1,5 +1,5 @@
-import { GetMaxTextures, SetMaxTextures } from '../../../config/maxtextures/';
-
+import { GetMaxTextures } from '../../../config/maxtextures/GetMaxTextures';
+import { SetMaxTextures } from '../../../config/maxtextures/SetMaxTextures';
 import { gl } from '../GL';
 
 //  As per the WebGL spec, the browser should always support at least 8 texture units

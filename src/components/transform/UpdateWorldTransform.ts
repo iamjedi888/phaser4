@@ -1,8 +1,8 @@
-import { ClearDirtyTransform } from '../dirty';
+import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 import { CopyLocalToWorld } from './CopyLocalToWorld';
 import { CopyWorldToWorld } from './CopyWorldToWorld';
 import { GameObjectWorld } from '../../GameObjectWorld';
-import { GetParentID } from '../hierarchy';
+import { GetParentID } from '../hierarchy/GetParentID';
 import { MultiplyLocalWithWorld } from './MultiplyLocalWithWorld';
 import { Transform2DComponent } from './Transform2DComponent';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';

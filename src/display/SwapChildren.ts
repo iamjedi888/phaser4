@@ -1,8 +1,9 @@
-import { GetParentID, GetSiblingIDs, UpdateIndexes } from '../components/hierarchy';
-
 import { GetChildIndex } from './GetChildIndex';
+import { GetParentID } from '../components/hierarchy/GetParentID';
+import { GetSiblingIDs } from '../components/hierarchy/GetSiblingIDs';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty';
+import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
+import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
 
 export function SwapChildren <C extends IGameObject, T extends IGameObject> (child1: C, child2: T): void
 {

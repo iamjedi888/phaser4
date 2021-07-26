@@ -1,6 +1,6 @@
-import { Circle, GetCirclePointsBetween } from '../../../geom/circle';
-
 import { BatchTriangle } from './BatchTriangle';
+import { Circle } from '../../../geom/circle/Circle';
+import { GetCirclePointsBetween } from '../../../geom/circle/GetCirclePointsBetween';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { Triangulate } from '../../../geom/PolyPartition';

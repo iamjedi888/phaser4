@@ -3,7 +3,7 @@ import { AnimationFrame } from './AnimationFrame';
 import { GetFramesInRange } from '../textures/GetFramesInRange';
 import { GetTexture } from '../textures/GetTexture';
 import { IAnimationFromAtlas } from './IAnimationFromAtlasConfig';
-import { Texture } from '../textures';
+import { Texture } from '../textures/Texture';
 
 export function CreateAnimationFromAtlas (config: IAnimationFromAtlas): Animation
 {

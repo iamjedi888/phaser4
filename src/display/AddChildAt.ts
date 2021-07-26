@@ -1,12 +1,14 @@
-import { GetWorldFromParentID, SetIndex, SetParentID, UpdateIndexes } from '../components/hierarchy';
-
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
+import { GetWorldFromParentID } from '../components/hierarchy/GetWorldFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { InvalidateLocalMatrix2DComponent } from '../components/transform';
+import { InvalidateLocalMatrix2DComponent } from '../components/transform/InvalidateLocalMatrix2DComponent';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
-import { SetDirtyParents } from '../components/dirty';
+import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
+import { SetIndex } from '../components/hierarchy/SetIndex';
+import { SetParentID } from '../components/hierarchy/SetParentID';
 import { SetWorld } from './SetWorld';
+import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
 
 export function AddChildAt <P extends IGameObject, C extends IGameObject> (parent: P, child: C, index: number = -1): C
 {

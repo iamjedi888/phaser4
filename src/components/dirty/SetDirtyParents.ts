@@ -1,8 +1,8 @@
-import { GetParents, GetWorldID } from '../hierarchy';
-
+import { GetParents } from '../hierarchy/GetParents';
+import { GetWorldID } from '../hierarchy/GetWorldID';
 import { SetDirtyChildCache } from './SetDirtyChildCache';
 import { SetDirtyDisplayList } from './SetDirtyDisplayList';
-import { WillCacheChildren } from '../permissions';
+import { WillCacheChildren } from '../permissions/WillCacheChildren';
 
 export function SetDirtyParents (childID: number): void
 {

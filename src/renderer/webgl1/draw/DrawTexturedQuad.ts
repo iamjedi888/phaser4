@@ -1,8 +1,8 @@
 import { BatchSingleQuad } from './BatchSingleQuad';
-import { Flush } from '../renderpass';
+import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
-import { Texture } from '../../../textures';
+import { Texture } from '../../../textures/Texture';
 
 export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, shader?: IShader): void
 {

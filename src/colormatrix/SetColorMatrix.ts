@@ -1,4 +1,4 @@
-import { ColorComponent } from '../components/color';
+import { ColorComponent } from '../components/color/ColorComponent';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { hasComponent } from 'bitecs';
 

@@ -1,7 +1,7 @@
 import { Changed, defineQuery, defineSystem } from 'bitecs';
 
 import { ColorComponent } from './ColorComponent';
-import { QuadVertexComponent } from '../vertices';
+import { QuadVertexComponent } from '../vertices/QuadVertexComponent';
 import { SetQuadColor } from '../vertices/SetQuadColor';
 
 const changedColorQuery = defineQuery([ Changed(ColorComponent), QuadVertexComponent ]);

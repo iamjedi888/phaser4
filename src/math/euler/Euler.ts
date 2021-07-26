@@ -1,4 +1,4 @@
-import { Vec3Callback } from '../vec3';
+import { Vec3Callback } from '../vec3/Vec3Callback';
 import { Vec3CallbackType } from '../vec3/Vec3Callback';
 
 export class Euler extends Vec3Callback

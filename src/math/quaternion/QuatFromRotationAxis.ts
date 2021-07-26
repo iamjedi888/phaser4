@@ -1,6 +1,6 @@
-import { Vec3, Vec3Normalize } from '../vec3';
-
 import { Quaternion } from './Quaternion';
+import { Vec3 } from '../vec3/Vec3';
+import { Vec3Normalize } from '../vec3/Vec3Normalize';
 
 export function QuatFromRotationAxis (axis: Vec3, angle: number, out: Quaternion = new Quaternion()): Quaternion
 {

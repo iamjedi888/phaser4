@@ -1,5 +1,5 @@
-import { Emit, EventEmitter } from '../../events';
-
+import { Emit } from '../../events/Emit';
+import { EventEmitter } from '../../events/EventEmitter';
 import { GameInstance } from '../../GameInstance';
 import { IGameObject } from '../../gameobjects/IGameObject';
 import { Mat2dAppend } from '../../math/mat2d/Mat2dAppend';

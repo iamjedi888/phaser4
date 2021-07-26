@@ -3,8 +3,8 @@ import { GetChildIndex } from './GetChildIndex';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { MoveChildTo } from './MoveChildTo';
 import { RemoveChild } from './RemoveChild';
-import { SetDirtyWorldDisplayList } from '../components/dirty';
-import { UpdateChildIndexes } from '../components/hierarchy';
+import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
+import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
 
 //  Replaces the `target` child with the `source` child.
 //  Both children are removed from their parents.

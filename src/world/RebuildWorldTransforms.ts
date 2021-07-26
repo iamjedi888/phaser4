@@ -1,11 +1,12 @@
-import { Transform2DComponent, UpdateWorldTransform } from '../components/transform';
-import { WillRender, WillRenderChildren } from '../components/permissions';
-
-import { GameObjectTree } from '../gameobjects';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
-import { GetNumChildren } from '../components/hierarchy';
-import { HasDirtyTransform } from '../components/dirty';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
+import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { IBaseWorld } from './IBaseWorld';
+import { Transform2DComponent } from '../components/transform/Transform2DComponent';
+import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
+import { WillRender } from '../components/permissions/WillRender';
+import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
 import { WillTransformChildren } from '../components/permissions/WillTransformChildren';
 import { hasComponent } from 'bitecs';
 

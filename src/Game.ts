@@ -1,16 +1,17 @@
-import { AddToDOM, DOMContentLoaded } from './dom';
-import { Emit, EventEmitter } from './events';
-
+import { AddToDOM } from './dom/AddToDOM';
+import { DOMContentLoaded } from './dom/DOMContentLoaded';
+import { Emit } from './events/Emit';
+import { EventEmitter } from './events/EventEmitter';
 import { GameInstance } from './GameInstance';
 import { GameObjectWorld } from './GameObjectWorld';
-import { GetBanner } from './config/banner';
-import { GetGlobalVar } from './config/globalvar';
-import { GetParent } from './config/parent';
-import { GetRenderStatsAsObject } from './scenes';
-import { GetRenderer } from './config/renderer';
+import { GetBanner } from './config/banner/GetBanner';
+import { GetGlobalVar } from './config/globalvar/GetGlobalVar';
+import { GetParent } from './config/parent/GetParent';
+import { GetRenderStatsAsObject } from './scenes/GetRenderStatsAsObject';
+import { GetRenderer } from './config/renderer/GetRenderer';
 import { IRenderStats } from './scenes/IRenderStats';
 import { IRenderer } from './renderer/IRenderer';
-import { PackQuadColorsSystem } from './components/color';
+import { PackQuadColorsSystem } from './components/color/PackQuadColorsSystem';
 import { SceneManager } from './scenes/SceneManager';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
 import { TextureManager } from './textures/TextureManager';

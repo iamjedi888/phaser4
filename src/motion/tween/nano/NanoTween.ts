@@ -1,11 +1,11 @@
-import { Off, On } from '../../../events';
-
 import { GameInstance } from '../../../GameInstance';
 import { IEventEmitter } from '../../../events/IEventEmitter';
 import { IEventInstance } from '../../../events/IEventInstance';
 import { Linear } from '../../../math/easing/Linear';
+import { Off } from '../../../events/Off';
+import { On } from '../../../events/On';
 import { TweenProperty } from '../TweenProperty';
-import { UpdateEvent } from '../../../gameobjects/events';
+import { UpdateEvent } from '../../../gameobjects/events/UpdateEvent';
 
 /*
     Done

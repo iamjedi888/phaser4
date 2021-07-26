@@ -1,4 +1,4 @@
-import { AnimationFrame } from '../../animation';
+import { AnimationFrame } from '../../animation/AnimationFrame';
 import { CreateAnimData } from '../../animation/CreateAnimData';
 import { Frame } from '../../textures/Frame';
 import { IAnimation } from '../../animation/IAnimation';

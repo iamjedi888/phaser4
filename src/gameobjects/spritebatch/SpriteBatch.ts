@@ -2,7 +2,7 @@ import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexture
 import { Clamp } from '../../math/Clamp';
 import { DIRTY_CONST } from '../DIRTY_CONST';
 import { DeleteFramebuffer } from '../../renderer/webgl1/fbo/DeleteFramebuffer';
-import { Frame } from '../../textures';
+import { Frame } from '../../textures/Frame';
 import { GetVerticesFromValues } from '../../components/transform/GetVerticesFromValues';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISpriteBatch } from './ISpriteBatch';
