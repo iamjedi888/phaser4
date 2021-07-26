@@ -9,6 +9,7 @@ import { GetGlobalVar } from './config/globalvar/GetGlobalVar';
 import { GetParent } from './config/parent/GetParent';
 import { GetRenderStatsAsObject } from './scenes/GetRenderStatsAsObject';
 import { GetRenderer } from './config/renderer/GetRenderer';
+import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
 import { IRenderStats } from './scenes/IRenderStats';
 import { IRenderer } from './renderer/IRenderer';
 import { PackQuadColorsSystem } from './components/color/PackQuadColorsSystem';
@@ -99,7 +100,7 @@ export class Game extends EventEmitter
 
         Emit(this, 'boot');
 
-        this.step(now);
+        requestAnimationFrame(now => this.step(now));
     }
 
     pause (): void
@@ -114,12 +115,22 @@ export class Game extends EventEmitter
         this.lastTick = performance.now();
     }
 
+    update (delta: number, time: number): void
+    {
+    }
+
+    render (renderPass: IRenderPass, delta: number, time: number): void
+    {
+    }
+
     step (time: number): void
     {
         const renderer = this.renderer;
         const sceneManager = this.sceneManager;
 
-        this.framems = time - this.lastTick;
+        const framems = time - this.lastTick;
+
+        this.framems = framems;
 
         if (!this.isPaused)
         {
@@ -127,7 +138,8 @@ export class Game extends EventEmitter
             {
                 sceneManager.update(this.delta, time, this.frame);
 
-                Emit(this, 'update', this.framems, time);
+                this.update(framems, time);
+                // Emit(this, 'update', framems, time);
             }
 
             if (this.willRender)
@@ -140,7 +152,9 @@ export class Game extends EventEmitter
 
                 PackQuadColorsSystem(GameObjectWorld);
 
-                Emit(this, 'render', renderer.renderPass, this.framems, time);
+                this.render(renderer.renderPass, framems, time);
+
+                // Emit(this, 'render', renderer.renderPass, framems, time);
 
                 renderer.renderEnd();
 
