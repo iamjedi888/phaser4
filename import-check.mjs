@@ -45,7 +45,7 @@ files.forEach(file => {
 
     lines.forEach(line => {
 
-        if (line.startsWith('import') && !line.includes('bitecs'))
+        if (line.startsWith('import') && !line.includes('bitecs') && !line.includes('/const'))
         {
             const packages = line.substring(line.indexOf('{') + 1, line.indexOf('}')).trim();
             const files = line.substring(line.indexOf("'") + 1, line.lastIndexOf("'")).trim();
@@ -54,13 +54,13 @@ files.forEach(file => {
             {
                 if (!logFile)
                 {
-                    output.push(file);
+                    output.push(`\n${file}`);
                     logFile = true;
                 }
 
-                output.push(`Multi-import: ${line}`);
+                output.push(`  Multi-import: ${line}`);
             }
-            else if (files.includes(packages))
+            else if (packages === 'gl' || files.includes(packages))
             {
                 //  Yay!
                 return;
@@ -69,11 +69,11 @@ files.forEach(file => {
             {
                 if (!logFile)
                 {
-                    output.push(file);
+                    output.push(`\n${file}`);
                     logFile = true;
                 }
 
-                output.push(`ERROR: ${line}`);
+                output.push(`  ERROR: ${line}`);
             }
         }
 
