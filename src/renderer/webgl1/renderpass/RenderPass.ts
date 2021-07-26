@@ -89,8 +89,8 @@ export class RenderPass implements IRenderPass
 
         //  Default QuadShader (for FBO drawing)
 
-        this.quadShader = new QuadShader();
-        this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
+        // this.quadShader = new QuadShader();
+        // this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
         this.quadCamera = new StaticCamera();
 
         //  Default settings
