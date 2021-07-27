@@ -1,5 +1,3 @@
-import { Types, defineComponent } from 'bitecs';
-
 import { NOOP } from '../../utils/NOOP';
 
 //  4x4 Matrix in column-major format
