@@ -23,7 +23,7 @@ export class Sprite extends Container implements ISprite
     frame: Frame;
     hasTexture: boolean = false;
 
-    constructor (x: number, y: number, texture: string | Texture | Frame, frame?: string | number | Frame)
+    constructor (x: number, y: number, texture: string | Texture | Frame = '__BLANK', frame?: string | number | Frame)
     {
         super(x, y);
 
