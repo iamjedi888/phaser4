@@ -16,6 +16,7 @@ import { Skew } from './Skew';
 import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateExtent } from './UpdateExtent';
 import { UpdateLocalTransform2DSystem } from './UpdateLocalTransform2DSystem';
+import { UpdateTransform } from './UpdateTransform';
 import { UpdateVertices } from './UpdateVertices';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
 import { UpdateWorldTransform2DSystem } from './UpdateWorldTransform2DSystem';
@@ -40,6 +41,7 @@ export {
     Transform2DComponent,
     UpdateExtent,
     UpdateLocalTransform2DSystem,
+    UpdateTransform,
     UpdateVertices,
     UpdateWorldTransform,
     UpdateWorldTransform2DSystem,
