@@ -1,3 +1,4 @@
+import { AddTimeComponent } from './components/timer/AddTimeComponent';
 import { AddToDOM } from './dom/AddToDOM';
 import { DOMContentLoaded } from './dom/DOMContentLoaded';
 import { Emit } from './events/Emit';
@@ -12,10 +13,12 @@ import { GetRenderer } from './config/renderer/GetRenderer';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
 import { IRenderStats } from './scenes/IRenderStats';
 import { IRenderer } from './renderer/IRenderer';
-import { PackQuadColorsSystem } from './components/color/PackQuadColorsSystem';
 import { SceneManager } from './scenes/SceneManager';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
 import { TextureManager } from './textures/TextureManager';
+import { TimeComponent } from './components/timer/TimeComponent';
+import { UpdateDelta } from './components/timer/UpdateDelta';
+import { UpdateTime } from './components/timer/UpdateTime';
 import { addEntity } from 'bitecs';
 
 export class Game extends EventEmitter
@@ -24,7 +27,6 @@ export class Game extends EventEmitter
 
     readonly VERSION: string = '4.0.0-beta1';
 
-    //  TODO - Consider moving all of these to RenderStats Component
     isBooted: boolean = false;
     isPaused: boolean = false;
 
@@ -32,16 +34,6 @@ export class Game extends EventEmitter
     //  TODO - Allow update and render to be called directly
     willUpdate: boolean = true;
     willRender: boolean = true;
-
-    lastTick: number = 0;
-    elapsed: number = 0;
-    delta: number = 0;
-    fps: number = 0;
-    frame: number = 0;
-    framems: number = 0;
-
-    private frames: number = 0;
-    private prevFrame: number = 0;
 
     renderStats: IRenderStats;
 
@@ -91,10 +83,7 @@ export class Game extends EventEmitter
 
         GetBanner();
 
-        const now = performance.now();
-
-        this.lastTick = now;
-        this.prevFrame = now;
+        AddTimeComponent(this.id);
 
         this.renderStats = GetRenderStatsAsObject();
 
@@ -112,49 +101,51 @@ export class Game extends EventEmitter
     {
         this.isPaused = false;
 
-        this.lastTick = performance.now();
+        TimeComponent.lastTick[this.id] = performance.now();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update (delta: number, time: number): void
     {
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     render (renderPass: IRenderPass, delta: number, time: number): void
     {
     }
 
     step (time: number): void
     {
+        const id = this.id;
         const renderer = this.renderer;
         const sceneManager = this.sceneManager;
 
-        const framems = time - this.lastTick;
-
-        this.framems = framems;
+        UpdateTime(id, time);
 
         if (!this.isPaused)
         {
+            const delta = TimeComponent.delta[id];
+
             if (this.willUpdate)
             {
-                sceneManager.update(this.delta, time, this.frame);
+                sceneManager.update();
 
-                this.update(framems, time);
-                // Emit(this, 'update', framems, time);
+                this.update(delta, time);
+
+                Emit(this, 'update', delta, time);
             }
 
             if (this.willRender)
             {
                 renderer.renderBegin(sceneManager.flush);
 
-                sceneManager.preRender(this.frame);
+                sceneManager.preRender();
 
                 renderer.renderScenes(sceneManager.scenes);
 
-                PackQuadColorsSystem(GameObjectWorld);
+                this.render(renderer.renderPass, delta, time);
 
-                this.render(renderer.renderPass, framems, time);
-
-                // Emit(this, 'render', renderer.renderPass, framems, time);
+                Emit(this, 'render', renderer.renderPass, delta, time);
 
                 renderer.renderEnd();
 
@@ -162,37 +153,14 @@ export class Game extends EventEmitter
             }
         }
 
-        //  Note that privacy.resistFingerprinting can round this value to 100ms or more!
-        const now = performance.now();
-
-        //  How long it took to process this frame
-        const delta = now - time;
-
-        this.frames++;
-
-        if (now >= this.prevFrame + 1000)
-        {
-            this.fps = (this.frames * 1000) / (now - this.prevFrame);
-            this.prevFrame = now;
-            this.frames = 0;
-        }
-
-        this.lastTick = now;
-        this.elapsed += delta;
-        this.delta = delta;
+        UpdateDelta(id, time);
 
         GetRenderStatsAsObject(this.renderStats);
 
-        this.renderStats.fps = this.fps;
-        this.renderStats.delta = delta;
+        this.renderStats.fps = TimeComponent.fps[id];
+        this.renderStats.delta = TimeComponent.delta[id];
 
         Emit(this, 'step');
-
-        //  The frame always advances by 1 each step (even when paused)
-        this.frame++;
-
-        GameInstance.setFrame(this.frame);
-        GameInstance.setElapsed(this.elapsed);
 
         requestAnimationFrame(now => this.step(now));
     }

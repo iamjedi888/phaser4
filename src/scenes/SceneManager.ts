@@ -6,10 +6,10 @@ import { GetScenes } from '../config/scenes/GetScenes';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IScene } from './IScene';
 import { Once } from '../events/Once';
-import { PackQuadColorsSystem } from '../components/color/PackQuadColorsSystem';
 import { RenderStatsComponent } from './RenderStatsComponent';
 import { ResetRenderStats } from './ResetRenderStats';
 import { SceneManagerInstance } from './SceneManagerInstance';
+import { TimeComponent } from '../components/timer/TimeComponent';
 import { WorldList } from '../world/WorldList';
 import { addEntity } from 'bitecs';
 
@@ -48,8 +48,14 @@ export class SceneManager
         }
     }
 
-    update (delta: number, time: number, gameFrame: number): void
+    update (): void
     {
+        const id = this.game.id;
+
+        const delta = TimeComponent.delta[id];
+        const time = TimeComponent.lastTick[id];
+        const gameFrame = TimeComponent.frame[id];
+
         ResetRenderStats(this.id, gameFrame, this.scenes.size);
 
         for (const scene of this.scenes.values())
@@ -75,8 +81,12 @@ export class SceneManager
 
     //  Run through all Scenes and Worlds within them, telling them to prepare to render
     //  The renderer itself tells them to actually render
-    preRender (gameFrame: number): void
+    preRender (): void
     {
+        const id = this.game.id;
+
+        const gameFrame = TimeComponent.frame[id];
+
         for (const scene of this.scenes.values())
         {
             const worlds = WorldList.get(scene);
