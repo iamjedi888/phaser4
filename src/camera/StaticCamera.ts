@@ -1,5 +1,3 @@
-import { GameInstance } from '../GameInstance';
-import { IRenderer } from '../renderer/IRenderer';
 import { IStaticCamera } from './IStaticCamera';
 import { IStaticWorld } from '../world/IStaticWorld';
 import { Mat4Identity } from '../math/mat4/Mat4Identity';
@@ -11,7 +9,6 @@ export class StaticCamera implements IStaticCamera
 {
     world: IStaticWorld;
     matrix: Matrix4;
-    renderer: IRenderer;
     type: string;
 
     width: number;
@@ -21,13 +18,9 @@ export class StaticCamera implements IStaticCamera
     dirtyRender: boolean;
     worldTransform: Matrix2D;
 
-    constructor ()
+    constructor (width: number, height: number)
     {
         this.dirtyRender = true;
-
-        const game = GameInstance.get();
-
-        this.renderer = game.renderer;
 
         this.matrix = Mat4Identity();
 
@@ -35,30 +28,21 @@ export class StaticCamera implements IStaticCamera
 
         this.worldTransform = new Matrix2D();
 
-        this.reset();
+        this.reset(width, height);
     }
 
-    reset (): void
+    reset (width: number, height: number): void
     {
-        const renderer = this.renderer;
+        this.width = width;
+        this.height = height;
 
-        if (renderer)
-        {
-            const width = renderer.width;
-            const height = renderer.height;
-
-            this.width = width;
-            this.height = height;
-        }
-
-        this.bounds.set(0, 0, this.width, this.height);
+        this.bounds.set(0, 0, width, height);
     }
 
     destroy (): void
     {
         this.world = null;
         this.worldTransform = null;
-        this.renderer = null;
         this.matrix = null;
         this.bounds = null;
     }

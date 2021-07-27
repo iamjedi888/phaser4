@@ -137,17 +137,15 @@ export class Game extends EventEmitter
 
             if (this.willRender)
             {
-                renderer.renderBegin(sceneManager.flush);
+                renderer.begin(sceneManager.flush);
 
-                sceneManager.preRender();
-
-                renderer.renderScenes(sceneManager.scenes);
+                sceneManager.render(renderer.renderPass);
 
                 this.render(renderer.renderPass, delta, time);
 
                 Emit(this, 'render', renderer.renderPass, delta, time);
 
-                renderer.renderEnd();
+                renderer.end();
 
                 sceneManager.flush = false;
             }

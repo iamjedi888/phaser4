@@ -8,6 +8,7 @@ import { GetMaxTextures } from '../../../config/maxtextures/GetMaxTextures';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
 import { IShader } from '../shaders/IShader';
+import { IStaticCamera } from '../../../camera/IStaticCamera';
 import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { IndexedVertexBuffer } from '../buffers/IndexedVertexBuffer';
@@ -45,7 +46,7 @@ export class RenderPass implements IRenderPass
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
     quadBuffer: IVertexBuffer;
-    quadCamera: IBaseCamera;
+    quadCamera: IStaticCamera;
 
     //  Current 2D Camera
     current2DCamera: IBaseCamera;
@@ -91,7 +92,7 @@ export class RenderPass implements IRenderPass
 
         // this.quadShader = new QuadShader();
         // this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
-        this.quadCamera = new StaticCamera();
+        this.quadCamera = new StaticCamera(this.renderer.width, this.renderer.height);
 
         //  Default settings
 
@@ -108,7 +109,7 @@ export class RenderPass implements IRenderPass
         //  TODO - -1 to 1?
         Mat4Ortho(0, width, height, 0, -1000, 1000, this.projectionMatrix);
 
-        this.quadCamera.reset();
+        this.quadCamera.reset(width, height);
 
         this.viewport.setDefault(0, 0, width, height);
     }

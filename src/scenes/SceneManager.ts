@@ -4,6 +4,7 @@ import { GameInstance } from '../GameInstance';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes/GetScenes';
 import { IGameObject } from '../gameobjects/IGameObject';
+import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from './IScene';
 import { Once } from '../events/Once';
 import { RenderStatsComponent } from './RenderStatsComponent';
@@ -80,8 +81,7 @@ export class SceneManager
     }
 
     //  Run through all Scenes and Worlds within them, telling them to prepare to render
-    //  The renderer itself tells them to actually render
-    preRender (): void
+    render (renderPass: IRenderPass): void
     {
         const id = this.game.id;
 
@@ -95,12 +95,39 @@ export class SceneManager
             {
                 if (world.preRender(gameFrame))
                 {
+                    if (world.runRender)
+                    {
+                        world.renderGL(renderPass);
+                    }
+
+                    world.postRenderGL(renderPass);
+
                     //  This property is reset in Game.step
                     this.flush = true;
                 }
             }
         }
     }
+
+    /*
+    renderScenes (renderPass: IRenderPass): void
+    {
+        for (const scene of this.scenes.values())
+        {
+            const worlds = WorldList.get(scene);
+
+            for (const world of worlds)
+            {
+                if (world.runRender)
+                {
+                    world.renderGL(renderPass);
+                }
+
+                world.postRenderGL(renderPass);
+            }
+        }
+    }
+    */
 
     //  TODO - This isn't used internally - is used by debug panel - move out?
     getRenderList (): IGameObject[]

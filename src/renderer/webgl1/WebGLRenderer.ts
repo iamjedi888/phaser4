@@ -9,12 +9,10 @@ import { GetWebGLContext } from '../../config/webglcontext/GetWebGLContext';
 import { GetWidth } from '../../config/size/GetWidth';
 import { ICompressedTextures } from './textures/ICompressedTextures';
 import { IRenderPass } from './renderpass/IRenderPass';
-import { IScene } from '../../scenes/IScene';
 import { ProcessBindingQueue } from './renderpass/ProcessBindingQueue';
 import { RenderPass } from './renderpass/RenderPass';
 import { Start } from './renderpass/Start';
 import { WebGLRendererInstance } from './WebGLRendererInstance';
-import { WorldList } from '../../world/WorldList';
 
 export class WebGLRenderer
 {
@@ -129,7 +127,7 @@ export class WebGLRenderer
         // this.renderPass.reset();
     }
 
-    renderBegin (willRedraw: boolean): void
+    begin (willRedraw: boolean): IRenderPass
     {
         if (this.contextLost)
         {
@@ -158,30 +156,10 @@ export class WebGLRenderer
             gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
-        Start(this.renderPass);
+        return Start(this.renderPass);
     }
 
-    renderScenes (scenes: Map<string, IScene>): void
-    {
-        const renderPass = this.renderPass;
-
-        for (const scene of scenes.values())
-        {
-            const worlds = WorldList.get(scene);
-
-            for (const world of worlds)
-            {
-                if (world.runRender)
-                {
-                    world.renderGL(renderPass);
-                }
-
-                world.postRenderGL(renderPass);
-            }
-        }
-    }
-
-    renderEnd (): void
+    end (): void
     {
         End(this.renderPass);
 

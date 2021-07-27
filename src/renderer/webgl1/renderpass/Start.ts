@@ -1,6 +1,6 @@
 import { IRenderPass } from './IRenderPass';
 
-export function Start (renderPass: IRenderPass): void
+export function Start (renderPass: IRenderPass): IRenderPass
 {
     renderPass.current2DCamera = renderPass.quadCamera;
     renderPass.cameraMatrix = renderPass.quadCamera.matrix;
@@ -14,4 +14,6 @@ export function Start (renderPass: IRenderPass): void
     renderPass.vertexbuffer.bindDefault();
     renderPass.shader.bindDefault();
     renderPass.colorMatrix.bindDefault();
+
+    return renderPass;
 }
