@@ -4,7 +4,7 @@ import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
 import { RenderDataComponent } from '../../world';
 import { SetQuadPosition } from './SetQuadPosition';
-import { WorldMatrix2DComponent } from '../transform/WorldMatrix2DComponent';
+import { Transform2DComponent } from '../transform';
 
 let entities: number[];
 
@@ -14,12 +14,7 @@ const updateVertexPositionSystem = defineSystem(world =>
     {
         const id = entities[i];
 
-        const a = WorldMatrix2DComponent.a[id];
-        const b = WorldMatrix2DComponent.b[id];
-        const c = WorldMatrix2DComponent.c[id];
-        const d = WorldMatrix2DComponent.d[id];
-        const tx = WorldMatrix2DComponent.tx[id];
-        const ty = WorldMatrix2DComponent.ty[id];
+        const [ a, b, c, d, tx, ty ] = Transform2DComponent.world[id];
 
         const x = Extent2DComponent.x[id];
         const y = Extent2DComponent.y[id];

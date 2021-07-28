@@ -1,11 +1,9 @@
 import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
 import { IContainer } from '../../gameobjects/container/IContainer';
-import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
-import { WorldMatrix2DComponent } from '../transform/WorldMatrix2DComponent';
 
 export function UpdateTransform <T extends IContainer> (gameObject: T): void
 {
@@ -19,21 +17,18 @@ export function UpdateTransform <T extends IContainer> (gameObject: T): void
     const skewX = Transform2DComponent.skewX[id];
     const skewY = Transform2DComponent.skewY[id];
 
-    LocalMatrix2DComponent.a[id] = Math.cos(rotation + skewY) * scaleX;
-    LocalMatrix2DComponent.b[id] = Math.sin(rotation + skewY) * scaleX;
-    LocalMatrix2DComponent.c[id] = -Math.sin(rotation - skewX) * scaleY;
-    LocalMatrix2DComponent.d[id] = Math.cos(rotation - skewX) * scaleY;
-    LocalMatrix2DComponent.tx[id] = x;
-    LocalMatrix2DComponent.ty[id] = y;
+    const local = Transform2DComponent.local[id];
+
+    local[0] = Math.cos(rotation + skewY) * scaleX;
+    local[1] = Math.sin(rotation + skewY) * scaleX;
+    local[2] = -Math.sin(rotation - skewX) * scaleY;
+    local[3] = Math.cos(rotation - skewX) * scaleY;
+    local[4] = x;
+    local[5] = y;
 
     UpdateWorldTransform(id);
 
-    const a = WorldMatrix2DComponent.a[id];
-    const b = WorldMatrix2DComponent.b[id];
-    const c = WorldMatrix2DComponent.c[id];
-    const d = WorldMatrix2DComponent.d[id];
-    const tx = WorldMatrix2DComponent.tx[id];
-    const ty = WorldMatrix2DComponent.ty[id];
+    const [ a, b, c, d, tx, ty ] = Transform2DComponent.world[id];
 
     const ex = Extent2DComponent.x[id];
     const ey = Extent2DComponent.y[id];

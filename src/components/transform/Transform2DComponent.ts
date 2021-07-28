@@ -9,7 +9,10 @@ const Transform2D = defineComponent({
     skewX: Types.f32,
     skewY: Types.f32,
     originX: Types.f32,
-    originY: Types.f32
+    originY: Types.f32,
+    dirty: Types.ui32,
+    local: [ Types.f32, 6 ],
+    world: [ Types.f32, 6 ]
 });
 
 export const Transform2DComponent = Transform2D;

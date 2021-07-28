@@ -1,6 +1,16 @@
 import { Matrix2D } from '../../math/mat2d/Matrix2D';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
-import { Vertices } from './Vertices';
+
+export type Vertices = {
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    x3: number;
+    y3: number;
+};
 
 export function GetVertices (worldTransform: Matrix2D, transformExtent: Rectangle): Vertices
 {

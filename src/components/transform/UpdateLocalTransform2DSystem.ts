@@ -1,7 +1,6 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { GetParentID } from '../hierarchy/GetParentID';
-import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
 import { RenderDataComponent } from '../../world';
 import { SetDirtyChild } from '../dirty/SetDirtyChild';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
@@ -26,12 +25,14 @@ const updateLocalTransformSystem = defineSystem(world =>
         const skewX = Transform2DComponent.skewX[id];
         const skewY = Transform2DComponent.skewY[id];
 
-        LocalMatrix2DComponent.a[id] = Math.cos(rotation + skewY) * scaleX;
-        LocalMatrix2DComponent.b[id] = Math.sin(rotation + skewY) * scaleX;
-        LocalMatrix2DComponent.c[id] = -Math.sin(rotation - skewX) * scaleY;
-        LocalMatrix2DComponent.d[id] = Math.cos(rotation - skewX) * scaleY;
-        LocalMatrix2DComponent.tx[id] = x;
-        LocalMatrix2DComponent.ty[id] = y;
+        const local = Transform2DComponent.local[id];
+
+        local[0] = Math.cos(rotation + skewY) * scaleX;
+        local[1] = Math.sin(rotation + skewY) * scaleX;
+        local[2] = -Math.sin(rotation - skewX) * scaleY;
+        local[3] = Math.cos(rotation - skewX) * scaleY;
+        local[4] = x;
+        local[5] = y;
 
         SetDirtyTransform(id);
 
@@ -58,7 +59,7 @@ export const UpdateLocalTransform2DSystem = (id: number, world: IWorld, query: Q
 
     if (total > 0)
     {
-        SetDirtyChild(world.id);
+        SetDirtyChild(id);
 
         updateLocalTransformSystem(world);
     }
