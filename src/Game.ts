@@ -117,6 +117,8 @@ export class Game extends EventEmitter
 
             if (this.willRender)
             {
+                sceneManager.preRender();
+
                 renderer.begin(sceneManager.flush);
 
                 sceneManager.render(renderer.renderPass);
@@ -126,8 +128,6 @@ export class Game extends EventEmitter
                 Emit(this, 'render', renderer.renderPass, delta, time);
 
                 renderer.end();
-
-                sceneManager.flush = false;
             }
         }
 
