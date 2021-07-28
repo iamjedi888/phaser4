@@ -4,7 +4,6 @@ import { Changed, Query, defineComponent, defineQuery } from 'bitecs';
 
 import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
-import { BoundsComponent } from '../components/bounds/BoundsComponent';
 import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { Color } from '../components/color/Color';
@@ -26,16 +25,12 @@ import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RemoveChildren } from '../display/RemoveChildren';
-import { RenderStatsComponent } from '../scenes/RenderStatsComponent';
+import { RenderDataComponent } from './RenderDataComponent';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneDestroyEvent } from '../scenes/events/SceneDestroyEvent';
-import { SceneManager } from '../scenes/SceneManager';
-import { SceneManagerInstance } from '../scenes/SceneManagerInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWorldID } from '../components/hierarchy/SetWorldID';
-import { SpatialHashGrid } from '../math/spatialgrid/SpatialHashGrid';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { UpdateExtent } from '../components/transform/UpdateExtent';
 import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillUpdate } from '../components/permissions/WillUpdate';
@@ -44,52 +39,47 @@ import { WorldMatrix2DComponent } from '../components/transform/WorldMatrix2DCom
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
+    readonly type: string = 'BaseWorld';
+
     tag = defineComponent();
 
     scene: IScene;
 
-    sceneManager: SceneManager;
-
     camera: IBaseCamera;
 
-    forceRefresh: boolean = false;
-
     is3D: boolean = false;
-
-    runRender: boolean = false;
 
     color: Color;
 
     renderList: Uint32Array;
     listLength: number = 0;
 
-    spatialGrid: SpatialHashGrid;
-
     private totalChildren: number = 0;
 
     private totalChildrenQuery: Query;
     private dirtyLocalQuery: Query;
     private vertexPositionQuery: Query;
-    // private dirtyBoundsQuery: Query;
 
     constructor (scene: IScene)
     {
         super();
 
-        this.scene = scene;
-        this.sceneManager = SceneManagerInstance.get();
-
+        const id = this.id;
         const tag = this.tag;
 
+        this.scene = scene;
+
+        //  Will check to see if this is worth doing or not
         this.totalChildrenQuery = defineQuery([ tag ]);
-        this.dirtyLocalQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
-        this.vertexPositionQuery = defineQuery([ tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
-        // this.dirtyBoundsQuery = defineQuery([ tag, Changed(BoundsComponent) ]);
+        // this.dirtyLocalQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
+        // this.vertexPositionQuery = defineQuery([ tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
+
+        //  Considerably faster:
+        this.dirtyLocalQuery = defineQuery([ tag, Transform2DComponent ]);
+        this.vertexPositionQuery = defineQuery([ tag, WorldMatrix2DComponent, Extent2DComponent ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
-
-        const id = this.id;
 
         AddRenderDataComponent(id);
 
@@ -99,9 +89,17 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.color = new Color(id);
 
-        this.spatialGrid = new SpatialHashGrid(-1600, -1200, 1600, 1200, 400, 400);
-
         Once(scene, SceneDestroyEvent, () => this.destroy());
+    }
+
+    getNumChildren (): number
+    {
+        if (HasDirtyDisplayList(this.id))
+        {
+            this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
+        }
+
+        return this.totalChildren;
     }
 
     beforeUpdate (delta: number, time: number): void
@@ -126,122 +124,55 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, WorldEvents.WorldAfterUpdateEvent, delta, time, this);
     }
 
-    //  Here we can check if the entity SHOULD be added to the render list, or not.
-    //  Return true to add it to the render list, or return false to skip it AND all its children
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    checkWorldEntity (id: number): boolean
-    {
-        return true;
-    }
-
-    //  TODO - This isn't used internally - is used by debug panel - move out?
-    getRenderList (): IGameObject[]
-    {
-        const list = this.renderList;
-
-        const output = [];
-
-        for (let i = 0; i < this.listLength; i += 2)
-        {
-            const eid = list[i];
-            const type = list[i + 1];
-
-            if (type === 0)
-            {
-                output.push(GameObjectCache.get(eid));
-            }
-        }
-
-        return output;
-    }
-
+    //  We should update the display list and world transforms regardless of
+    //  if this World will render or not (i.e. all children are outside viewport)
     preRender (gameFrame: number): boolean
     {
         const id = this.id;
 
+        ResetWorldRenderData(id, gameFrame);
+
         ClearDirtyChild(id);
 
-        const sceneManager = this.sceneManager;
-
-        if (!this.isRenderable())
-        {
-            this.runRender = false;
-
-            sceneManager.updateWorldStats(this.totalChildren, 0, 0, 0);
-
-            return false;
-        }
-
-        //  Process all dirty 2D transforms and update their local matrix
-        //  Also if there are any dirty objects, it flags this World as being dirty
-        const dirtyLocalTotal = UpdateLocalTransform2DSystem(GameObjectWorld, this.dirtyLocalQuery);
-
-        RenderStatsComponent.numWorlds[sceneManager.id]++;
-        RenderStatsComponent.numDirtyLocalTransforms[sceneManager.id] += dirtyLocalTotal;
+        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.dirtyLocalQuery);
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
-
-        ResetWorldRenderData(id, gameFrame);
 
         let isDirty = false;
 
         if (dirtyDisplayList || HasDirtyChild(id))
         {
-            //  TODO - This should only run over the branches that are dirty, not the whole World
+            //  TODO - This should only run over the branches that are dirty, not the whole World.
+
+            //  This will update the WorldMatrix2DComponent values.
             RebuildWorldTransforms(this, id, false);
 
             isDirty = true;
         }
 
-        //  Update all vertices and bounds across this World, ready for render list checking
-        //  This will only update entities that had their WorldTransform actually changed
-        //  We cannot control the order of these entities, children may be updated before parents, etc
-
-        const updatedEntities = UpdateVertexPositionSystem(GameObjectWorld, this.vertexPositionQuery);
-
-        const dirtyWorldTotal = updatedEntities.length;
-
-        // updatedEntities.forEach(entity =>
-        // {
-        //     this.spatialGrid.insert(entity);
-        // });
-
-        // const dirtyBoundsTotal = CalculateWorldBounds(GameObjectWorld, this.dirtyBoundsQuery);
-
-        //  We now have accurate World Bounds for all children of this World, so let's build the render list
+        UpdateVertexPositionSystem(id, GameObjectWorld, this.vertexPositionQuery);
 
         if (dirtyDisplayList)
         {
             this.listLength = 0;
 
-            //  This will call AddToRenderList, which in turn will call World.checkWorldEntity
-            //  As long as this function, which the user can override, returns 'true',
-            //  the entity will be added to the render list
             RebuildWorldList(this, id, 0);
+
+            RenderDataComponent.numChildren[id] = this.getNumChildren();
+            RenderDataComponent.numRenderable[id] = this.listLength / 4;
 
             ClearDirtyDisplayList(id);
 
             isDirty = true;
-
-            this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
         }
 
-        this.runRender = (this.listLength > 0);
+        //  By this point we've got a fully rebuilt World, where all dirty Game Objects have been
+        //  refreshed and had their coordinates moved to their quad vertices.
 
-        sceneManager.updateWorldStats(this.totalChildren, this.listLength / 4, Number(dirtyDisplayList), dirtyWorldTotal);
+        //  We've also got a complete local render list, in display order, that can be processed further
+        //  before rendering (i.e. spatial tree, bounds, etc)
 
         return isDirty;
-    }
-
-    getTotalChildren (): number
-    {
-        if (HasDirtyDisplayList(this.id))
-        {
-            this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
-        }
-
-        return this.totalChildren;
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
@@ -278,36 +209,17 @@ export class BaseWorld extends GameObject implements IBaseWorld
                 entry.renderGL(renderPass);
             }
         }
-    }
 
-    postRenderGL <T extends IRenderPass> (renderPass: T): void
-    {
         PopColor(renderPass, this.color);
-
-        if (!this.runRender)
-        {
-            Begin(renderPass, this.camera);
-        }
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
     }
 
     shutdown (): void
     {
-        //  Clear the display list and reset the camera, but leave
-        //  everything in place so we can return to this World again
-        //  at a later stage
-
         RemoveChildren(this);
 
         Emit(this, WorldEvents.WorldShutdownEvent, this);
-
-        ResetWorldRenderData(this.id, 0);
-
-        if (this.camera)
-        {
-            this.camera.reset();
-        }
     }
 
     destroy (reparentChildren?: IGameObject): void
