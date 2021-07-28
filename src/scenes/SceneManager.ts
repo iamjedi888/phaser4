@@ -30,6 +30,11 @@ export class SceneManager
 
     constructor ()
     {
+        if (SceneManagerInstance.get())
+        {
+            throw new Error('Only 1 instance of SceneManager allowed');
+        }
+
         this.game = GameInstance.get();
 
         SceneManagerInstance.set(this);
