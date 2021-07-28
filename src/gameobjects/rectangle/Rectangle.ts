@@ -7,7 +7,6 @@ import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRectangle } from './IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
-import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { SetTint } from '../../components/color/SetTint';
 import { Texture } from '../../textures/Texture';
 import { WhiteTexture } from '../../textures';
@@ -59,7 +58,7 @@ export class Rectangle extends Container implements IRectangle
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
     {
-        PreRenderVertices(this);
+        // PreRenderVertices(this);
 
         // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }

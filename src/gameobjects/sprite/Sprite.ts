@@ -9,7 +9,6 @@ import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
-import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
@@ -81,7 +80,7 @@ export class Sprite extends Container implements ISprite
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
     {
-        PreRenderVertices(this);
+        // PreRenderVertices(this);
 
         // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
     }
