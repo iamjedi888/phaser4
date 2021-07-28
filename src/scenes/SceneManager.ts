@@ -86,7 +86,7 @@ export class SceneManager
     }
 
     //  Run through all Scenes and Worlds within them, telling them to prepare to render
-    render (renderPass: IRenderPass): void
+    preRender (): void
     {
         const id = this.game.id;
 
@@ -100,22 +100,13 @@ export class SceneManager
             {
                 if (world.preRender(gameFrame))
                 {
-                    if (world.runRender)
-                    {
-                        world.renderGL(renderPass);
-                    }
-
-                    world.postRenderGL(renderPass);
-
-                    //  This property is reset in Game.step
                     this.flush = true;
                 }
             }
         }
     }
 
-    /*
-    renderScenes (renderPass: IRenderPass): void
+    render (renderPass: IRenderPass): void
     {
         for (const scene of this.scenes.values())
         {
@@ -123,18 +114,15 @@ export class SceneManager
 
             for (const world of worlds)
             {
-                if (world.runRender)
-                {
-                    world.renderGL(renderPass);
-                }
-
-                world.postRenderGL(renderPass);
+                world.renderGL(renderPass);
             }
         }
+
+        this.flush = false;
     }
-    */
 
     //  TODO - This isn't used internally - is used by debug panel - move out?
+    /*
     getRenderList (): IGameObject[]
     {
         let output: IGameObject[] = [];
@@ -161,4 +149,5 @@ export class SceneManager
         RenderStatsComponent.numDirtyWorldLists[id] += numDisplayLists;
         RenderStatsComponent.numDirtyWorldTransforms[id] += numWorldTransforms;
     }
+    */
 }
