@@ -24,7 +24,7 @@ export class TextureManager
 
     private createDefaultTextures (): void
     {
-        this.add('__BLANK', new Texture(CreateCanvas(32, 32).canvas));
+        this.add('__BLANK', new Texture(CreateCanvas(2, 2).canvas));
 
         const missing = CreateCanvas(32, 32);
 

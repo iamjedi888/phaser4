@@ -3,6 +3,7 @@ import * as Parsers from './parsers';
 import * as Types from './types';
 
 import { CreateCanvas } from './CreateCanvas';
+import { CreateTextureManager } from './CreateTextureManager';
 import { Frame } from './Frame';
 import { GetFrames } from './GetFrames';
 import { GetFramesInRange } from './GetFramesInRange';
@@ -14,6 +15,7 @@ import { WhiteTexture } from './WhiteTexture';
 
 export {
     CreateCanvas,
+    CreateTextureManager,
     Frame,
     GetFrames,
     GetFramesInRange,
