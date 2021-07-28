@@ -12,13 +12,15 @@ import { StaticCamera } from '../camera/StaticCamera';
 
 export class StaticWorld extends BaseWorld implements IStaticWorld
 {
+    readonly type: string = 'StaticWorld';
+
     declare camera: IStaticCamera;
 
     constructor (scene: IScene)
     {
         super(scene);
 
-        this.camera = new StaticCamera();
+        this.camera = new StaticCamera(800, 600);
     }
 
     checkWorldEntity (id: number): boolean
