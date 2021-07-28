@@ -8,7 +8,6 @@ import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { Color } from '../components/color/Color';
 import { Emit } from '../events/Emit';
-import { Extent2DComponent } from '../components/transform/Extent2DComponent';
 import { GameObject } from '../gameobjects/GameObject';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -35,7 +34,6 @@ import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLoca
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillUpdate } from '../components/permissions/WillUpdate';
 import { WorldList } from './WorldList';
-import { WorldMatrix2DComponent } from '../components/transform/WorldMatrix2DComponent';
 
 export class BaseWorld extends GameObject implements IBaseWorld
 {
@@ -57,8 +55,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     private totalChildren: number = 0;
 
     private totalChildrenQuery: Query;
-    private dirtyLocalQuery: Query;
-    private vertexPositionQuery: Query;
+    private changedTransformQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -69,14 +66,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.scene = scene;
 
-        //  Will check to see if this is worth doing or not
         this.totalChildrenQuery = defineQuery([ tag ]);
-        // this.dirtyLocalQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
-        // this.vertexPositionQuery = defineQuery([ tag, Changed(WorldMatrix2DComponent), Changed(Extent2DComponent) ]);
-
-        //  Considerably faster:
-        this.dirtyLocalQuery = defineQuery([ tag, Transform2DComponent ]);
-        this.vertexPositionQuery = defineQuery([ tag, WorldMatrix2DComponent, Extent2DComponent ]);
+        this.changedTransformQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -132,9 +123,12 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         ResetWorldRenderData(id, gameFrame);
 
+        RenderDataComponent.rebuiltList[id] = 0;
+        RenderDataComponent.rebuiltWorld[id] = 0;
+
         ClearDirtyChild(id);
 
-        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.dirtyLocalQuery);
+        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.changedTransformQuery);
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
@@ -144,13 +138,15 @@ export class BaseWorld extends GameObject implements IBaseWorld
         {
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
-            //  This will update the WorldMatrix2DComponent values.
+            //  This will update the Transform2DComponent.world values.
             RebuildWorldTransforms(this, id, false);
+
+            RenderDataComponent.rebuiltWorld[id] = 1;
 
             isDirty = true;
         }
 
-        UpdateVertexPositionSystem(id, GameObjectWorld, this.vertexPositionQuery);
+        UpdateVertexPositionSystem(id, GameObjectWorld, this.changedTransformQuery);
 
         if (dirtyDisplayList)
         {
@@ -160,6 +156,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
             RenderDataComponent.numChildren[id] = this.getNumChildren();
             RenderDataComponent.numRenderable[id] = this.listLength / 4;
+            RenderDataComponent.rebuiltList[id] = 1;
 
             ClearDirtyDisplayList(id);
 
@@ -211,6 +208,18 @@ export class BaseWorld extends GameObject implements IBaseWorld
         }
 
         PopColor(renderPass, this.color);
+
+        const id = this.id;
+
+        window['renderStats'] = {
+            gameFrame: RenderDataComponent.gameFrame[id],
+            numChildren: RenderDataComponent.numChildren[id],
+            numRenderable: RenderDataComponent.numRenderable[id],
+            dirtyLocal: RenderDataComponent.dirtyLocal[id],
+            dirtyVertices: RenderDataComponent.dirtyVertices[id],
+            rebuiltList: RenderDataComponent.rebuiltList[id],
+            rebuiltWorld: RenderDataComponent.rebuiltWorld[id]
+        };
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
     }
