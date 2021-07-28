@@ -2,6 +2,7 @@ import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
+import { RenderDataComponent } from '../../world';
 import { SetQuadPosition } from './SetQuadPosition';
 import { WorldMatrix2DComponent } from '../transform/WorldMatrix2DComponent';
 
@@ -56,7 +57,14 @@ const updateVertexPositionSystem = defineSystem(world =>
     return world;
 });
 
-export const UpdateVertexPositionSystem = (world: IWorld, query: Query): number[] =>
+//  Update all vertices and bounds across the World.
+//  This updates the QuadVertexComponent and BoundsComponent (per Game Object)
+
+//  This will only update entities that had their WorldTransform changed this frame.
+
+//  We cannot control the order of these entities, children may be updated before parents, etc.
+
+export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Query): void =>
 {
     entities = query(world);
 
@@ -67,5 +75,5 @@ export const UpdateVertexPositionSystem = (world: IWorld, query: Query): number[
         updateVertexPositionSystem(world);
     }
 
-    return entities;
+    RenderDataComponent.dirtyVertices[id] = total;
 };

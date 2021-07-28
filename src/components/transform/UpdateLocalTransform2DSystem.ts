@@ -2,6 +2,7 @@ import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { GetParentID } from '../hierarchy/GetParentID';
 import { LocalMatrix2DComponent } from './LocalMatrix2DComponent';
+import { RenderDataComponent } from '../../world';
 import { SetDirtyChild } from '../dirty/SetDirtyChild';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
@@ -45,7 +46,11 @@ const updateLocalTransformSystem = defineSystem(world =>
     return world;
 });
 
-export const UpdateLocalTransform2DSystem = (world: IWorld, query: Query): number =>
+//  All children of a World that have a dirty Transform2DComponent
+//  are passed through this system and have their LocalMatrix2DComponent values set +
+//  SetDirtyTransform + SetDirtyParents (which includes SetDirtyDisplayList for the World)
+
+export const UpdateLocalTransform2DSystem = (id: number, world: IWorld, query: Query): void =>
 {
     entities = query(world);
 
@@ -58,5 +63,5 @@ export const UpdateLocalTransform2DSystem = (world: IWorld, query: Query): numbe
         updateLocalTransformSystem(world);
     }
 
-    return total;
+    RenderDataComponent.dirtyLocal[id] = total;
 };
