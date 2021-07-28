@@ -1,3 +1,4 @@
+import { RendererInstance } from '../RendererInstance';
 import { WebGLRenderer } from './WebGLRenderer';
 
 export let instance: WebGLRenderer;
@@ -12,5 +13,6 @@ export const WebGLRendererInstance =
     set: (renderer: WebGLRenderer | undefined): void =>
     {
         instance = renderer;
+        RendererInstance.set(renderer);
     }
 };
