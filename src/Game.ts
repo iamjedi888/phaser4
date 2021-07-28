@@ -1,21 +1,22 @@
+import { AddBanner } from './config/banner/AddBanner';
+import { AddGlobalVar } from './config/globalvar/AddGlobalVar';
 import { AddTimeComponent } from './components/timer/AddTimeComponent';
-import { AddToDOM } from './dom/AddToDOM';
+import { AddToParent } from './config/parent/AddToParent';
+import { CreateRenderer } from './config/renderer/CreateRenderer';
+import { CreateSceneManager } from './scenes/CreateSceneManager';
+import { CreateTextureManager } from './textures/CreateTextureManager';
 import { DOMContentLoaded } from './dom/DOMContentLoaded';
 import { Emit } from './events/Emit';
 import { EventEmitter } from './events/EventEmitter';
 import { GameInstance } from './GameInstance';
 import { GameObjectWorld } from './GameObjectWorld';
-import { GetBanner } from './config/banner/GetBanner';
-import { GetGlobalVar } from './config/globalvar/GetGlobalVar';
-import { GetParent } from './config/parent/GetParent';
 import { GetRenderStatsAsObject } from './scenes/GetRenderStatsAsObject';
-import { GetRenderer } from './config/renderer/GetRenderer';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
 import { IRenderStats } from './scenes/IRenderStats';
-import { IRenderer } from './renderer/IRenderer';
-import { SceneManager } from './scenes/SceneManager';
+import { RendererInstance } from './renderer/RendererInstance';
+import { ResetLastTick } from './components/timer/ResetLastTick';
+import { SceneManagerInstance } from './scenes';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
-import { TextureManager } from './textures/TextureManager';
 import { TimeComponent } from './components/timer/TimeComponent';
 import { UpdateDelta } from './components/timer/UpdateDelta';
 import { UpdateTime } from './components/timer/UpdateTime';
@@ -37,10 +38,6 @@ export class Game extends EventEmitter
 
     renderStats: IRenderStats;
 
-    renderer: IRenderer;
-    textureManager: TextureManager;
-    sceneManager: SceneManager;
-
     constructor (...settings: { (): void }[])
     {
         super();
@@ -57,35 +54,18 @@ export class Game extends EventEmitter
         //  Activate the settings post DOM Content Loaded
         settings.forEach(setting => setting());
 
-        const renderer = GetRenderer();
-
-        this.textureManager = new TextureManager();
-        this.renderer = new renderer();
-        this.sceneManager = new SceneManager();
-
-        //  Only add to the DOM if they either didn't set a Parent, or expressly set it to be non-null
-        //  Otherwise we'll let them add the canvas to the DOM themselves
-        const parent = GetParent();
-
-        if (parent)
-        {
-            AddToDOM(this.renderer.canvas, parent);
-        }
-
-        const globalVar = GetGlobalVar();
-
-        if (globalVar && window)
-        {
-            (window as unknown)[globalVar] = this;
-        }
-
-        this.isBooted = true;
-
-        GetBanner();
+        CreateRenderer();
+        CreateTextureManager();
+        CreateSceneManager();
 
         AddTimeComponent(this.id);
+        AddBanner();
+        AddGlobalVar(this);
+        AddToParent();
 
         this.renderStats = GetRenderStatsAsObject();
+
+        this.isBooted = true;
 
         Emit(this, 'boot');
 
@@ -101,7 +81,7 @@ export class Game extends EventEmitter
     {
         this.isPaused = false;
 
-        TimeComponent.lastTick[this.id] = performance.now();
+        ResetLastTick(this.id);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -117,8 +97,8 @@ export class Game extends EventEmitter
     step (time: number): void
     {
         const id = this.id;
-        const renderer = this.renderer;
-        const sceneManager = this.sceneManager;
+        const renderer = RendererInstance.get();
+        const sceneManager = SceneManagerInstance.get();
 
         UpdateTime(id, time);
 
