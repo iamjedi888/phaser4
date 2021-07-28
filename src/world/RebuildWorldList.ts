@@ -8,25 +8,21 @@ import { WillCacheChildren } from '../components/permissions/WillCacheChildren';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
 
-//  Rebuilds the World.renderList - a list of all entities that need to render.
+//  Rebuilds the World.renderList - a list of all entities that could potentially render.
 
 //  This is only called if the World has a dirty display list, otherwise the results
-//  are cached between frames
+//  are cached between frames.
+
+//  This will rebuild the render list for the whole world by calling AddToRenderList
+//  for all game objects that will render (not invisible, etc)
 
 export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth: number): void
 {
     if (WillRender(parent))
     {
-        let entityAdded = true;
-
         if (world.id !== parent)
         {
-            entityAdded = AddToRenderList(world, parent, 0);
-        }
-
-        if (!entityAdded)
-        {
-            return;
+            AddToRenderList(world, parent, 0);
         }
 
         const children = GameObjectTree.get(parent);
@@ -46,17 +42,19 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
 
                         RebuildWorldList(world, nodeID, worldDepth + 1);
                     }
-                    else if (AddToRenderList(world, nodeID, 0))
+                    else
                     {
                         SetWorldDepth(nodeID, worldDepth);
 
+                        AddToRenderList(world, nodeID, 0);
                         AddToRenderList(world, nodeID, 1);
                     }
                 }
-                else if (!WillCacheChildren(nodeID) && AddToRenderList(world, nodeID, 0))
+                else if (!WillCacheChildren(nodeID))
                 {
                     SetWorldDepth(nodeID, worldDepth);
 
+                    AddToRenderList(world, nodeID, 0);
                     AddToRenderList(world, nodeID, 1);
                 }
             }
