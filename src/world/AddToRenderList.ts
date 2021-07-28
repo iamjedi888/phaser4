@@ -7,14 +7,8 @@ import { IBaseWorld } from './IBaseWorld';
 
 //  0 = render
 //  1 = postRender
-export function AddToRenderList (world: IBaseWorld, id: number, renderType: number): boolean
+export function AddToRenderList (world: IBaseWorld, id: number, renderType: number): void
 {
-    if (renderType === 0 && !world.checkWorldEntity(id))
-    {
-        //  This entity and its children was NOT added to the render list this frame
-        return false;
-    }
-
     let len: number = world.listLength;
     const list = world.renderList;
 
@@ -34,7 +28,4 @@ export function AddToRenderList (world: IBaseWorld, id: number, renderType: numb
 
         world.renderList = newList;
     }
-
-    //  This entity WAS added to the render list
-    return true;
 }
