@@ -1,9 +1,9 @@
 import { Emit } from '../../events/Emit';
 import { EventEmitter } from '../../events/EventEmitter';
-import { GameInstance } from '../../GameInstance';
 import { IGameObject } from '../../gameobjects/IGameObject';
 import { Mat2dAppend } from '../../math/mat2d/Mat2dAppend';
 import { Mat2dGlobalToLocal } from '../../math/mat2d/Mat2dGlobalToLocal';
+import { RendererInstance } from '../../renderer/RendererInstance';
 import { Vec2 } from '../../math/vec2/Vec2';
 
 export class Mouse extends EventEmitter
@@ -23,7 +23,7 @@ export class Mouse extends EventEmitter
     private mousedownHandler: { (event: MouseEvent): void; (this: Window, ev: MouseEvent): void };
     private mouseupHandler: { (event: MouseEvent): void; (this: Window, ev: MouseEvent): void };
     private mousemoveHandler: { (event: MouseEvent): void; (this: Window, ev: MouseEvent): void };
-    private mousewheelHandler: { (event: MouseWheelEvent): void; (this: Window, ev: MouseWheelEvent): void };
+    private mousewheelHandler: { (event: WheelEvent): void; (this: Window, ev: WheelEvent): void };
     private contextmenuHandler: { (event: MouseEvent): void; (this: Window, ev: MouseEvent): void };
     private blurHandler: { (): void; (this: Window, ev: FocusEvent): void };
 
@@ -36,7 +36,7 @@ export class Mouse extends EventEmitter
         this.mousedownHandler = (event: MouseEvent): void => this.onMouseDown(event);
         this.mouseupHandler = (event: MouseEvent): void => this.onMouseUp(event);
         this.mousemoveHandler = (event: MouseEvent): void => this.onMouseMove(event);
-        this.mousewheelHandler = (event: MouseWheelEvent): void => this.onMouseWheel(event);
+        this.mousewheelHandler = (event: WheelEvent): void => this.onMouseWheel(event);
         this.contextmenuHandler = (event: MouseEvent): void => this.onContextMenuEvent(event);
         this.blurHandler = (): void => this.onBlur();
 
@@ -46,7 +46,7 @@ export class Mouse extends EventEmitter
 
         if (!target)
         {
-            target = GameInstance.get().renderer.canvas;
+            target = RendererInstance.get().canvas;
         }
 
         target.addEventListener('mousedown', this.mousedownHandler);
@@ -94,7 +94,7 @@ export class Mouse extends EventEmitter
         Emit(this, 'pointermove', this.localPoint.x, this.localPoint.y, event);
     }
 
-    private onMouseWheel (event: MouseWheelEvent): void
+    private onMouseWheel (event: WheelEvent): void
     {
         Emit(this, 'wheel', event.deltaX, event.deltaY, event.deltaZ, event);
     }
