@@ -3,7 +3,6 @@ import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad'
 import { ColorComponent } from '../../components/color/ColorComponent';
 import { Container } from '../container/Container';
 import { Frame } from '../../textures/Frame';
-import { GetTexture } from '../../textures/GetTexture';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRectangle } from './IRectangle';
@@ -11,6 +10,7 @@ import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { PreRenderVertices } from '../../components/transform/PreRenderVertices';
 import { SetTint } from '../../components/color/SetTint';
 import { Texture } from '../../textures/Texture';
+import { WhiteTexture } from '../../textures';
 import { WillRender } from '../../components/permissions/WillRender';
 
 export class Rectangle extends Container implements IRectangle
@@ -28,7 +28,7 @@ export class Rectangle extends Container implements IRectangle
 
         AddQuadVertex(id);
 
-        this.texture = GetTexture('__WHITE');
+        this.texture = WhiteTexture.get();
 
         this.frame = this.texture.getFrame();
 
