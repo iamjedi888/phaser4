@@ -6,6 +6,7 @@ export interface IScene
     key?: string;
     game: Game;
     events: Map<string, Set<IEventInstance>>;
-    // shutdown (): void;
-    // destroy (): void;
+    update? (delta: number, time: number): void;
+    shutdown? (): void;
+    destroy? (): void;
 }
