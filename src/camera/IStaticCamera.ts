@@ -1,10 +1,6 @@
-export interface IStaticCamera
-{
-    id: number;
-    type: string;
+import { IBaseCamera } from './IBaseCamera';
 
-    getBounds (): Float32Array;
-    getMatrix (): Float32Array;
-    reset (width: number, height: number): void;
-    destroy (): void;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface IStaticCamera extends IBaseCamera
+{
 }
