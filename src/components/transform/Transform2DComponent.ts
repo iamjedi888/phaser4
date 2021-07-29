@@ -1,6 +1,6 @@
 import { Types, defineComponent } from 'bitecs';
 
-const Transform2D = defineComponent({
+export const Transform2DComponent = defineComponent({
     x: Types.f32,
     y: Types.f32,
     rotation: Types.f32,
@@ -14,5 +14,3 @@ const Transform2D = defineComponent({
     local: [ Types.f32, 6 ],
     world: [ Types.f32, 6 ]
 });
-
-export const Transform2DComponent = Transform2D;
