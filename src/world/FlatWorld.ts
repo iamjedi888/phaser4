@@ -2,31 +2,27 @@ import * as WorldEvents from './events';
 
 import { Query, defineQuery } from 'bitecs';
 
-import { AddToRenderList } from '.';
+import { AddToRenderList } from './AddToRenderList';
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
-import { BoundsIntersects } from '../components/bounds';
+import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { Emit } from '../events/Emit';
-import { Flush } from '../renderer/webgl1/renderpass';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GameObjectTree } from '../gameobjects';
+import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
-import { IStaticCamera } from '../camera/IStaticCamera';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { RenderDataComponent } from './RenderDataComponent';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
-import { SetCamera } from '../renderer/webgl1/renderpass/SetCamera';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
-import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { Transform2DSystem } from '../components/transform';
+import { Transform2DSystem } from '../components/transform/Transform2DSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
-import { WillRender } from '../components/permissions';
+import { WillRender } from '../components/permissions/WillRender';
 import { WorldCamera } from '../camera/WorldCamera';
 
 export class FlatWorld extends BaseWorld
