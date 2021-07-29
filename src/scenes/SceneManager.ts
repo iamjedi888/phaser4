@@ -30,14 +30,9 @@ export class SceneManager
 
     constructor ()
     {
-        if (SceneManagerInstance.get())
-        {
-            throw new Error('Only 1 instance of SceneManager allowed');
-        }
+        SceneManagerInstance.set(this);
 
         this.game = GameInstance.get();
-
-        SceneManagerInstance.set(this);
 
         AddRenderStatsComponent(this.id);
 
@@ -71,6 +66,11 @@ export class SceneManager
             for (const world of worlds)
             {
                 world.beforeUpdate(delta, time);
+            }
+
+            if (scene.update)
+            {
+                scene.update(delta, time);
             }
 
             for (const world of worlds)
