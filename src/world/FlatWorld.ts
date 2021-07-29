@@ -8,6 +8,7 @@ import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { BoundsIntersects } from '../components/bounds';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { Emit } from '../events/Emit';
+import { Flush } from '../renderer/webgl1/renderpass';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectTree } from '../gameobjects';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -19,18 +20,20 @@ import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { RenderDataComponent } from './RenderDataComponent';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
+import { SetCamera } from '../renderer/webgl1/renderpass/SetCamera';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { Transform2DSystem } from '../components/transform';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillRender } from '../components/permissions';
+import { WorldCamera } from '../camera/WorldCamera';
 
 export class FlatWorld extends BaseWorld
 {
     readonly type: string = 'FlatWorld';
 
-    declare camera: IStaticCamera;
+    declare camera: WorldCamera;
 
     private transformQuery: Query;
 
@@ -47,7 +50,7 @@ export class FlatWorld extends BaseWorld
 
         const renderer = RendererInstance.get();
 
-        this.camera = new StaticCamera(renderer.width, renderer.height);
+        this.camera = new WorldCamera(renderer.width, renderer.height);
     }
 
     //  We should update the display list and world transforms regardless of
@@ -105,23 +108,13 @@ export class FlatWorld extends BaseWorld
 
         Emit(this, WorldEvents.WorldRenderEvent, this);
 
-        const camera = renderPass.current2DCamera;
-
-        // const camera = this.camera;
-
-        // if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform))
-        // {
-        //     Flush(renderPass);
-        // }
+        const camera = this.camera;
 
         Begin(renderPass, camera);
 
         const list = this.renderList;
 
-        const x = camera.bounds.x;
-        const y = camera.bounds.y;
-        const right = camera.bounds.right;
-        const bottom = camera.bounds.bottom;
+        const [ x, y, right, bottom ] = camera.getBounds();
 
         let rendered = 0;
 
