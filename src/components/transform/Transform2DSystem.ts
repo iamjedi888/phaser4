@@ -45,6 +45,7 @@ export const Transform2DSystem = (id: number, world: IWorld, query: Query): bool
         system(world);
     }
 
+    //  TODO - Move this to the World instance, so other entities can use this system
     RenderDataComponent.dirtyLocal[id] = total;
 
     return total > 0;
