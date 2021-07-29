@@ -13,7 +13,6 @@ import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { IndexedVertexBuffer } from '../buffers/IndexedVertexBuffer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
-import { Matrix4 } from '../../../math/mat4/Matrix4';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
 import { QuadShader } from '../shaders/QuadShader';
 import { ShaderStack } from './ShaderStack';
@@ -27,8 +26,8 @@ export class RenderPass implements IRenderPass
 {
     renderer: IWebGLRenderer;
 
-    projectionMatrix: Matrix4;
-    cameraMatrix: Matrix4;
+    projectionMatrix: Float32Array;
+    cameraMatrix: Float32Array;
 
     count: number = 0;
     prevCount: number = 0;
@@ -55,7 +54,7 @@ export class RenderPass implements IRenderPass
     {
         this.renderer = renderer;
 
-        this.projectionMatrix = new Matrix4();
+        this.projectionMatrix = new Float32Array(16);
 
         this.framebuffer = new FramebufferStack(this);
         this.vertexbuffer = new VertexBufferStack(this);
@@ -90,8 +89,8 @@ export class RenderPass implements IRenderPass
 
         //  Default QuadShader (for FBO drawing)
 
-        this.quadShader = new QuadShader();
-        this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
+        // this.quadShader = new QuadShader();
+        // this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
         this.quadCamera = new StaticCamera(this.renderer.width, this.renderer.height);
 
         //  Default settings
@@ -107,7 +106,7 @@ export class RenderPass implements IRenderPass
     resize (width: number, height: number): void
     {
         //  TODO - -1 to 1?
-        Mat4Ortho(0, width, height, 0, -1000, 1000, this.projectionMatrix);
+        Mat4Ortho(this.projectionMatrix, 0, width, height, 0, -1000, 1000);
 
         this.quadCamera.reset(width, height);
 

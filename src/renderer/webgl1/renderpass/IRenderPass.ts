@@ -6,7 +6,6 @@ import { IShader } from '../shaders/IShader';
 import { IStaticCamera } from '../../../camera/IStaticCamera';
 import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
-import { Matrix4 } from '../../../math/mat4/Matrix4';
 import { ShaderStack } from './ShaderStack';
 import { TextureStack } from './TextureStack';
 import { VertexBufferStack } from './VertexBufferStack';
@@ -15,8 +14,8 @@ import { ViewportStack } from './ViewportStack';
 export interface IRenderPass
 {
     renderer: IWebGLRenderer;
-    projectionMatrix: Matrix4;
-    cameraMatrix: Matrix4;
+    projectionMatrix: Float32Array;
+    cameraMatrix: Float32Array;
 
     count: number;
     prevCount: number;
