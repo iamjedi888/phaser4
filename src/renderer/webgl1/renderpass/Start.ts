@@ -2,8 +2,11 @@ import { IRenderPass } from './IRenderPass';
 
 export function Start (renderPass: IRenderPass): IRenderPass
 {
-    renderPass.current2DCamera = renderPass.quadCamera;
-    renderPass.cameraMatrix = renderPass.quadCamera.matrix;
+    if (!renderPass.current2DCamera)
+    {
+        renderPass.current2DCamera = renderPass.quadCamera;
+        renderPass.cameraMatrix = renderPass.quadCamera.getMatrix();
+    }
 
     renderPass.count = 0;
     renderPass.flushTotal = 0;
