@@ -10,16 +10,11 @@ export class TextureManager
 
     constructor ()
     {
-        if (TextureManagerInstance.get())
-        {
-            throw new Error('Only 1 instance of TextureManager allowed');
-        }
+        TextureManagerInstance.set(this);
 
         this.textures = new Map();
 
         this.createDefaultTextures();
-
-        TextureManagerInstance.set(this);
     }
 
     private createDefaultTextures (): void

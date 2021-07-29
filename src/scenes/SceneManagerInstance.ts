@@ -13,7 +13,7 @@ export const SceneManagerInstance =
     {
         if (instance)
         {
-            throw new Error('SceneManager should not be instantiated more than once');
+            throw new Error('Cannot instantiate SceneManager more than once');
         }
 
         instance = manager;

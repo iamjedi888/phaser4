@@ -11,6 +11,11 @@ export const TextureManagerInstance =
 
     set: (manager: TextureManager | null): void =>
     {
+        if (instance)
+        {
+            throw new Error('Cannot instantiate TextureManager more than once');
+        }
+
         instance = manager;
     }
 };
