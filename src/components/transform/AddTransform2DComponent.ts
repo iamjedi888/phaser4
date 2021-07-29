@@ -3,6 +3,24 @@ import { GameObjectWorld } from '../../GameObjectWorld';
 import { Transform2DComponent } from './Transform2DComponent';
 import { addComponent } from 'bitecs';
 
+//  The 'local' and 'world' arrays are Matrix2Ds and contains
+//  six elements in a short-form of the 3x3 Matrix, with the last column ignored:
+
+//  |----|----|----|
+//  | a  | b  | 0  |
+//  |----|----|----|
+//  | c  | d  | 0  |
+//  |----|----|----|
+//  | tx | ty | 1  |
+//  |----|----|----|
+
+//  [0] = a - X scale
+//  [1] = b - X skew
+//  [2] = c - Y skew
+//  [3] = d - Y scale
+//  [4] = tx - X translation
+//  [5] = ty - Y translation
+
 export function AddTransform2DComponent (id: number, x: number = 0, y: number = 0, originX: number = 0, originY: number = 0): void
 {
     addComponent(GameObjectWorld, Transform2DComponent, id);
