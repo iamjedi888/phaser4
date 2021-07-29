@@ -4,7 +4,8 @@ import { ColorComponent } from './ColorComponent';
 import { QuadVertexComponent } from '../vertices/QuadVertexComponent';
 import { SetQuadColor } from '../vertices/SetQuadColor';
 
-const changedColorQuery = defineQuery([ Changed(ColorComponent), QuadVertexComponent ]);
+const changedColorQuery = defineQuery([ ColorComponent, QuadVertexComponent ]);
+// const changedColorQuery = defineQuery([ Changed(ColorComponent), QuadVertexComponent ]);
 
 const packQuadColorsSystem = defineSystem(world =>
 {

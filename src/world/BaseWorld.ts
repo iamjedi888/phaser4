@@ -55,7 +55,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     private totalChildren: number = 0;
 
     private totalChildrenQuery: Query;
-    private changedTransformQuery: Query;
+    private transformQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -67,7 +67,10 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.scene = scene;
 
         this.totalChildrenQuery = defineQuery([ tag ]);
-        this.changedTransformQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
+        // this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
+
+        //  The above is MUCH faster! Wait for new bitecs test version.
+        this.transformQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         this.renderList = new Uint32Array(GetWorldSize() * 4);
@@ -128,7 +131,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         ClearDirtyChild(id);
 
-        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.changedTransformQuery);
+        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.transformQuery);
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
@@ -146,7 +149,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
             isDirty = true;
         }
 
-        UpdateVertexPositionSystem(id, GameObjectWorld, this.changedTransformQuery);
+        UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
         if (dirtyDisplayList)
         {
