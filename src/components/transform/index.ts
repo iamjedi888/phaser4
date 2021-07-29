@@ -11,10 +11,11 @@ import { Scale } from './Scale';
 import { SetExtent } from './SetExtent';
 import { Size } from './Size';
 import { Skew } from './Skew';
+import { SyncTransform } from './SyncTransform';
 import { Transform2DComponent } from './Transform2DComponent';
+import { Transform2DSystem } from './Transform2DSystem';
 import { UpdateExtent } from './UpdateExtent';
-import { UpdateLocalTransform2DSystem } from './UpdateLocalTransform2DSystem';
-import { UpdateTransform } from './UpdateTransform';
+import { UpdateLocalTransform } from './UpdateLocalTransform';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
 
 export {
@@ -31,9 +32,10 @@ export {
     SetExtent,
     Size,
     Skew,
+    SyncTransform,
     Transform2DComponent,
+    Transform2DSystem,
     UpdateExtent,
-    UpdateLocalTransform2DSystem,
-    UpdateTransform,
+    UpdateLocalTransform,
     UpdateWorldTransform
 };

@@ -9,7 +9,7 @@ import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];
 
-const updateLocalTransformSystem = defineSystem(world =>
+const system = defineSystem(world =>
 {
     let prevParent: number = 0;
 
@@ -51,7 +51,7 @@ const updateLocalTransformSystem = defineSystem(world =>
 //  are passed through this system and have their LocalMatrix2DComponent values set +
 //  SetDirtyTransform + SetDirtyParents (which includes SetDirtyDisplayList for the World)
 
-export const UpdateLocalTransform2DSystem = (id: number, world: IWorld, query: Query): void =>
+export const UpdateLocalTransform = (id: number, world: IWorld, query: Query): void =>
 {
     entities = query(world);
 
@@ -61,7 +61,7 @@ export const UpdateLocalTransform2DSystem = (id: number, world: IWorld, query: Q
     {
         SetDirtyChild(id);
 
-        updateLocalTransformSystem(world);
+        system(world);
     }
 
     RenderDataComponent.dirtyLocal[id] = total;
