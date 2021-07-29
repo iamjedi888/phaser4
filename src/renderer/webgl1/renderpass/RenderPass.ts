@@ -45,7 +45,7 @@ export class RenderPass implements IRenderPass
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
     quadBuffer: IVertexBuffer;
-    quadCamera: IStaticCamera;
+    quadCamera: IBaseCamera;
 
     //  Current 2D Camera
     current2DCamera: IBaseCamera;
