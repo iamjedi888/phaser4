@@ -20,11 +20,12 @@ import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RenderDataComponent } from './RenderDataComponent';
+import { RendererInstance } from '../renderer/RendererInstance';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
+import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -48,7 +49,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
 
-        this.camera = new StaticCamera(800, 600);
+        const renderer = RendererInstance.get();
+
+        this.camera = new StaticCamera(renderer.width, renderer.height);
     }
 
     //  We should update the display list and world transforms regardless of
@@ -64,7 +67,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.transformQuery);
+        UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 

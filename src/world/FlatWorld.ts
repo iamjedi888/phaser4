@@ -2,30 +2,35 @@ import * as WorldEvents from './events';
 
 import { Query, defineQuery } from 'bitecs';
 
+import { AddToRenderList } from '.';
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
-import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
+import { BoundsIntersects } from '../components/bounds';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
+import { GameObjectTree } from '../gameobjects';
 import { GameObjectWorld } from '../GameObjectWorld';
-import { HasDirtyChild } from '../components/dirty/HasDirtyChild';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
+import { IStaticCamera } from '../camera/IStaticCamera';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
-import { RebuildWorldList } from './RebuildWorldList';
-import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RenderDataComponent } from './RenderDataComponent';
+import { RendererInstance } from '../renderer/RendererInstance';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
+import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { UpdateLocalTransform2DSystem } from '../components/transform/UpdateLocalTransform2DSystem';
+import { Transform2DSystem } from '../components/transform';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
+import { WillRender } from '../components/permissions';
 
 export class FlatWorld extends BaseWorld
 {
     readonly type: string = 'FlatWorld';
+
+    declare camera: IStaticCamera;
 
     private transformQuery: Query;
 
@@ -40,6 +45,9 @@ export class FlatWorld extends BaseWorld
         //  The above is MUCH faster! Wait for new bitecs test version.
         // this.transformQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
 
+        const renderer = RendererInstance.get();
+
+        this.camera = new StaticCamera(renderer.width, renderer.height);
     }
 
     //  We should update the display list and world transforms regardless of
@@ -53,36 +61,28 @@ export class FlatWorld extends BaseWorld
         RenderDataComponent.rebuiltList[id] = 0;
         RenderDataComponent.rebuiltWorld[id] = 0;
 
-        ClearDirtyChild(id);
-
-        UpdateLocalTransform2DSystem(id, GameObjectWorld, this.transformQuery);
-
-        const dirtyDisplayList = HasDirtyDisplayList(id);
-
-        let isDirty = false;
-
-        if (dirtyDisplayList || HasDirtyChild(id))
-        {
-            //  TODO - This should only run over the branches that are dirty, not the whole World.
-
-            //  This will update the Transform2DComponent.world values.
-            RebuildWorldTransforms(this, id, false);
-
-            RenderDataComponent.rebuiltWorld[id] = 1;
-
-            isDirty = true;
-        }
+        let isDirty = Transform2DSystem(id, GameObjectWorld, this.transformQuery);
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
-        if (dirtyDisplayList)
+        if (HasDirtyDisplayList(id))
         {
             this.listLength = 0;
 
-            RebuildWorldList(this, id, 0);
+            const children = GameObjectTree.get(id);
+
+            for (let i = 0; i < children.length; i++)
+            {
+                const nodeID = children[i];
+
+                if (WillRender(nodeID))
+                {
+                    AddToRenderList(this, nodeID, 2);
+                }
+            }
 
             RenderDataComponent.numChildren[id] = this.getNumChildren();
-            RenderDataComponent.numRenderable[id] = this.listLength / 4;
+            RenderDataComponent.numRenderable[id] = this.listLength / 2;
             RenderDataComponent.rebuiltList[id] = 1;
 
             ClearDirtyDisplayList(id);
@@ -118,24 +118,26 @@ export class FlatWorld extends BaseWorld
 
         const list = this.renderList;
 
+        const x = camera.bounds.x;
+        const y = camera.bounds.y;
+        const right = camera.bounds.right;
+        const bottom = camera.bounds.bottom;
+
+        let rendered = 0;
+
         for (let i = 0; i < this.listLength; i += 2)
         {
             const eid = list[i];
-            const type = list[i + 1];
-            const entry = GameObjectCache.get(eid);
 
-            if (type === 2)
+            //  Do a bounds check against the camera
+            if (BoundsIntersects(eid, x, y, right, bottom))
             {
+                const entry = GameObjectCache.get(eid);
+
                 entry.renderGL(renderPass);
                 entry.postRenderGL(renderPass);
-            }
-            else if (type === 1)
-            {
-                entry.postRenderGL(renderPass);
-            }
-            else
-            {
-                entry.renderGL(renderPass);
+
+                rendered++;
             }
         }
 
@@ -146,6 +148,7 @@ export class FlatWorld extends BaseWorld
         window['renderStats'] = {
             gameFrame: RenderDataComponent.gameFrame[id],
             numChildren: RenderDataComponent.numChildren[id],
+            numRendererd: rendered,
             numRenderable: RenderDataComponent.numRenderable[id],
             dirtyLocal: RenderDataComponent.dirtyLocal[id],
             dirtyVertices: RenderDataComponent.dirtyVertices[id],

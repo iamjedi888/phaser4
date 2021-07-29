@@ -10,6 +10,7 @@ import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RenderDataComponent } from './RenderDataComponent';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
+import { SortWorldList } from './SortWorldList';
 import { StaticWorld } from './StaticWorld';
 import { World } from './World';
 import { WorldList } from './WorldList';
@@ -26,6 +27,7 @@ export {
     RebuildWorldTransforms,
     RenderDataComponent,
     ResetWorldRenderData,
+    SortWorldList,
     StaticWorld,
     World,
     WorldList
