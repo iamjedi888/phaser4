@@ -1,15 +1,24 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
+import { GameInstance } from '../../GameInstance';
 import { RenderDataComponent } from '../../world';
 import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];
+let total: number = 0;
 
 const system = defineSystem(world =>
 {
+    const gameFrame = GameInstance.getFrame();
+
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
+
+        if (gameFrame > Transform2DComponent.dirty[id])
+        {
+            continue;
+        }
 
         const x = Transform2DComponent.x[id];
         const y = Transform2DComponent.y[id];
@@ -29,6 +38,8 @@ const system = defineSystem(world =>
         local[5] = y;
 
         Transform2DComponent.world[id].set(local);
+
+        total++;
     }
 
     return world;
@@ -36,11 +47,10 @@ const system = defineSystem(world =>
 
 export const Transform2DSystem = (id: number, world: IWorld, query: Query): boolean =>
 {
+    total = 0;
     entities = query(world);
 
-    const total = entities.length;
-
-    if (total > 0)
+    if (entities.length > 0)
     {
         system(world);
     }

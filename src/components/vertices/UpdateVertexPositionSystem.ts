@@ -2,17 +2,26 @@ import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
+import { GameInstance } from '../../GameInstance';
 import { RenderDataComponent } from '../../world';
 import { SetQuadPosition } from './SetQuadPosition';
 import { Transform2DComponent } from '../transform';
 
 let entities: number[];
+let total: number = 0;
 
 const updateVertexPositionSystem = defineSystem(world =>
 {
+    const gameFrame = GameInstance.getFrame();
+
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
+
+        if (gameFrame > Transform2DComponent.dirty[id])
+        {
+            continue;
+        }
 
         const [ a, b, c, d, tx, ty ] = Transform2DComponent.world[id];
 
@@ -47,6 +56,8 @@ const updateVertexPositionSystem = defineSystem(world =>
         bounds[1] = by;
         bounds[2] = br;
         bounds[3] = bb;
+
+        total++;
     }
 
     return world;
@@ -61,11 +72,10 @@ const updateVertexPositionSystem = defineSystem(world =>
 
 export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Query): void =>
 {
+    total = 0;
     entities = query(world);
 
-    const total = entities.length;
-
-    if (total > 0)
+    if (entities.length > 0)
     {
         updateVertexPositionSystem(world);
     }
