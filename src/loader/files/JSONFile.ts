@@ -2,46 +2,31 @@ import { Cache } from '../../cache/Cache';
 import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
+import { IFileData } from '../IFileData';
+import { RequestFile } from '../RequestFile';
 
-export async function JSONFile (key: string, url?: string, requestInit?: RequestInit): Promise<IFile>
+export async function JSONFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
 {
-    const file = CreateFile(key, GetURL(key, url, '.json'));
+    const file = CreateFile(key, GetURL(key, url, 'json'), fileData.skipCache);
 
     const cache = Cache.get('JSON');
 
-    if (!cache || cache.has(key) && !file.skipCache)
+    const preload = (file: IFile) =>
     {
-        return Promise.reject(file);
-    }
-    else
+        return (cache && (!cache.has(key) || !file.skipCache));
+    };
+
+    const onload = async (file: IFile) =>
     {
-        try
+        file.data = await file.response.json();
+
+        if (!file.skipCache)
         {
-            const request = new Request(file.url, Object.assign({}, requestInit));
-
-            file.response = await fetch(request);
-
-            if (file.response.ok)
-            {
-                file.data = await file.response.json();
-
-                if (!file.skipCache)
-                {
-                    cache.set(key, file.data);
-                }
-
-                return Promise.resolve(file);
-            }
-            else
-            {
-                return Promise.reject(file);
-            }
+            cache.set(key, file.data);
         }
-        catch (error)
-        {
-            file.error = error;
 
-            return Promise.reject(file);
-        }
-    }
+        return true;
+    };
+
+    return RequestFile(file, preload, onload, fileData);
 }
