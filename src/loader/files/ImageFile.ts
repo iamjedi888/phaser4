@@ -1,54 +1,85 @@
 import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
-import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
+import { IFileData } from '../IFileData';
+import { RequestFile } from '../RequestFile';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 
-export async function ImageFile (key: string, url?: string, requestInit?: RequestInit, glConfig?: IGLTextureBindingConfig): Promise<IFile>
+export async function ImageFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
 {
-    const file = CreateFile(key, GetURL(key, url, '.png'));
+    const file = CreateFile(key, GetURL(key, url, 'png'), fileData?.skipCache);
 
     const textureManager = TextureManagerInstance.get();
 
-    if (!textureManager || textureManager.has(key) && textureManager.get(key).locked)
+    const preload = () =>
     {
-        return Promise.reject(file);
-    }
-    else
+        return (textureManager && (!textureManager.has(key) || !textureManager.get(key).locked));
+    };
+
+    const onload = async (file: IFile) =>
     {
-        try
+        const blob = await file.response.blob();
+
+        let image;
+
+        if (window && 'createImageBitmap' in window && !fileData?.getImage)
         {
-            const request = new Request(file.url, Object.assign({}, requestInit));
-
-            file.response = await fetch(request);
-
-            if (file.response.ok)
-            {
-                const blob = await file.response.blob();
-
-                const image = await createImageBitmap(blob);
-
-                if (textureManager.has(key))
-                {
-                    file.data = textureManager.update(key, image, glConfig);
-                }
-                else
-                {
-                    file.data = textureManager.add(key, image, glConfig);
-                }
-
-                return Promise.resolve(file);
-            }
-            else
-            {
-                return Promise.reject(file);
-            }
+            image = await createImageBitmap(blob);
         }
-        catch (error)
+        else
         {
-            file.error = error;
+            image = await new Promise <HTMLImageElement> ((resolve, reject)  =>
+            {
+                const url = URL.createObjectURL(blob);
 
-            return Promise.reject(file);
+                const img = new Image();
+
+                img.onload = (): void =>
+                {
+                    URL.revokeObjectURL(url);
+
+                    resolve(img);
+                };
+
+                img.onerror = (): void =>
+                {
+                    reject();
+                };
+
+                img.src = url;
+
+                // Image is immediately-available or cached
+
+                if (img.complete && img.width && img.height)
+                {
+                    img.onload = null;
+                    img.onerror = null;
+
+                    resolve(img);
+                }
+            });
         }
-    }
+
+        if (!image)
+        {
+            return false;
+        }
+
+        if (fileData.skipCache)
+        {
+            file.data = image;
+        }
+        else if (textureManager.has(key))
+        {
+            file.data = textureManager.update(key, image, fileData?.glConfig);
+        }
+        else
+        {
+            file.data = textureManager.add(key, image, fileData?.glConfig);
+        }
+
+        return true;
+    };
+
+    return RequestFile(file, preload, onload, fileData);
 }
