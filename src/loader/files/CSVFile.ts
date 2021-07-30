@@ -1,42 +1,32 @@
 import { Cache } from '../../cache/Cache';
-import { File } from '../File';
+import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
-import { XHRLoader } from '../XHRLoader';
+import { IFile } from '../IFile';
+import { IFileData } from '../IFileData';
+import { RequestFile } from '../RequestFile';
 
-export function CSVFile (key: string, url?: string): File
+export async function CSVFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
 {
-    const file = new File(key, url);
+    const file = CreateFile(key, GetURL(key, url, 'csv'), fileData.skipCache);
 
-    file.load = (): Promise<File> =>
+    const cache = Cache.get('CSV');
+
+    const preload = (file: IFile) =>
     {
-        file.url = GetURL(file.key, file.url, '.csv', file.loader);
-
-        return new Promise((resolve, reject) =>
-        {
-            const cache = Cache.get('CSV');
-
-            if (!file.skipCache && cache.has(file.key))
-            {
-                resolve(file);
-            }
-            else
-            {
-                XHRLoader(file).then(file =>
-                {
-                    if (!file.skipCache)
-                    {
-                        cache.set(file.key, file.data);
-                    }
-
-                    resolve(file);
-
-                }).catch(file =>
-                {
-                    reject(file);
-                });
-            }
-        });
+        return (cache && (!cache.has(key) || !file.skipCache));
     };
 
-    return file;
+    const onload = async (file: IFile) =>
+    {
+        file.data = await file.response.text();
+
+        if (!file.skipCache)
+        {
+            cache.set(key, file.data);
+        }
+
+        return true;
+    };
+
+    return RequestFile(file, preload, onload, fileData);
 }

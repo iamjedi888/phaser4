@@ -1,54 +1,44 @@
 import { Cache } from '../../cache/Cache';
-import { File } from '../File';
+import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
+import { IFile } from '../IFile';
+import { IFileData } from '../IFileData';
 import { ParseXML } from '../../dom/ParseXML';
-import { XHRLoader } from '../XHRLoader';
+import { RequestFile } from '../RequestFile';
 
-export function XMLFile (key: string, url?: string): File
+export async function XMLFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
 {
-    const file = new File(key, url);
+    const file = CreateFile(key, GetURL(key, url, 'xml'), fileData.skipCache);
 
-    file.load = (): Promise<File> =>
+    const cache = Cache.get('XML');
+
+    const preload = (file: IFile) =>
     {
-        file.url = GetURL(file.key, file.url, '.xml', file.loader);
-
-        return new Promise((resolve, reject) =>
-        {
-            const cache = Cache.get('XML');
-
-            if (!file.skipCache && cache.has(file.key))
-            {
-                resolve(file);
-            }
-            else
-            {
-                XHRLoader(file).then(file =>
-                {
-                    const xml = ParseXML(file.data);
-
-                    if (xml !== null)
-                    {
-                        file.data = xml;
-
-                        if (!file.skipCache)
-                        {
-                            cache.set(file.key, xml);
-                        }
-
-                        resolve(file);
-                    }
-                    else
-                    {
-                        reject(file);
-                    }
-
-                }).catch(file =>
-                {
-                    reject(file);
-                });
-            }
-        });
+        return (cache && (!cache.has(key) || !file.skipCache));
     };
 
-    return file;
+    const onload = async (file: IFile) =>
+    {
+        const data = await file.response.text();
+
+        const xml = ParseXML(data);
+
+        if (xml !== null)
+        {
+            file.data = xml;
+
+            if (!file.skipCache)
+            {
+                cache.set(key, xml);
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    };
+
+    return RequestFile(file, preload, onload, fileData);
 }
