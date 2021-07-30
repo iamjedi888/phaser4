@@ -4,7 +4,7 @@ export function GetURL (key: string, url: string, extension: string): string
 {
     if (!url)
     {
-        url = key + extension;
+        url = `${key}.${extension}`;
     }
 
     if ((/^(?:blob:|data:|http:\/\/|https:\/\/|\/\/)/).exec(url))
