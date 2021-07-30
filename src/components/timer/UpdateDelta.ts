@@ -1,3 +1,4 @@
+import { GameInstance } from '../../GameInstance';
 import { TimeComponent } from './TimeComponent';
 
 export function UpdateDelta (id: number, time: number): void
@@ -21,4 +22,6 @@ export function UpdateDelta (id: number, time: number): void
     TimeComponent.elapsed[id] += delta;
     TimeComponent.delta[id] = delta;
     TimeComponent.frame[id]++;
+
+    GameInstance.setFrame(TimeComponent.frame[id]);
 }
