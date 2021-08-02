@@ -153,6 +153,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const id = this.id;
 
+        //#ifdef RENDER_STATS
         window['renderStats'] = {
             gameFrame: RenderDataComponent.gameFrame[id],
             numChildren: RenderDataComponent.numChildren[id],
@@ -163,6 +164,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             rebuiltList: RenderDataComponent.rebuiltList[id],
             rebuiltWorld: RenderDataComponent.rebuiltWorld[id]
         };
+        //#endif
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
     }

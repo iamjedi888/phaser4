@@ -179,6 +179,7 @@ export class GameObject implements IGameObject
         return GetNumChildren(this.id);
     }
 
+    //#ifdef GET_DISPLAY_DATA
     getDisplayData (): { id: number, index: number, parent: number, world: number, worldDepth: number, numChildren: number, children: number[] }
     {
         const id = this.id;
@@ -193,6 +194,7 @@ export class GameObject implements IGameObject
             children: GameObjectTree.get(id)
         };
     }
+    //#endif
 
     toString (): string
     {
