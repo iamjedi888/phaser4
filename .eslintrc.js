@@ -77,7 +77,7 @@ module.exports = {
         "space-before-function-paren": "off",
         "space-in-parens": [ "error",  "never" ],
         "space-infix-ops": [ "error", { "int32Hint": true } ],
-        "spaced-comment": [ "error", "always", { "block": { "balanced": true, "exceptions": ["*", "!"] }} ],
+        "spaced-comment": [ "error", "always", { "line": { "markers": ["#ifdef", "#endif"] }, "block": { "balanced": true, "exceptions": ["*", "!"] }} ],
         "wrap-regex": "error",
         "@typescript-eslint/naming-convention": [
             "error",
