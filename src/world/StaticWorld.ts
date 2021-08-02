@@ -71,8 +71,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
-        // if (dirtyDisplayList || HasDirtyChild(id))
-        // {
+        if (dirtyDisplayList || HasDirtyChild(id))
+        {
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
             //  This will update the Transform2DComponent.world values.
@@ -81,7 +81,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             RenderDataComponent.rebuiltWorld[id] = 1;
 
             isDirty = true;
-        // }
+        }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
