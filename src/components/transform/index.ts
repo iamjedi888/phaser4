@@ -3,7 +3,6 @@ import { Extent2DComponent } from './Extent2DComponent';
 import { GetVertices } from './GetVertices';
 import { GetVerticesFromValues } from './GetVerticesFromValues';
 import { GlobalToLocal } from './GlobalToLocal';
-import { InvalidateTransform2DComponent } from './InvalidateTransform2DComponent';
 import { LocalToGlobal } from './LocalToGlobal';
 import { Origin } from './Origin';
 import { Position } from './Position';
@@ -24,7 +23,6 @@ export {
     GetVertices,
     GetVerticesFromValues,
     GlobalToLocal,
-    InvalidateTransform2DComponent,
     LocalToGlobal,
     Origin,
     Position,
