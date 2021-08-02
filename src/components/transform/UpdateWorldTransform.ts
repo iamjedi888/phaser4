@@ -1,4 +1,3 @@
-import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 import { CopyLocalToWorld } from './CopyLocalToWorld';
 import { CopyWorldToWorld } from './CopyWorldToWorld';
 import { GameObjectWorld } from '../../GameObjectWorld';
@@ -24,6 +23,4 @@ export function UpdateWorldTransform (id: number): void
     {
         MultiplyLocalWithWorld(parentID, id);
     }
-
-    ClearDirtyTransform(id);
 }
