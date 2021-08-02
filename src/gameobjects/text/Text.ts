@@ -1,7 +1,6 @@
 import { CanvasTexture } from '../../textures/types/CanvasTexture';
-import { DIRTY_CONST } from '../DIRTY_CONST';
-import { GameInstance } from '../../GameInstance';
 import { IContainer } from '../container/IContainer';
+import { RendererInstance } from '../../renderer/RendererInstance';
 import { Sprite } from '../sprite/Sprite';
 
 export type VerticalTextAlignment = 'ascent' | 'lineheight';
@@ -39,9 +38,9 @@ export class Text extends Sprite
     {
         super(x, y, CanvasTexture());
 
-        const game = GameInstance.get();
+        const renderer = RendererInstance.get();
 
-        this.resolution = game.renderer.resolution;
+        this.resolution = renderer.resolution;
 
         this.canvas = this.texture.image as HTMLCanvasElement;
         this.context = this.canvas.getContext('2d');
@@ -256,8 +255,6 @@ export class Text extends Sprite
         {
             this.texture.binding.update();
         }
-
-        // this.setDirty(DIRTY_CONST.TEXTURE);
 
         return this;
     }
