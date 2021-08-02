@@ -1,7 +1,6 @@
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GetWorldFromParentID } from '../components/hierarchy/GetWorldFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { InvalidateTransform2DComponent } from '../components/transform/InvalidateTransform2DComponent';
 import { IsValidParent } from './IsValidParent';
 import { RemoveChild } from './RemoveChild';
 import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
@@ -30,8 +29,6 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
 
             //  Always modify the array before calling SetParentID
             children.splice(index, 0, childID);
-
-            InvalidateTransform2DComponent(child.id);
 
             if (world)
             {
