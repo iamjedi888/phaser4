@@ -121,24 +121,31 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const list = this.renderList;
 
+        const [ x, y, right, bottom ] = camera.getBounds();
+
+        let rendered = 0;
+
         for (let i = 0; i < this.listLength; i += 2)
         {
             const eid = list[i];
             const type = list[i + 1];
             const entry = GameObjectCache.get(eid);
 
-            if (type === 2)
+            if (type === 1)
             {
-                entry.renderGL(renderPass);
+                //  We've already rendered this Game Object, so skip bounds checking
                 entry.postRenderGL(renderPass);
             }
-            else if (type === 1)
-            {
-                entry.postRenderGL(renderPass);
-            }
-            else
+            else if (BoundsIntersects(eid, x, y, right, bottom))
             {
                 entry.renderGL(renderPass);
+
+                if (type === 2)
+                {
+                    entry.postRenderGL(renderPass);
+                }
+
+                rendered++;
             }
         }
 
@@ -149,6 +156,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         window['renderStats'] = {
             gameFrame: RenderDataComponent.gameFrame[id],
             numChildren: RenderDataComponent.numChildren[id],
+            numRendererd: rendered,
             numRenderable: RenderDataComponent.numRenderable[id],
             dirtyLocal: RenderDataComponent.dirtyLocal[id],
             dirtyVertices: RenderDataComponent.dirtyVertices[id],
