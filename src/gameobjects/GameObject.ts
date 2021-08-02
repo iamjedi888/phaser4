@@ -10,14 +10,16 @@ import { GameObjectWorld } from '../GameObjectWorld';
 import { GetChildrenFromParentID } from '../components/hierarchy/GetChildrenFromParentID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { GetParentGameObject } from '../components/hierarchy/GetParentGameObject';
+import { GetVisible } from '../components/permissions/GetVisible';
+import { GetVisibleChildren } from '../components/permissions/GetVisibleChildren';
 import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
-import { PermissionsComponent } from '../components/permissions/PermissionsComponent';
 import { ReparentChildren } from '../display/ReparentChildren';
-import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
+import { SetVisible } from '../components/permissions/SetVisible';
+import { SetVisibleChildren } from '../components/permissions/SetVisibleChildren';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillUpdate } from '../components/permissions/WillUpdate';
 import { WillUpdateChildren } from '../components/permissions/WillUpdateChildren';
@@ -122,26 +124,22 @@ export class GameObject implements IGameObject
 
     set visible (value: boolean)
     {
-        PermissionsComponent.visible[this.id] = Number(value);
-
-        SetDirtyParents(this.id);
+        SetVisible(value, this.id);
     }
 
     get visible (): boolean
     {
-        return Boolean(PermissionsComponent.visible[this.id]);
+        return GetVisible(this.id);
     }
 
     set visibleChildren (value: boolean)
     {
-        PermissionsComponent.visibleChildren[this.id] = Number(value);
-
-        SetDirtyParents(this.id);
+        SetVisibleChildren(value, this.id);
     }
 
     get visibleChildren (): boolean
     {
-        return Boolean(PermissionsComponent.visibleChildren[this.id]);
+        return GetVisibleChildren(this.id);
     }
 
     set depth (value: number)
