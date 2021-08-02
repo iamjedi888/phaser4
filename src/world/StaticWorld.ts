@@ -67,14 +67,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
+        let isDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
-        let isDirty = false;
-
-        if (dirtyDisplayList || HasDirtyChild(id))
-        {
+        // if (dirtyDisplayList || HasDirtyChild(id))
+        // {
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
             //  This will update the Transform2DComponent.world values.
@@ -83,7 +81,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             RenderDataComponent.rebuiltWorld[id] = 1;
 
             isDirty = true;
-        }
+        // }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
@@ -117,14 +115,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         Emit(this, WorldEvents.WorldRenderEvent, this);
 
-        const camera = renderPass.current2DCamera;
-
-        // const camera = this.camera;
-
-        // if (!currentCamera || !Mat2dEquals(camera.worldTransform, currentCamera.worldTransform))
-        // {
-        //     Flush(renderPass);
-        // }
+        const camera = this.camera;
 
         Begin(renderPass, camera);
 

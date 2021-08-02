@@ -20,7 +20,7 @@ const updateVertexPositionSystem = defineSystem(world =>
 
         if (gameFrame > Transform2DComponent.dirty[id])
         {
-            continue;
+            // continue;
         }
 
         const [ a, b, c, d, tx, ty ] = Transform2DComponent.world[id];

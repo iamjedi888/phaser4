@@ -1,4 +1,4 @@
-import { AddTransform2DComponent, Position, Size } from '../components/transform';
+import { AddTransform2DComponent, Position, Size, Transform2DComponent } from '../components/transform';
 import { addEntity, removeComponent, removeEntity } from 'bitecs';
 
 import { AddBoundsComponent } from '../components/bounds/AddBoundsComponent';
@@ -119,6 +119,7 @@ export class WorldCamera implements IStaticCamera
     {
         const id = this.id;
 
+        removeComponent(GameObjectWorld, Transform2DComponent, id);
         removeComponent(GameObjectWorld, Matrix4Component, id);
         removeComponent(GameObjectWorld, BoundsComponent, id);
 

@@ -1,3 +1,4 @@
+import { GameInstance } from '../../GameInstance';
 import { IVec2 } from '../../math/vec2/IVec2';
 import { Transform2DComponent } from './Transform2DComponent';
 
@@ -24,6 +25,7 @@ export class Skew implements IVec2
     set x (value: number)
     {
         Transform2DComponent.skewX[this.id] = value;
+        Transform2DComponent.dirty[this.id] = GameInstance.getFrame();
     }
 
     get x (): number
@@ -34,6 +36,7 @@ export class Skew implements IVec2
     set y (value: number)
     {
         Transform2DComponent.skewY[this.id] = value;
+        Transform2DComponent.dirty[this.id] = GameInstance.getFrame();
     }
 
     get y (): number

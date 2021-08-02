@@ -2,6 +2,7 @@ import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
 import { AddTransform2DComponent } from '../../components/transform/AddTransform2DComponent';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
+import { GameInstance } from '../../GameInstance';
 import { GameObject } from '../GameObject';
 import { GetDefaultOriginX } from '../../config/defaultorigin/GetDefaultOriginX';
 import { GetDefaultOriginY } from '../../config/defaultorigin/GetDefaultOriginY';
@@ -97,6 +98,7 @@ export class Container extends GameObject implements IContainer
     set rotation (value: number)
     {
         Transform2DComponent.rotation[this.id] = value;
+        Transform2DComponent.dirty[this.id] = GameInstance.getFrame();
     }
 
     get rotation (): number
