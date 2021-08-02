@@ -1,18 +1,16 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
-import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
-import { ColorComponent } from '../../components/color/ColorComponent';
+import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { Container } from '../container/Container';
+import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
-import { IRectangle } from './IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
-import { SetTint } from '../../components/color/SetTint';
 import { Texture } from '../../textures/Texture';
 import { WhiteTexture } from '../../textures';
 import { WillRender } from '../../components/permissions/WillRender';
 
-export class Rectangle extends Container implements IRectangle
+export class Rectangle extends Container
 {
     readonly type: string = 'Rectangle';
 
@@ -36,14 +34,7 @@ export class Rectangle extends Container implements IRectangle
 
         this.size.set(width, height);
 
-        this.tint = color;
-    }
-
-    setColor (color: number): this
-    {
-        this.tint = color;
-
-        return this;
+        this.color.tint = color;
     }
 
     isRenderable (): boolean
@@ -53,7 +44,30 @@ export class Rectangle extends Container implements IRectangle
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
-        BatchTexturedQuad(this.texture, this.id, renderPass);
+        const color = this.color;
+
+        if (this.shader)
+        {
+            Flush(renderPass);
+
+            renderPass.shader.set(this.shader, 0);
+        }
+
+        if (color.colorMatrixEnabled)
+        {
+            renderPass.colorMatrix.set(color);
+        }
+
+        this.preRenderGL(renderPass);
+
+        BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
+
+        if (color.colorMatrixEnabled && !color.willColorChildren)
+        {
+            Flush(renderPass);
+
+            renderPass.colorMatrix.pop();
+        }
     }
 
     renderCanvas <T extends ICanvasRenderer> (renderer: T): void
@@ -61,16 +75,6 @@ export class Rectangle extends Container implements IRectangle
         // PreRenderVertices(this);
 
         // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
-    }
-
-    get tint (): number
-    {
-        return ColorComponent.tint[this.id];
-    }
-
-    set tint (value: number)
-    {
-        SetTint(this.id, value);
     }
 
     destroy (reparentChildren?: IGameObject): void
