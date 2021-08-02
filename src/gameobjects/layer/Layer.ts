@@ -1,4 +1,5 @@
 import { GameObject } from '../GameObject';
+import { SetWillTransformChildren } from '../../components/permissions/SetWillTransformChildren';
 
 //  A Layer is a way of grouping Game Objects together, without impacting their
 //  transforms. Children of a Layer do not inherit the layers transform, however
@@ -10,7 +11,6 @@ export class Layer extends GameObject
     {
         super();
 
-        this.passthru = true;
-        this.willRender = false;
+        SetWillTransformChildren(false, this);
     }
 }
