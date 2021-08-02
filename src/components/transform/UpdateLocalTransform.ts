@@ -1,7 +1,7 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
-import { GameInstance } from '../../GameInstance';
 import { GetParentID } from '../hierarchy/GetParentID';
+import { HasDirtyTransform } from '../dirty';
 import { RenderDataComponent } from '../../world';
 import { SetDirtyChild } from '../dirty/SetDirtyChild';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
@@ -14,15 +14,14 @@ let total: number = 0;
 const system = defineSystem(world =>
 {
     let prevParent: number = 0;
-    const gameFrame = GameInstance.getFrame();
 
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
 
-        if (gameFrame > Transform2DComponent.dirty[id])
+        if (!HasDirtyTransform(id))
         {
-            // continue;
+            continue;
         }
 
         const x = Transform2DComponent.x[id];
@@ -68,9 +67,12 @@ export const UpdateLocalTransform = (id: number, world: IWorld, query: Query): b
 
     if (entities.length > 0)
     {
-        SetDirtyChild(id);
-
         system(world);
+    }
+
+    if (total > 0)
+    {
+        SetDirtyChild(id);
     }
 
     //  TODO - Move this to the World instance, so other entities can use this system

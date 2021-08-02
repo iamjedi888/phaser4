@@ -1,8 +1,8 @@
+import { ClearDirtyTransform, HasDirtyTransform } from '../dirty';
 import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { BoundsComponent } from '../bounds/BoundsComponent';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
-import { GameInstance } from '../../GameInstance';
 import { RenderDataComponent } from '../../world';
 import { SetQuadPosition } from './SetQuadPosition';
 import { Transform2DComponent } from '../transform';
@@ -12,15 +12,13 @@ let total: number = 0;
 
 const updateVertexPositionSystem = defineSystem(world =>
 {
-    const gameFrame = GameInstance.getFrame();
-
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
 
-        if (gameFrame > Transform2DComponent.dirty[id])
+        if (!HasDirtyTransform(id))
         {
-            // continue;
+            continue;
         }
 
         const [ a, b, c, d, tx, ty ] = Transform2DComponent.world[id];
@@ -57,6 +55,8 @@ const updateVertexPositionSystem = defineSystem(world =>
         bounds[2] = br;
         bounds[3] = bb;
 
+        ClearDirtyTransform(id);
+
         total++;
     }
 
@@ -79,6 +79,8 @@ export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Que
     {
         updateVertexPositionSystem(world);
     }
+
+    ClearDirtyTransform(id);
 
     RenderDataComponent.dirtyVertices[id] = total;
 };
