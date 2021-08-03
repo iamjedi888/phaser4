@@ -1,6 +1,7 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
+import { DrawTexturedQuad } from '../../renderer/webgl1/draw';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
 import { GameObjectWorld } from '../../GameObjectWorld';
@@ -86,6 +87,8 @@ export class RenderLayer extends Layer implements IRenderLayer
             SetDirtyParents(id);
         }
 
-        BatchTexturedQuad(this.texture, id, renderPass);
+        DrawTexturedQuad(renderPass, this.texture);
+
+        // BatchTexturedQuad(this.texture, id, renderPass);
     }
 }
