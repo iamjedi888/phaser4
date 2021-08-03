@@ -42,7 +42,11 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
 
         if (shaders.length === 0)
         {
-            BatchTexturedQuadBuffer(texture, id, renderPass);
+            renderPass.textures.clear();
+
+            DrawTexturedQuad(renderPass, texture);
+
+            // BatchTexturedQuadBuffer(texture, id, renderPass);
         }
         else
         {
