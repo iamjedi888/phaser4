@@ -1,4 +1,4 @@
-import { BatchTexturedQuad } from '../../renderer/webgl1/draw/BatchTexturedQuad';
+import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { IEffectLayer } from './IEffectLayer';
@@ -42,7 +42,7 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
 
         if (shaders.length === 0)
         {
-            BatchTexturedQuad(texture, id, renderPass);
+            BatchTexturedQuadBuffer(texture, id, renderPass);
         }
         else
         {

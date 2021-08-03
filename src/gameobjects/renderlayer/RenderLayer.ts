@@ -63,12 +63,12 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         const id = this.id;
 
-        if (this.getNumChildren() && (!WillCacheChildren(id) || HasDirtyChildCache(id)))
-        {
+        // if (this.getNumChildren() && (!WillCacheChildren(id) || HasDirtyChildCache(id)))
+        // {
             Flush(renderPass);
 
             renderPass.framebuffer.set(this.framebuffer, true);
-        }
+        // }
     }
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
