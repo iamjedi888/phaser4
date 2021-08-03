@@ -4,7 +4,6 @@ import { FramebufferStack } from './FramebufferStack';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IShader } from '../shaders/IShader';
 import { IStaticCamera } from '../../../camera/IStaticCamera';
-import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { ShaderStack } from './ShaderStack';
 import { TextureStack } from './TextureStack';
@@ -30,7 +29,6 @@ export interface IRenderPass
     colorMatrix: ColorMatrixStack;
 
     quadShader: IShader;
-    quadBuffer: IVertexBuffer;
     quadCamera: IStaticCamera;
 
     current2DCamera: IBaseCamera;

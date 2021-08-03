@@ -8,10 +8,7 @@ import { GetMaxTextures } from '../../../config/maxtextures/GetMaxTextures';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
 import { IShader } from '../shaders/IShader';
-import { IStaticCamera } from '../../../camera/IStaticCamera';
-import { IVertexBuffer } from '../buffers/IVertexBuffer';
 import { IWebGLRenderer } from '../IWebGLRenderer';
-import { IndexedVertexBuffer } from '../buffers/IndexedVertexBuffer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
 import { QuadShader } from '../shaders/QuadShader';
@@ -44,7 +41,6 @@ export class RenderPass implements IRenderPass
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
-    quadBuffer: IVertexBuffer;
     quadCamera: IBaseCamera;
 
     //  Current 2D Camera
@@ -89,8 +85,7 @@ export class RenderPass implements IRenderPass
 
         //  Default QuadShader (for FBO drawing)
 
-        // this.quadShader = new QuadShader();
-        // this.quadBuffer = new IndexedVertexBuffer({ name: 'quad', isDynamic: false, indexLayout: [ 0, 1, 2, 2, 3, 0 ] });
+        this.quadShader = new QuadShader();
         this.quadCamera = new StaticCamera(this.renderer.width, this.renderer.height);
 
         //  Default settings
