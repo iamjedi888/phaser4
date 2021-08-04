@@ -7,7 +7,12 @@ import { gl } from '../GL';
 
 export function CreateTempTextures (): Array<[ number, WebGLTexture ]>
 {
+    //  Note: This is the maximum number of TIUs that a _fragment_ shader supports
+    //  https://www.khronos.org/opengl/wiki/Common_Mistakes#Texture_Unit
     let maxGPUTextures: number = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    let maxCombinedGPUTextures: number = gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+
+    console.log('MAX GPU', maxGPUTextures, 'MAX COMBINED', maxCombinedGPUTextures);
 
     const maxConfigTextures = GetMaxTextures();
 
