@@ -63,8 +63,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     //  if this World will render or not (i.e. all children are outside viewport)
     preRender (gameFrame: number): boolean
     {
-        console.log('World.preRender', gameFrame);
-
         const id = this.id;
 
         ResetWorldRenderData(id, gameFrame);
@@ -78,8 +76,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
-        // if (dirtyDisplayList || HasDirtyChild(id))
-        // {
+        if (dirtyDisplayList || HasDirtyChild(id))
+        {
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
             //  This will update the Transform2DComponent.world values.
@@ -88,7 +86,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             RenderDataComponent.rebuiltWorld[id] = 1;
 
             isDirty = true;
-        // }
+        }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
