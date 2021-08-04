@@ -16,6 +16,8 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
     //  Clear out anything already in the batch
     Flush(renderPass);
 
+    renderPass.textures.clear();
+
     renderPass.textures.bind(texture, 0);
 
     renderPass.shader.set(shader, 0);
