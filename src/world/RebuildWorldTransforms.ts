@@ -7,7 +7,6 @@ import { Transform2DComponent } from '../components/transform/Transform2DCompone
 import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
-import { WillTransformChildren } from '../components/permissions/WillTransformChildren';
 import { hasComponent } from 'bitecs';
 
 export function RebuildWorldTransforms (world: IBaseWorld, parent: number, forceUpdate: boolean): void
@@ -34,7 +33,7 @@ export function RebuildWorldTransforms (world: IBaseWorld, parent: number, force
             {
                 if (GetNumChildren(nodeID) > 0)
                 {
-                    if (WillRenderChildren(nodeID) && WillTransformChildren(nodeID))
+                    if (WillRenderChildren(nodeID))
                     {
                         RebuildWorldTransforms(world, nodeID, forceUpdate);
                     }
