@@ -9,10 +9,11 @@ export function AddQuadVertex (id: number, width: number = 0, height: number = 0
 {
     addComponent(GameObjectWorld, QuadVertexComponent, id);
 
+    SetUV(id, 0, 0, 1, 1);
+    SetQuadColor(id, 0, 0, 0, 1);
+
     if (width || height)
     {
-        SetQuadColor(id, 1, 1, 1, 1);
         SetQuadPosition(id, 0, 0, 0, height, width, height, width, 0);
-        SetUV(id, 0, 0, 1, 1);
     }
 }
