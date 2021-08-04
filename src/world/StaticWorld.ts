@@ -7,6 +7,7 @@ import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
+import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -17,6 +18,7 @@ import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
+import { QuadVertexComponent } from '../components/vertices';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RenderDataComponent } from './RenderDataComponent';
@@ -26,6 +28,7 @@ import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
+import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -39,6 +42,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     declare camera: IStaticCamera;
 
+    private colorQuery: Query;
     private transformQuery: Query;
 
     constructor (scene: IScene)
@@ -47,6 +51,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const tag = this.tag;
 
+        this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
         this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
 
         const renderer = RendererInstance.get();
@@ -58,6 +63,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     //  if this World will render or not (i.e. all children are outside viewport)
     preRender (gameFrame: number): boolean
     {
+        console.log('World.preRender', gameFrame);
+
         const id = this.id;
 
         ResetWorldRenderData(id, gameFrame);
@@ -71,8 +78,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
-        if (dirtyDisplayList || HasDirtyChild(id))
-        {
+        // if (dirtyDisplayList || HasDirtyChild(id))
+        // {
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
             //  This will update the Transform2DComponent.world values.
@@ -81,7 +88,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             RenderDataComponent.rebuiltWorld[id] = 1;
 
             isDirty = true;
-        }
+        // }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
@@ -99,6 +106,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             isDirty = true;
         }
+
+        UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
         //  By this point we've got a fully rebuilt World, where all dirty Game Objects have been
         //  refreshed and had their coordinates moved to their quad vertices.
