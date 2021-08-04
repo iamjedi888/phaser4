@@ -7,6 +7,7 @@ import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
+import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
@@ -15,12 +16,14 @@ import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
+import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { RenderDataComponent } from './RenderDataComponent';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { Transform2DSystem } from '../components/transform/Transform2DSystem';
+import { UpdateQuadColorSystem } from '../components/color';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillRender } from '../components/permissions/WillRender';
 import { WorldCamera } from '../camera/WorldCamera';
@@ -31,6 +34,7 @@ export class FlatWorld extends BaseWorld
 
     declare camera: WorldCamera;
 
+    private colorQuery: Query;
     private transformQuery: Query;
 
     constructor (scene: IScene)
@@ -39,10 +43,8 @@ export class FlatWorld extends BaseWorld
 
         const tag = this.tag;
 
+        this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
         this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
-
-        //  The above is MUCH faster! Wait for new bitecs test version.
-        // this.transformQuery = defineQuery([ tag, Changed(Transform2DComponent) ]);
 
         const renderer = RendererInstance.get();
 
@@ -88,6 +90,8 @@ export class FlatWorld extends BaseWorld
 
             isDirty = true;
         }
+
+        UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
         //  By this point we've got a fully rebuilt World, where all dirty Game Objects have been
         //  refreshed and had their coordinates moved to their quad vertices.
