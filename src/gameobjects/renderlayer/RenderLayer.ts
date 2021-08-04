@@ -4,6 +4,7 @@ import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCach
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
+import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetHeight } from '../../config/size/GetHeight';
 import { GetResolution } from '../../config/size/GetResolution';
 import { GetWidth } from '../../config/size/GetWidth';
@@ -11,8 +12,10 @@ import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
+import { QuadVertexComponent } from '../../components/vertices/QuadVertexComponent';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
+import { SetWillRenderChildren } from '../../components/permissions';
 import { Texture } from '../../textures/Texture';
 import { WillCacheChildren } from '../../components/permissions/WillCacheChildren';
 
@@ -35,6 +38,7 @@ export class RenderLayer extends Layer implements IRenderLayer
         super();
 
         SetWillCacheChildren(true, this);
+        SetWillRenderChildren(true, this);
 
         const width = GetWidth();
         const height = GetHeight();
@@ -76,6 +80,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         if (WillCacheChildren(id) && HasDirtyChildCache(id))
         {
+            console.log('RL2');
             Flush(renderPass);
 
             renderPass.framebuffer.pop();
@@ -86,11 +91,14 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             //  Otherwise, we have to use this:
             DrawTexturedQuad(renderPass, this.texture);
+
+            // console.log(QuadVertexComponent.values[this.id]);
         }
         else
         {
             //  If we didn't draw to the FBO this frame we can use this:
-            BatchTexturedQuadBuffer(this.texture, id, renderPass);
+            // DrawTexturedQuad(renderPass, this.texture);
+            // BatchTexturedQuadBuffer(this.texture, id, renderPass);
         }
     }
 }

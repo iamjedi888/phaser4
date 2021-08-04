@@ -35,20 +35,20 @@ export function RebuildWorldList (world: IBaseWorld, parent: number, worldDepth:
             {
                 if (GetNumChildren(nodeID) > 0 && WillRenderChildren(nodeID))
                 {
-                    //  Is a Child Cache, like a Render Layer, or doesn't cache children, like a Container
-                    if (!WillCacheChildren(nodeID) || HasDirtyChildCache(nodeID))
+                    //  A Container *won't* cache children, but a RenderLayer *will* cache children
+                    if (!WillCacheChildren(nodeID) || (WillCacheChildren(nodeID) && HasDirtyChildCache(nodeID)))
                     {
                         SetWorldDepth(nodeID, worldDepth);
 
                         RebuildWorldList(world, nodeID, worldDepth + 1);
                     }
-                    else
-                    {
-                        SetWorldDepth(nodeID, worldDepth);
+                     // else
+                    // {
+                    //     SetWorldDepth(nodeID, worldDepth);
 
-                        AddToRenderList(world, nodeID, 0);
-                        AddToRenderList(world, nodeID, 1);
-                    }
+                    //     AddToRenderList(world, nodeID, 0);
+                    //     AddToRenderList(world, nodeID, 1);
+                    // }
                 }
                 else if (!WillCacheChildren(nodeID))
                 {

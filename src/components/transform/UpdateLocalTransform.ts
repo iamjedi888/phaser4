@@ -1,11 +1,8 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { GetParentID } from '../hierarchy/GetParentID';
-import { HasDirtyTransform } from '../dirty';
-import { RenderDataComponent } from '../../world';
-import { SetDirtyChild } from '../dirty/SetDirtyChild';
+import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
-import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];
@@ -41,13 +38,13 @@ const system = defineSystem(world =>
         local[4] = x;
         local[5] = y;
 
-        SetDirtyTransform(id);
+        const parentID = GetParentID(id);
 
-        if (GetParentID(id) !== prevParent)
+        if (parentID !== prevParent)
         {
             SetDirtyParents(id);
 
-            prevParent = GetParentID(id);
+            prevParent = parentID;
         }
 
         total++;
@@ -60,7 +57,7 @@ const system = defineSystem(world =>
 //  are passed through this system and have their LocalMatrix2DComponent values set +
 //  SetDirtyTransform + SetDirtyParents (which includes SetDirtyDisplayList for the World)
 
-export const UpdateLocalTransform = (id: number, world: IWorld, query: Query): boolean =>
+export const UpdateLocalTransform = (id: number, world: IWorld, query: Query): number =>
 {
     total = 0;
     entities = query(world);
@@ -70,13 +67,5 @@ export const UpdateLocalTransform = (id: number, world: IWorld, query: Query): b
         system(world);
     }
 
-    if (total > 0)
-    {
-        SetDirtyChild(id);
-    }
-
-    //  TODO - Move this to the World instance, so other entities can use this system
-    RenderDataComponent.dirtyLocal[id] = total;
-
-    return total > 0;
+    return total;
 };

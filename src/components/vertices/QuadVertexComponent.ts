@@ -80,8 +80,6 @@ import { Types, defineComponent } from 'bitecs';
  * 53 - Alpha Component
  */
 
-const QuadVertex = defineComponent({
+export const QuadVertexComponent = defineComponent({
     values: [ Types.f32, 54 ]
 });
-
-export const QuadVertexComponent = QuadVertex;

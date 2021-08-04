@@ -72,11 +72,13 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        let isDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
+        const totalDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
+
+        RenderDataComponent.dirtyLocal[id] = totalDirty;
 
         const dirtyDisplayList = HasDirtyDisplayList(id);
 
-        if (dirtyDisplayList || HasDirtyChild(id))
+        if (dirtyDisplayList || totalDirty > 0)
         {
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
@@ -85,11 +87,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             RenderDataComponent.rebuiltWorld[id] = 1;
 
-            isDirty = true;
+            // isDirty = true;
         }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
+        /*
         if (dirtyDisplayList)
         {
             this.listLength = 0;
@@ -104,6 +107,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             isDirty = true;
         }
+        */
 
         UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
@@ -126,9 +130,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         Begin(renderPass, camera);
 
-        const list = this.renderList;
-
         const [ x, y, right, bottom ] = camera.getBounds();
+
+        /*
+        const list = this.renderList;
 
         let rendered = 0;
 
@@ -155,6 +160,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 rendered++;
             }
         }
+        */
 
         PopColor(renderPass, this.color);
 
