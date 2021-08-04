@@ -1,7 +1,7 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
-import { GameInstance } from '../../GameInstance';
-import { RenderDataComponent } from '../../world';
+import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
+import { RenderDataComponent } from '../../world/RenderDataComponent';
 import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];
@@ -9,13 +9,11 @@ let total: number = 0;
 
 const system = defineSystem(world =>
 {
-    const gameFrame = GameInstance.getFrame();
-
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
 
-        if (gameFrame > Transform2DComponent.dirty[id])
+        if (!HasDirtyTransform(id))
         {
             continue;
         }
