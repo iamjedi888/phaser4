@@ -1,11 +1,12 @@
-import { ClearDirtyTransform, HasDirtyTransform } from '../dirty';
 import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { BoundsComponent } from '../bounds/BoundsComponent';
+import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 import { Extent2DComponent } from '../transform/Extent2DComponent';
-import { RenderDataComponent } from '../../world';
+import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
+import { RenderDataComponent } from '../../world/RenderDataComponent';
 import { SetQuadPosition } from './SetQuadPosition';
-import { Transform2DComponent } from '../transform';
+import { Transform2DComponent } from '../transform/Transform2DComponent';
 
 let entities: number[];
 let total: number = 0;
