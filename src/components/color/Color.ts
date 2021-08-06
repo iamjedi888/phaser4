@@ -1,6 +1,7 @@
 import { AddColorComponent } from './AddColorComponent';
 import { ColorComponent } from './ColorComponent';
 import { PermissionsComponent } from '../permissions/PermissionsComponent';
+import { SetDirtyColor } from '../dirty';
 
 //  red, green, blue in the range 0-255
 //  alpha in the range 0-1
@@ -58,6 +59,8 @@ export class Color
     {
         ColorComponent.colorMatrix[this.id].set(value);
 
+        SetDirtyColor(this.id);
+
         this.colorMatrixEnabled = true;
     }
 
@@ -70,6 +73,8 @@ export class Color
     set colorOffset (value: Float32List)
     {
         ColorComponent.colorOffset[this.id].set(value);
+
+        SetDirtyColor(this.id);
     }
 
     get colorOffset (): Float32Array
@@ -81,6 +86,8 @@ export class Color
     set red (value: number)
     {
         ColorComponent.r[this.id] = value;
+
+        SetDirtyColor(this.id);
     }
 
     get red (): number
@@ -91,6 +98,8 @@ export class Color
     set green (value: number)
     {
         ColorComponent.g[this.id] = value;
+
+        SetDirtyColor(this.id);
     }
 
     get green (): number
@@ -101,6 +110,8 @@ export class Color
     set blue (value: number)
     {
         ColorComponent.b[this.id] = value;
+
+        SetDirtyColor(this.id);
     }
 
     get blue (): number
@@ -111,6 +122,8 @@ export class Color
     set alpha (value: number)
     {
         ColorComponent.a[this.id] = value;
+
+        SetDirtyColor(this.id);
     }
 
     get alpha (): number

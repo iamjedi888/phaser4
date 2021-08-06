@@ -1,6 +1,8 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
+import { ClearDirtyColor } from '../dirty/ClearDirtyColor';
 import { ColorComponent } from './ColorComponent';
+import { HasDirtyColor } from '../dirty/HasDirtyColor';
 import { SetQuadColor } from '../vertices/SetQuadColor';
 
 let entities: number[];
@@ -12,22 +14,25 @@ const system = defineSystem(world =>
     {
         const id = entities[i];
 
-        //  TODO - Only do this if colors are dirty!
+        if (HasDirtyColor(id))
+        {
+            const r = ColorComponent.r[id] / 255;
+            const g = ColorComponent.g[id] / 255;
+            const b = ColorComponent.b[id] / 255;
+            const a = ColorComponent.a[id];
 
-        const r = ColorComponent.r[id] / 255;
-        const g = ColorComponent.g[id] / 255;
-        const b = ColorComponent.b[id] / 255;
-        const a = ColorComponent.a[id];
+            SetQuadColor(id, r, g, b, a);
 
-        SetQuadColor(id, r, g, b, a);
+            total++;
 
-        total++;
+            ClearDirtyColor(id);
+        }
     }
 
     return world;
 });
 
-export const UpdateQuadColorSystem = (id: number, world: IWorld, query: Query): boolean =>
+export const UpdateQuadColorSystem = (id: number, world: IWorld, query: Query): number =>
 {
     total = 0;
     entities = query(world);
@@ -37,13 +42,5 @@ export const UpdateQuadColorSystem = (id: number, world: IWorld, query: Query): 
         system(world);
     }
 
-    if (total > 0)
-    {
-        // SetDirtyChild(id);
-    }
-
-    //  TODO - Move this to the World instance, so other entities can use this system
-    // RenderDataComponent.dirtyLocal[id] = total;
-
-    return total > 0;
+    return total;
 };
