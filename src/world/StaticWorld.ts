@@ -98,19 +98,18 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             this.getNumChildren();
 
-            ClearDirtyDisplayList(id);
+            // ClearDirtyDisplayList(id);
 
             // isDirty = true;
         }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
-        /*
         if (dirtyDisplayList)
         {
             this.listLength = 0;
 
-            RebuildWorldList(this, id, 0);
+            RebuildWorldList(this, id);
 
             RenderDataComponent.numChildren[id] = this.getNumChildren();
             RenderDataComponent.numRenderable[id] = this.listLength / 4;
@@ -118,9 +117,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             ClearDirtyDisplayList(id);
 
-            isDirty = true;
+            // isDirty = true;
         }
-        */
 
         UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
@@ -196,7 +194,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         this.rendered = 0;
 
-        this.runRender(renderPass, this.id, x, y, right, bottom);
+        // this.runRender(renderPass, this.id, x, y, right, bottom);
 
         // const children = GameObjectTree.get(this.id);
 
@@ -205,10 +203,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
 
 
-        /*
         const list = this.renderList;
 
-        let rendered = 0;
+        // let rendered = 0;
 
         for (let i = 0; i < this.listLength; i += 2)
         {
@@ -230,10 +227,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     entry.postRenderGL(renderPass);
                 }
 
-                rendered++;
+                this.rendered++;
             }
         }
-        */
 
         PopColor(renderPass, this.color);
 
