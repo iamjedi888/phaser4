@@ -3,7 +3,7 @@
         "moduleResolution": "node",
         "target": "esnext",
         "module": "es2015",
-        "lib": [ "dom", "es5", "es6", "es7", "esnext" ],
+        "lib": [ "dom", "es5", "es6", "es7", "esnext", "WebWorker", "WebWorker.ImportScripts", "Webworker.Iterable" ],
         "outDir": "./dist",
         "declarationDir": "./dist",
         "emitDeclarationOnly": true,
