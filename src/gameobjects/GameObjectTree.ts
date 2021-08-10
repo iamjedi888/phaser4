@@ -1,24 +1,24 @@
-const local: Array<number[]> = [];
-
 export const GameObjectTree = {
+
+    local: <Array<number[]>>[],
 
     set: function (index: number, object: number[]): void
     {
-        local[index] = object;
+        this.local[index] = object;
     },
 
     get: function (index: number): number[]
     {
-        return local[index];
+        return this.local[index];
     },
 
     clear: function (): void
     {
-        local.length = 0;
+        this.local.length = 0;
     },
 
     remove: function (index: number): void
     {
-        local[index] = null;
+        this.local[index] = null;
     }
 };
