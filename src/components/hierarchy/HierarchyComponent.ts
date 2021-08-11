@@ -5,7 +5,7 @@ import { Types, defineComponent } from 'bitecs';
 //  numChildren = The number of direct descendants this entity has
 //  depth = Reserved to allow for per-child depth sorting outside of the display list index
 //  index = The position of this entity compared to its siblings, i.e. index 0 is at the back, index 1 above that, etc
-//  worldDepth = The distance of the entity from the world root (up to a maximum depth of 65535)
+//  worldDepth = The distance of the entity from the world root (up to a maximum depth of WORLD_HEIGHT)
 
 const Hierarchy = defineComponent({
     worldID: Types.ui32,
@@ -13,7 +13,7 @@ const Hierarchy = defineComponent({
     numChildren: Types.ui32,
     depth: Types.ui32,
     index: Types.ui32,
-    worldDepth: Types.ui16
+    worldIndex: Types.ui32
 });
 
 export const HierarchyComponent = Hierarchy;
