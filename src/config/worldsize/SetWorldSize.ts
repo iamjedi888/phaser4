@@ -5,9 +5,9 @@ import { ConfigStore } from '../ConfigStore';
 //  These values  are the total number of Game Objects allowed per width and the total depth of nesting they can have.
 //  It is NOT the pixel size of the world.
 
-export function SetWorldSize (width: number = 8388607, height: number = 512): void
+export function SetWorldSize (width: number = 17592186, height: number = 512): void
 {
-    if (width * height > 4294967295)
+    if (width * height > 9007199254)
     {
         throw new Error('Invalid world size');
     }
