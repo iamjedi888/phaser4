@@ -1,9 +1,9 @@
 import { SetWorldSize } from './SetWorldSize';
 
-export function WorldSize (size: number): () => void
+export function WorldSize (width: number, height: number): () => void
 {
     return (): void =>
     {
-        SetWorldSize(size);
+        SetWorldSize(width, height);
     };
 }

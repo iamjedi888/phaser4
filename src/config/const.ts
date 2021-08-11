@@ -14,5 +14,7 @@ export const CONFIG_DEFAULTS = {
     SIZE: 'Size',
     WEBGL_CONTEXT: 'WebGLContext',
     WEBGL: 'WebGL',
-    WORLD_SIZE: 'WorldSize'
+    WORLD_SIZE: 'WorldSize',
+    WORLD_WIDTH: 'WorldWidth',
+    WORLD_HEIGHT: 'WorldHeight'
 };

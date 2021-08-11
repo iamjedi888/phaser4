@@ -12,7 +12,7 @@ import { SetWorldSize } from './worldsize/SetWorldSize';
 export function SetConfigDefaults (): void
 {
     SetBackgroundColor(0);
-    SetBatchSize(4096);
+    SetBatchSize(2048);
     SetBanner('Phaser', '4.0.0', 'https://phaser4.io');
     SetMaxTextures(0);
     SetDefaultOrigin(0.5, 0.5);
@@ -22,5 +22,5 @@ export function SetConfigDefaults (): void
         desynchronized: true,
         preserveDrawingBuffer: true
     });
-    SetWorldSize(512);
+    SetWorldSize();
 }
