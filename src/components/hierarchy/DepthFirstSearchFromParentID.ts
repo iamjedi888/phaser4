@@ -1,8 +1,8 @@
 import { GameObjectTree } from '../../gameobjects/GameObjectTree';
 
-//  Returns ALL children IDs based on the given Parent, to any depth
+//  Returns ALL child IDs based on the given Parent, to any depth
 
-export function DepthFirstSearchFromParentID (parentID: number): number[]
+export function DepthFirstSearchFromParentID (parentID: number, removeParent: boolean = true): number[]
 {
     const stack: number[] = [ parentID ];
     const output: number[] = [];
@@ -27,7 +27,10 @@ export function DepthFirstSearchFromParentID (parentID: number): number[]
     }
 
     //  Remove the parent from the results
-    output.shift();
+    if (removeParent)
+    {
+        output.shift();
+    }
 
     return output;
 }
