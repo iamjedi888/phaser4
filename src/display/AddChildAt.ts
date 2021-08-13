@@ -30,16 +30,16 @@ export function AddChildAt <P extends IGameObject, C extends IGameObject> (paren
             //  Always modify the array before calling SetParentID
             children.splice(index, 0, childID);
 
-            if (world)
-            {
-                SetWorld(world, child);
-            }
-
             SetParentID(childID, parentID);
 
             UpdateIndexes(childID);
 
             SetDirtyParents(childID);
+
+            if (world)
+            {
+                SetWorld(world, child);
+            }
         }
     }
 
