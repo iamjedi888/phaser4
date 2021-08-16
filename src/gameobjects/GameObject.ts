@@ -156,11 +156,11 @@ export class GameObject implements IGameObject
     {
         if (id)
         {
-            return (HierarchyComponent.parentID[this.id] === id);
+            return (HierarchyComponent.parent[this.id] === id);
         }
         else
         {
-            return (HierarchyComponent.parentID[this.id] > 0);
+            return (HierarchyComponent.parent[this.id] > 0);
         }
     }
 
@@ -187,8 +187,8 @@ export class GameObject implements IGameObject
         return {
             id,
             index: HierarchyComponent.index[id],
-            parent: HierarchyComponent.parentID[id],
-            world: HierarchyComponent.worldID[id],
+            parent: HierarchyComponent.parent[id],
+            world: HierarchyComponent.world[id],
             worldDepth: HierarchyComponent.worldDepth[id],
             numChildren: HierarchyComponent.numChildren[id],
             children: GameObjectTree.get(id)

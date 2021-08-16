@@ -18,7 +18,7 @@ export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObje
 
         children.map(id =>
         {
-            const currentWorldID = HierarchyComponent.worldID[id];
+            const currentWorldID = HierarchyComponent.world[id];
 
             if (currentWorldID > 0 && currentWorldID !== worldID)
             {
@@ -30,7 +30,7 @@ export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObje
             {
                 addComponent(GameObjectWorld, worldTag, id);
 
-                HierarchyComponent.worldID[id] = worldID;
+                HierarchyComponent.world[id] = worldID;
             }
         });
     });

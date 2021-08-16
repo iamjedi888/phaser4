@@ -20,7 +20,7 @@ export function RemoveWorld <W extends IBaseWorld, C extends IGameObject> (world
 
         removeComponent(GameObjectWorld, world.tag, child.id);
 
-        HierarchyComponent.worldID[child.id] = 0;
+        HierarchyComponent.world[child.id] = 0;
 
         // Emit(world, AddedToWorldEvent, child, world);
         // Emit(child, AddedToWorldEvent, child, world);

@@ -7,13 +7,13 @@ import { removeComponent } from 'bitecs';
 
 export function ClearWorld (childID: number): void
 {
-    const worldID = HierarchyComponent.worldID[childID];
+    const worldID = HierarchyComponent.world[childID];
 
     const world = GameObjectCache.get(worldID) as IBaseWorld;
 
     removeComponent(GameObjectWorld, world.tag, childID);
 
-    HierarchyComponent.worldID[childID] = 0;
+    HierarchyComponent.world[childID] = 0;
 
     SetDirtyDisplayList(worldID);
 }
