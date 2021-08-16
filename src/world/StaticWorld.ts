@@ -72,6 +72,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     //  if this World will render or not (i.e. all children are outside viewport)
     preRender (gameFrame: number): boolean
     {
+        return true;
+
         const id = this.id;
 
         ResetWorldRenderData(id, gameFrame);

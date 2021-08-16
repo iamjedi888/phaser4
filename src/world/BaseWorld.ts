@@ -54,7 +54,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.totalChildrenQuery = defineQuery([ tag ]);
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
-        this.renderList = new Uint32Array(GetWorldSize() * 4);
+        // this.renderList = new Uint32Array(GetWorldSize() * 4);
 
         AddRenderDataComponent(id);
 
