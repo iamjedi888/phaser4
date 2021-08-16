@@ -15,8 +15,8 @@ export function ClearWorldAndParentID (id: number): void
     const parentID = GetParentID(id);
     const world = GameObjectCache.get(worldID) as IBaseWorld;
 
-    HierarchyComponent.worldID[id] = 0;
-    HierarchyComponent.parentID[id] = 0;
+    HierarchyComponent.world[id] = 0;
+    HierarchyComponent.parent[id] = 0;
 
     if (world && hasComponent(GameObjectWorld, world.tag, id))
     {
