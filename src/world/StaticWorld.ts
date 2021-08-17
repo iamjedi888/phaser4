@@ -1,5 +1,6 @@
 import * as WorldEvents from './events';
 
+import { HasRenderableChildren, WillUpdate } from '../components/permissions';
 import { Query, defineQuery } from 'bitecs';
 
 import { BaseWorld } from './BaseWorld';
@@ -12,14 +13,18 @@ import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
+import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
+import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasDirtyChild } from '../components/dirty/HasDirtyChild';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
-import { HasRenderableChildren } from '../components/permissions';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
+import { MoveNext } from '../components/hierarchy/MoveNext';
+import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
+import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { QuadVertexComponent } from '../components/vertices';
 import { RebuildWorldList } from './RebuildWorldList';
@@ -72,8 +77,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     //  if this World will render or not (i.e. all children are outside viewport)
     preRender (gameFrame: number): boolean
     {
-        return true;
-
         const id = this.id;
 
         ResetWorldRenderData(id, gameFrame);
@@ -94,19 +97,21 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
             //  This will update the Transform2DComponent.world values.
-            RebuildWorldTransforms(this, id, false);
+            RebuildWorldTransforms(this);
+            // RebuildWorldTransforms(this, id, false);
 
             RenderDataComponent.rebuiltWorld[id] = 1;
 
             this.getNumChildren();
 
-            // ClearDirtyDisplayList(id);
+            ClearDirtyDisplayList(id);
 
             // isDirty = true;
         }
 
         UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
+        /*
         if (dirtyDisplayList)
         {
             this.listLength = 0;
@@ -121,6 +126,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             // isDirty = true;
         }
+        */
 
         UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
@@ -131,6 +137,62 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         //  before rendering (i.e. spatial tree, bounds, etc)
 
         return true;
+    }
+
+    /*
+    update (delta: number, time: number): void
+    {
+        this.beforeUpdate(delta, time);
+
+        let next = GetFirstChildID(this.id);
+
+        while (next > 0)
+        {
+            if (WillUpdate(next))
+            {
+                GameObjectCache.get(next).update(delta, time);
+            }
+
+            next = MoveNextUpdatable(next);
+        }
+
+        this.afterUpdate(delta, time);
+    }
+    */
+
+    listRender <T extends IRenderPass> (renderPass: T, x: number, y: number, right: number, bottom: number): void
+    {
+        let next = GetFirstChildID(this.id);
+
+        // let parent;
+
+        while (next > 0)
+        {
+            if (WillRender(next))
+            {
+                const intersects = BoundsIntersects(next, x, y, right, bottom);
+
+                let gameObject;
+
+                if (intersects)
+                {
+                    gameObject = GameObjectCache.get(next);
+
+                    this.rendered++;
+
+                    gameObject.renderGL(renderPass);
+                    gameObject.postRenderGL(renderPass);
+                }
+            }
+
+            // next = MoveNext(next);
+            next = MoveNextRenderable(next);
+
+            // else
+            // {
+            //     next = GetNextSiblingID(next);
+            // }
+        }
     }
 
     runRender <T extends IRenderPass> (renderPass: T, entry: number, x: number, y: number, right: number, bottom: number): void
@@ -196,19 +258,17 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         this.rendered = 0;
 
+        this.listRender(renderPass, x, y, right, bottom);
+
         // this.runRender(renderPass, this.id, x, y, right, bottom);
 
         // const children = GameObjectTree.get(this.id);
 
-
-
-
-
-
-        const list = this.renderList;
+        // const list = this.renderList;
 
         // let rendered = 0;
 
+        /*
         for (let i = 0; i < this.listLength; i += 2)
         {
             const eid = list[i];
@@ -232,6 +292,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 this.rendered++;
             }
         }
+        */
 
         PopColor(renderPass, this.color);
 
