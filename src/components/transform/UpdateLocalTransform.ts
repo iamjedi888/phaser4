@@ -41,6 +41,8 @@ const system = defineSystem(world =>
             local[1] = 0;
             local[2] = 0;
             local[3] = scaleY;
+
+            //  We can calculate bounds here without need for minmax
         }
         else
         {
