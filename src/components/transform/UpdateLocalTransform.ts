@@ -38,6 +38,10 @@ const system = defineSystem(world =>
         local[4] = x;
         local[5] = y;
 
+        //  If parent === world AND this node has no children we can set world transform here
+
+        //  if IsRoot(id)
+
         const parentID = GetParentID(id);
 
         if (parentID !== prevParent)
