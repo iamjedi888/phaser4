@@ -5,6 +5,7 @@ const Dirty = defineComponent({
     childCache: Types.ui8,
     displayList: Types.ui8,
     transform: Types.ui8,
+    worldTransform: Types.ui8,
     color: Types.ui8
 });
 
