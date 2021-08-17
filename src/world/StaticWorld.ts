@@ -18,6 +18,7 @@ import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasDirtyChild } from '../components/dirty/HasDirtyChild';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
+import { IBaseCamera } from '../camera/IBaseCamera';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
@@ -139,7 +140,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         return true;
     }
 
-    /*
     update (delta: number, time: number): void
     {
         this.beforeUpdate(delta, time);
@@ -158,10 +158,14 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         this.afterUpdate(delta, time);
     }
-    */
 
-    listRender <T extends IRenderPass> (renderPass: T, x: number, y: number, right: number, bottom: number): void
+    listRender <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
     {
+        const x = camera.getBoundsX();
+        const y = camera.getBoundsY();
+        const right = camera.getBoundsRight();
+        const bottom = camera.getBoundsBottom();
+
         let next = GetFirstChildID(this.id);
 
         // let parent;
@@ -254,11 +258,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         Begin(renderPass, camera);
 
-        const [ x, y, right, bottom ] = camera.getBounds();
+        // const [ x, y, right, bottom ] = camera.getBounds();
 
         this.rendered = 0;
 
-        this.listRender(renderPass, x, y, right, bottom);
+        this.listRender(renderPass, camera);
 
         // this.runRender(renderPass, this.id, x, y, right, bottom);
 
