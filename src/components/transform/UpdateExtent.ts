@@ -14,5 +14,14 @@ export function UpdateExtent (id: number, width: number, height: number): void
     Extent2DComponent.right[id] = x + width;
     Extent2DComponent.bottom[id] = y + height;
 
+    const world = Transform2DComponent.world[id];
+
+    world[6] = x;
+    world[7] = y;
+    world[8] = x + width;
+    world[9] = y + height;
+    world[10] = width;
+    world[11] = height;
+
     SetDirtyTransform(id);
 }
