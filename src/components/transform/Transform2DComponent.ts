@@ -11,5 +11,6 @@ export const Transform2DComponent = defineComponent({
     originX: Types.f32,
     originY: Types.f32,
     local: [ Types.f32, 6 ],
-    world: [ Types.f32, 12 ]
+    world: [ Types.f32, 6 ]
+    // world: [ Types.f32, 12 ]
 });
