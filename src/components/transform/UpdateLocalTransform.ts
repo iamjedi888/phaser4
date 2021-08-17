@@ -1,8 +1,12 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
+import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
+import { CopyLocalToWorld } from './CopyLocalToWorld';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
+import { IsRoot } from '../hierarchy/IsRoot';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
+import { SetQuadFromWorld } from '../vertices/SetQuadFromWorld';
 import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];
@@ -31,24 +35,42 @@ const system = defineSystem(world =>
 
         const local = Transform2DComponent.local[id];
 
-        local[0] = Math.cos(rotation + skewY) * scaleX;
-        local[1] = Math.sin(rotation + skewY) * scaleX;
-        local[2] = -Math.sin(rotation - skewX) * scaleY;
-        local[3] = Math.cos(rotation - skewX) * scaleY;
+        if (rotation === 0 && skewX === 0 && skewY === 0)
+        {
+            local[0] = scaleX;
+            local[1] = 0;
+            local[2] = 0;
+            local[3] = scaleY;
+        }
+        else
+        {
+            local[0] = Math.cos(rotation + skewY) * scaleX;
+            local[1] = Math.sin(rotation + skewY) * scaleX;
+            local[2] = -Math.sin(rotation - skewX) * scaleY;
+            local[3] = Math.cos(rotation - skewX) * scaleY;
+        }
+
         local[4] = x;
         local[5] = y;
 
-        //  If parent === world AND this node has no children we can set world transform here
-
-        //  if IsRoot(id)
-
-        const parentID = GetParentID(id);
-
-        if (parentID !== prevParent)
+        if (IsRoot(id))
         {
-            SetDirtyParents(id);
+            CopyLocalToWorld(id, id);
 
-            prevParent = parentID;
+            SetQuadFromWorld(id);
+
+            ClearDirtyTransform(id);
+        }
+        else
+        {
+            const parentID = GetParentID(id);
+
+            if (parentID !== prevParent)
+            {
+                SetDirtyParents(id);
+
+                prevParent = parentID;
+            }
         }
 
         total++;
