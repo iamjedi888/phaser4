@@ -6,6 +6,7 @@ import { BoundsComponent } from '../components/bounds/BoundsComponent';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { IStaticCamera } from './IStaticCamera';
 import { Matrix4Component } from '../math/mat4/Matrix4Component';
+import { SetBounds } from '../components/bounds/SetBounds';
 
 export class StaticCamera implements IStaticCamera
 {
@@ -26,9 +27,24 @@ export class StaticCamera implements IStaticCamera
         this.reset(width, height);
     }
 
-    getBounds (): Float32Array
+    getBoundsX (): number
     {
-        return BoundsComponent.global[this.id];
+        return BoundsComponent.x[this.id];
+    }
+
+    getBoundsY (): number
+    {
+        return BoundsComponent.y[this.id];
+    }
+
+    getBoundsRight (): number
+    {
+        return BoundsComponent.right[this.id];
+    }
+
+    getBoundsBottom (): number
+    {
+        return BoundsComponent.bottom[this.id];
     }
 
     getMatrix (): Float32Array
@@ -43,7 +59,7 @@ export class StaticCamera implements IStaticCamera
 
     reset (width: number, height: number): void
     {
-        BoundsComponent.global[this.id].set([ 0, 0, width, height ]);
+        SetBounds(this.id, 0, 0, width, height);
     }
 
     destroy (): void

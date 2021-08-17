@@ -7,6 +7,7 @@ import { BoundsComponent } from '../components/bounds/BoundsComponent';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { IStaticCamera } from './IStaticCamera';
 import { Matrix4Component } from '../math/mat4/Matrix4Component';
+import { SetBounds } from '../components/bounds/SetBounds';
 
 export class WorldCamera implements IStaticCamera
 {
@@ -70,7 +71,6 @@ export class WorldCamera implements IStaticCamera
     {
         if (this.isDirty)
         {
-            const bounds = this.getBounds();
             const matrix = this.getMatrix();
 
             const x = this.x;
@@ -85,10 +85,16 @@ export class WorldCamera implements IStaticCamera
             matrix[12] = x;
             matrix[13] = y;
 
-            bounds[0] = ox - (w / 2);
-            bounds[1] = oy - (h / 2);
-            bounds[2] = bounds[0] + w;
-            bounds[3] = bounds[1] + h;
+            const bx = ox - (w / 2);
+            const by = oy - (h / 2);
+
+            SetBounds(
+                this.id,
+                bx,
+                by,
+                bx + w,
+                by + h
+            );
 
             this.isDirty = false;
 
@@ -98,9 +104,24 @@ export class WorldCamera implements IStaticCamera
         return false;
     }
 
-    getBounds (): Float32Array
+    getBoundsX (): number
     {
-        return BoundsComponent.global[this.id];
+        return BoundsComponent.x[this.id];
+    }
+
+    getBoundsY (): number
+    {
+        return BoundsComponent.y[this.id];
+    }
+
+    getBoundsRight (): number
+    {
+        return BoundsComponent.right[this.id];
+    }
+
+    getBoundsBottom (): number
+    {
+        return BoundsComponent.bottom[this.id];
     }
 
     getMatrix (): Float32Array
