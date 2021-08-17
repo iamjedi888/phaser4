@@ -45,7 +45,6 @@ export class GameObject implements IGameObject
         AddDirtyComponent(id);
 
         GameObjectCache.set(id, this);
-        GameObjectTree.set(id, []);
 
         this.events = new Map();
     }
@@ -64,6 +63,7 @@ export class GameObject implements IGameObject
 
     update (delta: number, time: number): void
     {
+        /*
         this.beforeUpdate(delta, time);
 
         if (WillUpdateChildren(this.id))
@@ -82,6 +82,7 @@ export class GameObject implements IGameObject
         }
 
         this.afterUpdate(delta, time);
+        */
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
