@@ -1,12 +1,9 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
 
-import { BoundsComponent } from '../bounds/BoundsComponent';
-import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
-import { Extent2DComponent } from '../transform/Extent2DComponent';
-import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
+import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
+import { HasDirtyWorldTransform } from '../dirty/HasDirtyWorldTransform';
 import { RenderDataComponent } from '../../world/RenderDataComponent';
-import { SetQuadPosition } from './SetQuadPosition';
-import { Transform2DComponent } from '../transform/Transform2DComponent';
+import { SetQuadFromWorld } from './SetQuadFromWorld';
 
 let entities: number[];
 let total: number = 0;
@@ -17,46 +14,14 @@ const updateVertexPositionSystem = defineSystem(world =>
     {
         const id = entities[i];
 
-        if (!HasDirtyTransform(id))
+        if (!HasDirtyWorldTransform(id))
         {
             continue;
         }
 
-        const [ a, b, c, d, tx, ty ] = Transform2DComponent.world[id];
+        SetQuadFromWorld(id);
 
-        const x = Extent2DComponent.x[id];
-        const y = Extent2DComponent.y[id];
-        const right = Extent2DComponent.right[id];
-        const bottom = Extent2DComponent.bottom[id];
-
-        const x0 = (x * a) + (y * c) + tx;
-        const y0 = (x * b) + (y * d) + ty;
-
-        const x1 = (x * a) + (bottom * c) + tx;
-        const y1 = (x * b) + (bottom * d) + ty;
-
-        const x2 = (right * a) + (bottom * c) + tx;
-        const y2 = (right * b) + (bottom * d) + ty;
-
-        const x3 = (right * a) + (y * c) + tx;
-        const y3 = (right * b) + (y * d) + ty;
-
-        SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
-
-        //  x, y, right, bottom:
-        const bx = Math.min(x0, x1, x2, x3);
-        const by = Math.min(y0, y1, y2, y3);
-        const br = Math.max(x0, x1, x2, x3);
-        const bb = Math.max(y0, y1, y2, y3);
-
-        const bounds = BoundsComponent.global[id];
-
-        bounds[0] = bx;
-        bounds[1] = by;
-        bounds[2] = br;
-        bounds[3] = bb;
-
-        ClearDirtyTransform(id);
+        ClearDirtyWorldTransform(id);
 
         total++;
     }
@@ -81,7 +46,7 @@ export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Que
         updateVertexPositionSystem(world);
     }
 
-    ClearDirtyTransform(id);
+    ClearDirtyWorldTransform(id);
 
     RenderDataComponent.dirtyVertices[id] = total;
 };
