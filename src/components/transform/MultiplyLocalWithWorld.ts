@@ -1,4 +1,4 @@
-import { SetDirtyTransform } from '../dirty';
+import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { Transform2DComponent } from './Transform2DComponent';
 
 export function MultiplyLocalWithWorld (parentID: number, childID: number): void
@@ -16,5 +16,5 @@ export function MultiplyLocalWithWorld (parentID: number, childID: number): void
     world[4] = tx * pa + ty * pc + ptx;
     world[5] = tx * pb + ty * pd + pty;
 
-    SetDirtyTransform(childID);
+    SetDirtyWorldTransform(childID);
 }
