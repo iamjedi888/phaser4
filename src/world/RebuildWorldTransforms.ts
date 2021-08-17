@@ -1,14 +1,32 @@
 import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
+import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { IBaseWorld } from './IBaseWorld';
+import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
 import { hasComponent } from 'bitecs';
 
+export function RebuildWorldTransforms (world: IBaseWorld): void
+{
+    let next = GetFirstChildID(world.id);
+
+    while (next > 0)
+    {
+        if (WillRender(next) && HasDirtyTransform(next))
+        {
+            UpdateWorldTransform(next);
+        }
+
+        next = MoveNextRenderable(next);
+    }
+}
+
+/*
 export function RebuildWorldTransforms (world: IBaseWorld, parent: number, forceUpdate: boolean): void
 {
     if (WillRender(parent))
@@ -46,3 +64,4 @@ export function RebuildWorldTransforms (world: IBaseWorld, parent: number, force
         }
     }
 }
+*/
