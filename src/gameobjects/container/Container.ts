@@ -33,6 +33,8 @@ export class Container extends GameObject implements IContainer
 
     shader: IShader;
 
+    private _rotation: number = 0;
+
     constructor (x: number = 0, y: number = 0)
     {
         super();
@@ -97,6 +99,8 @@ export class Container extends GameObject implements IContainer
 
     set rotation (value: number)
     {
+        this._rotation = value;
+
         const id = this.id;
 
         Transform2DComponent.data[id][TRANSFORM.ROTATION] = value;
@@ -107,7 +111,7 @@ export class Container extends GameObject implements IContainer
 
     get rotation (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.ROTATION];
+        return this._rotation;
     }
 
     get alpha (): number

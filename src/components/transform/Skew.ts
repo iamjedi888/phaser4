@@ -7,6 +7,8 @@ import { UpdateAxisAligned } from './UpdateAxisAligned';
 export class Skew implements IVec2
 {
     private id: number;
+    private _x: number;
+    private _y: number;
 
     constructor (id: number, x: number = 0, y: number = 0)
     {
@@ -17,19 +19,16 @@ export class Skew implements IVec2
 
     set (x: number, y: number = x): this
     {
-        const id = this.id;
-
-        Transform2DComponent.data[id][TRANSFORM.SKEW_X] = x;
-        Transform2DComponent.data[id][TRANSFORM.SKEW_Y] = y;
-
-        UpdateAxisAligned(id);
-        SetDirtyTransform(id);
+        this.x = x;
+        this.y = y;
 
         return this;
     }
 
     set x (value: number)
     {
+        this._x = value;
+
         const id = this.id;
 
         Transform2DComponent.data[id][TRANSFORM.SKEW_X] = value;
@@ -40,11 +39,13 @@ export class Skew implements IVec2
 
     get x (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.SKEW_X];
+        return this._x;
     }
 
     set y (value: number)
     {
+        this._y = value;
+
         const id = this.id;
 
         Transform2DComponent.data[id][TRANSFORM.SKEW_Y] = value;
@@ -55,6 +56,6 @@ export class Skew implements IVec2
 
     get y (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.SKEW_Y];
+        return this._y;
     }
 }
