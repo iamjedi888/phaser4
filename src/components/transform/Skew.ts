@@ -1,6 +1,8 @@
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+
 import { IVec2 } from '../../math/vec2/IVec2';
-import { SetDirtyTransform } from '../dirty';
-import { Transform2DComponent } from './Transform2DComponent';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
+import { UpdateAxisAligned } from './UpdateAxisAligned';
 
 export class Skew implements IVec2
 {
@@ -10,41 +12,49 @@ export class Skew implements IVec2
     {
         this.id = id;
 
-        this.x = x;
-        this.y = y;
+        this.set(x, y);
     }
 
     set (x: number, y: number = x): this
     {
-        this.x = x;
-        this.y = y;
+        const id = this.id;
+
+        Transform2DComponent.data[id][TRANSFORM.SKEW_X] = x;
+        Transform2DComponent.data[id][TRANSFORM.SKEW_Y] = y;
+
+        UpdateAxisAligned(id);
+        SetDirtyTransform(id);
 
         return this;
     }
 
     set x (value: number)
     {
-        // Transform2DComponent.skewX[this.id] = value;
-        Transform2DComponent.data[this.id][5] = value;
-        SetDirtyTransform(this.id);
+        const id = this.id;
+
+        Transform2DComponent.data[id][TRANSFORM.SKEW_X] = value;
+
+        UpdateAxisAligned(id);
+        SetDirtyTransform(id);
     }
 
     get x (): number
     {
-        // return Transform2DComponent.skewX[this.id];
-        return Transform2DComponent.data[this.id][5];
+        return Transform2DComponent.data[this.id][TRANSFORM.SKEW_X];
     }
 
     set y (value: number)
     {
-        // Transform2DComponent.skewY[this.id] = value;
-        Transform2DComponent.data[this.id][6] = value;
-        SetDirtyTransform(this.id);
+        const id = this.id;
+
+        Transform2DComponent.data[id][TRANSFORM.SKEW_Y] = value;
+
+        UpdateAxisAligned(id);
+        SetDirtyTransform(id);
     }
 
     get y (): number
     {
-        // return Transform2DComponent.skewY[this.id];
-        return Transform2DComponent.data[this.id][6];
+        return Transform2DComponent.data[this.id][TRANSFORM.SKEW_Y];
     }
 }

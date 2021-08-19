@@ -1,16 +1,12 @@
 import { IWorld, Query, defineSystem } from 'bitecs';
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { BoundsComponent } from '../bounds/BoundsComponent';
 import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
-import { CopyLocalToWorld } from './CopyLocalToWorld';
-import { Extent2DComponent } from './Extent2DComponent';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
 import { IsRoot } from '../hierarchy/IsRoot';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
-import { SetQuadFromWorld } from '../vertices/SetQuadFromWorld';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
-import { Transform2DComponent } from './Transform2DComponent';
 
 let entities: number[];
 let total: number = 0;
@@ -30,29 +26,25 @@ const system = defineSystem(world =>
 
         const isRoot = IsRoot(id);
 
-        // const tx = Transform2DComponent.x[id];
-        // const ty = Transform2DComponent.y[id];
-        // const rotation = Transform2DComponent.rotation[id];
-        // const scaleX = Transform2DComponent.scaleX[id];
-        // const scaleY = Transform2DComponent.scaleY[id];
-        // const skewX = Transform2DComponent.skewX[id];
-        // const skewY = Transform2DComponent.skewY[id];
+        const tx = Transform2DComponent.data[id][TRANSFORM.X];
+        const ty = Transform2DComponent.data[id][TRANSFORM.Y];
+        const rotation = Transform2DComponent.data[id][TRANSFORM.ROTATION];
+        const scaleX = Transform2DComponent.data[id][TRANSFORM.SCALE_X];
+        const scaleY = Transform2DComponent.data[id][TRANSFORM.SCALE_Y];
+        const skewX = Transform2DComponent.data[id][TRANSFORM.SKEW_X];
+        const skewY = Transform2DComponent.data[id][TRANSFORM.SKEW_Y];
+        const axisAligned = Transform2DComponent.data[id][TRANSFORM.AXIS_ALIGNED];
 
-        const transform = Transform2DComponent.data[id];
-        const tx = transform[0];
-        const ty = transform[1];
-        const rotation = transform[2];
-        const scaleX = transform[3];
-        const scaleY = transform[4];
-        const skewX = transform[5];
-        const skewY = transform[6];
+        //  Contiguous:
+        const x = Transform2DComponent.data[id][TRANSFORM.FRAME_X1];
+        const y = Transform2DComponent.data[id][TRANSFORM.FRAME_Y1];
+        const right = Transform2DComponent.data[id][TRANSFORM.FRAME_X2];
+        const bottom = Transform2DComponent.data[id][TRANSFORM.FRAME_Y2];
 
         let a = scaleX;
         let b = 0;
         let c = 0;
         let d = scaleY;
-
-        const axisAligned = (rotation === 0 && skewX === 0 && skewY === 0);
 
         if (!axisAligned)
         {
@@ -62,28 +54,15 @@ const system = defineSystem(world =>
             d = Math.cos(rotation - skewX) * scaleY;
         }
 
-        const local = Transform2DComponent.local[id];
-
-        local[0] = a;
-        local[1] = b;
-        local[2] = c;
-        local[3] = d;
-        local[4] = tx;
-        local[5] = ty;
+        Transform2DComponent.data[id][TRANSFORM.LOCAL_A] = a;
+        Transform2DComponent.data[id][TRANSFORM.LOCAL_B] = b;
+        Transform2DComponent.data[id][TRANSFORM.LOCAL_C] = c;
+        Transform2DComponent.data[id][TRANSFORM.LOCAL_D] = d;
+        Transform2DComponent.data[id][TRANSFORM.LOCAL_TX] = tx;
+        Transform2DComponent.data[id][TRANSFORM.LOCAL_TY] = ty;
 
         if (isRoot)
         {
-            // CopyLocalToWorld(id, id);
-            // SetQuadFromWorld(id);
-            //  The above =
-
-            const x = Extent2DComponent.x[id];
-            const y = Extent2DComponent.y[id];
-            const right = Extent2DComponent.right[id];
-            const bottom = Extent2DComponent.bottom[id];
-
-            const bounds = BoundsComponent.global[id];
-
             if (axisAligned)
             {
                 //  top left
@@ -102,10 +81,10 @@ const system = defineSystem(world =>
                 const x3 = (right * a) + tx;
                 const y3 = (y * d) + ty;
 
-                bounds[0] = x0;
-                bounds[1] = y0;
-                bounds[2] = x2;
-                bounds[3] = y2;
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_X1] = x0;
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_Y1] = y0;
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_X2] = x2;
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_Y2] = y2;
 
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
@@ -127,17 +106,13 @@ const system = defineSystem(world =>
                 const x3 = (right * a) + (y * c) + tx;
                 const y3 = (right * b) + (y * d) + ty;
 
-                bounds[0] = Math.min(x0, x1, x2, x3);
-                bounds[1] = Math.min(y0, y1, y2, y3);
-                bounds[2] = Math.max(x0, x1, x2, x3);
-                bounds[3] = Math.max(y0, y1, y2, y3);
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_X1] = Math.min(x0, x1, x2, x3);
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_Y1] = Math.min(y0, y1, y2, y3);
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_X2] = Math.max(x0, x1, x2, x3);
+                Transform2DComponent.data[id][TRANSFORM.BOUNDS_Y2] = Math.max(y0, y1, y2, y3);
 
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
-
-            // console.log('local', tx, ty, 'ext', x, y, right, bottom);
-            // console.log('quad', x0, y0, x1, y1, x2, y2, x3, y3);
-            // console.log('bounds', bounds[0], bounds[1], bounds[2], bounds[3]);
 
             ClearDirtyTransform(id);
         }
@@ -168,10 +143,7 @@ export const UpdateLocalTransform = (id: number, world: IWorld, query: Query): n
     total = 0;
     entities = query(world);
 
-    if (entities.length > 0)
-    {
-        system(world);
-    }
+    system(world);
 
     return total;
 };

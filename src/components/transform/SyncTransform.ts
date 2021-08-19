@@ -1,5 +1,4 @@
 import { BoundsComponent } from '../bounds/BoundsComponent';
-import { Extent2DComponent } from './Extent2DComponent';
 import { IContainer } from '../../gameobjects/container/IContainer';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { Transform2DComponent } from './Transform2DComponent';
@@ -7,6 +6,7 @@ import { UpdateWorldTransform } from './UpdateWorldTransform';
 
 export function SyncTransform <T extends IContainer> (gameObject: T): void
 {
+    /*
     const id = gameObject.id;
 
     const x = Transform2DComponent.x[id];
@@ -61,4 +61,5 @@ export function SyncTransform <T extends IContainer> (gameObject: T): void
     bounds[1] = by;
     bounds[2] = br;
     bounds[3] = bb;
+    */
 }

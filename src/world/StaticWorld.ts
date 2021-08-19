@@ -37,8 +37,6 @@ import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
-import { UpdateLocalTransformWASM } from '../components/transform/UpdateLocalTransformWASM';
-import { UpdateLocalTransformWASMBatch } from '../components/transform/UpdateLocalTransformWASMBatch';
 import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillRender } from '../components/permissions/WillRender';
@@ -89,9 +87,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        const totalDirty = UpdateLocalTransformWASMBatch(id, GameObjectWorld, this.transformQuery);
-        // const totalDirty = UpdateLocalTransformWASM(id, GameObjectWorld, this.transformQuery);
-        // const totalDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
+        const totalDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
 
         RenderDataComponent.dirtyLocal[id] = totalDirty;
 
@@ -102,7 +98,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             //  TODO - This should only run over the branches that are dirty, not the whole World.
 
             //  This will update the Transform2DComponent.world values.
-            RebuildWorldTransforms(this);
+            // RebuildWorldTransforms(this);
             // RebuildWorldTransforms(this, id, false);
 
             RenderDataComponent.rebuiltWorld[id] = 1;

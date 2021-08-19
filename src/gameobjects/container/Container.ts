@@ -1,4 +1,5 @@
-import { AddBoundsComponent } from '../../components/bounds/AddBoundsComponent';
+import { TRANSFORM, Transform2DComponent } from '../../components/transform/Transform2DComponent';
+
 import { AddTransform2DComponent } from '../../components/transform/AddTransform2DComponent';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
@@ -17,7 +18,7 @@ import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyTransform } from '../../components/dirty';
 import { Size } from '../../components/transform/Size';
 import { Skew } from '../../components/transform/Skew';
-import { Transform2DComponent } from '../../components/transform/Transform2DComponent';
+import { UpdateAxisAligned } from '../../components/transform/UpdateAxisAligned';
 
 export class Container extends GameObject implements IContainer
 {
@@ -39,7 +40,6 @@ export class Container extends GameObject implements IContainer
         const id = this.id;
 
         AddTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
-        AddBoundsComponent(id);
 
         this.position = new Position(id, x, y);
         this.scale = new Scale(id);
@@ -97,15 +97,17 @@ export class Container extends GameObject implements IContainer
 
     set rotation (value: number)
     {
-        // Transform2DComponent.rotation[this.id] = value;
-        Transform2DComponent.data[this.id][2] = value;
-        SetDirtyTransform(this.id);
+        const id = this.id;
+
+        Transform2DComponent.data[id][TRANSFORM.ROTATION] = value;
+
+        UpdateAxisAligned(id);
+        SetDirtyTransform(id);
     }
 
     get rotation (): number
     {
-        // return Transform2DComponent.rotation[this.id];
-        return Transform2DComponent.data[this.id][2];
+        return Transform2DComponent.data[this.id][TRANSFORM.ROTATION];
     }
 
     get alpha (): number

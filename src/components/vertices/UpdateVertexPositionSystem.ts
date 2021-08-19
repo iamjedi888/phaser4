@@ -41,10 +41,7 @@ export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Que
     total = 0;
     entities = query(world);
 
-    if (entities.length > 0)
-    {
-        updateVertexPositionSystem(world);
-    }
+    updateVertexPositionSystem(world);
 
     ClearDirtyWorldTransform(id);
 

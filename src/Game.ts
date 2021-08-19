@@ -21,7 +21,6 @@ import { TimeComponent } from './components/timer/TimeComponent';
 import { UpdateDelta } from './components/timer/UpdateDelta';
 import { UpdateTime } from './components/timer/UpdateTime';
 import { addEntity } from 'bitecs';
-import rust from './phaser4_bg.wasm';
 
 export class Game extends EventEmitter
 {
@@ -68,12 +67,7 @@ export class Game extends EventEmitter
 
         Emit(this, 'boot');
 
-        rust().then(wasm =>
-        {
-            GameInstance.setWasm(wasm);
-
-            requestAnimationFrame(now => this.step(now));
-        });
+        requestAnimationFrame(now => this.step(now));
     }
 
     pause (): void

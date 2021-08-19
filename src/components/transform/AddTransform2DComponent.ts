@@ -1,6 +1,6 @@
-import { Extent2DComponent } from './Extent2DComponent';
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+
 import { GameObjectWorld } from '../../GameObjectWorld';
-import { Transform2DComponent } from './Transform2DComponent';
 import { addComponent } from 'bitecs';
 
 //  The 'local' and 'world' arrays are Matrix2Ds and contains
@@ -24,17 +24,29 @@ import { addComponent } from 'bitecs';
 export function AddTransform2DComponent (id: number, x: number = 0, y: number = 0, originX: number = 0, originY: number = 0): void
 {
     addComponent(GameObjectWorld, Transform2DComponent, id);
-    addComponent(GameObjectWorld, Extent2DComponent, id);
 
     //  Component defaults to zero, so we only need to set the other values
 
-    Transform2DComponent.x[id] = x;
-    Transform2DComponent.y[id] = y;
-    Transform2DComponent.scaleX[id] = 1;
-    Transform2DComponent.scaleY[id] = 1;
-    Transform2DComponent.originX[id] = originX;
-    Transform2DComponent.originY[id] = originY;
+    Transform2DComponent.data[id][TRANSFORM.X] = x;
+    Transform2DComponent.data[id][TRANSFORM.Y] = y;
+    Transform2DComponent.data[id][TRANSFORM.SCALE_X] = 1;
+    Transform2DComponent.data[id][TRANSFORM.SCALE_Y] = 1;
+    Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = originX;
+    Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = originY;
+    Transform2DComponent.data[id][TRANSFORM.AXIS_ALIGNED] = 1;
 
-    Transform2DComponent.local[id].set([ 1, 0, 0, 1, x, y ]);
-    Transform2DComponent.world[id].set([ 1, 0, 0, 1, x, y ]);
+    //  Likely don't need to do this, as it's done in render anyway:
+    // Transform2DComponent.data[id][TRANSFORM.LOCAL_A] = 1;
+    // Transform2DComponent.data[id][TRANSFORM.LOCAL_B] = 0;
+    // Transform2DComponent.data[id][TRANSFORM.LOCAL_C] = 0;
+    // Transform2DComponent.data[id][TRANSFORM.LOCAL_D] = 1;
+    // Transform2DComponent.data[id][TRANSFORM.LOCAL_TX] = x;
+    // Transform2DComponent.data[id][TRANSFORM.LOCAL_TY] = y;
+
+    // Transform2DComponent.data[id][TRANSFORM.WORLD_A] = 1;
+    // Transform2DComponent.data[id][TRANSFORM.WORLD_B] = 0;
+    // Transform2DComponent.data[id][TRANSFORM.WORLD_C] = 0;
+    // Transform2DComponent.data[id][TRANSFORM.WORLD_D] = 1;
+    // Transform2DComponent.data[id][TRANSFORM.WORLD_TX] = x;
+    // Transform2DComponent.data[id][TRANSFORM.WORLD_TY] = y;
 }
