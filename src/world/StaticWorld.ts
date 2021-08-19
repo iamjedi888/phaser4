@@ -19,10 +19,12 @@ import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasDirtyChild } from '../components/dirty/HasDirtyChild';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IBaseCamera } from '../camera/IBaseCamera';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
+import { LineToCircle } from '../geom/intersects/LineToCircle';
 import { MoveNext } from '../components/hierarchy/MoveNext';
 import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
@@ -59,6 +61,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     private rendered: number;
 
+    list: IGameObject[] = [];
+    list2: number[] = [];
+
     constructor (scene: IScene)
     {
         super(scene);
@@ -87,7 +92,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        const totalDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
+        this.list2 = [];
+        this.camera.update();
+        this.camera.isDirty = true;
+
+        const totalDirty = UpdateLocalTransform(this, GameObjectWorld, this.transformQuery);
 
         RenderDataComponent.dirtyLocal[id] = totalDirty;
 
@@ -142,8 +151,30 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     update (delta: number, time: number): void
     {
-        this.beforeUpdate(delta, time);
+        const list = this.list2;
 
+        for (let i = 0; i < list.length; i++)
+        {
+            const id = list[i];
+
+            if (WillUpdate(id))
+            {
+                GameObjectCache.get(id).update(delta, time);
+            }
+        }
+
+        /*
+        const list = this.list;
+
+        for (let i = 0; i < list.length; i++)
+        {
+            const gameObject = list[i];
+
+            gameObject.update(delta, time);
+        }
+        */
+
+        /*
         let next = GetFirstChildID(this.id);
 
         while (next > 0)
@@ -155,17 +186,53 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             next = MoveNextUpdatable(next);
         }
-
-        this.afterUpdate(delta, time);
+        */
     }
 
     listRender <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
     {
-        const x = camera.getBoundsX();
-        const y = camera.getBoundsY();
-        const right = camera.getBoundsRight();
-        const bottom = camera.getBoundsBottom();
+        // const x = camera.getBoundsX();
+        // const y = camera.getBoundsY();
+        // const right = camera.getBoundsRight();
+        // const bottom = camera.getBoundsBottom();
 
+        /*
+        const list = this.list;
+
+        for (let i = 0; i < list.length; i++)
+        {
+            const gameObject = list[i];
+
+            if (WillRender(gameObject.id))
+            {
+                const intersects = BoundsIntersects(gameObject.id, x, y, right, bottom);
+
+                if (intersects)
+                {
+                    this.rendered++;
+
+                    gameObject.renderGL(renderPass);
+                    gameObject.postRenderGL(renderPass);
+                }
+            }
+        }
+        */
+
+        const list = this.list2;
+
+        for (let i = 0; i < list.length; i++)
+        {
+            const id = list[i];
+
+            const gameObject = GameObjectCache.get(id);
+
+            this.rendered++;
+
+            gameObject.renderGL(renderPass);
+            gameObject.postRenderGL(renderPass);
+        }
+
+        /*
         let next = GetFirstChildID(this.id);
 
         // let parent;
@@ -197,6 +264,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             //     next = GetNextSiblingID(next);
             // }
         }
+        */
     }
 
     runRender <T extends IRenderPass> (renderPass: T, entry: number, x: number, y: number, right: number, bottom: number): void
