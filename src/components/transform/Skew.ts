@@ -24,23 +24,27 @@ export class Skew implements IVec2
 
     set x (value: number)
     {
-        Transform2DComponent.skewX[this.id] = value;
+        // Transform2DComponent.skewX[this.id] = value;
+        Transform2DComponent.data[this.id][5] = value;
         SetDirtyTransform(this.id);
     }
 
     get x (): number
     {
-        return Transform2DComponent.skewX[this.id];
+        // return Transform2DComponent.skewX[this.id];
+        return Transform2DComponent.data[this.id][5];
     }
 
     set y (value: number)
     {
-        Transform2DComponent.skewY[this.id] = value;
+        // Transform2DComponent.skewY[this.id] = value;
+        Transform2DComponent.data[this.id][6] = value;
         SetDirtyTransform(this.id);
     }
 
     get y (): number
     {
-        return Transform2DComponent.skewY[this.id];
+        // return Transform2DComponent.skewY[this.id];
+        return Transform2DComponent.data[this.id][6];
     }
 }

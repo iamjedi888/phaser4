@@ -30,13 +30,22 @@ const system = defineSystem(world =>
 
         const isRoot = IsRoot(id);
 
-        const tx = Transform2DComponent.x[id];
-        const ty = Transform2DComponent.y[id];
-        const rotation = Transform2DComponent.rotation[id];
-        const scaleX = Transform2DComponent.scaleX[id];
-        const scaleY = Transform2DComponent.scaleY[id];
-        const skewX = Transform2DComponent.skewX[id];
-        const skewY = Transform2DComponent.skewY[id];
+        // const tx = Transform2DComponent.x[id];
+        // const ty = Transform2DComponent.y[id];
+        // const rotation = Transform2DComponent.rotation[id];
+        // const scaleX = Transform2DComponent.scaleX[id];
+        // const scaleY = Transform2DComponent.scaleY[id];
+        // const skewX = Transform2DComponent.skewX[id];
+        // const skewY = Transform2DComponent.skewY[id];
+
+        const transform = Transform2DComponent.data[id];
+        const tx = transform[0];
+        const ty = transform[1];
+        const rotation = transform[2];
+        const scaleX = transform[3];
+        const scaleY = transform[4];
+        const skewX = transform[5];
+        const skewY = transform[6];
 
         let a = scaleX;
         let b = 0;

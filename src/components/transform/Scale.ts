@@ -24,23 +24,27 @@ export class Scale implements IVec2
 
     set x (value: number)
     {
-        Transform2DComponent.scaleX[this.id] = value;
+        // Transform2DComponent.scaleX[this.id] = value;
+        Transform2DComponent.data[this.id][3] = value;
         SetDirtyTransform(this.id);
     }
 
     get x (): number
     {
-        return Transform2DComponent.scaleX[this.id];
+        // return Transform2DComponent.scaleX[this.id];
+        return Transform2DComponent.data[this.id][3];
     }
 
     set y (value: number)
     {
-        Transform2DComponent.scaleY[this.id] = value;
+        // Transform2DComponent.scaleY[this.id] = value;
+        Transform2DComponent.data[this.id][4] = value;
         SetDirtyTransform(this.id);
     }
 
     get y (): number
     {
-        return Transform2DComponent.scaleY[this.id];
+        // return Transform2DComponent.scaleY[this.id];
+        return Transform2DComponent.data[this.id][4];
     }
 }

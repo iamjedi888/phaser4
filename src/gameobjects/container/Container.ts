@@ -97,13 +97,15 @@ export class Container extends GameObject implements IContainer
 
     set rotation (value: number)
     {
-        Transform2DComponent.rotation[this.id] = value;
+        // Transform2DComponent.rotation[this.id] = value;
+        Transform2DComponent.data[this.id][2] = value;
         SetDirtyTransform(this.id);
     }
 
     get rotation (): number
     {
-        return Transform2DComponent.rotation[this.id];
+        // return Transform2DComponent.rotation[this.id];
+        return Transform2DComponent.data[this.id][2];
     }
 
     get alpha (): number

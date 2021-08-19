@@ -24,23 +24,27 @@ export class Position implements IVec2
 
     set x (value: number)
     {
-        Transform2DComponent.x[this.id] = value;
+        // Transform2DComponent.x[this.id] = value;
+        Transform2DComponent.data[this.id][0] = value;
         SetDirtyTransform(this.id);
     }
 
     get x (): number
     {
-        return Transform2DComponent.x[this.id];
+        // return Transform2DComponent.x[this.id];
+        return Transform2DComponent.data[this.id][0];
     }
 
     set y (value: number)
     {
-        Transform2DComponent.y[this.id] = value;
+        // Transform2DComponent.y[this.id] = value;
+        Transform2DComponent.data[this.id][1] = value;
         SetDirtyTransform(this.id);
     }
 
     get y (): number
     {
-        return Transform2DComponent.y[this.id];
+        // return Transform2DComponent.y[this.id];
+        return Transform2DComponent.data[this.id][1];
     }
 }
