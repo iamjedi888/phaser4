@@ -89,9 +89,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        // const totalDirty = UpdateLocalTransformWASMBatch(id, GameObjectWorld, this.transformQuery);
+        const totalDirty = UpdateLocalTransformWASMBatch(id, GameObjectWorld, this.transformQuery);
         // const totalDirty = UpdateLocalTransformWASM(id, GameObjectWorld, this.transformQuery);
-        const totalDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
+        // const totalDirty = UpdateLocalTransform(id, GameObjectWorld, this.transformQuery);
 
         RenderDataComponent.dirtyLocal[id] = totalDirty;
 
