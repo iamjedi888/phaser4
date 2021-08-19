@@ -21,12 +21,11 @@ import { TimeComponent } from './components/timer/TimeComponent';
 import { UpdateDelta } from './components/timer/UpdateDelta';
 import { UpdateTime } from './components/timer/UpdateTime';
 import { addEntity } from 'bitecs';
+import rust from './phaser4_bg.wasm';
 
 export class Game extends EventEmitter
 {
     readonly id: number = addEntity(GameObjectWorld);
-
-    readonly VERSION: string = '4.0.0-beta1';
 
     isBooted: boolean = false;
     isPaused: boolean = false;
@@ -69,7 +68,12 @@ export class Game extends EventEmitter
 
         Emit(this, 'boot');
 
-        requestAnimationFrame(now => this.step(now));
+        rust().then(wasm =>
+        {
+            GameInstance.setWasm(wasm);
+
+            requestAnimationFrame(now => this.step(now));
+        });
     }
 
     pause (): void

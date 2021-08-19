@@ -3,6 +3,7 @@ import { Game } from './Game';
 export let instance: Game;
 export let frame: number = 0;
 export let elapsed: number = 0;
+export let phaser4Wasm: any;
 
 export const GameInstance =
 {
@@ -14,6 +15,16 @@ export const GameInstance =
     set: (game: Game | undefined): void =>
     {
         instance = game;
+    },
+
+    getWasm: (): any =>
+    {
+        return phaser4Wasm;
+    },
+
+    setWasm: (wasm: any): void =>
+    {
+        phaser4Wasm = wasm;
     },
 
     getFrame: (): number =>
