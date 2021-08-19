@@ -1,11 +1,12 @@
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+
 import { IGameObject } from '../../gameobjects/IGameObject';
-import { PermissionsComponent } from './PermissionsComponent';
 
 export function SetWillRender (value: boolean, ...children: IGameObject[]): IGameObject[]
 {
     children.forEach(child =>
     {
-        PermissionsComponent.willRender[child.id] = Number(value);
+        PermissionsComponent.data[child.id][PERMISSION.WILL_RENDER] = Number(value);
     });
 
     return children;

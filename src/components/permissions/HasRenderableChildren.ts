@@ -1,11 +1,11 @@
 import { GetNumChildren } from '../hierarchy/GetNumChildren';
 import { HasDirtyChildCache } from '../dirty/HasDirtyChildCache';
-import { PermissionsComponent } from './PermissionsComponent';
 import { WillCacheChildren } from './WillCacheChildren';
+import { WillRenderChildren } from './WillRenderChildren';
 
 export function HasRenderableChildren (id: number): boolean
 {
-    if (PermissionsComponent.visibleChildren[id] === 0 || PermissionsComponent.willRenderChildren[id] === 0 || GetNumChildren(id) === 0)
+    if (!WillRenderChildren(id) || GetNumChildren(id) === 0)
     {
         return false;
     }
