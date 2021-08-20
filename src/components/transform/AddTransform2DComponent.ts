@@ -26,6 +26,7 @@ export function AddTransform2DComponent (id: number, x: number = 0, y: number = 
     addComponent(GameObjectWorld, Transform2DComponent, id);
 
     //  Component defaults to zero, so we only need to set the other values
+    //  We could do this via data.set once the array structure is set in stone
 
     Transform2DComponent.data[id][TRANSFORM.X] = x;
     Transform2DComponent.data[id][TRANSFORM.Y] = y;
