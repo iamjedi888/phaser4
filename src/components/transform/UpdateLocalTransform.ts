@@ -17,10 +17,10 @@ let baseworld;
 
 const system = defineSystem(world =>
 {
-    const cx = baseworld.camera.getBoundsX();
-    const cy = baseworld.camera.getBoundsY();
-    const cright = baseworld.camera.getBoundsRight();
-    const cbottom = baseworld.camera.getBoundsBottom();
+    const camX = baseworld.camera.getBoundsX();
+    const camY = baseworld.camera.getBoundsY();
+    const camRight = baseworld.camera.getBoundsRight();
+    const camBottom = baseworld.camera.getBoundsBottom();
 
     let prevParent: number = 0;
 
@@ -125,9 +125,9 @@ const system = defineSystem(world =>
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
 
-            if (WillRender(id) && BoundsIntersects(id, cx, cy, cright, cbottom))
+            if (WillRender(id) && BoundsIntersects(id, camX, camY, camRight, camBottom))
             {
-                baseworld.list2.push(id);
+                baseworld.wibble.push(id);
             }
 
             ClearDirtyTransform(id);
