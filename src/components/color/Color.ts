@@ -1,7 +1,8 @@
 import { AddColorComponent } from './AddColorComponent';
 import { ColorComponent } from './ColorComponent';
-import { PermissionsComponent } from '../permissions/PermissionsComponent';
 import { SetDirtyColor } from '../dirty';
+import { SetWillColorChildren } from '../permissions/SetWillColorChildren';
+import { WillColorChildren } from '../permissions/WillColorChildren';
 
 //  red, green, blue in the range 0-255
 //  alpha in the range 0-1
@@ -46,12 +47,12 @@ export class Color
 
     set willColorChildren (value: boolean)
     {
-        PermissionsComponent.willColorChildren[this.id] = Number(value);
+        SetWillColorChildren(value, this.id);
     }
 
     get willColorChildren (): boolean
     {
-        return Boolean(PermissionsComponent.willColorChildren[this.id]);
+        return WillColorChildren(this.id);
     }
 
     //  16 element array (4x4)
