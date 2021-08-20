@@ -95,9 +95,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChild(id);
 
-        this.renderList2.length = 0;
-
-        const totalDirty = UpdateLocalTransformList(this.transformQuery(GameObjectWorld), this.renderList2, this.camera);
+        const totalDirty = UpdateLocalTransformList(this.transformQuery(GameObjectWorld));
 
         RenderDataComponent.dirtyLocal[id] = totalDirty;
 
@@ -124,7 +122,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         //  TODO - Only run if we've a dirty child
         //  TODO - This uses the same query as ULT! So don't re-run this, use the same array.
-        UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
+        // UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
 
 
 
@@ -207,17 +205,16 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     listRender <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
     {
-        // const x = camera.getBoundsX();
-        // const y = camera.getBoundsY();
-        // const right = camera.getBoundsRight();
-        // const bottom = camera.getBoundsBottom();
+        const x = camera.getBoundsX();
+        const y = camera.getBoundsY();
+        const right = camera.getBoundsRight();
+        const bottom = camera.getBoundsBottom();
 
         /*
-        console.log('cb2', x, y, right, bottom);
+        const list = query(this.total);
+        const len = list.length;
 
-        const list = this.list2;
-
-        for (let i = 0; i < list.length; i++)
+        for (let i = 0; i < len; i++)
         {
             const id = list[i];
 
@@ -236,29 +233,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 }
             }
         }
-
-        debugger;
         */
 
-
-        const list = this.renderList2;
-
-        for (let i = 0; i < list.length; i++)
-        {
-            const id = list[i];
-
-            const gameObject = GameObjectCache.get(id);
-
-            this.rendered++;
-
-            gameObject.renderGL(renderPass);
-            gameObject.postRenderGL(renderPass);
-        }
-
-        /*
         let next = GetFirstChildID(this.id);
-
-        // let parent;
 
         while (next > 0)
         {
@@ -266,11 +243,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             {
                 const intersects = BoundsIntersects(next, x, y, right, bottom);
 
-                let gameObject;
-
                 if (intersects)
                 {
-                    gameObject = GameObjectCache.get(next);
+                    const gameObject = GameObjectCache.get(next);
 
                     this.rendered++;
 
@@ -279,15 +254,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 }
             }
 
-            // next = MoveNext(next);
             next = MoveNextRenderable(next);
-
-            // else
-            // {
-            //     next = GetNextSiblingID(next);
-            // }
         }
-        */
     }
 
     runRender <T extends IRenderPass> (renderPass: T, entry: number, x: number, y: number, right: number, bottom: number): void
@@ -351,22 +319,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         this.rendered = 0;
 
-        const list = this.renderList2;
-        const len = list.length;
-
-        for (let i = 0; i < len; i++)
-        {
-            const id = list[i];
-
-            const gameObject = GameObjectCache.get(id);
-
-            this.rendered++;
-
-            gameObject.renderGL(renderPass);
-            gameObject.postRenderGL(renderPass);
-        }
-
-
+        this.listRender(renderPass, camera);
 
 
 
@@ -413,15 +366,13 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         PopColor(renderPass, this.color);
 
-        // debugger;
-
         const id = this.id;
 
         //#ifdef RENDER_STATS
         window['renderStats'] = {
             gameFrame: RenderDataComponent.gameFrame[id],
             numChildren: this.getNumChildren(),
-            numRendererd: this.rendered,
+            numRendered: this.rendered,
             numRenderable: RenderDataComponent.numRenderable[id],
             dirtyLocal: RenderDataComponent.dirtyLocal[id],
             dirtyVertices: RenderDataComponent.dirtyVertices[id],

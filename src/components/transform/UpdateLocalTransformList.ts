@@ -1,22 +1,15 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { BoundsIntersects } from '../bounds/BoundsIntersects';
 import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
+import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
-import { IBaseCamera } from '../../camera/IBaseCamera';
 import { IsRoot } from '../hierarchy/IsRoot';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
-import { WillRender } from '../permissions/WillRender';
 
-export function UpdateLocalTransformList (entities: number[], renderList: number[], camera: IBaseCamera): number
+export function UpdateLocalTransformList (entities: number[]): number
 {
-    // const camX = camera.getBoundsX();
-    // const camY = camera.getBoundsY();
-    // const camRight = camera.getBoundsRight();
-    // const camBottom = camera.getBoundsBottom();
-
     let prevParent: number = 0;
     let total: number = 0;
 
@@ -121,12 +114,8 @@ export function UpdateLocalTransformList (entities: number[], renderList: number
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
 
-            // if (WillRender(id) && BoundsIntersects(id, camX, camY, camRight, camBottom))
-            // {
-            //     renderList.push(id);
-            // }
-
             ClearDirtyTransform(id);
+            ClearDirtyWorldTransform(id);
         }
         else
         {

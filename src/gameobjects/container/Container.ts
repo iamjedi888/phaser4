@@ -15,7 +15,7 @@ import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
 import { Position } from '../../components/transform/Position';
 import { Scale } from '../../components/transform/Scale';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
-import { SetDirtyTransform } from '../../components/dirty';
+import { SetDirtyTransform } from '../../components/dirty/SetDirtyTransform';
 import { Size } from '../../components/transform/Size';
 import { Skew } from '../../components/transform/Skew';
 import { UpdateAxisAligned } from '../../components/transform/UpdateAxisAligned';
