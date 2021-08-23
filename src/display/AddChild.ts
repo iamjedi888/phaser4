@@ -14,6 +14,7 @@ import { SetNumChildren } from '../components/hierarchy/SetNumChildren';
 import { SetParentID } from '../components/hierarchy/SetParentID';
 import { SetPreviousSiblingID } from '../components/hierarchy/SetPreviousSiblingID';
 import { SetWorld } from './SetWorld';
+import { UpdateRootTransform } from '../components/transform/UpdateRootTransform';
 
 export function AddChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
@@ -24,8 +25,8 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
         const numChildren = GetNumChildren(parentID);
         const world = GetWorldFromParentID(parentID);
 
-        ClearHierarchyComponent(childID);
-
+        //  This should only be done if moving to another parent, etc:
+        // ClearHierarchyComponent(childID);
         //  RemoveChild from previous parent (if any)
 
         if (numChildren === 0)
@@ -45,6 +46,7 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
         SetParentID(childID, parentID);
         SetDirtyTransform(childID);
         SetDirtyParents(childID);
+        UpdateRootTransform(childID);
 
         SetLastChildID(parentID, childID);
         SetNumChildren(parentID, numChildren + 1);

@@ -1,6 +1,6 @@
-import { PermissionsComponent } from './PermissionsComponent';
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
 
 export function WillTransformChildren (id: number): boolean
 {
-    return Boolean(PermissionsComponent.willTransformChildren[id]);
+    return Boolean(PermissionsComponent.data[id][PERMISSION.WILL_TRANSFORM_CHILDREN]);
 }

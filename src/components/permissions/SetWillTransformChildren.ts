@@ -1,12 +1,6 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
-import { PermissionsComponent } from './PermissionsComponent';
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
 
-export function SetWillTransformChildren (value: boolean, ...children: IGameObject[]): IGameObject[]
+export function SetWillTransformChildren (id: number, value: boolean): void
 {
-    children.forEach(child =>
-    {
-        PermissionsComponent.willTransformChildren[child.id] = Number(value);
-    });
-
-    return children;
+    PermissionsComponent.data[id][PERMISSION.WILL_TRANSFORM_CHILDREN] = Number(value);
 }

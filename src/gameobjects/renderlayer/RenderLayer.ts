@@ -37,14 +37,14 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         super();
 
-        SetWillCacheChildren(true, this);
-        SetWillRenderChildren(true, this);
+        const id = this.id;
+
+        SetWillCacheChildren(true, id);
+        SetWillRenderChildren(true, id);
 
         const width = GetWidth();
         const height = GetHeight();
         const resolution = GetResolution();
-
-        const id = this.id;
 
         //  TODO: Allow them to set this via a filterArea
         const texture = new Texture(null, width * resolution, height * resolution);

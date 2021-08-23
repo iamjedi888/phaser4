@@ -1,20 +1,32 @@
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+
 import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
-import { Transform2DComponent } from './Transform2DComponent';
 
 export function MultiplyLocalWithWorld (parentID: number, childID: number): void
 {
-    const world = Transform2DComponent.world[childID];
-    const local = Transform2DComponent.local[childID];
+    const parentData = Transform2DComponent.data[parentID];
+    const childData = Transform2DComponent.data[childID];
 
-    const [ pa, pb, pc, pd, ptx, pty ] = Transform2DComponent.world[parentID];
-    const [ a, b, c, d, tx, ty ] = local;
+    const pa = parentData[TRANSFORM.WORLD_A];
+    const pb = parentData[TRANSFORM.WORLD_B];
+    const pc = parentData[TRANSFORM.WORLD_C];
+    const pd = parentData[TRANSFORM.WORLD_D];
+    const ptx = parentData[TRANSFORM.WORLD_TX];
+    const pty = parentData[TRANSFORM.WORLD_TY];
 
-    world[0] = a * pa + b * pc;
-    world[1] = a * pb + b * pd;
-    world[2] = c * pa + d * pc;
-    world[3] = c * pb + d * pd;
-    world[4] = tx * pa + ty * pc + ptx;
-    world[5] = tx * pb + ty * pd + pty;
+    const a = childData[TRANSFORM.LOCAL_A];
+    const b = childData[TRANSFORM.LOCAL_B];
+    const c = childData[TRANSFORM.LOCAL_C];
+    const d = childData[TRANSFORM.LOCAL_D];
+    const tx = childData[TRANSFORM.LOCAL_TX];
+    const ty = childData[TRANSFORM.LOCAL_TY];
+
+    childData[TRANSFORM.WORLD_A] = a * pa + b * pc;
+    childData[TRANSFORM.WORLD_B] = a * pb + b * pd;
+    childData[TRANSFORM.WORLD_C] = c * pa + d * pc;
+    childData[TRANSFORM.WORLD_D] = c * pb + d * pd;
+    childData[TRANSFORM.WORLD_TX] = tx * pa + ty * pc + ptx;
+    childData[TRANSFORM.WORLD_TY] = tx * pb + ty * pd + pty;
 
     SetDirtyWorldTransform(childID);
 }

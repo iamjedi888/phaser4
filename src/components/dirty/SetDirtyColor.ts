@@ -1,6 +1,15 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
+
+import { GetWorldID } from '../hierarchy/GetWorldID';
 
 export function SetDirtyColor (id: number): void
 {
-    DirtyComponent.color[id] = 1;
+    DirtyComponent.data[id][DIRTY.COLOR] = 1;
+
+    const world = GetWorldID(id);
+
+    if (world)
+    {
+        DirtyComponent.data[world][DIRTY.CHILD_COLOR] = 1;
+    }
 }

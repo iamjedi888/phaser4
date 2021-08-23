@@ -1,12 +1,6 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
-import { PermissionsComponent } from './PermissionsComponent';
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
 
-export function SetWillColorChildren (value: boolean, ...children: IGameObject[]): IGameObject[]
+export function SetWillColorChildren (id: number, value: boolean): void
 {
-    children.forEach(child =>
-    {
-        PermissionsComponent.willColorChildren[child.id] = Number(value);
-    });
-
-    return children;
+    PermissionsComponent.data[id][PERMISSION.WILL_COLOR_CHILDREN] = Number(value);
 }

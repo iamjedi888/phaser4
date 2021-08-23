@@ -1,6 +1,6 @@
-import { HierarchyComponent } from './HierarchyComponent';
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
 export function HasParent (id: number): boolean
 {
-    return HierarchyComponent.parent[id] > 0;
+    return HierarchyComponent.data[id][HIERARCHY.PARENT] > 0;
 }

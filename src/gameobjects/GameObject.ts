@@ -61,28 +61,10 @@ export class GameObject implements IGameObject
         //  Called before this GameObject and all of its children have been updated.
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     update (delta: number, time: number): void
     {
-        /*
-        this.beforeUpdate(delta, time);
-
-        if (WillUpdateChildren(this.id))
-        {
-            const children = GameObjectTree.get(this.id);
-
-            for (let i = 0; i < children.length; i++)
-            {
-                const childID = children[i];
-
-                if (WillUpdate(childID))
-                {
-                    GameObjectCache.get(childID).update(delta, time);
-                }
-            }
-        }
-
-        this.afterUpdate(delta, time);
-        */
+        //  Empty for parent classes to use.
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

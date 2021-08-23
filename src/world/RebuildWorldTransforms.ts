@@ -1,24 +1,27 @@
 import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
-import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
+import { GetParentID } from '../components/hierarchy/GetParentID';
+import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
-import { IBaseWorld } from './IBaseWorld';
-import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
 import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
-import { WillRender } from '../components/permissions/WillRender';
 
-export function RebuildWorldTransforms (world: IBaseWorld): void
+export function RebuildWorldTransforms (entities: number[]): number
 {
-    let next = GetFirstChildID(world.id);
+    let total = 0;
 
-    while (next > 0)
+    for (let i = 0; i < entities.length; i++)
     {
-        if (HasDirtyTransform(next) && WillRender(next))
+        const id = entities[i];
+        const parentID = GetParentID(id);
+
+        if (HasDirtyTransform(id) || HasDirtyChildTransform(parentID))
         {
-            UpdateWorldTransform(next);
+            UpdateWorldTransform(id);
 
-            ClearDirtyTransform(next);
+            ClearDirtyTransform(id);
+
+            total++;
         }
-
-        next = MoveNextRenderable(next);
     }
+
+    return total;
 }

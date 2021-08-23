@@ -1,6 +1,6 @@
-import { HierarchyComponent } from './HierarchyComponent';
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
 export function GetIndex (id: number): number
 {
-    return HierarchyComponent.index[id];
+    return HierarchyComponent.data[id][HIERARCHY.INDEX];
 }

@@ -1,12 +1,15 @@
 import { Types, defineComponent } from 'bitecs';
 
-const Dirty = defineComponent({
-    child: Types.ui8,
-    childCache: Types.ui8,
-    displayList: Types.ui8,
-    transform: Types.ui8,
-    worldTransform: Types.ui8,
-    color: Types.ui8
-});
+export const DIRTY = {
+    CHILD: 0,
+    CHILD_CACHE: 1,
+    CHILD_TRANSFORM: 2,
+    CHILD_WORLD_TRANSFORM: 3,
+    CHILD_COLOR: 4,
+    DISPLAY_LIST: 5,
+    COLOR: 6
+};
 
-export const DirtyComponent = Dirty;
+export const DirtyComponent = defineComponent({
+    data: [ Types.ui8, 7 ]
+});

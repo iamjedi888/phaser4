@@ -1,7 +1,7 @@
-import { HierarchyComponent } from './HierarchyComponent';
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
 export function SetWorldAndParentID (id: number, worldID: number, parentID: number): void
 {
-    HierarchyComponent.world[id] = worldID;
-    HierarchyComponent.parent[id] = parentID;
+    HierarchyComponent.data[id][HIERARCHY.WORLD] = worldID;
+    HierarchyComponent.data[id][HIERARCHY.PARENT] = parentID;
 }

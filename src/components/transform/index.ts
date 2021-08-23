@@ -1,5 +1,4 @@
 import { AddTransform2DComponent } from './AddTransform2DComponent';
-import { Extent2DComponent } from './Extent2DComponent';
 import { GetVertices } from './GetVertices';
 import { GetVerticesFromValues } from './GetVerticesFromValues';
 import { GlobalToLocal } from './GlobalToLocal';
@@ -19,7 +18,6 @@ import { UpdateWorldTransform } from './UpdateWorldTransform';
 
 export {
     AddTransform2DComponent,
-    Extent2DComponent,
     GetVertices,
     GetVerticesFromValues,
     GlobalToLocal,

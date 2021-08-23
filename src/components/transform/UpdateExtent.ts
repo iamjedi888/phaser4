@@ -1,27 +1,28 @@
-import { Extent2DComponent } from './Extent2DComponent';
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+
 import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
-import { Transform2DComponent } from './Transform2DComponent';
 
 export function UpdateExtent (id: number, width: number, height: number): void
 {
-    const x = -(Transform2DComponent.originX[id]) * width;
-    const y = -(Transform2DComponent.originY[id]) * height;
+    const data = Transform2DComponent.data[id];
 
-    Extent2DComponent.x[id] = x;
-    Extent2DComponent.y[id] = y;
-    Extent2DComponent.width[id] = width;
-    Extent2DComponent.height[id] = height;
-    Extent2DComponent.right[id] = x + width;
-    Extent2DComponent.bottom[id] = y + height;
+    const x = -(data[TRANSFORM.ORIGIN_X]) * width;
+    const y = -(data[TRANSFORM.ORIGIN_Y]) * height;
 
-    const world = Transform2DComponent.world[id];
+    data[TRANSFORM.FRAME_X1] = x;
+    data[TRANSFORM.FRAME_Y1] = y;
+    data[TRANSFORM.FRAME_X2] = x + width;
+    data[TRANSFORM.FRAME_Y2] = y + height;
+    data[TRANSFORM.FRAME_WIDTH] = width;
+    data[TRANSFORM.FRAME_HEIGHT] = height;
 
-    world[6] = x;
-    world[7] = y;
-    world[8] = x + width;
-    world[9] = y + height;
-    world[10] = width;
-    world[11] = height;
+    //  Really?!
+    data[TRANSFORM.WORLD_A] = x;
+    data[TRANSFORM.WORLD_B] = y;
+    data[TRANSFORM.WORLD_C] = x + width;
+    data[TRANSFORM.WORLD_D] = y + height;
+    data[TRANSFORM.WORLD_TX] = width;
+    data[TRANSFORM.WORLD_TY] = height;
 
     SetDirtyTransform(id);
 }

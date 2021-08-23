@@ -1,6 +1,6 @@
-import { HierarchyComponent } from './HierarchyComponent';
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
 export function SetPreviousSiblingID (parentID: number, childID: number): void
 {
-    HierarchyComponent.prev[parentID] = childID;
+    HierarchyComponent.data[parentID][HIERARCHY.PREV] = childID;
 }

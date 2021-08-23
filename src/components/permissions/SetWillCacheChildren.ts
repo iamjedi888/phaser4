@@ -1,12 +1,6 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
-import { PermissionsComponent } from './PermissionsComponent';
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
 
-export function SetWillCacheChildren (value: boolean, ...children: IGameObject[]): IGameObject[]
+export function SetWillCacheChildren (id: number, value: boolean): void
 {
-    children.forEach(child =>
-    {
-        PermissionsComponent.willCacheChildren[child.id] = Number(value);
-    });
-
-    return children;
+    PermissionsComponent.data[id][PERMISSION.WILL_CACHE_CHILDREN] = Number(value);
 }

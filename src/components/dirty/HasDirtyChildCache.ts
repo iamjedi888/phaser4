@@ -1,6 +1,6 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function HasDirtyChildCache (id: number): boolean
 {
-    return Boolean(DirtyComponent.childCache[id]);
+    return Boolean(DirtyComponent.data[id][DIRTY.CHILD_CACHE]);
 }

@@ -1,6 +1,6 @@
-import { PermissionsComponent } from './PermissionsComponent';
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
 
 export function GetVisibleChildren (id: number): boolean
 {
-    return Boolean(PermissionsComponent.visibleChildren[id]);
+    return Boolean(PermissionsComponent.data[id][PERMISSION.VISIBLE_CHILDREN]);
 }

@@ -1,6 +1,6 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function ClearDirtyDisplayList (id: number): void
 {
-    DirtyComponent.displayList[id] = 0;
+    DirtyComponent.data[id][DIRTY.DISPLAY_LIST] = 0;
 }

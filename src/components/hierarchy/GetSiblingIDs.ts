@@ -1,9 +1,17 @@
-import { GameObjectTree } from '../../gameobjects/GameObjectTree';
-import { GetParentID } from './GetParentID';
+import { GetNextSiblingID } from './GetNextSiblingID';
 
 export function GetSiblingIDs (childID: number): number[]
 {
-    const parentID = GetParentID(childID);
+    let next = GetNextSiblingID(childID);
 
-    return GameObjectTree.get(parentID);
+    const output = [];
+
+    while (next > 0)
+    {
+        output.push(next);
+
+        next = GetNextSiblingID(next);
+    }
+
+    return output;
 }

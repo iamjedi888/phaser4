@@ -1,12 +1,6 @@
-import { IGameObject } from '../../gameobjects/IGameObject';
-import { PermissionsComponent } from './PermissionsComponent';
+import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
 
-export function SetWillUpdateChildren (value: boolean, ...children: IGameObject[]): IGameObject[]
+export function SetWillUpdateChildren (id: number, value: boolean): void
 {
-    children.forEach(child =>
-    {
-        PermissionsComponent.willUpdateChildren[child.id] = Number(value);
-    });
-
-    return children;
+    PermissionsComponent.data[id][PERMISSION.WILL_UPDATE_CHILDREN] = Number(value);
 }

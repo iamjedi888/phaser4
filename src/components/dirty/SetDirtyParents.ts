@@ -9,8 +9,10 @@ export function SetDirtyParents (childID: number): void
 {
     const parents = GetParents(childID);
 
-    parents.forEach(id =>
+    for (let i = 0; i < parents.length; i++)
     {
+        const id = parents[i];
+
         SetDirtyChild(id);
 
         if (WillTransformChildren(id))
@@ -22,5 +24,5 @@ export function SetDirtyParents (childID: number): void
         {
             SetDirtyChildCache(id);
         }
-    });
+    }
 }

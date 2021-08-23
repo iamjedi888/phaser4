@@ -1,6 +1,6 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function HasDirtyChild (id: number): boolean
 {
-    return Boolean(DirtyComponent.child[id]);
+    return Boolean(DirtyComponent.data[id][DIRTY.CHILD]);
 }

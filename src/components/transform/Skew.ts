@@ -1,17 +1,20 @@
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+
 import { IVec2 } from '../../math/vec2/IVec2';
-import { SetDirtyTransform } from '../dirty';
-import { Transform2DComponent } from './Transform2DComponent';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
+import { UpdateAxisAligned } from './UpdateAxisAligned';
 
 export class Skew implements IVec2
 {
     private id: number;
+    private _x: number;
+    private _y: number;
 
     constructor (id: number, x: number = 0, y: number = 0)
     {
         this.id = id;
 
-        this.x = x;
-        this.y = y;
+        this.set(x, y);
     }
 
     set (x: number, y: number = x): this
@@ -24,27 +27,35 @@ export class Skew implements IVec2
 
     set x (value: number)
     {
-        // Transform2DComponent.skewX[this.id] = value;
-        Transform2DComponent.data[this.id][5] = value;
-        SetDirtyTransform(this.id);
+        this._x = value;
+
+        const id = this.id;
+
+        Transform2DComponent.data[id][TRANSFORM.SKEW_X] = value;
+
+        UpdateAxisAligned(id);
+        SetDirtyTransform(id);
     }
 
     get x (): number
     {
-        // return Transform2DComponent.skewX[this.id];
-        return Transform2DComponent.data[this.id][5];
+        return this._x;
     }
 
     set y (value: number)
     {
-        // Transform2DComponent.skewY[this.id] = value;
-        Transform2DComponent.data[this.id][6] = value;
-        SetDirtyTransform(this.id);
+        this._y = value;
+
+        const id = this.id;
+
+        Transform2DComponent.data[id][TRANSFORM.SKEW_Y] = value;
+
+        UpdateAxisAligned(id);
+        SetDirtyTransform(id);
     }
 
     get y (): number
     {
-        // return Transform2DComponent.skewY[this.id];
-        return Transform2DComponent.data[this.id][6];
+        return this._y;
     }
 }

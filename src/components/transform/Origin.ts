@@ -1,6 +1,6 @@
-import { Extent2DComponent } from './Extent2DComponent';
+import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+
 import { IVec2 } from '../../math/vec2/IVec2';
-import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateExtent } from './UpdateExtent';
 
 export class Origin implements IVec2
@@ -19,10 +19,10 @@ export class Origin implements IVec2
     {
         const id = this.id;
 
-        Transform2DComponent.originX[id] = x;
-        Transform2DComponent.originY[id] = y;
+        Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = x;
+        Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = y;
 
-        UpdateExtent(id, Extent2DComponent.width[id], Extent2DComponent.height[id]);
+        UpdateExtent(id, Transform2DComponent.data[id][TRANSFORM.FRAME_WIDTH], Transform2DComponent.data[id][TRANSFORM.FRAME_HEIGHT]);
 
         return this;
     }
@@ -31,27 +31,27 @@ export class Origin implements IVec2
     {
         const id = this.id;
 
-        Transform2DComponent.originX[id] = value;
+        Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = value;
 
-        UpdateExtent(id, Extent2DComponent.width[id], Extent2DComponent.height[id]);
+        UpdateExtent(id, Transform2DComponent.data[id][TRANSFORM.FRAME_WIDTH], Transform2DComponent.data[id][TRANSFORM.FRAME_HEIGHT]);
     }
 
     get x (): number
     {
-        return Transform2DComponent.originX[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.ORIGIN_X];
     }
 
     set y (value: number)
     {
         const id = this.id;
 
-        Transform2DComponent.originY[id] = value;
+        Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = value;
 
-        UpdateExtent(id, Extent2DComponent.width[id], Extent2DComponent.height[id]);
+        UpdateExtent(id, Transform2DComponent.data[id][TRANSFORM.FRAME_WIDTH], Transform2DComponent.data[id][TRANSFORM.FRAME_HEIGHT]);
     }
 
     get y (): number
     {
-        return Transform2DComponent.originY[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.ORIGIN_Y];
     }
 }
