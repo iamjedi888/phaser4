@@ -1,48 +1,40 @@
 import * as WorldEvents from './events';
 
-import { HasRenderableChildren, SetWillTransformChildren, WillUpdate } from '../components/permissions';
 import { Query, defineQuery } from 'bitecs';
+import { SetWillCacheChildren, SetWillTransformChildren, WillUpdate } from '../components/permissions';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
-import { ClearDirtyColor } from '../components/dirty/ClearDirtyColor';
-import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
+import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
+import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
+import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChildWorldTransform';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
-import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
-import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
-import { HasDirtyChild } from '../components/dirty/HasDirtyChild';
-import { HasDirtyColor } from '../components/dirty/HasDirtyColor';
-import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
+import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
+import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
+import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
 import { IBaseCamera } from '../camera/IBaseCamera';
-import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
-import { MoveNext } from '../components/hierarchy/MoveNext';
 import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { QuadVertexComponent } from '../components/vertices';
-import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
-import { StaticCamera } from '../camera/StaticCamera';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
-import { UpdateLocalTransformList } from '../components/transform/UpdateLocalTransformList';
 import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
 import { WillRender } from '../components/permissions/WillRender';
-import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
 import { WorldCamera } from '../camera/WorldCamera';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -59,12 +51,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    private rendered: number;
-
-    list: IGameObject[] = [];
-    renderList2: number[] = [];
-
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyVertices: number; numChildren: number; numRendered: number; numRenderable: number; rebuiltList: boolean; rebuiltWorld: boolean; updated: number, updateMs: number };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number; };
 
     constructor (scene: IScene)
     {
@@ -83,25 +70,18 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         this.renderData = {
             gameFrame: 0,
             dirtyLocal: 0,
-            dirtyVertices: 0,
+            dirtyWorld: 0,
+            dirtyColor: 0,
             numChildren: 0,
-            numRendered: 0,
-            numRenderable: 0,
-            rebuiltList: false,
-            rebuiltWorld: false,
+            rendered: 0,
+            renderMs: 0,
             updated: 0,
             updateMs: 0
         };
 
         SetWillTransformChildren(this.id, false);
+        SetWillCacheChildren(this.id, false);
     }
-
-    //  1) Reset World Data
-    //  2) Get World entities
-    //  3) Update Local Transforms
-    //  4) Update World Transforms
-    //  5) Update Vertex Positions
-    //  6) Update Vertex Colors
 
     preRender (gameFrame: number): boolean
     {
@@ -110,74 +90,39 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const renderData = this.renderData;
 
         renderData.gameFrame = gameFrame;
-        renderData.rebuiltList = false;
-        renderData.rebuiltWorld = false;
+        renderData.dirtyLocal = 0;
+        renderData.dirtyWorld = 0;
 
         ClearDirtyChild(id);
 
         const entities = this.transformQuery(GameObjectWorld);
 
-        const totalDirty = UpdateLocalTransformList(entities);
-
-        renderData.dirtyLocal = totalDirty;
-
-        /*
-        const dirtyDisplayList = HasDirtyDisplayList(id);
-
-        if (dirtyDisplayList || totalDirty > 0)
+        if (HasDirtyChildTransform(id))
         {
-            //  TODO - This should only run over the branches that are dirty, not the whole World.
+            const dirtyLocal = UpdateLocalTransform(id, entities);
 
-            //  This will update the Transform2DComponent.world values.
-            // RebuildWorldTransforms(this);
-            // RebuildWorldTransforms(this, id, false);
+            renderData.dirtyLocal = dirtyLocal;
 
-            RenderDataComponent.rebuiltWorld[id] = 1;
-
-            this.getNumChildren();
-
-            ClearDirtyDisplayList(id);
-
-            // isDirty = true;
+            ClearDirtyChildTransform(id);
         }
-        */
 
-        //  TODO - Only run if we've a dirty child
-        //  TODO - This uses the same query as ULT! So don't re-run this, use the same array.
-        // UpdateVertexPositionSystem(id, GameObjectWorld, this.transformQuery);
-
-
-
-        /*
-        if (dirtyDisplayList)
+        if (HasDirtyChildWorldTransform(id))
         {
-            this.listLength = 0;
+            const dirtyWorld = RebuildWorldTransforms(entities);
 
-            RebuildWorldList(this, id);
+            UpdateVertexPositionSystem(entities);
 
-            RenderDataComponent.numChildren[id] = this.getNumChildren();
-            RenderDataComponent.numRenderable[id] = this.listLength / 4;
-            RenderDataComponent.rebuiltList[id] = 1;
+            renderData.dirtyWorld = dirtyWorld;
 
-            ClearDirtyDisplayList(id);
-
-            // isDirty = true;
+            ClearDirtyChildWorldTransform(id);
         }
-        */
 
-        //  TODO - Need to use a different permission component, as Worlds have color (see SetDirtyColor)
-        if (HasDirtyColor(id))
+        if (HasDirtyChildColor(id))
         {
             UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
-            ClearDirtyColor(id);
+            ClearDirtyChildColor(id);
         }
-
-        //  By this point we've got a fully rebuilt World, where all dirty Game Objects have been
-        //  refreshed and had their coordinates moved to their quad vertices.
-
-        //  We've also got a complete local render list, in display order, that can be processed further
-        //  before rendering (i.e. spatial tree, bounds, etc)
 
         return true;
     }
@@ -206,14 +151,18 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         this.renderData.updateMs = performance.now() - start;
     }
 
-    listRender <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
+    render <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
     {
         const x = camera.getBoundsX();
         const y = camera.getBoundsY();
         const right = camera.getBoundsRight();
         const bottom = camera.getBoundsBottom();
 
+        const start = performance.now();
+
         let next = GetFirstChildID(this.id);
+
+        let total = 0;
 
         while (next > 0)
         {
@@ -225,7 +174,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 {
                     const gameObject = GameObjectCache.get(next);
 
-                    this.rendered++;
+                    total++;
 
                     gameObject.renderGL(renderPass);
                     gameObject.postRenderGL(renderPass);
@@ -234,6 +183,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             next = MoveNextRenderable(next);
         }
+
+        this.renderData.rendered = total;
+        this.renderData.renderMs = performance.now() - start;
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
@@ -246,15 +198,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         Begin(renderPass, camera);
 
-        this.rendered = 0;
-
-        this.listRender(renderPass, camera);
+        this.render(renderPass, camera);
 
         PopColor(renderPass, this.color);
 
         //#ifdef RENDER_STATS
         this.renderData.numChildren = this.getNumChildren();
-        this.renderData.numRendered = this.rendered;
         window['renderStats'] = this.renderData;
         //#endif
 
