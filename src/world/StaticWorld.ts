@@ -129,6 +129,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     update (delta: number, time: number): void
     {
+        Emit(this, WorldEvents.WorldBeforeUpdateEvent, this);
+
         const start = performance.now();
 
         let next = GetFirstChildID(this.id);
@@ -149,6 +151,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         this.renderData.updated = total;
         this.renderData.updateMs = performance.now() - start;
+
+        Emit(this, WorldEvents.WorldUpdateEvent, this);
     }
 
     render <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
