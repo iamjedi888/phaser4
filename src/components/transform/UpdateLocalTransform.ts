@@ -3,6 +3,7 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
+import { SetDirtyChildTransform } from '../dirty/SetDirtyChildTransform';
 import { SetDirtyChildWorldTransform } from '../dirty/SetDirtyChildWorldTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
@@ -137,6 +138,8 @@ export function UpdateLocalTransform (worldID: number, entities: number[]): numb
 
             dirtyWorld = true;
         }
+
+        SetDirtyChildTransform(id);
 
         total++;
     }
