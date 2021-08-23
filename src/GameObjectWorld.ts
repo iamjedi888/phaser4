@@ -7,7 +7,7 @@ if (window['defaultSize'])
 }
 else
 {
-    setDefaultSize(10000);
+    // setDefaultSize(10000);
     // setDefaultSize(100000);
     // setDefaultSize(150000);
     // setDefaultSize(200000);
@@ -15,7 +15,7 @@ else
     // setDefaultSize(300000);
     // setDefaultSize(350000);
     // setDefaultSize(400000);
-    // setDefaultSize(500000);
+    setDefaultSize(500000);
     // setDefaultSize(550000);
 }
 
