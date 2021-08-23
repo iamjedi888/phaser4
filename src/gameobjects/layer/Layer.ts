@@ -11,6 +11,6 @@ export class Layer extends GameObject
     {
         super();
 
-        SetWillTransformChildren(false, this);
+        SetWillTransformChildren(false, this.id);
     }
 }
