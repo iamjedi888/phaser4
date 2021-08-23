@@ -5,19 +5,20 @@ import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from './GameObjectCache';
-import { GameObjectTree } from './GameObjectTree';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetChildrenFromParentID } from '../components/hierarchy/GetChildrenFromParentID';
+import { GetDepth } from '../components/hierarchy/GetDepth';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { GetParentGameObject } from '../components/hierarchy/GetParentGameObject';
+import { GetParentID } from '../components/hierarchy/GetParentID';
 import { GetVisible } from '../components/permissions/GetVisible';
 import { GetVisibleChildren } from '../components/permissions/GetVisibleChildren';
-import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ReparentChildren } from '../display/ReparentChildren';
+import { SetDepth } from '../components/hierarchy/SetDepth';
 import { SetVisible } from '../components/permissions/SetVisible';
 import { SetVisibleChildren } from '../components/permissions/SetVisibleChildren';
 import { WillRender } from '../components/permissions/WillRender';
@@ -107,7 +108,7 @@ export class GameObject implements IGameObject
 
     set visible (value: boolean)
     {
-        SetVisible(value, this.id);
+        SetVisible(this.id, value);
     }
 
     get visible (): boolean
@@ -117,7 +118,7 @@ export class GameObject implements IGameObject
 
     set visibleChildren (value: boolean)
     {
-        SetVisibleChildren(value, this.id);
+        SetVisibleChildren(this.id, value);
     }
 
     get visibleChildren (): boolean
@@ -127,23 +128,25 @@ export class GameObject implements IGameObject
 
     set depth (value: number)
     {
-        HierarchyComponent.depth[this.id] = value;
+        SetDepth(this.id, value);
     }
 
     get depth (): number
     {
-        return HierarchyComponent.depth[this.id];
+        return GetDepth(this.id);
     }
 
     hasParent (id?: number): boolean
     {
+        const parentID = GetParentID(this.id);
+
         if (id)
         {
-            return (HierarchyComponent.parent[this.id] === id);
+            return (parentID === id);
         }
         else
         {
-            return (HierarchyComponent.parent[this.id] > 0);
+            return (parentID > 0);
         }
     }
 
@@ -163,7 +166,8 @@ export class GameObject implements IGameObject
     }
 
     //#ifdef GET_DISPLAY_DATA
-    getDisplayData (): { id: number, index: number, parent: number, world: number, worldDepth: number, numChildren: number, children: number[] }
+    /*
+    getDisplayData (): { id: number, index: number, parent: number, world: number, worldDepth: number, numChildren: number }
     {
         const id = this.id;
 
@@ -173,10 +177,11 @@ export class GameObject implements IGameObject
             parent: HierarchyComponent.parent[id],
             world: HierarchyComponent.world[id],
             worldDepth: HierarchyComponent.worldDepth[id],
-            numChildren: HierarchyComponent.numChildren[id],
-            children: GameObjectTree.get(id)
+            numChildren: HierarchyComponent.numChildren[id]
+            // children: GameObjectTree.get(id)
         };
     }
+    */
     //#endif
 
     toString (): string
