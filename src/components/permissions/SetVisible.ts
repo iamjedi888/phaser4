@@ -4,7 +4,7 @@ import { GetWorldID } from '../hierarchy/GetWorldID';
 import { SetDirtyDisplayList } from '../dirty/SetDirtyDisplayList';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 
-export function SetVisible (value: boolean, id: number): void
+export function SetVisible (id: number, value: boolean): void
 {
     PermissionsComponent.data[id][PERMISSION.VISIBLE] = Number(value);
 
