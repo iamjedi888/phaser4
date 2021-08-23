@@ -1,14 +1,11 @@
-import { IWorld, Query, defineSystem } from 'bitecs';
-
 import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
 import { HasDirtyWorldTransform } from '../dirty/HasDirtyWorldTransform';
 import { SetQuadFromWorld } from './SetQuadFromWorld';
 
-let entities: number[];
-let total: number = 0;
-
-const updateVertexPositionSystem = defineSystem(world =>
+export function UpdateVertexPositionSystem (entities: number[]): number
 {
+    let total: number = 0;
+
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
@@ -25,24 +22,5 @@ const updateVertexPositionSystem = defineSystem(world =>
         total++;
     }
 
-    return world;
-});
-
-//  Update all vertices and bounds across the World.
-//  This updates the QuadVertexComponent and BoundsComponent (per Game Object)
-
-//  This will only update entities that had their WorldTransform changed this frame.
-
-//  We cannot control the order of these entities, children may be updated before parents, etc.
-
-export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Query): number =>
-{
-    total = 0;
-    entities = query(world);
-
-    updateVertexPositionSystem(world);
-
-    ClearDirtyWorldTransform(id);
-
     return total;
-};
+}
