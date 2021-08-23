@@ -1,13 +1,8 @@
 import { AddToRenderList } from './AddToRenderList';
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
-import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
-import { HasDirtyChildCache } from '../components/dirty/HasDirtyChildCache';
+import { GetChildIDsFromParentID } from '../components/hierarchy/GetChildIDsFromParentID';
 import { HasRenderableChildren } from '../components/permissions';
 import { IBaseWorld } from './IBaseWorld';
-import { SetWorldDepth } from '../components/hierarchy/SetWorldDepth';
-import { WillCacheChildren } from '../components/permissions/WillCacheChildren';
 import { WillRender } from '../components/permissions/WillRender';
-import { WillRenderChildren } from '../components/permissions/WillRenderChildren';
 
 //  Rebuilds the World.renderList - a list of all entities that could potentially render.
 
@@ -28,7 +23,7 @@ export function RebuildWorldList (world: IBaseWorld, parent: number): void
                 AddToRenderList(world, parent, 0);
             }
 
-            const children = GameObjectTree.get(parent);
+            const children = GetChildIDsFromParentID(parent);
 
             for (let i = 0; i < children.length; i++)
             {

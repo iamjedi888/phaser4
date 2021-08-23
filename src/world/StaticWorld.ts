@@ -10,6 +10,7 @@ import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
 import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChildWorldTransform';
+import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
@@ -18,6 +19,7 @@ import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
+import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
@@ -27,6 +29,7 @@ import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { QuadVertexComponent } from '../components/vertices';
+import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
@@ -51,7 +54,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number; };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number; rebuiltWorld: boolean };
 
     constructor (scene: IScene)
     {
@@ -77,7 +80,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             rendered: 0,
             renderMs: 0,
             updated: 0,
-            updateMs: 0
+            updateMs: 0,
+            rebuiltWorld: false
         };
 
         SetWillTransformChildren(this.id, false);
@@ -94,6 +98,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyLocal = 0;
         renderData.dirtyWorld = 0;
         renderData.dirtyQuad = 0;
+        renderData.rebuiltWorld = false;
 
         ClearDirtyChild(id);
 
@@ -125,6 +130,15 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
 
             ClearDirtyChildColor(id);
+        }
+
+        if (HasDirtyDisplayList(id))
+        {
+            RebuildWorldList(this, id);
+
+            ClearDirtyDisplayList(id);
+
+            renderData.rebuiltWorld = true;
         }
 
         return true;
@@ -165,30 +179,35 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const right = camera.getBoundsRight();
         const bottom = camera.getBoundsBottom();
 
-        const start = performance.now();
-
-        let next = GetFirstChildID(this.id);
-
         let total = 0;
 
-        while (next > 0)
+        const len = this.listLength;
+        const list = this.renderList;
+
+        const start = performance.now();
+
+        for (let i = 0; i < len; i += 2)
         {
-            if (WillRender(next))
+            const id = list[i];
+            const type = list[i + 1];
+            const entry = GameObjectCache.get(id);
+
+            if (type === 1)
             {
-                const intersects = BoundsIntersects(next, x, y, right, bottom);
-
-                if (intersects)
-                {
-                    const gameObject = GameObjectCache.get(next);
-
-                    total++;
-
-                    gameObject.renderGL(renderPass);
-                    gameObject.postRenderGL(renderPass);
-                }
+                //  We've already rendered this Game Object, so skip bounds checking
+                entry.postRenderGL(renderPass);
             }
+            else if (BoundsIntersects(id, x, y, right, bottom))
+            {
+                entry.renderGL(renderPass);
 
-            next = MoveNextRenderable(next);
+                if (type === 2)
+                {
+                    entry.postRenderGL(renderPass);
+                }
+
+                total++;
+            }
         }
 
         this.renderData.rendered = total;
