@@ -1,7 +1,6 @@
 import * as WorldEvents from './events';
 
 import { Query, defineQuery } from 'bitecs';
-import { SetWillCacheChildren, SetWillTransformChildren, WillUpdate } from '../components/permissions';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
@@ -16,6 +15,7 @@ import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
+import { GetVisible } from '../components/permissions/GetVisible';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
@@ -25,19 +25,20 @@ import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
-import { MoveNextRenderable } from '../components/hierarchy/MoveNextRenderable';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
-import { QuadVertexComponent } from '../components/vertices';
+import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
+import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
+import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
 import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
-import { WillRender } from '../components/permissions/WillRender';
+import { WillUpdate } from '../components/permissions/WillUpdate';
 import { WorldCamera } from '../camera/WorldCamera';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -98,6 +99,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyLocal = 0;
         renderData.dirtyWorld = 0;
         renderData.dirtyQuad = 0;
+        renderData.dirtyColor = 0;
         renderData.rebuiltWorld = false;
 
         ClearDirtyChild(id);
@@ -108,9 +110,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             const dirtyLocal = UpdateLocalTransform(id, entities);
 
-            renderData.dirtyLocal = dirtyLocal;
-
             ClearDirtyChildTransform(id);
+
+            renderData.dirtyLocal = dirtyLocal;
         }
 
         if (HasDirtyChildWorldTransform(id))
@@ -119,17 +121,19 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             const dirtyQuad = UpdateVertexPositionSystem(entities);
 
+            ClearDirtyChildWorldTransform(id);
+
             renderData.dirtyWorld = dirtyWorld;
             renderData.dirtyQuad = dirtyQuad;
-
-            ClearDirtyChildWorldTransform(id);
         }
 
         if (HasDirtyChildColor(id))
         {
-            UpdateQuadColorSystem(id, GameObjectWorld, this.colorQuery);
+            const dirtyColor = UpdateQuadColorSystem(this.colorQuery(GameObjectWorld));
 
             ClearDirtyChildColor(id);
+
+            renderData.dirtyColor = dirtyColor;
         }
 
         if (HasDirtyDisplayList(id))
@@ -189,6 +193,14 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         for (let i = 0; i < len; i += 2)
         {
             const id = list[i];
+
+            if (!GetVisible(id))
+            {
+                //  Because you can toggle visible at runtime,
+                //  but willRender causes a display list rebuild.
+                continue;
+            }
+
             const type = list[i + 1];
             const entry = GameObjectCache.get(id);
 
