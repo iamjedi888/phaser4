@@ -4,14 +4,15 @@ import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 
 export function CopyLocalToWorld (source: number, target: number): void
 {
-    // Transform2DComponent.world[target].set(Transform2DComponent.local[source]);
+    const targetData = Transform2DComponent.data[target];
+    const sourceData = Transform2DComponent.data[source];
 
-    Transform2DComponent.data[target][TRANSFORM.WORLD_A] = Transform2DComponent.data[source][TRANSFORM.LOCAL_A];
-    Transform2DComponent.data[target][TRANSFORM.WORLD_B] = Transform2DComponent.data[source][TRANSFORM.LOCAL_B];
-    Transform2DComponent.data[target][TRANSFORM.WORLD_C] = Transform2DComponent.data[source][TRANSFORM.LOCAL_C];
-    Transform2DComponent.data[target][TRANSFORM.WORLD_D] = Transform2DComponent.data[source][TRANSFORM.LOCAL_D];
-    Transform2DComponent.data[target][TRANSFORM.WORLD_TX] = Transform2DComponent.data[source][TRANSFORM.LOCAL_TX];
-    Transform2DComponent.data[target][TRANSFORM.WORLD_TY] = Transform2DComponent.data[source][TRANSFORM.LOCAL_TY];
+    targetData[TRANSFORM.WORLD_A] = sourceData[TRANSFORM.LOCAL_A];
+    targetData[TRANSFORM.WORLD_B] = sourceData[TRANSFORM.LOCAL_B];
+    targetData[TRANSFORM.WORLD_C] = sourceData[TRANSFORM.LOCAL_C];
+    targetData[TRANSFORM.WORLD_D] = sourceData[TRANSFORM.LOCAL_D];
+    targetData[TRANSFORM.WORLD_TX] = sourceData[TRANSFORM.LOCAL_TX];
+    targetData[TRANSFORM.WORLD_TY] = sourceData[TRANSFORM.LOCAL_TY];
 
     SetDirtyWorldTransform(target);
 }

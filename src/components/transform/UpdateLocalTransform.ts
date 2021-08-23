@@ -1,28 +1,17 @@
-import { IWorld, Query, defineSystem } from 'bitecs';
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { BoundsIntersects } from '../bounds/BoundsIntersects';
-import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
+import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
-import { IsRoot } from '../hierarchy/IsRoot';
+import { SetDirtyChildWorldTransform } from '../dirty/SetDirtyChildWorldTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
-import { StaticWorld } from '../../world/StaticWorld';
-import { WillRender } from '../permissions/WillRender';
 
-let entities: number[];
-let total: number = 0;
-let baseworld;
-
-const system = defineSystem(world =>
+export function UpdateLocalTransform (worldID: number, entities: number[]): number
 {
-    const camX = baseworld.camera.getBoundsX();
-    const camY = baseworld.camera.getBoundsY();
-    const camRight = baseworld.camera.getBoundsRight();
-    const camBottom = baseworld.camera.getBoundsBottom();
-
-    let prevParent: number = 0;
+    let prevParent = 0;
+    let total = 0;
+    let dirtyWorld = false;
 
     for (let i = 0; i < entities.length; i++)
     {
@@ -34,9 +23,9 @@ const system = defineSystem(world =>
             continue;
         }
 
-        const isRoot = IsRoot(id);
-
         const data = Transform2DComponent.data[id];
+
+        const isRoot = data[TRANSFORM.IS_ROOT];
 
         const tx = data[TRANSFORM.X];
         const ty = data[TRANSFORM.Y];
@@ -72,8 +61,16 @@ const system = defineSystem(world =>
         data[TRANSFORM.LOCAL_TX] = tx;
         data[TRANSFORM.LOCAL_TY] = ty;
 
+        //  This is a root transform, so we can set the world / quad values right now
         if (isRoot)
         {
+            data[TRANSFORM.WORLD_A] = a;
+            data[TRANSFORM.WORLD_B] = b;
+            data[TRANSFORM.WORLD_C] = c;
+            data[TRANSFORM.WORLD_D] = d;
+            data[TRANSFORM.WORLD_TX] = tx;
+            data[TRANSFORM.WORLD_TY] = ty;
+
             if (axisAligned)
             {
                 //  top left
@@ -125,12 +122,7 @@ const system = defineSystem(world =>
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
 
-            if (WillRender(id) && BoundsIntersects(id, camX, camY, camRight, camBottom))
-            {
-                baseworld.wibble.push(id);
-            }
-
-            ClearDirtyTransform(id);
+            ClearDirtyTransforms(id);
         }
         else
         {
@@ -142,26 +134,17 @@ const system = defineSystem(world =>
 
                 prevParent = parentID;
             }
+
+            dirtyWorld = true;
         }
 
         total++;
     }
 
-    return world;
-});
-
-//  All children of a World that have a dirty Transform2DComponent
-//  are passed through this system and have their LocalMatrix2DComponent values set +
-//  SetDirtyTransform + SetDirtyParents (which includes SetDirtyDisplayList for the World)
-
-export const UpdateLocalTransform = (world: StaticWorld, iworld: IWorld, query: Query): number =>
-{
-    total = 0;
-    entities = query(iworld);
-
-    baseworld = world;
-
-    system(iworld);
+    if (dirtyWorld)
+    {
+        SetDirtyChildWorldTransform(worldID);
+    }
 
     return total;
-};
+}
