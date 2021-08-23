@@ -1,16 +1,14 @@
-import { IWorld, Query, defineSystem } from 'bitecs';
-
 import { ClearDirtyColor } from '../dirty/ClearDirtyColor';
 import { ColorComponent } from './ColorComponent';
 import { HasDirtyColor } from '../dirty/HasDirtyColor';
 import { SetQuadColor } from '../vertices/SetQuadColor';
 
-let entities: number[];
-let total: number = 0;
-
-const system = defineSystem(world =>
+export function UpdateQuadColorSystem (entities: number[]): number
 {
-    for (let i = 0; i < entities.length; i++)
+    let total = 0;
+    const len = entities.length;
+
+    for (let i = 0; i < len; i++)
     {
         const id = entities[i];
 
@@ -23,24 +21,11 @@ const system = defineSystem(world =>
 
             SetQuadColor(id, r, g, b, a);
 
-            total++;
-
             ClearDirtyColor(id);
+
+            total++;
         }
     }
 
-    return world;
-});
-
-export const UpdateQuadColorSystem = (id: number, world: IWorld, query: Query): number =>
-{
-    total = 0;
-    entities = query(world);
-
-    if (entities.length > 0)
-    {
-        system(world);
-    }
-
     return total;
-};
+}
