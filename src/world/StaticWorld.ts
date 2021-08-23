@@ -51,7 +51,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number; };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number; };
 
     constructor (scene: IScene)
     {
@@ -71,6 +71,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             gameFrame: 0,
             dirtyLocal: 0,
             dirtyWorld: 0,
+            dirtyQuad: 0,
             dirtyColor: 0,
             numChildren: 0,
             rendered: 0,
@@ -92,6 +93,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.gameFrame = gameFrame;
         renderData.dirtyLocal = 0;
         renderData.dirtyWorld = 0;
+        renderData.dirtyQuad = 0;
 
         ClearDirtyChild(id);
 
@@ -110,9 +112,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             const dirtyWorld = RebuildWorldTransforms(entities);
 
-            UpdateVertexPositionSystem(entities);
+            const dirtyQuad = UpdateVertexPositionSystem(entities);
 
             renderData.dirtyWorld = dirtyWorld;
+            renderData.dirtyQuad = dirtyQuad;
 
             ClearDirtyChildWorldTransform(id);
         }
