@@ -15,7 +15,6 @@ import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
-import { GetVisible } from '../components/permissions/GetVisible';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
@@ -193,14 +192,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         for (let i = 0; i < len; i += 2)
         {
             const id = list[i];
-
-            if (!GetVisible(id))
-            {
-                //  Because you can toggle visible at runtime,
-                //  but willRender causes a display list rebuild.
-                continue;
-            }
-
             const type = list[i + 1];
             const entry = GameObjectCache.get(id);
 
