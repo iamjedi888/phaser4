@@ -1,7 +1,7 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
 import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DComponent';
 
 import { GetWorldID } from '../hierarchy/GetWorldID';
+import { SetDirtyChildTransform } from './SetDirtyChildTransform';
 
 export function SetDirtyTransform (id: number): void
 {
@@ -11,6 +11,6 @@ export function SetDirtyTransform (id: number): void
 
     if (worldID > 0)
     {
-        DirtyComponent.data[worldID][DIRTY.CHILD_TRANSFORM];
+        SetDirtyChildTransform(worldID);
     }
 }

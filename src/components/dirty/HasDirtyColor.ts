@@ -2,5 +2,5 @@ import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function HasDirtyColor (id: number): boolean
 {
-    return Boolean(DirtyComponent.data[id][DIRTY.CHILD_COLOR]);
+    return Boolean(DirtyComponent.data[id][DIRTY.COLOR]);
 }
