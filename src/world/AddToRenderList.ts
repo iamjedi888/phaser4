@@ -1,4 +1,3 @@
-import { GetWorldSize } from '../config/worldsize/GetWorldSize';
 import { IBaseWorld } from './IBaseWorld';
 
 //  Called by RebuildWorldList as it sweeps the world children, looking to see what will render or not
@@ -42,7 +41,8 @@ export function AddToRenderList (world: IBaseWorld, id: number, renderType: numb
     if (len === list.length)
     {
         //  Resize the render list
-        const newList = new Uint32Array(len + (GetWorldSize() * 4));
+        // const newList = new Uint32Array(len + (GetWorldSize() * 4));
+        const newList = new Uint32Array(len + (512 * 4));
 
         newList.set(list, 0);
 
