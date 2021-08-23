@@ -4,7 +4,6 @@ import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
-import { IsRoot } from '../hierarchy/IsRoot';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 
@@ -23,9 +22,9 @@ export function UpdateLocalTransformList (entities: number[]): number
             continue;
         }
 
-        const isRoot = IsRoot(id);
-
         const data = Transform2DComponent.data[id];
+
+        const isRoot = data[TRANSFORM.IS_ROOT];
 
         const tx = data[TRANSFORM.X];
         const ty = data[TRANSFORM.Y];
