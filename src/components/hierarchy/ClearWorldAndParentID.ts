@@ -1,10 +1,10 @@
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 import { hasComponent, removeComponent } from 'bitecs';
 
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetParentID } from './GetParentID';
 import { GetWorldID } from './GetWorldID';
-import { HierarchyComponent } from './HierarchyComponent';
 import { IBaseWorld } from '../../world/IBaseWorld';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { UpdateNumChildren } from './UpdateNumChildren';
@@ -15,8 +15,8 @@ export function ClearWorldAndParentID (id: number): void
     const parentID = GetParentID(id);
     const world = GameObjectCache.get(worldID) as IBaseWorld;
 
-    HierarchyComponent.world[id] = 0;
-    HierarchyComponent.parent[id] = 0;
+    HierarchyComponent.data[id][HIERARCHY.WORLD] = 0;
+    HierarchyComponent.data[id][HIERARCHY.PARENT] = 0;
 
     if (world && hasComponent(GameObjectWorld, world.tag, id))
     {

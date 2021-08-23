@@ -1,9 +1,9 @@
-import { GameObjectTree } from '../../gameobjects/GameObjectTree';
+import { GetChildIDsFromParentID } from './GetChildIDsFromParentID';
 import { SetIndex } from './SetIndex';
 
 export function UpdateChildIndexes (parentID: number): void
 {
-    const children = GameObjectTree.get(parentID);
+    const children = GetChildIDsFromParentID(parentID);
 
     for (let i = 0; i < children.length; i++)
     {

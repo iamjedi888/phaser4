@@ -10,7 +10,6 @@ import { GetParentGameObject } from './GetParentGameObject';
 import { GetParentID } from './GetParentID';
 import { GetParents } from './GetParents';
 import { GetSiblingIDs } from './GetSiblingIDs';
-import { GetWorldDepth } from './GetWorldDepth';
 import { GetWorldFromID } from './GetWorldFromID';
 import { GetWorldFromParentID } from './GetWorldFromParentID';
 import { GetWorldID } from './GetWorldID';
@@ -21,7 +20,6 @@ import { SetIndex } from './SetIndex';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
 import { SetWorldAndParentID } from './SetWorldAndParentID';
-import { SetWorldDepth } from './SetWorldDepth';
 import { SetWorldID } from './SetWorldID';
 import { UpdateChildIndexes } from './UpdateChildIndexes';
 import { UpdateIndexes } from './UpdateIndexes';
@@ -40,7 +38,6 @@ export {
     GetParentID,
     GetParents,
     GetSiblingIDs,
-    GetWorldDepth,
     GetWorldFromID,
     GetWorldFromParentID,
     GetWorldID,
@@ -51,7 +48,6 @@ export {
     SetNumChildren,
     SetParentID,
     SetWorldAndParentID,
-    SetWorldDepth,
     SetWorldID,
     UpdateChildIndexes,
     UpdateIndexes,

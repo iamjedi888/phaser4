@@ -1,8 +1,9 @@
+import { GetFirstChildID } from './GetFirstChildID';
 import { GetNextSiblingID } from './GetNextSiblingID';
 
-export function GetSiblingIDs (childID: number): number[]
+export function GetChildIDsFromParentID (id: number): number[]
 {
-    let next = GetNextSiblingID(childID);
+    let next = GetFirstChildID(id);
 
     const output = [];
 

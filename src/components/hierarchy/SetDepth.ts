@@ -1,6 +1,6 @@
-import { HierarchyComponent } from './HierarchyComponent';
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
 export function SetDepth (id: number, depth: number): void
 {
-    HierarchyComponent.depth[id] = depth;
+    HierarchyComponent.data[id][HIERARCHY.DEPTH] = depth;
 }

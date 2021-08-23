@@ -1,10 +1,11 @@
 import { ClearWorld } from './ClearWorld';
 import { DepthFirstSearchFromParentID } from '../components/hierarchy/DepthFirstSearchFromParentID';
 import { GameObjectWorld } from '../GameObjectWorld';
-import { HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
+import { GetWorldID } from '../components/hierarchy/GetWorldID';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
+import { SetWorldID } from '../components/hierarchy/SetWorldID';
 import { addComponent } from 'bitecs';
 
 export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObject[]): IGameObject[]
@@ -18,7 +19,7 @@ export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObje
 
         children.map(id =>
         {
-            const currentWorldID = HierarchyComponent.world[id];
+            const currentWorldID = GetWorldID(id);
 
             if (currentWorldID > 0 && currentWorldID !== worldID)
             {
@@ -30,7 +31,7 @@ export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObje
             {
                 addComponent(GameObjectWorld, worldTag, id);
 
-                HierarchyComponent.world[id] = worldID;
+                SetWorldID(id, worldID);
             }
         });
     });

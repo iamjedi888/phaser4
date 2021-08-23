@@ -1,8 +1,6 @@
-import { GameObjectTree } from '../../gameobjects/GameObjectTree';
-import { HierarchyComponent } from './HierarchyComponent';
+import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
 export function SetNumChildren (parentID: number, total: number): void
 {
-    // HierarchyComponent.numChildren[id] = GameObjectTree.get(id).length;
-    HierarchyComponent.numChildren[parentID] = total;
+    HierarchyComponent.data[parentID][HIERARCHY.NUM_CHILDREN] = total;
 }

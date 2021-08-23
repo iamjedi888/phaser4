@@ -1,15 +1,12 @@
-import { GameObjectTree } from '../../gameobjects/GameObjectTree';
 import { GetParentID } from './GetParentID';
-import { SetIndex } from './SetIndex';
+import { UpdateChildIndexes } from './UpdateChildIndexes';
 
 export function UpdateIndexes (id: number): void
 {
     const parentID = GetParentID(id);
 
-    const children = GameObjectTree.get(parentID);
-
-    for (let i = 0; i < children.length; i++)
+    if (parentID > 0)
     {
-        SetIndex(children[i], i);
+        UpdateChildIndexes(parentID);
     }
 }
