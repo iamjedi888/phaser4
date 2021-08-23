@@ -1,4 +1,6 @@
 import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
+import { GetParentID } from '../components/hierarchy/GetParentID';
+import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
 
@@ -9,8 +11,9 @@ export function RebuildWorldTransforms (entities: number[]): number
     for (let i = 0; i < entities.length; i++)
     {
         const id = entities[i];
+        const parentID = GetParentID(id);
 
-        if (HasDirtyTransform(id))
+        if (HasDirtyTransform(id) || HasDirtyChildTransform(parentID))
         {
             UpdateWorldTransform(id);
 
