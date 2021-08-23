@@ -5,9 +5,10 @@ import { SetQuadFromWorld } from './SetQuadFromWorld';
 
 export function UpdateVertexPositionSystem (entities: number[]): number
 {
-    let total: number = 0;
+    let total = 0;
+    const len = entities.length;
 
-    for (let i = 0; i < entities.length; i++)
+    for (let i = 0; i < len; i++)
     {
         const id = entities[i];
 
