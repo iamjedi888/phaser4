@@ -1,6 +1,6 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function HasDirtyColor (id: number): boolean
 {
-    return Boolean(DirtyComponent.color[id]);
+    return Boolean(DirtyComponent.data[id][DIRTY.CHILD_COLOR]);
 }

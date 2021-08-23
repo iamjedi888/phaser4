@@ -1,6 +1,6 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function SetDirtyChild (id: number): void
 {
-    DirtyComponent.child[id] = 1;
+    DirtyComponent.data[id][DIRTY.CHILD] = 1;
 }

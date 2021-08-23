@@ -1,9 +1,13 @@
-import { DirtyComponent } from './DirtyComponent';
-import { HierarchyComponent } from '../hierarchy/HierarchyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
+
+import { GetWorldID } from '../hierarchy/GetWorldID';
 
 export function SetDirtyWorldDisplayList (id: number): void
 {
-    const worldID = HierarchyComponent.world[id];
+    const worldID = GetWorldID(id);
 
-    DirtyComponent.displayList[worldID] = 1;
+    if (worldID > 0)
+    {
+        DirtyComponent.data[worldID][DIRTY.DISPLAY_LIST];
+    }
 }

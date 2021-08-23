@@ -1,6 +1,6 @@
-import { DirtyComponent } from './DirtyComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function SetDirtyWorldTransform (id: number): void
 {
-    DirtyComponent.worldTransform[id] = 1;
+    DirtyComponent.data[id][DIRTY.CHILD_WORLD_TRANSFORM] = 1;
 }
