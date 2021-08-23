@@ -2,7 +2,6 @@ import { IWorld, Query, defineSystem } from 'bitecs';
 
 import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
 import { HasDirtyWorldTransform } from '../dirty/HasDirtyWorldTransform';
-import { RenderDataComponent } from '../../world/RenderDataComponent';
 import { SetQuadFromWorld } from './SetQuadFromWorld';
 
 let entities: number[];
@@ -36,7 +35,7 @@ const updateVertexPositionSystem = defineSystem(world =>
 
 //  We cannot control the order of these entities, children may be updated before parents, etc.
 
-export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Query): void =>
+export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Query): number =>
 {
     total = 0;
     entities = query(world);
@@ -45,5 +44,5 @@ export const UpdateVertexPositionSystem = (id: number, world: IWorld, query: Que
 
     ClearDirtyWorldTransform(id);
 
-    RenderDataComponent.dirtyVertices[id] = total;
+    return total;
 };
