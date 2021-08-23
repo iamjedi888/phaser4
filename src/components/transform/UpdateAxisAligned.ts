@@ -2,9 +2,11 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
 export function UpdateAxisAligned (id: number): void
 {
-    const rotation = Transform2DComponent.data[id][TRANSFORM.ROTATION];
-    const skewX = Transform2DComponent.data[id][TRANSFORM.SKEW_X];
-    const skewY = Transform2DComponent.data[id][TRANSFORM.SKEW_Y];
+    const data = Transform2DComponent.data[id];
 
-    Transform2DComponent.data[id][TRANSFORM.AXIS_ALIGNED] = Number(rotation === 0 && skewX === 0 && skewY === 0);
+    const rotation = data[TRANSFORM.ROTATION];
+    const skewX = data[TRANSFORM.SKEW_X];
+    const skewY = data[TRANSFORM.SKEW_Y];
+
+    data[TRANSFORM.AXIS_ALIGNED] = Number(rotation === 0 && skewX === 0 && skewY === 0);
 }
