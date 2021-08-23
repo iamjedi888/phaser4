@@ -1,6 +1,5 @@
 import { ClearWorldAndParentID } from '../components/hierarchy/ClearWorldAndParentID';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
 
@@ -8,7 +7,7 @@ export function RemoveChildrenBetween <P extends IGameObject> (parent: P, beginI
 {
     const parentID = parent.id;
 
-    const children = GameObjectTree.get(parentID);
+    // const children = GameObjectTree.get(parentID);
 
     if (endIndex === undefined)
     {

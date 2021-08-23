@@ -1,5 +1,4 @@
 import { ClearHierarchyComponent } from '../components/hierarchy/ClearHierarchyComponent';
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GetLastChildID } from '../components/hierarchy/GetLastChildID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { GetWorldFromParentID } from '../components/hierarchy/GetWorldFromParentID';

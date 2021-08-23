@@ -1,10 +1,10 @@
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
+import { GetChildIDsFromParentID } from '../components/hierarchy/GetChildIDsFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
 
 export function GetChildAt <P extends IGameObject> (parent: P, index: number): IGameObject
 {
-    const children = GameObjectTree.get(parent.id);
+    const children = GetChildIDsFromParentID(parent.id);
 
     if (index < 0 || index > children.length)
     {

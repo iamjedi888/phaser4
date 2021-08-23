@@ -9,7 +9,6 @@ import { DepthFirstSearch } from './DepthFirstSearch';
 import { DepthFirstSearchRecursive } from './DepthFirstSearchRecursive';
 import { DestroyChildren } from './DestroyChildren';
 import { FindChildrenByName } from './FindChildrenByName';
-import { GameObjectTree } from '../gameobjects/GameObjectTree';
 import { GetAllChildren } from './GetAllChildren';
 import { GetChildAt } from './GetChildAt';
 import { GetChildIndex } from './GetChildIndex';
@@ -100,7 +99,7 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     addHelp('world', 'A reference to the World instance');
 
-    top['GameObjectTree'] = GameObjectTree;
+    // top['GameObjectTree'] = GameObjectTree;
 
     addHelp('GameObjectTree', 'A reference to the internal Game Object Tree Map');
 
