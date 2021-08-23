@@ -47,7 +47,7 @@ export class Color
 
     set willColorChildren (value: boolean)
     {
-        SetWillColorChildren(value, this.id);
+        SetWillColorChildren(this.id, value);
     }
 
     get willColorChildren (): boolean
