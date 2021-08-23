@@ -1,3 +1,4 @@
+import { ClearDirtyChildTransform } from '../dirty/ClearDirtyChildTransform';
 import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
 import { HasDirtyWorldTransform } from '../dirty/HasDirtyWorldTransform';
 import { SetQuadFromWorld } from './SetQuadFromWorld';
@@ -10,16 +11,15 @@ export function UpdateVertexPositionSystem (entities: number[]): number
     {
         const id = entities[i];
 
-        if (!HasDirtyWorldTransform(id))
+        if (HasDirtyWorldTransform(id))
         {
-            continue;
+            SetQuadFromWorld(id);
+
+            ClearDirtyWorldTransform(id);
+            ClearDirtyChildTransform(id);
+
+            total++;
         }
-
-        SetQuadFromWorld(id);
-
-        ClearDirtyWorldTransform(id);
-
-        total++;
     }
 
     return total;
