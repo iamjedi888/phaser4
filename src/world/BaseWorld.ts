@@ -2,12 +2,10 @@ import * as WorldEvents from './events';
 
 import { Query, defineComponent, defineQuery } from 'bitecs';
 
-import { AddRenderDataComponent } from './AddRenderDataComponent';
 import { Color } from '../components/color/Color';
 import { Emit } from '../events/Emit';
 import { GameObject } from '../gameobjects/GameObject';
 import { GameObjectWorld } from '../GameObjectWorld';
-import { GetWorldSize } from '../config/worldsize/GetWorldSize';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
@@ -55,8 +53,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         //  * 4 because each Game Object ID is added twice (render and post render) + each has the render type flag
         // this.renderList = new Uint32Array(GetWorldSize() * 4);
-
-        AddRenderDataComponent(id);
 
         SetWorldID(id, id);
 
