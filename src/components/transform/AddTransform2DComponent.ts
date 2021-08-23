@@ -3,8 +3,7 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { addComponent } from 'bitecs';
 
-//  The 'local' and 'world' arrays are Matrix2Ds and contains
-//  six elements in a short-form of the 3x3 Matrix, with the last column ignored:
+//  The A, B, C, D, TX, TY elements are a short-form of a 3x3 Matrix, with the last column ignored:
 
 //  |----|----|----|
 //  | a  | b  | 0  |
@@ -28,6 +27,7 @@ export function AddTransform2DComponent (id: number, x: number = 0, y: number = 
     //  Component defaults to zero, so we only need to set the other values
     //  We could do this via data.set once the array structure is set in stone
 
+    Transform2DComponent.data[id][TRANSFORM.IS_ROOT] = 0;
     Transform2DComponent.data[id][TRANSFORM.DIRTY] = 1;
     Transform2DComponent.data[id][TRANSFORM.X] = x;
     Transform2DComponent.data[id][TRANSFORM.Y] = y;
@@ -36,19 +36,4 @@ export function AddTransform2DComponent (id: number, x: number = 0, y: number = 
     Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = originX;
     Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = originY;
     Transform2DComponent.data[id][TRANSFORM.AXIS_ALIGNED] = 1;
-
-    //  Likely don't need to do this, as it's done in render anyway:
-    // Transform2DComponent.data[id][TRANSFORM.LOCAL_A] = 1;
-    // Transform2DComponent.data[id][TRANSFORM.LOCAL_B] = 0;
-    // Transform2DComponent.data[id][TRANSFORM.LOCAL_C] = 0;
-    // Transform2DComponent.data[id][TRANSFORM.LOCAL_D] = 1;
-    // Transform2DComponent.data[id][TRANSFORM.LOCAL_TX] = x;
-    // Transform2DComponent.data[id][TRANSFORM.LOCAL_TY] = y;
-
-    // Transform2DComponent.data[id][TRANSFORM.WORLD_A] = 1;
-    // Transform2DComponent.data[id][TRANSFORM.WORLD_B] = 0;
-    // Transform2DComponent.data[id][TRANSFORM.WORLD_C] = 0;
-    // Transform2DComponent.data[id][TRANSFORM.WORLD_D] = 1;
-    // Transform2DComponent.data[id][TRANSFORM.WORLD_TX] = x;
-    // Transform2DComponent.data[id][TRANSFORM.WORLD_TY] = y;
 }
