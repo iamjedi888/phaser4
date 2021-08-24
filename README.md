@@ -2,6 +2,8 @@
 
 Rebooting the Phaser universe from scratch.
 
+This release is **not** production ready yet. Follow the Dev Logs for details on using it.
+
 ![Phaser4](logo.png)
 
 Examples can be found in the [Phaser 4 Examples repo](https://github.com/phaserjs/dev).
