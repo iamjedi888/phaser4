@@ -119,11 +119,13 @@ export class Game extends EventEmitter
 
                 renderer.begin(sceneManager.flush);
 
-                sceneManager.render(renderer.renderPass);
+                const renderPass = renderer.renderPass;
 
-                this.render(renderer.renderPass, delta, time);
+                sceneManager.render(renderPass);
 
-                Emit(this, 'render', renderer.renderPass, delta, time);
+                this.render(renderPass, delta, time);
+
+                Emit(this, 'render', renderPass, delta, time);
 
                 renderer.end();
             }
