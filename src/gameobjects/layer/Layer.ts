@@ -7,6 +7,8 @@ import { SetWillTransformChildren } from '../../components/permissions/SetWillTr
 
 export class Layer extends GameObject
 {
+    readonly type: string = 'Layer';
+
     constructor ()
     {
         super();
