@@ -1,1 +1,0 @@
-export const WorldPostRenderEvent = "worldpostrender";
