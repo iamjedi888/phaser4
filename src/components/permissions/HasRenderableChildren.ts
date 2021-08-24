@@ -3,11 +3,13 @@ import { HasDirtyChildCache } from '../dirty/HasDirtyChildCache';
 import { WillCacheChildren } from './WillCacheChildren';
 import { WillRenderChildren } from './WillRenderChildren';
 
-export function HasRenderableChildren (id: number): boolean
+export function HasRenderableChildren (id: number): number
 {
-    if (!WillRenderChildren(id) || GetNumChildren(id) === 0)
+    const numChildren = GetNumChildren(id);
+
+    if (numChildren === 0 || !WillRenderChildren(id))
     {
-        return false;
+        return 0;
     }
 
     //  By this stage we know it has some children
@@ -16,8 +18,8 @@ export function HasRenderableChildren (id: number): boolean
     //  A RenderLayer will cache children, but check if any are dirty or not
     if (!WillCacheChildren(id) || (WillCacheChildren(id) && HasDirtyChildCache(id)))
     {
-        return true;
+        return numChildren;
     }
 
-    return false;
+    return 0;
 }
