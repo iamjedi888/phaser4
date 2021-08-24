@@ -2,7 +2,6 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
 import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
 import { GetParentID } from '../hierarchy/GetParentID';
-import { HasDirtyTransform } from '../dirty/HasDirtyTransform';
 import { SetDirtyChildTransform } from '../dirty/SetDirtyChildTransform';
 import { SetDirtyChildWorldTransform } from '../dirty/SetDirtyChildWorldTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
@@ -13,18 +12,18 @@ export function UpdateLocalTransform (worldID: number, entities: number[]): numb
     let prevParent = 0;
     let total = 0;
     let dirtyWorld = false;
+    const len = entities.length;
 
-    for (let i = 0; i < entities.length; i++)
+    for (let i = 0; i < len; i++)
     {
         const id = entities[i];
 
-        //  This function reads from the Transform2DComponent data array, which gets it into the hot cache
-        if (!HasDirtyTransform(id))
+        const data: number[] = Transform2DComponent.data[id];
+
+        if (data[TRANSFORM.DIRTY] === 0)
         {
             continue;
         }
-
-        const data = Transform2DComponent.data[id];
 
         const isRoot = data[TRANSFORM.IS_ROOT];
 
