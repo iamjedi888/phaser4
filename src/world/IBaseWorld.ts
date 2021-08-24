@@ -19,9 +19,6 @@ export interface IBaseWorld extends IGameObject, IColorComponent
 
     color: Color;
 
-    renderList: Uint32Array;
-    listLength: number;
-
     beforeUpdate (delta: number, time: number): void;
     update (delta: number, time: number): void;
     afterUpdate (delta: number, time: number): void;
