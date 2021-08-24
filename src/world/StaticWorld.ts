@@ -12,13 +12,12 @@ import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChi
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
-import { GameInstance } from '../GameInstance';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { GetParentID } from '../components/hierarchy/GetParentID';
-import { GetRenderFrame } from '../components/transform/GetRenderFrame';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
@@ -35,9 +34,9 @@ import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { RebuildWorldList } from './RebuildWorldList';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
+import { RenderChild } from './RenderChild';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
-import { SetRenderFrame } from '../components/transform/SetRenderFrame';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
@@ -62,7 +61,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number; rebuiltWorld: boolean };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number };
 
     constructor (scene: IScene)
     {
@@ -88,8 +87,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             rendered: 0,
             renderMs: 0,
             updated: 0,
-            updateMs: 0,
-            rebuiltWorld: false
+            updateMs: 0
         };
 
         SetWillTransformChildren(this.id, false);
@@ -107,7 +105,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyWorld = 0;
         renderData.dirtyQuad = 0;
         renderData.dirtyColor = 0;
-        renderData.rebuiltWorld = false;
+        renderData.rendered = 0;
 
         ClearDirtyChild(id);
 
@@ -145,11 +143,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         if (HasDirtyDisplayList(id))
         {
-            RebuildWorldList(this, id);
+            this.getNumChildren();
 
             ClearDirtyDisplayList(id);
-
-            renderData.rebuiltWorld = true;
         }
 
         return true;
@@ -183,138 +179,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         Emit(this, WorldEvents.WorldUpdateEvent, this);
     }
 
-    stackRender <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
-    {
-        const x = camera.getBoundsX();
-        const y = camera.getBoundsY();
-        const right = camera.getBoundsRight();
-        const bottom = camera.getBoundsBottom();
-
-        let total = 0;
-
-        const gameFrame = GameInstance.getFrame();
-
-        const stack: IGameObject[] = [];
-
-        let gameObject: IGameObject;
-
-        const worldID = this.id;
-
-        const start = performance.now();
-
-        let id = GetFirstChildID(worldID);
-
-        while (id > 0)
-        {
-            const willRender = WillRender(id) && BoundsIntersects(id, x, y, right, bottom);
-            const hasRenderableChildren = willRender && HasRenderableChildren(id);
-
-            if (willRender)
-            {
-                gameObject = GameObjectCache.get(id);
-
-                gameObject.renderGL(renderPass);
-
-                if (hasRenderableChildren)
-                {
-                    stack.push(gameObject);
-                }
-                else
-                {
-                    gameObject.postRenderGL(renderPass);
-                }
-
-                total++;
-            }
-
-            if (hasRenderableChildren)
-            {
-                id = GetFirstChildID(id);
-            }
-            else
-            {
-                const sibling = GetNextSiblingID(id);
-
-                if (sibling)
-                {
-                    //  Move to the next sibling
-                    id = sibling;
-                }
-                else
-                {
-                    //  Move back up to the parent
-                    const parent = GetParentID(id);
-
-                    if (parent === worldID)
-                    {
-                        //  End of the line - pop the stack and quit
-                        gameObject = stack.pop();
-
-                        if (gameObject)
-                        {
-                            gameObject.postRenderGL(renderPass);
-                        }
-
-                        id = 0;
-                    }
-                    else
-                    {
-                        gameObject = stack.pop();
-
-                        gameObject.postRenderGL(renderPass);
-
-                        id = GetNextSiblingID(parent);
-                    }
-                }
-            }
-        }
-
-        this.renderData.rendered = total;
-        this.renderData.renderMs = performance.now() - start;
-    }
-
-    render <T extends IRenderPass, C extends IBaseCamera> (renderPass: T, camera: C): void
-    {
-        const x = camera.getBoundsX();
-        const y = camera.getBoundsY();
-        const right = camera.getBoundsRight();
-        const bottom = camera.getBoundsBottom();
-
-        let total = 0;
-
-        const len = this.listLength;
-        const list = this.renderList;
-
-        const start = performance.now();
-
-        for (let i = 0; i < len; i += 2)
-        {
-            const id = list[i];
-            const type = list[i + 1];
-            const entry = GameObjectCache.get(id);
-
-            if (type === 1)
-            {
-                //  We've already rendered this Game Object, so skip bounds checking
-                entry.postRenderGL(renderPass);
-            }
-            else if (BoundsIntersects(id, x, y, right, bottom))
-            {
-                entry.renderGL(renderPass);
-
-                if (type === 2)
-                {
-                    entry.postRenderGL(renderPass);
-                }
-
-                total++;
-            }
-        }
-
-        this.renderData.rendered = total;
-        this.renderData.renderMs = performance.now() - start;
-    }
-
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
         SetColor(renderPass, this.color);
@@ -323,13 +187,30 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const camera = this.camera;
 
+        const start = performance.now();
+
         Begin(renderPass, camera);
 
-        // this.render(renderPass, camera);
+        const x = camera.getBoundsX();
+        const y = camera.getBoundsY();
+        const right = camera.getBoundsRight();
+        const bottom = camera.getBoundsBottom();
 
-        this.stackRender(renderPass, camera);
+        let id = GetFirstChildID(this.id);
+
+        while (id > 0)
+        {
+            if (WillRender(id))
+            {
+                RenderChild(renderPass, id, x, y, right, bottom, this.renderData);
+            }
+
+            id = GetNextSiblingID(id);
+        }
 
         PopColor(renderPass, this.color);
+
+        this.renderData.renderMs = performance.now() - start;
 
         //#ifdef RENDER_STATS
         this.renderData.numChildren = this.getNumChildren();
