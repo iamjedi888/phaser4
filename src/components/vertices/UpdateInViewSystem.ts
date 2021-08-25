@@ -1,6 +1,6 @@
-import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DComponent';
-
 import { IBaseCamera } from '../../camera/IBaseCamera';
+import { SetInViewFromBounds } from '../transform/SetInViewFromBounds';
+import { WillRender } from '../permissions/WillRender';
 
 export function UpdateInViewSystem <C extends IBaseCamera> (entities: number[], camera: C, gameFrame: number): number
 {
@@ -17,18 +17,9 @@ export function UpdateInViewSystem <C extends IBaseCamera> (entities: number[], 
     {
         const id = entities[i];
 
-        const data: Float32Array = Transform2DComponent.data[id];
-
-        if (data[TRANSFORM.UPDATED] < gameFrame)
+        if (WillRender(id))
         {
-            const bx = data[TRANSFORM.BOUNDS_X1];
-            const by = data[TRANSFORM.BOUNDS_Y1];
-            const br = data[TRANSFORM.BOUNDS_X2];
-            const bb = data[TRANSFORM.BOUNDS_Y2];
-
-            data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
-
-            data[TRANSFORM.UPDATED] = gameFrame;
+            SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
 
             total++;
         }
