@@ -1,5 +1,6 @@
 import * as WorldEvents from './events';
 
+import { GetRenderChildTotal, RenderChild, ResetRenderChildTotal } from './RenderChild';
 import { Query, defineQuery } from 'bitecs';
 
 import { BaseWorld } from './BaseWorld';
@@ -27,13 +28,13 @@ import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
-import { RenderChild } from './RenderChild';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { TimeComponent } from '../components/timer/TimeComponent';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
+import { UpdateInViewSystem } from '../components/vertices/UpdateInViewSystem';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
 import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
 import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
@@ -50,12 +51,13 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 {
     readonly type: string = 'StaticWorld';
 
-    declare camera: IStaticCamera;
+    // declare camera: IStaticCamera;
+    declare camera: WorldCamera;
 
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number };
 
     constructor (scene: IScene)
     {
@@ -77,6 +79,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             dirtyWorld: 0,
             dirtyQuad: 0,
             dirtyColor: 0,
+            dirtyView: 0,
             numChildren: 0,
             rendered: 0,
             renderMs: 0,
@@ -96,44 +99,42 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const renderData = this.renderData;
 
         renderData.gameFrame = gameFrame;
-        renderData.dirtyLocal = 0;
-        renderData.dirtyWorld = 0;
-        renderData.dirtyQuad = 0;
-        renderData.dirtyColor = 0;
         renderData.rendered = 0;
 
         ClearDirtyChild(id);
 
+        const camera = this.camera;
+        const cameraUpdated = camera.updateBounds();
+
         const entities = this.transformQuery(GameObjectWorld);
+
+        let dirtyLocal = 0;
+        let dirtyWorld = 0;
+        let dirtyQuad = 0;
+        let dirtyColor = 0;
+        let dirtyView = 0;
 
         if (HasDirtyChildTransform(id))
         {
-            const dirtyLocal = UpdateLocalTransform(id, entities);
+            dirtyLocal = UpdateLocalTransform(id, entities, camera, gameFrame);
 
             ClearDirtyChildTransform(id);
-
-            renderData.dirtyLocal = dirtyLocal;
         }
 
         if (HasDirtyChildWorldTransform(id))
         {
-            const dirtyWorld = RebuildWorldTransforms(entities);
+            dirtyWorld = RebuildWorldTransforms(entities);
 
-            const dirtyQuad = UpdateVertexPositionSystem(entities);
+            dirtyQuad = UpdateVertexPositionSystem(entities, camera, gameFrame);
 
             ClearDirtyChildWorldTransform(id);
-
-            renderData.dirtyWorld = dirtyWorld;
-            renderData.dirtyQuad = dirtyQuad;
         }
 
         if (HasDirtyChildColor(id))
         {
-            const dirtyColor = UpdateQuadColorSystem(this.colorQuery(GameObjectWorld));
+            dirtyColor = UpdateQuadColorSystem(this.colorQuery(GameObjectWorld));
 
             ClearDirtyChildColor(id);
-
-            renderData.dirtyColor = dirtyColor;
         }
 
         if (HasDirtyDisplayList(id))
@@ -142,6 +143,20 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             ClearDirtyDisplayList(id);
         }
+
+        const totalUpdated = dirtyLocal + dirtyQuad;
+
+        if (cameraUpdated && totalUpdated !== entities.length)
+        {
+            dirtyView = UpdateInViewSystem(entities, camera, gameFrame);
+        }
+
+        renderData.dirtyLocal = dirtyLocal;
+        renderData.dirtyWorld = dirtyWorld;
+        renderData.dirtyQuad = dirtyQuad;
+        renderData.dirtyColor = dirtyColor;
+        renderData.dirtyView = dirtyView;
+        renderData.rendered = GetRenderChildTotal();
 
         return true;
     }
@@ -187,10 +202,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         Begin(renderPass, camera);
 
-        const x = camera.getBoundsX();
-        const y = camera.getBoundsY();
-        const right = camera.getBoundsRight();
-        const bottom = camera.getBoundsBottom();
+        ResetRenderChildTotal();
 
         let id = GetFirstChildID(this.id);
 
@@ -198,7 +210,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             if (WillRender(id))
             {
-                RenderChild(renderPass, id, x, y, right, bottom, renderData);
+                RenderChild(renderPass, id);
             }
 
             id = GetNextSiblingID(id);
