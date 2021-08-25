@@ -32,8 +32,6 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
         gameObject.renderGL(renderPass);
 
         RENDER_CHILD_TOTAL++;
-
-        // renderData.rendered++;
     }
 
     const numChildren = HasRenderableChildren(id);
@@ -52,8 +50,6 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
                 }
                 else if (IsInView(childID))
                 {
-                    // renderData.rendered++;
-
                     const childGameObject = GameObjectCache.get(childID);
 
                     childGameObject.renderGL(renderPass);
