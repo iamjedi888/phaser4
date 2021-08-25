@@ -1,25 +1,39 @@
-import { BoundsIntersects } from '../components/bounds/BoundsIntersects';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasRenderableChildren } from '../components/permissions/HasRenderableChildren';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
+import { IsInView } from '../components/transform/IsInView';
 import { WillRender } from '../components/permissions/WillRender';
 
-export function RenderChild <T extends IRenderPass> (renderPass: T, id: number, x: number, y: number, right: number, bottom: number, renderData): void
+let RENDER_CHILD_TOTAL: number = 0;
+
+export function GetRenderChildTotal (): number
 {
-    const intersects = BoundsIntersects(id, x, y, right, bottom);
+    return RENDER_CHILD_TOTAL;
+}
+
+export function ResetRenderChildTotal (): void
+{
+    RENDER_CHILD_TOTAL = 0;
+}
+
+export function RenderChild <T extends IRenderPass> (renderPass: T, id: number): void
+{
+    const inView = IsInView(id);
 
     let gameObject;
 
-    if (intersects)
+    if (inView)
     {
         gameObject = GameObjectCache.get(id);
 
         gameObject.renderGL(renderPass);
 
-        renderData.rendered++;
+        RENDER_CHILD_TOTAL++;
+
+        // renderData.rendered++;
     }
 
     const numChildren = HasRenderableChildren(id);
@@ -34,16 +48,18 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number, 
             {
                 if (GetNumChildren(childID))
                 {
-                    RenderChild(renderPass, childID, x, y, right, bottom, renderData);
+                    RenderChild(renderPass, childID);
                 }
-                else if (BoundsIntersects(childID, x, y, right, bottom))
+                else if (IsInView(childID))
                 {
-                    renderData.rendered++;
+                    // renderData.rendered++;
 
                     const childGameObject = GameObjectCache.get(childID);
 
                     childGameObject.renderGL(renderPass);
                     childGameObject.postRenderGL(renderPass);
+
+                    RENDER_CHILD_TOTAL++;
                 }
             }
 
@@ -51,7 +67,7 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number, 
         }
     }
 
-    if (intersects)
+    if (inView)
     {
         gameObject.postRenderGL(renderPass);
     }
