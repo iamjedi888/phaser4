@@ -2,7 +2,7 @@ import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DCompone
 
 import { SetQuadPosition } from './SetQuadPosition';
 
-export function SetQuadFromWorld (id: number): void
+export function SetQuadFromWorld (id: number, gameFrame: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
     const data = Transform2DComponent.data[id];
 
@@ -34,10 +34,19 @@ export function SetQuadFromWorld (id: number): void
     const x3 = (right * a) + (y * c) + tx;
     const y3 = (right * b) + (y * d) + ty;
 
-    data[TRANSFORM.BOUNDS_X1] = Math.min(x0, x1, x2, x3);
-    data[TRANSFORM.BOUNDS_Y1] = Math.min(y0, y1, y2, y3);
-    data[TRANSFORM.BOUNDS_X2] = Math.max(x0, x1, x2, x3);
-    data[TRANSFORM.BOUNDS_Y2] = Math.max(y0, y1, y2, y3);
+    const bx = Math.min(x0, x1, x2, x3);
+    const by = Math.min(y0, y1, y2, y3);
+    const br = Math.max(x0, x1, x2, x3);
+    const bb = Math.max(y0, y1, y2, y3);
+
+    data[TRANSFORM.BOUNDS_X1] = bx;
+    data[TRANSFORM.BOUNDS_Y1] = by;
+    data[TRANSFORM.BOUNDS_X2] = br;
+    data[TRANSFORM.BOUNDS_Y2] = bb;
+
+    data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
+
+    data[TRANSFORM.UPDATED] = gameFrame;
 
     SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
 }

@@ -2,23 +2,30 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
 import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
 import { GetParentID } from '../hierarchy/GetParentID';
+import { IBaseCamera } from '../../camera/IBaseCamera';
 import { SetDirtyChildTransform } from '../dirty/SetDirtyChildTransform';
 import { SetDirtyChildWorldTransform } from '../dirty/SetDirtyChildWorldTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 
-export function UpdateLocalTransform (worldID: number, entities: number[]): number
+export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, entities: number[], camera: C, gameFrame: number): number
 {
-    let prevParent = 0;
+    const cx = camera.getBoundsX();
+    const cy = camera.getBoundsY();
+    const cright = camera.getBoundsRight();
+    const cbottom = camera.getBoundsBottom();
+
     let total = 0;
+    let prevParent = 0;
     let dirtyWorld = false;
+
     const len = entities.length;
 
     for (let i = 0; i < len; i++)
     {
         const id = entities[i];
 
-        const data: number[] = Transform2DComponent.data[id];
+        const data: Float32Array = Transform2DComponent.data[id];
 
         if (data[TRANSFORM.DIRTY] === 0)
         {
@@ -71,6 +78,8 @@ export function UpdateLocalTransform (worldID: number, entities: number[]): numb
             data[TRANSFORM.WORLD_TX] = tx;
             data[TRANSFORM.WORLD_TY] = ty;
 
+            data[TRANSFORM.UPDATED] = gameFrame;
+
             if (axisAligned)
             {
                 //  top left
@@ -94,6 +103,8 @@ export function UpdateLocalTransform (worldID: number, entities: number[]): numb
                 data[TRANSFORM.BOUNDS_X2] = x2;
                 data[TRANSFORM.BOUNDS_Y2] = y2;
 
+                data[TRANSFORM.IN_VIEW] = Number(!(cright < x0 || cbottom < y0 || cx > x2 || cy > y2));
+
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
             else
@@ -114,10 +125,17 @@ export function UpdateLocalTransform (worldID: number, entities: number[]): numb
                 const x3 = (right * a) + (y * c) + tx;
                 const y3 = (right * b) + (y * d) + ty;
 
-                data[TRANSFORM.BOUNDS_X1] = Math.min(x0, x1, x2, x3);
-                data[TRANSFORM.BOUNDS_Y1] = Math.min(y0, y1, y2, y3);
-                data[TRANSFORM.BOUNDS_X2] = Math.max(x0, x1, x2, x3);
-                data[TRANSFORM.BOUNDS_Y2] = Math.max(y0, y1, y2, y3);
+                const bx = Math.min(x0, x1, x2, x3);
+                const by = Math.min(y0, y1, y2, y3);
+                const br = Math.max(x0, x1, x2, x3);
+                const bb = Math.max(y0, y1, y2, y3);
+
+                data[TRANSFORM.BOUNDS_X1] = bx;
+                data[TRANSFORM.BOUNDS_Y1] = by;
+                data[TRANSFORM.BOUNDS_X2] = br;
+                data[TRANSFORM.BOUNDS_Y2] = bb;
+
+                data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
 
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
