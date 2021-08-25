@@ -32,6 +32,7 @@ import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
+import { TimeComponent } from '../components/timer/TimeComponent';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
 import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
@@ -54,7 +55,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number };
 
     constructor (scene: IScene)
     {
@@ -80,7 +81,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             rendered: 0,
             renderMs: 0,
             updated: 0,
-            updateMs: 0
+            updateMs: 0,
+            fps: 0
         };
 
         SetWillTransformChildren(this.id, false);
@@ -179,6 +181,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         Emit(this, WorldEvents.WorldRenderEvent, this);
 
         const camera = this.camera;
+        const renderData = this.renderData;
 
         const start = performance.now();
 
@@ -195,7 +198,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             if (WillRender(id))
             {
-                RenderChild(renderPass, id, x, y, right, bottom, this.renderData);
+                RenderChild(renderPass, id, x, y, right, bottom, renderData);
             }
 
             id = GetNextSiblingID(id);
@@ -203,11 +206,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         PopColor(renderPass, this.color);
 
-        this.renderData.renderMs = performance.now() - start;
+        renderData.renderMs = performance.now() - start;
 
         //#ifdef RENDER_STATS
-        this.renderData.numChildren = this.getNumChildren();
-        window['renderStats'] = this.renderData;
+        renderData.numChildren = this.getNumChildren();
+        renderData.fps = TimeComponent.fps[0];
+        window['renderStats'] = renderData;
         //#endif
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
