@@ -1,13 +1,16 @@
-import { AddTransform2DComponent, Position, Size, Transform2DComponent } from '../components/transform';
+import { TRANSFORM, Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { addEntity, removeComponent, removeEntity } from 'bitecs';
 
-import { AddBoundsComponent } from '../components/bounds/AddBoundsComponent';
 import { AddMatrix4Component } from '../math/mat4/AddMatrix4Component';
-import { BoundsComponent } from '../components/bounds/BoundsComponent';
+import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
+import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { GameObjectWorld } from '../GameObjectWorld';
+import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { IStaticCamera } from './IStaticCamera';
 import { Matrix4Component } from '../math/mat4/Matrix4Component';
-import { SetBounds } from '../components/bounds/SetBounds';
+import { Position } from '../components/transform/Position';
+import { SetBounds } from '../components/transform/SetBounds';
+import { Size } from '../components/transform/Size';
 
 export class WorldCamera implements IStaticCamera
 {
@@ -29,7 +32,6 @@ export class WorldCamera implements IStaticCamera
 
         AddTransform2DComponent(id, 0, 0, 0, 0);
         AddMatrix4Component(id);
-        AddBoundsComponent(id);
 
         this.position = new Position(id, 0, 0);
         this.size = new Size(id, width, height);
@@ -67,12 +69,12 @@ export class WorldCamera implements IStaticCamera
         return this;
     }
 
-    update (): boolean
+    updateBounds (): boolean
     {
-        if (this.isDirty)
-        {
-            const matrix = this.getMatrix();
+        const id = this.id;
 
+        if (HasDirtyTransform(id))
+        {
             const x = this.x;
             const y = this.y;
 
@@ -82,19 +84,29 @@ export class WorldCamera implements IStaticCamera
             const ox = -x + (w / 2);
             const oy = -y + (h / 2);
 
-            matrix[12] = x;
-            matrix[13] = y;
-
             const bx = ox - (w / 2);
             const by = oy - (h / 2);
 
-            SetBounds(
-                this.id,
-                bx,
-                by,
-                bx + w,
-                by + h
-            );
+            SetBounds(id, bx, by, bx + w, by + h);
+
+            ClearDirtyTransform(id);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    update (): boolean
+    {
+        if (this.isDirty)
+        {
+            const matrix = this.getMatrix();
+
+            matrix[12] = this.x;
+            matrix[13] = this.y;
+
+            this.updateBounds();
 
             this.isDirty = false;
 
@@ -106,22 +118,22 @@ export class WorldCamera implements IStaticCamera
 
     getBoundsX (): number
     {
-        return BoundsComponent.x[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X1];
     }
 
     getBoundsY (): number
     {
-        return BoundsComponent.y[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y1];
     }
 
     getBoundsRight (): number
     {
-        return BoundsComponent.right[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X2];
     }
 
     getBoundsBottom (): number
     {
-        return BoundsComponent.bottom[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y2];
     }
 
     getMatrix (): Float32Array
@@ -142,7 +154,6 @@ export class WorldCamera implements IStaticCamera
 
         removeComponent(GameObjectWorld, Transform2DComponent, id);
         removeComponent(GameObjectWorld, Matrix4Component, id);
-        removeComponent(GameObjectWorld, BoundsComponent, id);
 
         removeEntity(GameObjectWorld, id);
     }

@@ -2,6 +2,7 @@ export interface IBaseCamera
 {
     id: number;
     type: string;
+    isDirty: boolean;
 
     getBoundsX (): number;
     getBoundsY (): number;

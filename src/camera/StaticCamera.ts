@@ -1,12 +1,12 @@
+import { TRANSFORM, Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { addEntity, removeComponent, removeEntity } from 'bitecs';
 
-import { AddBoundsComponent } from '../components/bounds/AddBoundsComponent';
 import { AddMatrix4Component } from '../math/mat4/AddMatrix4Component';
-import { BoundsComponent } from '../components/bounds/BoundsComponent';
+import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { IStaticCamera } from './IStaticCamera';
 import { Matrix4Component } from '../math/mat4/Matrix4Component';
-import { SetBounds } from '../components/bounds/SetBounds';
+import { SetBounds } from '../components/transform/SetBounds';
 
 export class StaticCamera implements IStaticCamera
 {
@@ -21,30 +21,30 @@ export class StaticCamera implements IStaticCamera
     {
         const id = this.id;
 
+        AddTransform2DComponent(id, 0, 0, 0, 0);
         AddMatrix4Component(id);
-        AddBoundsComponent(id);
 
         this.reset(width, height);
     }
 
     getBoundsX (): number
     {
-        return BoundsComponent.x[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X1];
     }
 
     getBoundsY (): number
     {
-        return BoundsComponent.y[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y1];
     }
 
     getBoundsRight (): number
     {
-        return BoundsComponent.right[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X2];
     }
 
     getBoundsBottom (): number
     {
-        return BoundsComponent.bottom[this.id];
+        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y2];
     }
 
     getMatrix (): Float32Array
@@ -67,7 +67,7 @@ export class StaticCamera implements IStaticCamera
         const id = this.id;
 
         removeComponent(GameObjectWorld, Matrix4Component, id);
-        removeComponent(GameObjectWorld, BoundsComponent, id);
+        removeComponent(GameObjectWorld, Transform2DComponent, id);
 
         removeEntity(GameObjectWorld, id);
     }
