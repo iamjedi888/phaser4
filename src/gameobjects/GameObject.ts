@@ -22,8 +22,6 @@ import { SetDepth } from '../components/hierarchy/SetDepth';
 import { SetVisible } from '../components/permissions/SetVisible';
 import { SetVisibleChildren } from '../components/permissions/SetVisibleChildren';
 import { WillRender } from '../components/permissions/WillRender';
-import { WillUpdate } from '../components/permissions/WillUpdate';
-import { WillUpdateChildren } from '../components/permissions/WillUpdateChildren';
 import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
