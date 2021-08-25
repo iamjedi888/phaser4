@@ -1,4 +1,5 @@
 import { GameObject } from '../GameObject';
+import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../../components/permissions/SetWillTransformChildren';
 
 //  A Layer is a way of grouping Game Objects together, without impacting their
@@ -14,5 +15,6 @@ export class Layer extends GameObject
         super();
 
         SetWillTransformChildren(this.id, false);
+        SetWillCacheChildren(this.id, false);
     }
 }
