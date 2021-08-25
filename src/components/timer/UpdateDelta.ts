@@ -3,7 +3,7 @@ import { TimeComponent } from './TimeComponent';
 
 export function UpdateDelta (id: number, time: number): void
 {
-    //  Note that privacy.resistFingerprinting can round this value to 100ms or more!
+    //  Note that privacy.resistFingerprinting can round this value to 100us or more!
     const now = performance.now();
 
     //  How long it took to process this frame
