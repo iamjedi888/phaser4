@@ -39,8 +39,8 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         const id = this.id;
 
-        SetWillCacheChildren(true, id);
-        SetWillRenderChildren(true, id);
+        SetWillCacheChildren(id, true);
+        SetWillRenderChildren(id, true);
 
         const width = GetWidth();
         const height = GetHeight();
@@ -80,7 +80,6 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         if (WillCacheChildren(id) && HasDirtyChildCache(id))
         {
-            console.log('RL2');
             Flush(renderPass);
 
             renderPass.framebuffer.pop();
