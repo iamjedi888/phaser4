@@ -11,7 +11,6 @@ import { Size } from './Size';
 import { Skew } from './Skew';
 import { SyncTransform } from './SyncTransform';
 import { Transform2DComponent } from './Transform2DComponent';
-import { Transform2DSystem } from './Transform2DSystem';
 import { UpdateExtent } from './UpdateExtent';
 import { UpdateLocalTransform } from './UpdateLocalTransform';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
@@ -30,7 +29,6 @@ export {
     Skew,
     SyncTransform,
     Transform2DComponent,
-    Transform2DSystem,
     UpdateExtent,
     UpdateLocalTransform,
     UpdateWorldTransform
