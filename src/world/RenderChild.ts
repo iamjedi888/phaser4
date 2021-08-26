@@ -5,6 +5,7 @@ import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasRenderableChildren } from '../components/permissions/HasRenderableChildren';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IsInView } from '../components/transform/IsInView';
+import { WillCacheChildren } from '../components/permissions/WillCacheChildren';
 import { WillRender } from '../components/permissions/WillRender';
 
 let RENDER_CHILD_TOTAL: number = 0;
@@ -21,7 +22,7 @@ export function ResetRenderChildTotal (): void
 
 export function RenderChild <T extends IRenderPass> (renderPass: T, id: number): void
 {
-    const inView = IsInView(id);
+    const inView = IsInView(id) || WillCacheChildren(id);
 
     let gameObject;
 
@@ -34,7 +35,7 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
         RENDER_CHILD_TOTAL++;
     }
 
-    const numChildren = HasRenderableChildren(id);
+    const numChildren = HasRenderableChildren(id, renderPass.isCameraDirty());
 
     if (numChildren)
     {
