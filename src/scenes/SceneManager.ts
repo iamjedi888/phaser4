@@ -1,4 +1,3 @@
-import { AddRenderStatsComponent } from './AddRenderStatsComponent';
 import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -31,8 +30,6 @@ export class SceneManager
 
         this.game = GameInstance.get();
 
-        AddRenderStatsComponent(this.id);
-
         Once(this.game, 'boot', () => this.boot());
     }
 
@@ -54,7 +51,7 @@ export class SceneManager
         const now = time.lastTick;
         const gameFrame = time.frame;
 
-        ResetRenderStats(this.id, gameFrame, this.scenes.size);
+        ResetRenderStats(gameFrame, this.scenes.size);
 
         for (const scene of this.scenes.values())
         {

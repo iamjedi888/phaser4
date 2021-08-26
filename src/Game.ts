@@ -9,9 +9,7 @@ import { Emit } from './events/Emit';
 import { EventEmitter } from './events/EventEmitter';
 import { GameInstance } from './GameInstance';
 import { GameObjectWorld } from './GameObjectWorld';
-import { GetRenderStatsAsObject } from './scenes/GetRenderStatsAsObject';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
-import { IRenderStats } from './scenes/IRenderStats';
 import { RendererInstance } from './renderer/RendererInstance';
 import { SceneManagerInstance } from './scenes';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
@@ -31,8 +29,6 @@ export class Game extends EventEmitter
     //  TODO - Allow update and render to be called directly
     willUpdate: boolean = true;
     willRender: boolean = true;
-
-    renderStats: IRenderStats;
 
     constructor (...settings: { (): void }[])
     {
@@ -59,8 +55,6 @@ export class Game extends EventEmitter
         AddBanner();
         AddGlobalVar(this);
         AddToParent();
-
-        this.renderStats = GetRenderStatsAsObject();
 
         this.isBooted = true;
 
@@ -132,11 +126,6 @@ export class Game extends EventEmitter
         }
 
         time.updateDelta(now);
-
-        GetRenderStatsAsObject(this.renderStats);
-
-        this.renderStats.fps = time.fps;
-        this.renderStats.delta = time.delta;
 
         Emit(this, 'step');
 
