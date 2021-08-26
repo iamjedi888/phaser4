@@ -22,7 +22,12 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
 
     renderPass.shader.set(shader, 0);
 
-    BatchSingleQuad(renderPass, 0, 0, texture.width, texture.height, u0, v0, u1, v1, 0);
+    const camera = renderPass.current2DCamera;
+
+    const x = camera.getBoundsX();
+    const y = camera.getBoundsY();
+
+    BatchSingleQuad(renderPass, x, y, texture.width, texture.height, u0, v0, u1, v1, 0);
 
     //  Flush our single quad
     Flush(renderPass);
