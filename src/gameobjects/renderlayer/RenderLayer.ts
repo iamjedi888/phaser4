@@ -1,9 +1,11 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
+import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { FlipFrameUVs } from '../../textures/FlipFrameUVs';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
+import { GameInstance } from '../../GameInstance';
 import { GetHeight } from '../../config/size/GetHeight';
 import { GetResolution } from '../../config/size/GetResolution';
 import { GetWidth } from '../../config/size/GetWidth';
@@ -68,6 +70,8 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
+            renderPass.textures.unbindTexture(this.texture);
+
             Flush(renderPass);
 
             renderPass.framebuffer.set(this.framebuffer, true);
@@ -88,16 +92,12 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             SetDirtyParents(id);
 
-            //  Otherwise, we have to use this:
             DrawTexturedQuad(renderPass, this.texture);
         }
         else
         {
-            //  If we didn't draw to the FBO this frame we can use this:
-            DrawTexturedQuad(renderPass, this.texture);
-
-            //  Use this?
-            // BatchTexturedQuadBuffer(this.texture, id, renderPass);
+            //  If we didn't draw to the FBO this frame we can batch our previous texture:
+            BatchTexturedQuadBuffer(this.texture, id, renderPass);
         }
     }
 }
