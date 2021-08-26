@@ -29,10 +29,10 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
 
     BatchSingleQuad(renderPass, x, y, texture.width, texture.height, u0, v0, u1, v1, 0);
 
-    //  Flush our single quad
+    //  Flush our single quad and unbind it
     Flush(renderPass);
 
-    renderPass.shader.pop();
+    renderPass.textures.unbindTexture(texture);
 
-    renderPass.textures.unbind();
+    renderPass.shader.pop();
 }
