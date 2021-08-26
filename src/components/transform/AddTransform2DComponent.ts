@@ -27,13 +27,16 @@ export function AddTransform2DComponent (id: number, x: number = 0, y: number = 
     //  Component defaults to zero, so we only need to set the other values
     //  We could do this via data.set once the array structure is set in stone
 
-    Transform2DComponent.data[id][TRANSFORM.IS_ROOT] = 0;
-    Transform2DComponent.data[id][TRANSFORM.DIRTY] = 1;
-    Transform2DComponent.data[id][TRANSFORM.X] = x;
-    Transform2DComponent.data[id][TRANSFORM.Y] = y;
-    Transform2DComponent.data[id][TRANSFORM.SCALE_X] = 1;
-    Transform2DComponent.data[id][TRANSFORM.SCALE_Y] = 1;
-    Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = originX;
-    Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = originY;
-    Transform2DComponent.data[id][TRANSFORM.AXIS_ALIGNED] = 1;
+    const data = Transform2DComponent.data[id];
+
+    data[TRANSFORM.IS_ROOT] = 0;
+    data[TRANSFORM.DIRTY] = 1;
+    data[TRANSFORM.X] = x;
+    data[TRANSFORM.Y] = y;
+    data[TRANSFORM.SCALE_X] = 1;
+    data[TRANSFORM.SCALE_Y] = 1;
+    data[TRANSFORM.ORIGIN_X] = originX;
+    data[TRANSFORM.ORIGIN_Y] = originY;
+    data[TRANSFORM.AXIS_ALIGNED] = 1;
+    data[TRANSFORM.IN_VIEW] = 1;
 }
