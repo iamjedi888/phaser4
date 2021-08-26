@@ -37,4 +37,5 @@ export interface IRenderPass
     flush (): void;
     getCurrentShader (): IShader;
     resize (width: number, height: number): void;
+    isCameraDirty (): boolean;
 }

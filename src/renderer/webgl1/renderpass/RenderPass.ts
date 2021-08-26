@@ -107,4 +107,9 @@ export class RenderPass implements IRenderPass
 
         this.viewport.setDefault(0, 0, width, height);
     }
+
+    isCameraDirty (): boolean
+    {
+        return this.current2DCamera.isDirty;
+    }
 }
