@@ -1,8 +1,6 @@
-import { IContainer } from '../gameobjects/container/IContainer';
 import { IFrame } from './IFrame';
-import { SetExtent } from '../components/transform/SetExtent';
-import { SetUV } from '../components/vertices/SetUV';
 import { Texture } from './Texture';
+import { UpdateFrameUVs } from './UpdateFrameUVs';
 
 export class Frame implements IFrame
 {
@@ -48,133 +46,7 @@ export class Frame implements IFrame
         this.sourceSizeWidth = width;
         this.sourceSizeHeight = height;
 
-        this.updateUVs();
-    }
-
-    setPivot (x: number, y: number): void
-    {
-        this.pivot = { x, y };
-    }
-
-    setSize (width: number, height: number): void
-    {
-        this.width = width;
-        this.height = height;
-        this.sourceSizeWidth = width;
-        this.sourceSizeHeight = height;
-
-        this.updateUVs();
-    }
-
-    setSourceSize (width: number, height: number): void
-    {
-        this.sourceSizeWidth = width;
-        this.sourceSizeHeight = height;
-    }
-
-    setTrim (width: number, height: number, x: number, y: number, w: number, h: number): void
-    {
-        this.trimmed = true;
-
-        this.sourceSizeWidth = width;
-        this.sourceSizeHeight = height;
-
-        this.spriteSourceSizeX = x;
-        this.spriteSourceSizeY = y;
-        this.spriteSourceSizeWidth = w;
-        this.spriteSourceSizeHeight = h;
-    }
-
-    getExtent (originX: number, originY: number): { left: number; right: number; top: number; bottom: number }
-    {
-        const sourceSizeWidth = this.sourceSizeWidth;
-        const sourceSizeHeight = this.sourceSizeHeight;
-
-        let left: number;
-        let right: number;
-        let top: number;
-        let bottom: number;
-
-        if (this.trimmed)
-        {
-            left = this.spriteSourceSizeX - (originX * sourceSizeWidth);
-            right = left + this.spriteSourceSizeWidth;
-
-            top = this.spriteSourceSizeY - (originY * sourceSizeHeight);
-            bottom = top + this.spriteSourceSizeHeight;
-        }
-        else
-        {
-            left = -originX * sourceSizeWidth;
-            right = left + sourceSizeWidth;
-
-            top = -originY * sourceSizeHeight;
-            bottom = top + sourceSizeHeight;
-        }
-
-        return { left, right, top, bottom };
-    }
-
-    copyToExtent (child: IContainer): this
-    {
-        const originX = child.origin.x;
-        const originY = child.origin.y;
-
-        const sourceSizeWidth = this.sourceSizeWidth;
-        const sourceSizeHeight = this.sourceSizeHeight;
-
-        let x: number;
-        let y: number;
-        let width: number;
-        let height: number;
-
-        if (this.trimmed)
-        {
-            x = this.spriteSourceSizeX - (originX * sourceSizeWidth);
-            y = this.spriteSourceSizeY - (originY * sourceSizeHeight);
-
-            width = this.spriteSourceSizeWidth;
-            height = this.spriteSourceSizeHeight;
-        }
-        else
-        {
-            x = -originX * sourceSizeWidth;
-            y = -originY * sourceSizeHeight;
-
-            width = sourceSizeWidth;
-            height = sourceSizeHeight;
-        }
-
-        SetExtent(child.id, x, y, width, height);
-
-        return this;
-    }
-
-    copyToVertices (id: number): this
-    {
-        SetUV(id, this.u0, this.v0, this.u1, this.v1);
-
-        return this;
-    }
-
-    updateUVs (): void
-    {
-        const { x, y, width, height } = this;
-
-        const baseTextureWidth = this.texture.width;
-        const baseTextureHeight = this.texture.height;
-
-        this.u0 = x / baseTextureWidth;
-        this.v0 = y / baseTextureHeight;
-
-        this.u1 = (x + width) / baseTextureWidth;
-        this.v1 = (y + height) / baseTextureHeight;
-    }
-
-    flipUVs (): void
-    {
-        this.v0 = 1 - this.v0;
-        this.v1 = 1 - this.v1;
+        UpdateFrameUVs(this);
     }
 
     destroy (): void
