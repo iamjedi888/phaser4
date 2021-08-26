@@ -55,6 +55,8 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         AddQuadVertex(id, width, height, true);
 
+        texture.getFrame().flipUVs();
+
         this.texture = texture;
         this.framebuffer = binding.framebuffer;
     }
