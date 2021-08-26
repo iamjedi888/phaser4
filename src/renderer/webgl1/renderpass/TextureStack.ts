@@ -38,6 +38,18 @@ export class TextureStack
         gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
     }
 
+    unbindTexture (texture: Texture): void
+    {
+        const index = texture.binding.textureUnit;
+
+        const binding = texture.binding;
+
+        binding.unbind();
+
+        gl.activeTexture(gl.TEXTURE0 + index);
+        gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
+    }
+
     setWhite (): number
     {
         return this.set(WhiteTexture.get());
