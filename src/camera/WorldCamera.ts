@@ -1,13 +1,13 @@
 import { TRANSFORM, Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { addEntity, removeComponent, removeEntity } from 'bitecs';
 
-import { AddMatrix4Component } from '../math/mat4/AddMatrix4Component';
 import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
+import { IMatrix4 } from '../math/mat4/IMatrix4';
 import { IStaticCamera } from './IStaticCamera';
-import { Matrix4Component } from '../math/mat4/Matrix4Component';
+import { Matrix4 } from '../math/mat4/Matrix4';
 import { Position } from '../components/transform/Position';
 import { SetBounds } from '../components/transform/SetBounds';
 import { Size } from '../components/transform/Size';
@@ -26,12 +26,15 @@ export class WorldCamera implements IStaticCamera
 
     isDirty: boolean = true;
 
+    matrix: IMatrix4;
+
     constructor (width: number, height: number)
     {
         const id = this.id;
 
         AddTransform2DComponent(id, 0, 0, 0, 0);
-        AddMatrix4Component(id);
+
+        this.matrix = new Matrix4();
 
         this.position = new Position(id, 0, 0);
         this.size = new Size(id, width, height);
@@ -103,10 +106,10 @@ export class WorldCamera implements IStaticCamera
     {
         if (this.isDirty)
         {
-            const matrix = this.getMatrix();
+            const data = this.matrix.data;
 
-            matrix[12] = this.x;
-            matrix[13] = this.y;
+            data[12] = this.x;
+            data[13] = this.y;
 
             return true;
         }
@@ -136,7 +139,7 @@ export class WorldCamera implements IStaticCamera
 
     getMatrix (): Float32Array
     {
-        return Matrix4Component.data[this.id];
+        return this.matrix.data;
     }
 
     reset (width: number, height: number): void
@@ -151,7 +154,6 @@ export class WorldCamera implements IStaticCamera
         const id = this.id;
 
         removeComponent(GameObjectWorld, Transform2DComponent, id);
-        removeComponent(GameObjectWorld, Matrix4Component, id);
 
         removeEntity(GameObjectWorld, id);
     }
