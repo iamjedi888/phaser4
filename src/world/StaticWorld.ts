@@ -216,6 +216,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             id = GetNextSiblingID(id);
         }
 
+        camera.isDirty = false;
+
         PopColor(renderPass, this.color);
 
         renderData.renderMs = performance.now() - start;
