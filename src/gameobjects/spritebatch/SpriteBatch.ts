@@ -186,6 +186,9 @@ export class SpriteBatch extends Layer implements ISpriteBatch
 
     add (config: SpriteBatchAddConfig): this
     {
+        return this;
+
+        /*
         const {
             frame = null,
             x = 0,
@@ -209,16 +212,21 @@ export class SpriteBatch extends Layer implements ISpriteBatch
         const packedColor = PackColor(tint, alpha);
 
         return this.addToBatch(textureFrame, packedColor, x0, y0, x1, y1, x2, y2, x3, y3);
+        */
     }
 
     addXY (x: number, y: number, frame?: string | number): this
     {
+        return this;
+
+        /*
         const textureFrame = this.texture.getFrame(frame);
 
         const { left, right, top, bottom } = textureFrame.getExtent(0, 0);
         const { x0, y0, x1, y1, x2, y2, x3, y3 } = GetVerticesFromValues(left, right, top, bottom, x, y);
 
         return this.addToBatch(textureFrame, 4294967295, x0, y0, x1, y1, x2, y2, x3, y3);
+        */
     }
 
     updateTextureIndex (): void

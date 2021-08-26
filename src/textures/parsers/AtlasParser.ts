@@ -3,6 +3,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import { Frame } from '../Frame';
+import { SetFramePivot } from '../SetFramePivot';
+import { SetFrameSourceSize } from '../SetFrameSourceSize';
+import { SetFrameTrim } from '../SetFrameTrim';
 import { Texture } from '../Texture';
 
 export function AtlasParser (texture: Texture, data: any): void
@@ -51,7 +54,8 @@ export function AtlasParser (texture: Texture, data: any): void
             //  These are the original (non-trimmed) sprite values
             if (src.trimmed)
             {
-                newFrame.setTrim(
+                SetFrameTrim(
+                    newFrame,
                     src.sourceSize.w,
                     src.sourceSize.h,
                     src.spriteSourceSize.x,
@@ -62,7 +66,7 @@ export function AtlasParser (texture: Texture, data: any): void
             }
             else
             {
-                newFrame.setSourceSize(src.sourceSize.w, src.sourceSize.h);
+                SetFrameSourceSize(newFrame, src.sourceSize.w, src.sourceSize.h);
             }
 
             if (src.rotated)
@@ -73,7 +77,7 @@ export function AtlasParser (texture: Texture, data: any): void
 
             if (src.anchor)
             {
-                newFrame.setPivot(src.anchor.x, src.anchor.y);
+                SetFramePivot(newFrame, src.anchor.x, src.anchor.y);
             }
         }
     }

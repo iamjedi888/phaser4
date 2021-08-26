@@ -1,6 +1,7 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
+import { FlipFrameUVs } from '../../textures/FlipFrameUVs';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
 import { GetHeight } from '../../config/size/GetHeight';
@@ -55,7 +56,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         AddQuadVertex(id, width, height, true);
 
-        texture.getFrame().flipUVs();
+        FlipFrameUVs(texture.getFrame());
 
         this.texture = texture;
         this.framebuffer = binding.framebuffer;

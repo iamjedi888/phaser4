@@ -6,6 +6,8 @@ import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
+import { SetExtentFromFrame } from '../../textures/SetExtentFromFrame';
+import { SetVertexUVsFromFrame } from '../../textures/SetVertexUVsFromFrame';
 import { Texture } from '../../textures/Texture';
 import { WhiteTexture } from '../../textures';
 import { WillRender } from '../../components/permissions/WillRender';
@@ -29,8 +31,8 @@ export class Rectangle extends Container
 
         this.frame = this.texture.getFrame();
 
-        this.frame.copyToExtent(this);
-        this.frame.copyToVertices(id);
+        SetExtentFromFrame(this, this.frame);
+        SetVertexUVsFromFrame(id, this.frame);
 
         this.size.set(width, height);
 

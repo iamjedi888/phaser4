@@ -3,6 +3,7 @@ import { Frame } from './Frame';
 import { IGLTextureBinding } from '../renderer/webgl1/textures/IGLTextureBinding';
 import { IGLTextureBindingConfig } from '../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { ITexture } from './ITexture';
+import { SetFrameSize } from './SetFrameSize';
 
 export class Texture implements ITexture
 {
@@ -97,7 +98,7 @@ export class Texture implements ITexture
 
         const frame = this.frames.get('__BASE');
 
-        frame.setSize(width, height);
+        SetFrameSize(frame, width, height);
     }
 
     update (image: TexImageSource, glConfig?: IGLTextureBindingConfig): void

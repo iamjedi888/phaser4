@@ -1,5 +1,7 @@
 import { Frame } from '../../textures/Frame';
 import { ISprite } from './ISprite';
+import { SetExtentFromFrame } from '../../textures/SetExtentFromFrame';
+import { SetVertexUVsFromFrame } from '../../textures/SetVertexUVsFromFrame';
 import { Texture } from '../../textures/Texture';
 
 export function SetFrame <T extends ISprite> (texture: Texture, key?: string | number | Frame, ...children: T[]): T[]
@@ -23,10 +25,10 @@ export function SetFrame <T extends ISprite> (texture: Texture, key?: string | n
             child.origin.set(pivot.x, pivot.y);
         }
 
-        frame.copyToExtent(child);
+        SetExtentFromFrame(child, frame);
 
         //  This rarely changes, so we'll set it here, rather than every game step:
-        frame.copyToVertices(child.id);
+        SetVertexUVsFromFrame(child.id, frame);
     });
 
     return children;
