@@ -38,7 +38,7 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
         const shaders = this.shaders;
         const texture = this.texture;
 
-        if (WillCacheChildren(id) && HasDirtyChildCache(id))
+        if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
             Flush(renderPass);
 

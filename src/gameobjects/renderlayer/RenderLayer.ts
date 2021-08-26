@@ -1,10 +1,8 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
-import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
-import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetHeight } from '../../config/size/GetHeight';
 import { GetResolution } from '../../config/size/GetResolution';
 import { GetWidth } from '../../config/size/GetWidth';
@@ -12,10 +10,9 @@ import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
-import { QuadVertexComponent } from '../../components/vertices/QuadVertexComponent';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
-import { SetWillRenderChildren } from '../../components/permissions';
+import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
 import { Texture } from '../../textures/Texture';
 import { WillCacheChildren } from '../../components/permissions/WillCacheChildren';
 
@@ -66,7 +63,7 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         const id = this.id;
 
-        if (WillCacheChildren(id) && HasDirtyChildCache(id))
+        if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
             Flush(renderPass);
 
@@ -78,7 +75,7 @@ export class RenderLayer extends Layer implements IRenderLayer
     {
         const id = this.id;
 
-        if (WillCacheChildren(id) && HasDirtyChildCache(id))
+        if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
             Flush(renderPass);
 
@@ -90,13 +87,13 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             //  Otherwise, we have to use this:
             DrawTexturedQuad(renderPass, this.texture);
-
-            // console.log(QuadVertexComponent.values[this.id]);
         }
         else
         {
             //  If we didn't draw to the FBO this frame we can use this:
-            // DrawTexturedQuad(renderPass, this.texture);
+            DrawTexturedQuad(renderPass, this.texture);
+
+            //  Use this?
             // BatchTexturedQuadBuffer(this.texture, id, renderPass);
         }
     }
