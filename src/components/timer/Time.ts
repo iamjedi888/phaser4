@@ -1,4 +1,5 @@
 import { GameInstance } from '../../GameInstance';
+import { RenderStats } from '../../scenes/RenderStats';
 
 export class Time
 {
@@ -47,6 +48,9 @@ export class Time
         this.frame++;
 
         GameInstance.setFrame(this.frame);
+
+        RenderStats.fps = this.fps;
+        RenderStats.delta = delta;
 
         return this.frame;
     }
