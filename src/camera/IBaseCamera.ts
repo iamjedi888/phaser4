@@ -11,6 +11,7 @@ export interface IBaseCamera
 
     getMatrix (): Float32Array;
     reset (width: number, height: number): void;
+    updateBounds (): boolean;
     update (): boolean;
     destroy (): void;
 }

@@ -17,6 +17,8 @@ export class StaticCamera implements IStaticCamera
     //  User defined name. Never used internally.
     name: string = '';
 
+    isDirty: boolean = true;
+
     constructor (width: number, height: number)
     {
         const id = this.id;
@@ -50,6 +52,13 @@ export class StaticCamera implements IStaticCamera
     getMatrix (): Float32Array
     {
         return Matrix4Component.data[this.id];
+    }
+
+    updateBounds (): boolean
+    {
+        this.isDirty = true;
+
+        return true;
     }
 
     update (): boolean

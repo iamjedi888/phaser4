@@ -91,6 +91,8 @@ export class WorldCamera implements IStaticCamera
 
             ClearDirtyTransform(id);
 
+            this.isDirty = true;
+
             return true;
         }
 
@@ -105,10 +107,6 @@ export class WorldCamera implements IStaticCamera
 
             matrix[12] = this.x;
             matrix[13] = this.y;
-
-            this.updateBounds();
-
-            this.isDirty = false;
 
             return true;
         }
