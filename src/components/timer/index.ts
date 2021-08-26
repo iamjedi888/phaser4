@@ -1,13 +1,5 @@
-import { AddTimeComponent } from './AddTimeComponent';
-import { ResetLastTick } from './ResetLastTick';
-import { TimeComponent } from './TimeComponent';
-import { UpdateDelta } from './UpdateDelta';
-import { UpdateTime } from './UpdateTime';
+import { Time } from './Time';
 
 export {
-    AddTimeComponent,
-    ResetLastTick,
-    TimeComponent,
-    UpdateDelta,
-    UpdateTime
+    Time
 };

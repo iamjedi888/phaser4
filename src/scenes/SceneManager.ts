@@ -3,14 +3,11 @@ import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
 import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes/GetScenes';
-import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from './IScene';
 import { Once } from '../events/Once';
-import { RenderStatsComponent } from './RenderStatsComponent';
 import { ResetRenderStats } from './ResetRenderStats';
 import { SceneManagerInstance } from './SceneManagerInstance';
-import { TimeComponent } from '../components/timer/TimeComponent';
 import { WorldList } from '../world/WorldList';
 import { addEntity } from 'bitecs';
 
@@ -51,11 +48,11 @@ export class SceneManager
 
     update (): void
     {
-        const id = this.game.id;
+        const time = this.game.time;
 
-        const delta = TimeComponent.delta[id];
-        const time = TimeComponent.lastTick[id];
-        const gameFrame = TimeComponent.frame[id];
+        const delta = time.delta;
+        const now = time.lastTick;
+        const gameFrame = time.frame;
 
         ResetRenderStats(this.id, gameFrame, this.scenes.size);
 
@@ -65,22 +62,22 @@ export class SceneManager
 
             for (const world of worlds)
             {
-                world.beforeUpdate(delta, time);
+                world.beforeUpdate(delta, now);
             }
 
             if (scene.update)
             {
-                scene.update(delta, time);
+                scene.update(delta, now);
             }
 
             for (const world of worlds)
             {
-                world.update(delta, time);
+                world.update(delta, now);
             }
 
             for (const world of worlds)
             {
-                world.afterUpdate(delta, time);
+                world.afterUpdate(delta, now);
             }
         }
     }
@@ -88,9 +85,7 @@ export class SceneManager
     //  Run through all Scenes and Worlds within them, telling them to prepare to render
     preRender (): void
     {
-        const id = this.game.id;
-
-        const gameFrame = TimeComponent.frame[id];
+        const gameFrame = this.game.time.frame;
 
         for (const scene of this.scenes.values())
         {

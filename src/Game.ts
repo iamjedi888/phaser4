@@ -1,6 +1,5 @@
 import { AddBanner } from './config/banner/AddBanner';
 import { AddGlobalVar } from './config/globalvar/AddGlobalVar';
-import { AddTimeComponent } from './components/timer/AddTimeComponent';
 import { AddToParent } from './config/parent/AddToParent';
 import { CreateRenderer } from './config/renderer/CreateRenderer';
 import { CreateSceneManager } from './scenes/CreateSceneManager';
@@ -14,17 +13,16 @@ import { GetRenderStatsAsObject } from './scenes/GetRenderStatsAsObject';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
 import { IRenderStats } from './scenes/IRenderStats';
 import { RendererInstance } from './renderer/RendererInstance';
-import { ResetLastTick } from './components/timer/ResetLastTick';
 import { SceneManagerInstance } from './scenes';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
-import { TimeComponent } from './components/timer/TimeComponent';
-import { UpdateDelta } from './components/timer/UpdateDelta';
-import { UpdateTime } from './components/timer/UpdateTime';
+import { Time } from './components/timer/Time';
 import { addEntity } from 'bitecs';
 
 export class Game extends EventEmitter
 {
     readonly id: number = addEntity(GameObjectWorld);
+
+    time: Time;
 
     isBooted: boolean = false;
     isPaused: boolean = false;
@@ -39,6 +37,8 @@ export class Game extends EventEmitter
     constructor (...settings: { (): void }[])
     {
         super();
+
+        this.time = new Time();
 
         GameInstance.set(this);
 
@@ -56,7 +56,6 @@ export class Game extends EventEmitter
         CreateTextureManager();
         CreateSceneManager();
 
-        AddTimeComponent(this.id);
         AddBanner();
         AddGlobalVar(this);
         AddToParent();
@@ -79,7 +78,7 @@ export class Game extends EventEmitter
     {
         this.isPaused = false;
 
-        ResetLastTick(this.id);
+        this.time.resetLastTick();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -92,25 +91,26 @@ export class Game extends EventEmitter
     {
     }
 
-    step (time: number): void
+    step (now: number): void
     {
-        const id = this.id;
         const renderer = RendererInstance.get();
         const sceneManager = SceneManagerInstance.get();
 
-        UpdateTime(id, time);
+        const time = this.time;
+
+        time.update(now);
 
         if (!this.isPaused)
         {
-            const delta = TimeComponent.delta[id];
+            const delta = time.delta;
 
             if (this.willUpdate)
             {
                 sceneManager.update();
 
-                this.update(delta, time);
+                this.update(delta, now);
 
-                Emit(this, 'update', delta, time);
+                Emit(this, 'update', delta, now);
             }
 
             if (this.willRender)
@@ -123,20 +123,20 @@ export class Game extends EventEmitter
 
                 sceneManager.render(renderPass);
 
-                this.render(renderPass, delta, time);
+                this.render(renderPass, delta, now);
 
-                Emit(this, 'render', renderPass, delta, time);
+                Emit(this, 'render', renderPass, delta, now);
 
                 renderer.end();
             }
         }
 
-        UpdateDelta(id, time);
+        time.updateDelta(now);
 
         GetRenderStatsAsObject(this.renderStats);
 
-        this.renderStats.fps = TimeComponent.fps[id];
-        this.renderStats.delta = TimeComponent.delta[id];
+        this.renderStats.fps = time.fps;
+        this.renderStats.delta = time.delta;
 
         Emit(this, 'step');
 

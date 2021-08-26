@@ -32,7 +32,6 @@ import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
-import { TimeComponent } from '../components/timer/TimeComponent';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateInViewSystem } from '../components/vertices/UpdateInViewSystem';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
@@ -224,7 +223,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         //#ifdef RENDER_STATS
         renderData.numChildren = this.getNumChildren();
-        renderData.fps = TimeComponent.fps[0];
+        renderData.fps = this.scene.game.time.fps;
         window['renderStats'] = renderData;
         //#endif
 
