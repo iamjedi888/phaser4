@@ -171,6 +171,12 @@ export class Frame implements IFrame
         this.v1 = (y + height) / baseTextureHeight;
     }
 
+    flipUVs (): void
+    {
+        this.v0 = 1 - this.v0;
+        this.v1 = 1 - this.v1;
+    }
+
     destroy (): void
     {
         this.texture = null;
