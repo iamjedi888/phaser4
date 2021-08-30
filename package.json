@@ -34,14 +34,14 @@
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.4",
         "@swc/cli": "^0.1.49",
-        "@swc/core": "^1.2.82",
+        "@swc/core": "^1.2.83",
         "@types/jest": "^27.0.1",
         "@typescript-eslint/eslint-plugin": "4.29.3",
         "@typescript-eslint/parser": "4.29.3",
         "bitecs": "^0.3.18-1",
         "boxen": "^5.0.1",
         "directory-tree": "^2.3.1",
-        "esbuild": "^0.12.22",
+        "esbuild": "^0.12.23",
         "esbuild-plugin-ifdef": "^1.0.1",
         "eslint": "^7.32.0",
         "fs-extra": "^10.0.0",
@@ -50,7 +50,7 @@
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.30.0",
         "tslib": "^2.3.1",
-        "typescript": "^4.3.5",
+        "typescript": "^4.4.2",
         "uplot": "^1.6.15"
     },
     "dependencies": {
