@@ -15,32 +15,38 @@ export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObje
     const worldID = world.id;
     const worldTag = world.tag;
 
+    let setNewWorld = false;
+
     entries.forEach(entry =>
     {
+        const currentWorldID = GetWorldID(entry.id);
+
         const children = DepthFirstSearchFromParentID(entry.id, false);
 
         children.map(id =>
         {
-            const currentWorldID = GetWorldID(id);
-
-            if (currentWorldID > 0 && currentWorldID !== worldID)
-            {
-                //  Remove from existing world
-                ClearWorld(id);
-            }
-
             if (currentWorldID !== worldID)
             {
+                if (currentWorldID > 0)
+                {
+                    ClearWorld(id);
+                }
+
                 addComponent(GameObjectWorld, worldTag, id);
 
                 SetWorldID(id, worldID);
+
+                setNewWorld = true;
             }
         });
     });
 
-    SetDirtyDisplayList(worldID);
-    SetDirtyChildColor(worldID);
-    SetDirtyChildTransform(worldID);
+    if (setNewWorld)
+    {
+        SetDirtyDisplayList(worldID);
+        SetDirtyChildColor(worldID);
+        SetDirtyChildTransform(worldID);
+    }
 
     return entries;
 }
