@@ -4,7 +4,6 @@ import { DepthFirstSearchFromParentID } from './DepthFirstSearchFromParentID';
 import { GetChildIDsFromParent } from './GetChildIDsFromParent';
 import { GetChildrenFromParentID } from './GetChildrenFromParentID';
 import { GetDepth } from './GetDepth';
-import { GetIndex } from './GetIndex';
 import { GetNumChildren } from './GetNumChildren';
 import { GetParentGameObject } from './GetParentGameObject';
 import { GetParentID } from './GetParentID';
@@ -16,13 +15,10 @@ import { GetWorldID } from './GetWorldID';
 import { HasParent } from './HasParent';
 import { HierarchyComponent } from './HierarchyComponent';
 import { SetDepth } from './SetDepth';
-import { SetIndex } from './SetIndex';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
 import { SetWorldAndParentID } from './SetWorldAndParentID';
 import { SetWorldID } from './SetWorldID';
-import { UpdateChildIndexes } from './UpdateChildIndexes';
-import { UpdateIndexes } from './UpdateIndexes';
 import { UpdateNumChildren } from './UpdateNumChildren';
 
 export {
@@ -32,7 +28,6 @@ export {
     GetChildIDsFromParent,
     GetChildrenFromParentID,
     GetDepth,
-    GetIndex,
     GetNumChildren,
     GetParentGameObject,
     GetParentID,
@@ -44,12 +39,9 @@ export {
     HasParent,
     HierarchyComponent,
     SetDepth,
-    SetIndex,
     SetNumChildren,
     SetParentID,
     SetWorldAndParentID,
     SetWorldID,
-    UpdateChildIndexes,
-    UpdateIndexes,
     UpdateNumChildren
 };
