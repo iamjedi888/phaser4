@@ -27,7 +27,6 @@ import { GetLastChild } from './GetLastChild';
 import { GetParents } from './GetParents';
 import { GetRandomChild } from './GetRandomChild';
 import { MoveChildDown } from './MoveChildDown';
-import { MoveChildTo } from './MoveChildTo';
 import { MoveChildUp } from './MoveChildUp';
 import { OverlapBounds } from './OverlapBounds';
 import { RemoveChild } from './RemoveChild';
@@ -83,7 +82,6 @@ export {
     GetParents,
     GetRandomChild,
     MoveChildDown,
-    MoveChildTo,
     MoveChildUp,
     OverlapBounds,
     RemoveChild,
