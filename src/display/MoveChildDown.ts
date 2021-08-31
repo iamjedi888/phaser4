@@ -1,28 +1,20 @@
-import { GetChildIndex } from './GetChildIndex';
-import { GetSiblingIDs } from '../components/hierarchy/GetSiblingIDs';
+import { GetPreviousSiblingID } from '../components/hierarchy/GetPreviousSiblingID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
-import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
+import { InsertChildIDBefore } from '../components/hierarchy/InsertChildIDBefore';
+import { RemoveChildID } from '../components/hierarchy/RemoveChildID';
 
 export function MoveChildDown <T extends IGameObject> (child: T): T
 {
     const childID = child.id;
 
-    const currentIndex = GetChildIndex(child);
+    const prevID = GetPreviousSiblingID(childID);
 
-    const children = GetSiblingIDs(childID);
-
-    if (currentIndex > 0 && children.length > 1)
+    //  No previous sibling? Then we can't move down
+    if (prevID)
     {
-        const index2 = currentIndex - 1;
-        const child2 = children[index2];
+        RemoveChildID(childID);
 
-        children[currentIndex] = child2;
-        children[index2] = childID;
-
-        SetDirtyWorldDisplayList(childID);
-
-        UpdateIndexes(childID);
+        InsertChildIDBefore(prevID, childID);
     }
 
     return child;

@@ -2,6 +2,7 @@ import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetParentGameObject } from '../components/hierarchy/GetParentGameObject';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IsValidParent } from './IsValidParent';
+import { LinkSiblings } from '../components/hierarchy/LinkSiblings';
 import { RemoveChildIDFromCurrentParent } from '../components/hierarchy/RemoveChildIDFromCurrentParent';
 import { SetAndUpdateParent } from '../components/hierarchy/SetAndUpdateParent';
 import { SetLastChildID } from '../components/hierarchy/SetLastChildID';
@@ -31,10 +32,9 @@ export function AddChildAfter <T extends IGameObject, C extends IGameObject> (af
             SetLastChildID(parentID, childID);
         }
 
-        SetNextSiblingID(afterID, childID);
-
         SetNextSiblingID(childID, nextID);
-        SetPreviousSiblingID(childID, afterID);
+
+        LinkSiblings(afterID, childID);
 
         SetAndUpdateParent(parentID, childID);
     }

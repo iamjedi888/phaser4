@@ -1,12 +1,14 @@
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetChildIDsFromParentID } from '../components/hierarchy/GetChildIDsFromParentID';
-import { GetWorldID } from '../components/hierarchy/GetWorldID';
-import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
-import { SetIndex } from '../components/hierarchy/SetIndex';
+import { IGameObject } from '../gameobjects/IGameObject';
+import { RelinkChildren } from '../components/hierarchy/RelinkChildren';
 
-//  Property must be numeric (x, y, scale, etc)
-export function SortChildren (parentID: number, property: string): void
+//  Sort the children by calling the propertyGetter function which is passed the child
+//  This function should return a string or number value
+export function SortChildren <P extends IGameObject> (parent: P, propertyGetter: (child: IGameObject) => never): IGameObject[]
 {
+    const parentID = parent.id;
+
     const children = GetChildIDsFromParentID(parentID);
 
     children.sort((a: number, b: number) =>
@@ -14,18 +16,10 @@ export function SortChildren (parentID: number, property: string): void
         const childA = GameObjectCache.get(a);
         const childB = GameObjectCache.get(b);
 
-        return childA[property] - childB[property];
+        return propertyGetter(childA) - propertyGetter(childB);
     });
 
-    children.forEach((childID: number, index: number) =>
-    {
-        SetIndex(childID, index);
-    });
+    RelinkChildren(parentID, children);
 
-    const worldID = GetWorldID(parentID);
-
-    if (worldID)
-    {
-        SetDirtyDisplayList(worldID);
-    }
+    return parent.getChildren();
 }

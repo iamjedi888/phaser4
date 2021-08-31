@@ -1,95 +1,57 @@
-import { ClearHierarchyComponent } from '../components/hierarchy/ClearHierarchyComponent';
-import { GetLastChildID } from '../components/hierarchy/GetLastChildID';
+import { AddChild } from './AddChild';
+import { AddChildAfter } from './AddChildAfter';
+import { AddChildBefore } from './AddChildBefore';
+import { GameObjectCache } from '../gameobjects/GameObjectCache';
+import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
-import { GetWorldFromParentID } from '../components/hierarchy/GetWorldFromParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IsValidParent } from './IsValidParent';
-import { RemoveChild } from './RemoveChild';
-import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
-import { SetDirtyTransform } from '../components/dirty/SetDirtyTransform';
-import { SetFirstChildID } from '../components/hierarchy/SetFirstChildID';
-import { SetIndex } from '../components/hierarchy/SetIndex';
-import { SetLastChildID } from '../components/hierarchy/SetLastChildID';
-import { SetNextSiblingID } from '../components/hierarchy/SetNextSiblingID';
-import { SetNumChildren } from '../components/hierarchy/SetNumChildren';
-import { SetParentID } from '../components/hierarchy/SetParentID';
-import { SetPreviousSiblingID } from '../components/hierarchy/SetPreviousSiblingID';
-import { SetWorld } from './SetWorld';
-import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
+import { MoveNext } from '../components/hierarchy/MoveNext';
 
 export function AddChildAt <P extends IGameObject, C extends IGameObject> (parent: P, child: C, index: number): C
 {
     if (IsValidParent(parent, child))
     {
-        const childID = child.id;
         const parentID = parent.id;
         const numChildren = GetNumChildren(parentID);
-        const world = GetWorldFromParentID(parentID);
 
-        ClearHierarchyComponent(childID);
-
-        //  Adding to the right-most part of the parent
-        if (index === -1)
+        if (index < 0 || index > numChildren)
         {
-            if (numChildren === 0)
-            {
-                SetIndex(childID, 0);
-                SetFirstChildID(parentID, childID);
-                SetLastChildID(parentID, childID);
-            }
-            else
-            {
-                const lastChild = GetLastChildID(parentID);
+            console.error('Index out of range');
 
-                SetNextSiblingID(lastChild, childID);
-                SetPreviousSiblingID(childID, lastChild);
-                SetIndex(childID, numChildren);
-                SetLastChildID(parentID, childID);
-            }
+            return child;
+        }
 
-            SetParentID(childID, parentID);
-            SetNumChildren(parentID, numChildren + 1);
-            SetDirtyTransform(childID);
+        if (numChildren === 0)
+        {
+            AddChild(parent, child);
         }
         else
         {
-            //  TODO
-        }
+            let next = GetFirstChildID(parentID);
 
-        SetDirtyParents(childID);
-
-        if (world)
-        {
-            SetWorld(world, child);
-        }
-
-        /*
-        const children = GameObjectTree.get(parentID);
-
-        if (index === -1)
-        {
-            index = children.length;
-        }
-
-        if (index >= 0 && index <= children.length)
-        {
-            RemoveChild(child.getParent(), child);
-
-            //  Always modify the array before calling SetParentID
-            children.splice(index, 0, childID);
-
-            SetParentID(childID, parentID);
-
-            UpdateIndexes(childID);
-
-            SetDirtyParents(childID);
-
-            if (world)
+            if (index === 0)
             {
-                SetWorld(world, child);
+                AddChildBefore(GameObjectCache.get(next), child);
+            }
+            else if (index === 1)
+            {
+                AddChildAfter(GameObjectCache.get(next), child);
+            }
+            else
+            {
+                let count = 1;
+
+                while (next > 0 && count < index)
+                {
+                    next = MoveNext(next, parentID);
+
+                    count++;
+                }
+
+                AddChildAfter(GameObjectCache.get(next), child);
             }
         }
-        */
     }
 
     return child;

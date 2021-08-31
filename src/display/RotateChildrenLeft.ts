@@ -1,25 +1,22 @@
-import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GetChildIDsFromParent } from '../components/hierarchy/GetChildIDsFromParent';
+import { AddChildIDAfter } from '../components/hierarchy/AddChildIDAfter';
+import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
+import { GetLastChildID } from '../components/hierarchy/GetLastChildID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
-import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
+import { RemoveChildID } from '../components/hierarchy/RemoveChildID';
 
-export function RotateChildrenLeft <P extends IGameObject> (parent: P, total: number = 1): IGameObject | undefined
+export function RotateChildrenLeft <P extends IGameObject> (parent: P, total: number = 1): P
 {
-    const parentChildren = GetChildIDsFromParent(parent);
-
-    let child;
+    const parentID = parent.id;
 
     for (let i: number = 0; i < total; i++)
     {
-        child = parentChildren.shift();
+        const first = GetFirstChildID(parentID);
+        const last = GetLastChildID(parentID);
 
-        parentChildren.push(child);
+        RemoveChildID(first);
+
+        AddChildIDAfter(last, first);
     }
 
-    UpdateChildIndexes(parent.id);
-
-    SetDirtyWorldDisplayList(parent.id);
-
-    return GameObjectCache.get(child);
+    return parent;
 }

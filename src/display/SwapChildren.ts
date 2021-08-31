@@ -1,9 +1,12 @@
-import { GetChildIndex } from './GetChildIndex';
+import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetParentID } from '../components/hierarchy/GetParentID';
-import { GetSiblingIDs } from '../components/hierarchy/GetSiblingIDs';
+import { GetPreviousSiblingID } from '../components/hierarchy/GetPreviousSiblingID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
-import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
+import { InsertChildIDAfter } from '../components/hierarchy/InsertChildIDAfter';
+import { InsertChildIDBefore } from '../components/hierarchy/InsertChildIDBefore';
+import { MoveChildDown } from './MoveChildDown';
+import { MoveChildUp } from './MoveChildUp';
+import { RemoveChildID } from '../components/hierarchy/RemoveChildID';
 
 export function SwapChildren <C extends IGameObject, T extends IGameObject> (child1: C, child2: T): void
 {
@@ -14,16 +17,42 @@ export function SwapChildren <C extends IGameObject, T extends IGameObject> (chi
 
     if (child2.hasParent(parentID))
     {
-        const children = GetSiblingIDs(child1ID);
+        if (GetNextSiblingID(child1ID) === child2ID)
+        {
+            MoveChildUp(child1);
+        }
+        else if (GetPreviousSiblingID(child1ID) === child2ID)
+        {
+            MoveChildDown(child1);
+        }
+        else
+        {
+            const child1NextID = GetNextSiblingID(child1ID);
+            const child1PrevID = GetPreviousSiblingID(child1ID);
 
-        const index1 = GetChildIndex(child1);
-        const index2 = GetChildIndex(child2);
+            const child2NextID = GetNextSiblingID(child2ID);
+            const child2PrevID = GetPreviousSiblingID(child2ID);
 
-        children[index1] = child2ID;
-        children[index2] = child1ID;
+            RemoveChildID(child1ID);
+            RemoveChildID(child2ID);
 
-        UpdateIndexes(child1ID);
+            if (child1NextID)
+            {
+                InsertChildIDBefore(child1NextID, child2ID);
+            }
+            else if (child1PrevID)
+            {
+                InsertChildIDAfter(child1PrevID, child2ID);
+            }
 
-        SetDirtyWorldDisplayList(child1ID);
+            if (child2NextID)
+            {
+                InsertChildIDBefore(child2NextID, child1ID);
+            }
+            else if (child2PrevID)
+            {
+                InsertChildIDAfter(child2PrevID, child1ID);
+            }
+        }
     }
 }

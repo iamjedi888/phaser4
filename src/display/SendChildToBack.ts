@@ -1,25 +1,24 @@
-import { GetChildIndex } from './GetChildIndex';
-import { GetSiblingIDs } from '../components/hierarchy/GetSiblingIDs';
+import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
+import { GetParentID } from '../components/hierarchy/GetParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
-import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
+import { InsertChildIDBefore } from '../components/hierarchy/InsertChildIDBefore';
+import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
 
 export function SendChildToBack <T extends IGameObject> (child: T): T
 {
     const childID = child.id;
 
-    const currentIndex = GetChildIndex(child);
+    const parentID = GetParentID(childID);
+    const numChildren = GetNumChildren(parentID);
 
-    const children = GetSiblingIDs(childID);
+    const first = GetFirstChildID(parentID);
 
-    if (currentIndex > 0)
+    if (parentID && numChildren > 0 && childID !== first)
     {
-        children.splice(currentIndex, 1);
-        children.unshift(childID);
+        InsertChildIDBefore(first, childID);
 
-        UpdateIndexes(childID);
-
-        SetDirtyWorldDisplayList(childID);
+        SetDirtyParents(childID);
     }
 
     return child;

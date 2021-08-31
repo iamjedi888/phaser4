@@ -1,21 +1,18 @@
-import { ClearWorldAndParentID } from '../components/hierarchy/ClearWorldAndParentID';
-import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
-import { GetLastChildID } from '../components/hierarchy/GetLastChildID';
-import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
-import { GetPreviousSiblingID } from '../components/hierarchy/GetPreviousSiblingID';
+import { DecreaseNumChildren } from '../components/hierarchy/DecreaseNumChildren';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { RemoveChildIDFromCurrentParent } from '../components/hierarchy/RemoveChildIDFromCurrentParent';
-import { SetFirstChildID } from '../components/hierarchy/SetFirstChildID';
-import { SetLastChildID } from '../components/hierarchy/SetLastChildID';
-import { SetNextSiblingID } from '../components/hierarchy/SetNextSiblingID';
-import { SetPreviousSiblingID } from '../components/hierarchy/SetPreviousSiblingID';
+import { RemoveChildID } from '../components/hierarchy/RemoveChildID';
 
 export function RemoveChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
-    // if (RemoveChildIDFromCurrentParent(child.id))
-    // {
-    //     ClearWorldAndParentID(childID);
-    // }
+    const childID = child.id;
+    const parentID = parent.id;
+
+    if (child.hasParent(parentID))
+    {
+        RemoveChildID(childID);
+
+        DecreaseNumChildren(parentID);
+    }
 
     return child;
 }

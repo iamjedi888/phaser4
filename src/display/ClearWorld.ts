@@ -10,11 +10,14 @@ export function ClearWorld (childID: number): void
 {
     const worldID = HierarchyComponent.data[childID][HIERARCHY.WORLD];
 
-    const world = GameObjectCache.get(worldID) as IBaseWorld;
+    if (worldID !== 0)
+    {
+        const world = GameObjectCache.get(worldID) as IBaseWorld;
 
-    removeComponent(GameObjectWorld, world.tag, childID);
+        removeComponent(GameObjectWorld, world.tag, childID);
 
-    HierarchyComponent.data[childID][HIERARCHY.WORLD] = 0;
+        HierarchyComponent.data[childID][HIERARCHY.WORLD] = 0;
 
-    SetDirtyDisplayList(worldID);
+        SetDirtyDisplayList(worldID);
+    }
 }

@@ -1,25 +1,24 @@
-import { GetChildIndex } from './GetChildIndex';
-import { GetSiblingIDs } from '../components/hierarchy/GetSiblingIDs';
+import { GetLastChildID } from '../components/hierarchy/GetLastChildID';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
+import { GetParentID } from '../components/hierarchy/GetParentID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
-import { UpdateIndexes } from '../components/hierarchy/UpdateIndexes';
+import { InsertChildIDAfter } from '../components/hierarchy/InsertChildIDAfter';
+import { SetDirtyParents } from '../components/dirty/SetDirtyParents';
 
 export function BringChildToTop <T extends IGameObject> (child: T): T
 {
     const childID = child.id;
 
-    const currentIndex = GetChildIndex(child);
+    const parentID = GetParentID(childID);
+    const numChildren = GetNumChildren(parentID);
 
-    const children = GetSiblingIDs(childID);
+    const last = GetLastChildID(parentID);
 
-    if (currentIndex !== -1 && currentIndex < children.length)
+    if (parentID && numChildren > 0 && childID !== last)
     {
-        children.splice(currentIndex, 1);
-        children.push(childID);
+        InsertChildIDAfter(last, childID);
 
-        UpdateIndexes(childID);
-
-        SetDirtyWorldDisplayList(childID);
+        SetDirtyParents(childID);
     }
 
     return child;

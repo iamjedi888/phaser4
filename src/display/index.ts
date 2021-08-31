@@ -39,11 +39,9 @@ import { ReparentChildren } from './ReparentChildren';
 import { RotateChildrenLeft } from './RotateChildrenLeft';
 import { RotateChildrenRight } from './RotateChildrenRight';
 import { SendChildToBack } from './SendChildToBack';
-import { SetBounds } from './SetBounds';
 import { SetChildrenValue } from './SetChildrenValue';
 import { SetName } from './SetName';
 import { SetOrigin } from './SetOrigin';
-import { SetParent } from './SetParent';
 import { SetPosition } from './SetPosition';
 import { SetRotation } from './SetRotation';
 import { SetScale } from './SetScale';
@@ -97,11 +95,9 @@ export {
     RotateChildrenLeft,
     RotateChildrenRight,
     SendChildToBack,
-    SetBounds,
     SetChildrenValue,
     SetName,
     SetOrigin,
-    SetParent,
     SetPosition,
     SetRotation,
     SetScale,

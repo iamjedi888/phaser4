@@ -2,12 +2,11 @@ import { GetLastChildID } from '../components/hierarchy/GetLastChildID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IsValidParent } from './IsValidParent';
+import { LinkSiblings } from '../components/hierarchy/LinkSiblings';
 import { RemoveChildIDFromCurrentParent } from '../components/hierarchy/RemoveChildIDFromCurrentParent';
 import { SetAndUpdateParent } from '../components/hierarchy/SetAndUpdateParent';
 import { SetFirstChildID } from '../components/hierarchy/SetFirstChildID';
 import { SetLastChildID } from '../components/hierarchy/SetLastChildID';
-import { SetNextSiblingID } from '../components/hierarchy/SetNextSiblingID';
-import { SetPreviousSiblingID } from '../components/hierarchy/SetPreviousSiblingID';
 
 export function AddChild <P extends IGameObject, C extends IGameObject> (parent: P, child: C): C
 {
@@ -27,8 +26,7 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
         {
             const lastChild = GetLastChildID(parentID);
 
-            SetNextSiblingID(lastChild, childID);
-            SetPreviousSiblingID(childID, lastChild);
+            LinkSiblings(lastChild, childID);
         }
 
         SetLastChildID(parentID, childID);

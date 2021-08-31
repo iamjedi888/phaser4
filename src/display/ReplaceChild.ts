@@ -1,10 +1,12 @@
-import { AddChildAt } from './AddChildAt';
-import { GetChildIndex } from './GetChildIndex';
+import { DecreaseNumChildren } from '../components/hierarchy/DecreaseNumChildren';
+import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
+import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
+import { GetParentID } from '../components/hierarchy/GetParentID';
+import { GetPreviousSiblingID } from '../components/hierarchy/GetPreviousSiblingID';
 import { IGameObject } from '../gameobjects/IGameObject';
-import { MoveChildTo } from './MoveChildTo';
-import { RemoveChild } from './RemoveChild';
-import { SetDirtyWorldDisplayList } from '../components/dirty/SetDirtyWorldDisplayList';
-import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
+import { InsertChildIDAfter } from '../components/hierarchy/InsertChildIDAfter';
+import { InsertChildIDBefore } from '../components/hierarchy/InsertChildIDBefore';
+import { RemoveChildID } from '../components/hierarchy/RemoveChildID';
 
 //  Replaces the `target` child with the `source` child.
 //  Both children are removed from their parents.
@@ -15,30 +17,59 @@ import { UpdateChildIndexes } from '../components/hierarchy/UpdateChildIndexes';
 
 export function ReplaceChild <T extends IGameObject, S extends IGameObject> (target: T, source: S): T
 {
-    const targetParent = target.getParent();
-    const sourceParent = source.getParent();
+    const targetID = target.id;
+    const sourceID = source.id;
 
-    const targetIndex = GetChildIndex(target);
+    const targetParentID = GetParentID(targetID);
+    const sourceParentID = GetParentID(sourceID);
 
-    if (targetParent === sourceParent)
+    if (targetParentID === sourceParentID)
     {
-        //  Remove target from parent and move source to targets position
-        MoveChildTo(source, targetIndex);
-        RemoveChild(targetParent, target);
+        if (GetNumChildren(targetParentID) === 2)
+        {
+            //  This parent only has 2 children (target and source)
+            RemoveChildID(targetID);
+        }
+        else
+        {
+            //  Remove target from parent and move source to targets position
+            const targetNextID = GetNextSiblingID(targetID);
+            const targetPrevID = GetPreviousSiblingID(targetID);
+
+            RemoveChildID(targetID);
+            RemoveChildID(sourceID);
+
+            if (targetNextID)
+            {
+                InsertChildIDBefore(targetNextID, sourceID);
+            }
+            else
+            {
+                InsertChildIDAfter(targetPrevID, sourceID);
+            }
+        }
+
+        DecreaseNumChildren(targetParentID);
     }
     else
     {
-        //  They have different parents
-        RemoveChild(targetParent, target);
-        RemoveChild(sourceParent, source);
+        const targetNextID = GetNextSiblingID(targetID);
+        const targetPrevID = GetPreviousSiblingID(targetID);
 
-        AddChildAt(targetParent, source, targetIndex);
+        RemoveChildID(targetID);
+        RemoveChildID(sourceID);
+
+        DecreaseNumChildren(sourceParentID);
+
+        if (targetNextID)
+        {
+            InsertChildIDBefore(targetNextID, sourceID);
+        }
+        else
+        {
+            InsertChildIDAfter(targetPrevID, sourceID);
+        }
     }
-
-    UpdateChildIndexes(targetParent.id);
-    UpdateChildIndexes(sourceParent.id);
-
-    SetDirtyWorldDisplayList(target.id);
 
     return target;
 }
