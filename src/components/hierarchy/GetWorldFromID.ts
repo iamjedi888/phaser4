@@ -1,7 +1,13 @@
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
+import { GetWorldID } from './GetWorldID';
 import { IBaseWorld } from '../../world/IBaseWorld';
 
-export function GetWorldFromID (worldID: number): IBaseWorld | undefined
+export function GetWorldFromID (childID: number): IBaseWorld | undefined
 {
-    return GameObjectCache.get(worldID) as IBaseWorld;
+    const worldID = GetWorldID(childID);
+
+    if (worldID)
+    {
+        return GameObjectCache.get(worldID) as IBaseWorld;
+    }
 }
