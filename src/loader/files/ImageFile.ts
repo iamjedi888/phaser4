@@ -2,12 +2,13 @@ import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
 import { IFileData } from '../IFileData';
-import { RequestFile } from '../RequestFile';
+import { ILoader } from '../ILoader';
+import { IRequestFile } from '../IRequestFile';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
 
-export async function ImageFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
+export function ImageFile (key: string, url?: string, fileData: IFileData = {}): IRequestFile
 {
-    const file = CreateFile(key, GetURL(key, url, 'png'), fileData?.skipCache);
+    const onstart = (loader?: ILoader) => CreateFile(key, GetURL(key, url, 'png', loader), fileData?.skipCache);
 
     const textureManager = TextureManagerInstance.get();
 
@@ -81,5 +82,5 @@ export async function ImageFile (key: string, url?: string, fileData: IFileData 
         return true;
     };
 
-    return RequestFile(file, preload, onload, fileData);
+    return { onstart, preload, onload, fileData };
 }
