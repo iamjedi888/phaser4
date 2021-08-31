@@ -9,6 +9,10 @@ export function RelinkChildren (parentID: number, children: number[]): void
 
     if (len === 0)
     {
+        SetNumChildren(parentID, 0);
+        SetFirstChildID(parentID, 0);
+        SetLastChildID(parentID, 0);
+
         return;
     }
 
