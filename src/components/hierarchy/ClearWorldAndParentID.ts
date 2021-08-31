@@ -1,13 +1,13 @@
 import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 import { hasComponent, removeComponent } from 'bitecs';
 
+import { DecreaseNumChildren } from './DecreaseNumChildren';
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetParentID } from './GetParentID';
 import { GetWorldID } from './GetWorldID';
 import { IBaseWorld } from '../../world/IBaseWorld';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
-import { UpdateNumChildren } from './UpdateNumChildren';
 
 export function ClearWorldAndParentID (id: number): void
 {
@@ -23,7 +23,7 @@ export function ClearWorldAndParentID (id: number): void
         removeComponent(GameObjectWorld, world.tag, id);
     }
 
-    UpdateNumChildren(parentID);
+    DecreaseNumChildren(parentID);
 
     SetDirtyParents(id);
 }
