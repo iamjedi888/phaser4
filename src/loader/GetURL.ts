@@ -1,20 +1,21 @@
-// import { Loader } from './Loader';
+import { ILoader } from './ILoader';
+import { IsAbsoluteURI } from './IsAbsoluteURI';
 
-export function GetURL (key: string, url: string, extension: string): string
+export function GetURL (key: string, url: string, extension: string, loader?: ILoader): string
 {
     if (!url)
     {
         url = `${key}.${extension}`;
     }
 
-    if ((/^(?:blob:|data:|http:\/\/|https:\/\/|\/\/)/).exec(url))
+    if (IsAbsoluteURI(url))
     {
         return url;
     }
-    // else if (loader)
-    // {
-    //     return loader.baseURL + loader.path + url;
-    // }
+    else if (loader)
+    {
+        return `${loader.baseURL}${loader.path}${url}`;
+    }
     else
     {
         return url;
