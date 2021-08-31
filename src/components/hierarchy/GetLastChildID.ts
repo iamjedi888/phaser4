@@ -1,6 +1,6 @@
 import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
-export function GetLastChildID (id: number): number
+export function GetLastChildID (parentID: number): number
 {
-    return HierarchyComponent.data[id][HIERARCHY.LAST];
+    return HierarchyComponent.data[parentID][HIERARCHY.LAST];
 }

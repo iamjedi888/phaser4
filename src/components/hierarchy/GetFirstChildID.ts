@@ -1,6 +1,6 @@
 import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
 
-export function GetFirstChildID (id: number): number
+export function GetFirstChildID (parentID: number): number
 {
-    return HierarchyComponent.data[id][HIERARCHY.FIRST];
+    return HierarchyComponent.data[parentID][HIERARCHY.FIRST];
 }
