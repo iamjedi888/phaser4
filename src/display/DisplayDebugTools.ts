@@ -27,7 +27,6 @@ import { IGameObject } from '../gameobjects/IGameObject';
 import { IVec2Like } from '../math/vec2/IVec2Like';
 import { IsValidParent } from './IsValidParent';
 import { MoveChildDown } from './MoveChildDown';
-import { MoveChildTo } from './MoveChildTo';
 import { MoveChildUp } from './MoveChildUp';
 import { RemoveChild } from './RemoveChild';
 import { RemoveChildAt } from './RemoveChildAt';
@@ -43,7 +42,6 @@ import { SendChildToBack } from './SendChildToBack';
 import { SetChildrenValue } from './SetChildrenValue';
 import { SetName } from './SetName';
 import { SetOrigin } from './SetOrigin';
-import { SetParent } from './SetParent';
 import { SetPosition } from './SetPosition';
 import { SetRotation } from './SetRotation';
 import { SetScale } from './SetScale';
@@ -320,13 +318,6 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     addCommand('MoveChildDown(child)', 'Moves the child one index down the display list');
 
-    top['MoveChildTo'] = (child: IGameObject, index: number) =>
-    {
-        return MoveChildTo(child, index);
-    };
-
-    addCommand('MoveChildTo(child, index)', 'Moves the child to the given index in the display list');
-
     top['MoveChildUp'] = (child: IGameObject) =>
     {
         return MoveChildUp(child);
@@ -431,13 +422,6 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
     };
 
     addCommand('SetOrigin(originX, originY, ...children)', 'Sets the origin on all given children');
-
-    top['SetParent'] = (parent: IGameObject, ...children: IGameObject[]) =>
-    {
-        return SetParent(parent, ...children);
-    };
-
-    addCommand('SetParent(parent, ...children)', 'Sets the parent on all given children, removing from previous parent');
 
     top['SetPosition'] = (x: number, y: number, ...children: IContainer[]) =>
     {
