@@ -162,7 +162,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     update (delta: number, time: number): void
     {
-        Emit(this, WorldEvents.WorldBeforeUpdateEvent, this);
+        Emit(this, WorldEvents.WorldBeforeUpdateEvent, delta, time);
 
         const start = performance.now();
 
@@ -185,7 +185,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         this.renderData.updated = total;
         this.renderData.updateMs = performance.now() - start;
 
-        Emit(this, WorldEvents.WorldUpdateEvent, this);
+        Emit(this, WorldEvents.WorldUpdateEvent, delta, time);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
