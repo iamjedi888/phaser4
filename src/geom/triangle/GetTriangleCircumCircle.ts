@@ -4,7 +4,7 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-import { Circle } from '../Circle/Circle';
+import { Circle } from '../circle/Circle';
 import { ITriangle } from './ITriangle';
 
 /**
