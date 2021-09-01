@@ -4,30 +4,34 @@ import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
 import { IFileData } from '../IFileData';
 import { ILoader } from '../ILoader';
-import { IRequestFile } from '../IRequestFile';
+import { RequestFile } from '../RequestFile';
+import { RequestFileType } from '../RequestFileType';
 
-export function JSONFile (key: string, url?: string, fileData: IFileData = {}): IRequestFile
+export function JSONFile (key: string, url?: string, fileData: IFileData = {}): RequestFileType
 {
-    const onstart = (loader?: ILoader) => CreateFile(key, GetURL(key, url, 'json', loader), fileData.skipCache);
-
-    const cache = Cache.get('JSON');
-
-    const preload = (file: IFile) =>
+    return (loader?: ILoader): Promise<IFile> =>
     {
-        return (cache && (!cache.has(key) || !file.skipCache));
-    };
+        const file = CreateFile(key, GetURL(key, url, 'json', loader), fileData.skipCache);
 
-    const onload = async (file: IFile) =>
-    {
-        file.data = await file.response.json();
+        const cache = Cache.get('JSON');
 
-        if (!file.skipCache)
+        const preload = (file: IFile) =>
         {
-            cache.set(key, file.data);
-        }
+            return (cache && (!cache.has(key) || !file.skipCache));
+        };
 
-        return true;
+        const onload = async (file: IFile) =>
+        {
+            file.data = await file.response.json();
+
+            if (!file.skipCache)
+            {
+                cache.set(key, file.data);
+            }
+
+            return true;
+        };
+
+        return RequestFile(file, preload, onload, fileData);
     };
-
-    return { onstart, preload, onload, fileData };
 }

@@ -1,9 +1,7 @@
 import { Emit } from '../events/Emit';
 import { EventEmitter } from '../events/EventEmitter';
 import { IFile } from './IFile';
-import { ILoaderFile } from './ILoaderFile';
-import { IRequestFile } from './IRequestFile';
-import { RequestFile } from './RequestFile';
+import { RequestFileType } from './RequestFileType';
 
 export class Loader extends EventEmitter
 {
@@ -17,8 +15,8 @@ export class Loader extends EventEmitter
     isLoading: boolean = false;
     progress: number;
 
-    queue: Set<ILoaderFile>;
-    inflight: Set<ILoaderFile>;
+    queue: Set<RequestFileType>;
+    inflight: Set<RequestFileType>;
     completed: Set<IFile>;
 
     onComplete: Function;
@@ -42,15 +40,13 @@ export class Loader extends EventEmitter
         this.progress = 0;
     }
 
-    add (...file: IRequestFile[]): this
+    add (...file: RequestFileType[]): this
     {
         file.forEach(entity =>
         {
-            const file = entity.onstart(this);
-
             // console.log('Loader.add', entity);
 
-            this.queue.add({ file, preload: entity.preload, onload: entity.onload, fileData: entity.fileData });
+            this.queue.add(entity);
         });
 
         return this;
@@ -111,24 +107,22 @@ export class Loader extends EventEmitter
 
             while (limit > 0)
             {
-                const queueEntry = iterator.next().value;
+                const loadFile = iterator.next().value;
 
-                this.inflight.add(queueEntry);
+                this.inflight.add(loadFile);
 
-                this.queue.delete(queueEntry);
+                this.queue.delete(loadFile);
 
-                const { file, preload, onload, fileData } = queueEntry;
-
-                RequestFile(file, preload, onload, fileData)
+                loadFile(this)
                     .then((file: IFile) =>
                     {
                         this.fileComplete(file);
-                        this.updateProgress(file, queueEntry);
+                        this.updateProgress(file, loadFile);
                     })
                     .catch((file: IFile) =>
                     {
                         this.fileError(file);
-                        this.updateProgress(file, queueEntry);
+                        this.updateProgress(file, loadFile);
                     });
 
                 limit--;
@@ -158,7 +152,7 @@ export class Loader extends EventEmitter
         this.completed.clear();
     }
 
-    private updateProgress (file: IFile, queueEntry: ILoaderFile): void
+    private updateProgress (file: IFile, queueEntry: RequestFileType): void
     {
         this.inflight.delete(queueEntry);
 
@@ -179,11 +173,15 @@ export class Loader extends EventEmitter
 
     private fileComplete (file: IFile): void
     {
+        // console.log('Loaded', file.key);
+
         Emit(this, 'filecomplete', file);
     }
 
     private fileError (file: IFile): void
     {
+        // console.log('Failed to Load', file.key);
+
         Emit(this, 'fileerror', file);
     }
 

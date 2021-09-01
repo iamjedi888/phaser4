@@ -3,30 +3,35 @@ import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
 import { IFileData } from '../IFileData';
+import { ILoader } from '../ILoader';
 import { RequestFile } from '../RequestFile';
+import { RequestFileType } from '../RequestFileType';
 
-export async function OBJFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
+export function OBJFile (key: string, url?: string, fileData: IFileData = {}): RequestFileType
 {
-    const file = CreateFile(key, GetURL(key, url, 'obj'), fileData.skipCache);
-
-    const cache = Cache.get('OBJ');
-
-    const preload = (file: IFile) =>
+    return (loader?: ILoader): Promise<IFile> =>
     {
-        return (cache && (!cache.has(key) || !file.skipCache));
-    };
+        const file = CreateFile(key, GetURL(key, url, 'obj', loader), fileData.skipCache);
 
-    const onload = async (file: IFile) =>
-    {
-        file.data = await file.response.text();
+        const cache = Cache.get('OBJ');
 
-        if (!file.skipCache)
+        const preload = (file: IFile) =>
         {
-            cache.set(key, file.data);
-        }
+            return (cache && (!cache.has(key) || !file.skipCache));
+        };
 
-        return true;
+        const onload = async (file: IFile) =>
+        {
+            file.data = await file.response.text();
+
+            if (!file.skipCache)
+            {
+                cache.set(key, file.data);
+            }
+
+            return true;
+        };
+
+        return RequestFile(file, preload, onload, fileData);
     };
-
-    return RequestFile(file, preload, onload, fileData);
 }

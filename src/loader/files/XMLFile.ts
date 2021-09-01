@@ -4,42 +4,46 @@ import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
 import { IFileData } from '../IFileData';
 import { ILoader } from '../ILoader';
-import { IRequestFile } from '../IRequestFile';
 import { ParseXML } from '../../dom/ParseXML';
+import { RequestFile } from '../RequestFile';
+import { RequestFileType } from '../RequestFileType';
 
-export function XMLFile (key: string, url?: string, fileData: IFileData = {}): IRequestFile
+export function XMLFile (key: string, url?: string, fileData: IFileData = {}): RequestFileType
 {
-    const onstart = (loader?: ILoader) => CreateFile(key, GetURL(key, url, 'xml', loader), fileData.skipCache);
-
-    const cache = Cache.get('XML');
-
-    const preload = (file: IFile) =>
+    return (loader?: ILoader): Promise<IFile> =>
     {
-        return (cache && (!cache.has(key) || !file.skipCache));
-    };
+        const file = CreateFile(key, GetURL(key, url, 'xml', loader), fileData.skipCache);
 
-    const onload = async (file: IFile) =>
-    {
-        const data = await file.response.text();
+        const cache = Cache.get('XML');
 
-        const xml = ParseXML(data);
-
-        if (xml !== null)
+        const preload = (file: IFile) =>
         {
-            file.data = xml;
+            return (cache && (!cache.has(key) || !file.skipCache));
+        };
 
-            if (!file.skipCache)
+        const onload = async (file: IFile) =>
+        {
+            const data = await file.response.text();
+
+            const xml = ParseXML(data);
+
+            if (xml !== null)
             {
-                cache.set(key, xml);
+                file.data = xml;
+
+                if (!file.skipCache)
+                {
+                    cache.set(key, xml);
+                }
+
+                return true;
             }
+            else
+            {
+                return false;
+            }
+        };
 
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return RequestFile(file, preload, onload, fileData);
     };
-
-    return { onstart, preload, onload, fileData };
 }

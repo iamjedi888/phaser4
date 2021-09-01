@@ -1,52 +1,36 @@
 import { BitmapTextParser } from '../../textures/parsers/BitmapTextParser';
-import { File } from '../File';
-import { GetURL } from '../GetURL';
-import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
+import { GetTexture } from '../../textures/GetTexture';
+import { IFile } from '../IFile';
+import { IFileData } from '../IFileData';
+import { ILoader } from '../ILoader';
 import { ImageFile } from './ImageFile';
-import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
+import { RequestFileType } from '../RequestFileType';
 import { XMLFile } from './XMLFile';
 
-export function BitmapTextFile (key: string, textureURL?: string, fontDataURL?: string, glConfig?: IGLTextureBindingConfig): File
+export function BitmapTextFile (key: string, textureURL?: string, fontDataURL?: string, fileData: IFileData = {}): RequestFileType
 {
-    const xml = XMLFile(key, fontDataURL);
-    const image = ImageFile(key, textureURL, glConfig);
-
-    const file = new File(key, '');
-
-    file.load = (): Promise<File> =>
+    return async (loader?: ILoader): Promise<IFile> =>
     {
-        //  If called via a Loader, it has been set into the file const
-        xml.url = GetURL(xml.key, xml.url, '.xml', file.loader);
-        image.url = GetURL(image.key, image.url, '.png', file.loader);
-
-        return new Promise((resolve, reject) =>
+        try
         {
-            xml.skipCache = true;
+            const loadImage = ImageFile(key, textureURL, Object.assign({}, fileData, { skipCache: false }));
+            const loadXML = XMLFile(key, fontDataURL, Object.assign({}, fileData, { skipCache: true }));
 
-            xml.load().then(() =>
-            {
-                image.load().then(() =>
-                {
-                    //  By this stage, the XML and image are loaded and in the texture manager
-                    const texture = TextureManagerInstance.get().get(key);
+            const image = await loadImage(loader);
+            const xml = await loadXML(loader);
 
-                    const fontData = BitmapTextParser(texture, xml.data as XMLDocument);
+            //  By this stage, the XML and image are loaded and in the texture manager
+            const texture = GetTexture(key);
 
-                    texture.data = fontData;
+            const fontData = BitmapTextParser(texture, xml.data as XMLDocument);
 
-                    resolve(file);
+            texture.data = fontData;
 
-                }).catch(() =>
-                {
-                    reject(file);
-                });
-
-            }).catch(() =>
-            {
-                reject(file);
-            });
-        });
+            return Promise.resolve(image);
+        }
+        catch (error)
+        {
+            return Promise.reject();
+        }
     };
-
-    return file;
 }

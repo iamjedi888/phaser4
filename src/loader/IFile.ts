@@ -4,6 +4,6 @@ export interface IFile
     url: string;
     skipCache: boolean;
     data?: unknown;
-    error?: Error;
+    error?: Error | unknown;
     response?: Response;
 }
