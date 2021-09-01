@@ -8,4 +8,8 @@ export interface IColor
     green: number;
     blue: number;
     alpha: number;
+    r: number;
+    g: number;
+    b: number;
+    a: number;
 }

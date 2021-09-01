@@ -4,7 +4,7 @@ export class Color implements IColor
 {
     rgba: Uint8ClampedArray;
 
-    constructor (red: number = 0, green: number = 0, blue: number = 0, alpha: number = 1)
+    constructor (red: number = 0, green: number = 0, blue: number = 0, alpha: number = 255)
     {
         //  Using a Uint8ClampedArray means we guarantee values are in the 0-255 range
         this.rgba = new Uint8ClampedArray([ red, green, blue, alpha ]);
@@ -86,5 +86,25 @@ export class Color implements IColor
     set alpha (value: number)
     {
         this.rgba[3] = value;
+    }
+
+    get r (): number
+    {
+        return this.rgba[0] / 255;
+    }
+
+    get g (): number
+    {
+        return this.rgba[1] / 255;
+    }
+
+    get b (): number
+    {
+        return this.rgba[2] / 255;
+    }
+
+    get a (): number
+    {
+        return this.rgba[3] / 255;
     }
 }
