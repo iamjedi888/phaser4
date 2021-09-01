@@ -1,6 +1,9 @@
 import { AddChild } from './AddChild';
+import { AddChildAfter } from './AddChildAfter';
 import { AddChildAt } from './AddChildAt';
+import { AddChildBefore } from './AddChildBefore';
 import { AddChildren } from './AddChildren';
+import { AddChildrenAt } from './AddChildrenAt';
 import { BringChildToTop } from './BringChildToTop';
 import { ConsoleTreeChildren } from './ConsoleTreeChildren';
 import { Container } from '../gameobjects/container/Container';
@@ -10,6 +13,7 @@ import { DepthFirstSearchRecursive } from './DepthFirstSearchRecursive';
 import { DestroyChildren } from './DestroyChildren';
 import { FindChildrenByName } from './FindChildrenByName';
 import { GetAllChildren } from './GetAllChildren';
+import { GetBounds } from './GetBounds';
 import { GetChildAt } from './GetChildAt';
 import { GetChildIndex } from './GetChildIndex';
 import { GetChildren } from './GetChildren';
@@ -21,6 +25,7 @@ import { GetLastChild } from './GetLastChild';
 import { GetParentID } from '../components/hierarchy/GetParentID';
 import { GetParents } from './GetParents';
 import { GetRandomChild } from './GetRandomChild';
+import { GetTexture } from '../textures/GetTexture';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IContainer } from '../gameobjects/container/IContainer';
 import { IGameObject } from '../gameobjects/IGameObject';
@@ -51,6 +56,7 @@ import { SetValue } from './SetValue';
 import { SetVisible } from './SetVisible';
 import { SetWorld } from './SetWorld';
 import { ShuffleChildren } from './ShuffleChildren';
+import { SortChildren } from './SortChildren';
 import { Sprite } from '../gameobjects/sprite/Sprite';
 import { SwapChildren } from './SwapChildren';
 import { TextureManagerInstance } from '../textures/TextureManagerInstance';
@@ -97,10 +103,6 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     addHelp('world', 'A reference to the World instance');
 
-    // top['GameObjectTree'] = GameObjectTree;
-
-    addHelp('GameObjectTree', 'A reference to the internal Game Object Tree Map');
-
     top['List'] = (parent: IGameObject = world) =>
     {
         ConsoleTreeChildren(parent);
@@ -131,6 +133,16 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
     };
 
     addHelp('Textures()', 'List all of the textures loaded into the Texture Manager');
+
+    top['Frames'] = (texture: string) =>
+    {
+        for (const key of GetTexture(texture).frames.keys())
+        {
+            console.log(key);
+        }
+    };
+
+    addHelp('Frames(textureKey)', 'List all of the frames in the given Texture');
 
     top['GetParentID'] = (child: IGameObject) =>
     {
@@ -171,6 +183,13 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     addCommand('AddChild(parent, child)', 'Add the child to the parent');
 
+    top['AddChildAfter'] = (after: IGameObject, child: IGameObject) =>
+    {
+        return AddChildAfter(after, child);
+    };
+
+    addCommand('AddChildAfter(after, child)', 'Add the child after the other');
+
     top['AddChildAt'] = (parent: IGameObject, child: IGameObject, index: number = 0) =>
     {
         return AddChildAt(parent, child, index);
@@ -178,12 +197,26 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
 
     addCommand('AddChildAt(parent, child, index?)', 'Add the child to the parent at the given index');
 
+    top['AddChildBefore'] = (before: IGameObject, child: IGameObject) =>
+    {
+        return AddChildBefore(before, child);
+    };
+
+    addCommand('AddChildBefore(before, child)', 'Add the child before the other');
+
     top['AddChildren'] = (parent: IGameObject = world, ...children: IGameObject[]) =>
     {
         return AddChildren(parent, ...children);
     };
 
     addCommand('AddChildren(parent, ...children)', 'Add all children to the parent');
+
+    top['AddChildrenAt'] = (parent: IGameObject = world, index: number = 0, ...children: IGameObject[]) =>
+    {
+        return AddChildrenAt(parent, index, ...children);
+    };
+
+    addCommand('AddChildrenAt(parent, index, ...children)', 'Add all children to the parent at the given index');
 
     top['BringChildToTop'] = (child: IGameObject) =>
     {
@@ -233,6 +266,13 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
     };
 
     addCommand('GetAllChildren(parent, property?, value?)', 'Return all children of the parent in a deep scan');
+
+    top['GetBounds'] = (children: IGameObject[]) =>
+    {
+        return GetBounds(...children);
+    };
+
+    addCommand('GetBounds(...children)', 'Get the bounds of all children added together');
 
     top['GetChildAt'] = (parent: IGameObject, index: number) =>
     {
@@ -485,6 +525,13 @@ export function DisplayDebugTools <W extends IBaseWorld> (world: W): void
     };
 
     addCommand('ShuffleChildren(parent)', 'Shuffles all of the children of the given parent');
+
+    top['SortChildren'] = (parent: IGameObject, getter: (child: IGameObject) => never) =>
+    {
+        return SortChildren(parent, getter);
+    };
+
+    addCommand('SortChildren(parent, getter)', 'Sorts all of the children based on the given getter function');
 
     top['SwapChildren'] = (child1: IGameObject, child2: IGameObject) =>
     {
