@@ -3,11 +3,12 @@ import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
 import { IFileData } from '../IFileData';
-import { RequestFile } from '../RequestFile';
+import { ILoader } from '../ILoader';
+import { IRequestFile } from '../IRequestFile';
 
-export async function CSVFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
+export function CSVFile (key: string, url?: string, fileData: IFileData = {}): IRequestFile
 {
-    const file = CreateFile(key, GetURL(key, url, 'csv'), fileData.skipCache);
+    const onstart = (loader?: ILoader) => CreateFile(key, GetURL(key, url, 'csv', loader), fileData.skipCache);
 
     const cache = Cache.get('CSV');
 
@@ -28,5 +29,5 @@ export async function CSVFile (key: string, url?: string, fileData: IFileData = 
         return true;
     };
 
-    return RequestFile(file, preload, onload, fileData);
+    return { onstart, preload, onload, fileData };
 }

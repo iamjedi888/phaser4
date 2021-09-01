@@ -3,12 +3,13 @@ import { CreateFile } from '../CreateFile';
 import { GetURL } from '../GetURL';
 import { IFile } from '../IFile';
 import { IFileData } from '../IFileData';
+import { ILoader } from '../ILoader';
+import { IRequestFile } from '../IRequestFile';
 import { ParseXML } from '../../dom/ParseXML';
-import { RequestFile } from '../RequestFile';
 
-export async function XMLFile (key: string, url?: string, fileData: IFileData = {}): Promise<IFile>
+export function XMLFile (key: string, url?: string, fileData: IFileData = {}): IRequestFile
 {
-    const file = CreateFile(key, GetURL(key, url, 'xml'), fileData.skipCache);
+    const onstart = (loader?: ILoader) => CreateFile(key, GetURL(key, url, 'xml', loader), fileData.skipCache);
 
     const cache = Cache.get('XML');
 
@@ -40,5 +41,5 @@ export async function XMLFile (key: string, url?: string, fileData: IFileData = 
         }
     };
 
-    return RequestFile(file, preload, onload, fileData);
+    return { onstart, preload, onload, fileData };
 }
