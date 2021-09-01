@@ -1,5 +1,7 @@
+import { Color } from '../../components/color/Color';
 import { IColorComponent } from '../../components/color/IColorComponent';
 import { IGameObject } from '../IGameObject';
+import { IRectangle } from '../../geom/rectangle/IRectangle';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { Origin } from '../../components/transform/Origin';
 import { Position } from '../../components/transform/Position';
@@ -14,6 +16,7 @@ export interface IContainer extends IGameObject, IColorComponent
     skew: Skew;
     origin: Origin;
     size: Size;
+    color: Color;
 
     x: number;
     y: number;
@@ -28,4 +31,5 @@ export interface IContainer extends IGameObject, IColorComponent
     setSkew (x: number, y: number): this;
     setOrigin (x: number, y: number): this;
     setAlpha (value: number): this;
+    getBounds (): IRectangle;
 }

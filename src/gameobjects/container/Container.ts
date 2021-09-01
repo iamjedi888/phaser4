@@ -8,11 +8,13 @@ import { GetDefaultOriginX } from '../../config/defaultorigin/GetDefaultOriginX'
 import { GetDefaultOriginY } from '../../config/defaultorigin/GetDefaultOriginY';
 import { IContainer } from './IContainer';
 import { IGameObject } from '../IGameObject';
+import { IRectangle } from '../../geom/rectangle/IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { Origin } from '../../components/transform/Origin';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
 import { Position } from '../../components/transform/Position';
+import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { Scale } from '../../components/transform/Scale';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyTransform } from '../../components/dirty/SetDirtyTransform';
@@ -164,6 +166,18 @@ export class Container extends GameObject implements IContainer
         this.origin.set(x, y);
 
         return this;
+    }
+
+    getBounds (): IRectangle
+    {
+        const data = Transform2DComponent.data[this.id];
+
+        const x = data[TRANSFORM.BOUNDS_X1];
+        const y = data[TRANSFORM.BOUNDS_Y1];
+        const right = data[TRANSFORM.BOUNDS_X2];
+        const bottom = data[TRANSFORM.BOUNDS_Y2];
+
+        return new Rectangle(x, y, right - x, bottom - y);
     }
 
     destroy (reparentChildren?: IGameObject): void
