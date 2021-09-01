@@ -6,7 +6,7 @@ export class Time
     lastTick: number = 0;
     elapsed: number = 0;
     delta: number = 0;
-    fps: number = 0;
+    fps: number = 60;
     fpsCount: number = 0;
     frame: number = 0;
     ms: number = 0;
@@ -31,7 +31,7 @@ export class Time
         const now = performance.now();
 
         //  How long it took to process this frame
-        const delta = now - time;
+        const elapsed = now - time;
 
         this.fpsCount++;
 
@@ -43,14 +43,14 @@ export class Time
         }
 
         this.lastTick = now;
-        this.elapsed += delta;
-        this.delta = delta;
+        this.elapsed += elapsed;
+        this.delta = 1000 / this.fps;
         this.frame++;
 
         GameInstance.setFrame(this.frame);
 
         RenderStats.fps = this.fps;
-        RenderStats.delta = delta;
+        RenderStats.delta = 1000 / this.fps;
 
         return this.frame;
     }
