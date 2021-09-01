@@ -1,4 +1,4 @@
-import { GetColorFromRGB } from './GetColorFromRGB';
+import { Color } from './Color';
 
 /**
   * Return an array of Colors in a Color Spectrum.
@@ -16,7 +16,7 @@ import { GetColorFromRGB } from './GetColorFromRGB';
   *
   * @return {Phaser.Types.Display.ColorObject[]} An array containing `limit` parameter number of elements, where each contains a Color Object.
   */
-export function GetColorSpectrum (limit: number = 1024): number[]
+export function GetColorSpectrum (limit: number = 1024): Color[]
 {
     const colors = [];
 
@@ -30,7 +30,7 @@ export function GetColorSpectrum (limit: number = 1024): number[]
     //  Red to Yellow
     for (i = 0; i <= range; i++)
     {
-        colors.push(GetColorFromRGB(r, i, b));
+        colors.push(new Color(r, i, b));
     }
 
     g = 255;
@@ -38,7 +38,7 @@ export function GetColorSpectrum (limit: number = 1024): number[]
     //  Yellow to Green
     for (i = range; i >= 0; i--)
     {
-        colors.push(GetColorFromRGB(i, g, b));
+        colors.push(new Color(i, g, b));
     }
 
     r = 0;
@@ -46,7 +46,7 @@ export function GetColorSpectrum (limit: number = 1024): number[]
     //  Green to Blue
     for (i = 0; i <= range; i++, g--)
     {
-        colors.push(GetColorFromRGB(r, g, i));
+        colors.push(new Color(r, g, i));
     }
 
     g = 0;
@@ -55,7 +55,7 @@ export function GetColorSpectrum (limit: number = 1024): number[]
     //  Blue to Red
     for (i = 0; i <= range; i++, b--, r++)
     {
-        colors.push(GetColorFromRGB(r, g, b));
+        colors.push(new Color(r, g, b));
     }
 
     if (limit === 1024)
