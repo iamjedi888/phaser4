@@ -6,9 +6,11 @@ import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransfo
 
 export function RebuildWorldTransforms (entities: number[]): number
 {
+    const len = entities.length;
+
     let total = 0;
 
-    for (let i = 0; i < entities.length; i++)
+    for (let i = 0; i < len; i++)
     {
         const id = entities[i];
         const parentID = GetParentID(id);
