@@ -34,6 +34,7 @@ import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
+import { UpdateChildTransform } from '../components/transform/UpdateChildTransform';
 import { UpdateInViewSystem } from '../components/vertices/UpdateInViewSystem';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
 import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
@@ -56,6 +57,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     private colorQuery: Query;
     private transformQuery: Query;
+
+    renderList: Uint32Array;
 
     renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
 
@@ -92,6 +95,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         SetWillTransformChildren(this.id, false);
         SetWillCacheChildren(this.id, false);
+
+        //  TODO: This should probably be Game level, not World level, as they'll never need one each
+        //  TODO: Needs to match the bitecs world size
+        this.renderList = new Uint32Array(500000);
     }
 
     preRender (gameFrame: number): boolean
@@ -110,6 +117,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const entities = this.transformQuery(GameObjectWorld);
 
+        const list = this.renderList;
+
         let dirtyLocal = 0;
         let dirtyWorld = 0;
         let dirtyQuad = 0;
@@ -118,7 +127,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         if (HasDirtyChildTransform(id))
         {
-            dirtyLocal = UpdateLocalTransform(id, entities, camera, gameFrame);
+            dirtyLocal = UpdateChildTransform(id, entities, list);
+
+            UpdateLocalTransform(id, list, dirtyLocal, camera, gameFrame);
 
             ClearDirtyChildTransform(id);
         }
@@ -227,7 +238,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.numChildren = this.getNumChildren();
         renderData.fps = this.scene.game.time.fps;
         renderData.delta = this.scene.game.time.delta;
-        renderData.renderList = GetRenderList();
+        // renderData.renderList = GetRenderList();
 
         this.scene.game.renderStats = renderData;
         //#endif
