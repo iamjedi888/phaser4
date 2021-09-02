@@ -56,7 +56,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number };
 
     constructor (scene: IScene)
     {
@@ -84,7 +84,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             renderMs: 0,
             updated: 0,
             updateMs: 0,
-            fps: 0
+            fps: 0,
+            delta: 0
         };
 
         SetWillTransformChildren(this.id, false);
@@ -219,12 +220,14 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         PopColor(renderPass, this.color);
 
-        renderData.renderMs = performance.now() - start;
-
         //#ifdef RENDER_STATS
+        renderData.renderMs = performance.now() - start;
         renderData.numChildren = this.getNumChildren();
         renderData.fps = this.scene.game.time.fps;
-        window['renderStats'] = renderData;
+        renderData.delta = this.scene.game.time.delta;
+
+        this.scene.game.renderStats = renderData;
+
         //#endif
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
