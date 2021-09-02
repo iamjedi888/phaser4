@@ -41,7 +41,7 @@
         "bitecs": "^0.3.19-1",
         "boxen": "^5.0.1",
         "directory-tree": "^2.3.1",
-        "esbuild": "^0.12.24",
+        "esbuild": "^0.12.25",
         "esbuild-plugin-ifdef": "^1.0.1",
         "eslint": "^7.32.0",
         "fs-extra": "^10.0.0",
