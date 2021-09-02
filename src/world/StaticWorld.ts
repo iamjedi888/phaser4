@@ -1,6 +1,6 @@
 import * as WorldEvents from './events';
 
-import { GetRenderChildTotal, RenderChild, ResetRenderChildTotal } from './RenderChild';
+import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
 import { Query, defineQuery } from 'bitecs';
 
 import { BaseWorld } from './BaseWorld';
@@ -20,6 +20,7 @@ import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticCamera } from '../camera/IStaticCamera';
@@ -56,7 +57,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     private colorQuery: Query;
     private transformQuery: Query;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
 
     constructor (scene: IScene)
     {
@@ -85,7 +86,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             updated: 0,
             updateMs: 0,
             fps: 0,
-            delta: 0
+            delta: 0,
+            renderList: []
         };
 
         SetWillTransformChildren(this.id, false);
@@ -225,11 +227,16 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.numChildren = this.getNumChildren();
         renderData.fps = this.scene.game.time.fps;
         renderData.delta = this.scene.game.time.delta;
+        renderData.renderList = GetRenderList();
 
         this.scene.game.renderStats = renderData;
-
         //#endif
 
         Emit(this, WorldEvents.WorldPostRenderEvent, renderPass, this);
+    }
+
+    getRenderList (): IGameObject[]
+    {
+        return GetRenderList();
     }
 }
