@@ -3,34 +3,25 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { IBaseCamera } from '../../camera/IBaseCamera';
-import { SetDirtyChildTransform } from '../dirty/SetDirtyChildTransform';
 import { SetDirtyChildWorldTransform } from '../dirty/SetDirtyChildWorldTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 
-export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, entities: number[], camera: C, gameFrame: number): number
+export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, entities: Uint32Array, index: number, camera: C, gameFrame: number): void
 {
     const cx = camera.getBoundsX();
     const cy = camera.getBoundsY();
     const cright = camera.getBoundsRight();
     const cbottom = camera.getBoundsBottom();
 
-    let total = 0;
-    let prevParent = 0;
     let dirtyWorld = false;
+    let prevParent = 0;
 
-    const len = entities.length;
-
-    for (let i = 0; i < len; i++)
+    for (let i = 0; i < index; i++)
     {
         const id = entities[i];
 
         const data: Float32Array = Transform2DComponent.data[id];
-
-        if (data[TRANSFORM.DIRTY] === 0)
-        {
-            continue;
-        }
 
         const isRoot = data[TRANSFORM.IS_ROOT];
 
@@ -155,16 +146,10 @@ export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, e
 
             dirtyWorld = true;
         }
-
-        SetDirtyChildTransform(id);
-
-        total++;
     }
 
     if (dirtyWorld)
     {
         SetDirtyChildWorldTransform(worldID);
     }
-
-    return total;
 }
