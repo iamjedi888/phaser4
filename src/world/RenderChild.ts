@@ -42,7 +42,7 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
         gameObject.renderGL(renderPass);
 
         RENDER_CHILD_TOTAL++;
-        RENDER_LIST.push(gameObject);
+        // RENDER_LIST.push(gameObject);
     }
 
     const numChildren = HasRenderableChildren(id, renderPass.isCameraDirty());
@@ -67,7 +67,7 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
                     childGameObject.postRenderGL(renderPass);
 
                     RENDER_CHILD_TOTAL++;
-                    RENDER_LIST.push(childGameObject);
+                    // RENDER_LIST.push(childGameObject);
                 }
             }
 
