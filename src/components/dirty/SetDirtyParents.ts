@@ -1,26 +1,24 @@
-import { GetParents } from '../hierarchy/GetParents';
+import { GetParentID } from '../hierarchy/GetParentID';
 import { GetWorldID } from '../hierarchy/GetWorldID';
 import { SetDirtyChild } from './SetDirtyChild';
 import { SetDirtyChildCache } from './SetDirtyChildCache';
 import { SetDirtyChildTransform } from './SetDirtyChildTransform';
-import { SetDirtyTransform } from './SetDirtyTransform';
 import { WillCacheChildren } from '../permissions/WillCacheChildren';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
 export function SetDirtyParents (childID: number): void
 {
     const worldID = GetWorldID(childID);
-    const parents = GetParents(childID);
 
-    for (let i = 0; i < parents.length; i++)
+    let id = GetParentID(childID);
+
+    while (id !== worldID)
     {
-        const id = parents[i];
-
         SetDirtyChild(id);
 
         if (WillTransformChildren(id))
         {
-            SetDirtyTransform(id);
+            SetDirtyChildTransform(id);
         }
 
         if (WillCacheChildren(id))
@@ -28,9 +26,6 @@ export function SetDirtyParents (childID: number): void
             SetDirtyChildCache(id);
         }
 
-        if (id === worldID)
-        {
-            SetDirtyChildTransform(id);
-        }
+        id = GetParentID(id);
     }
 }
