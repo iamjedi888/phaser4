@@ -1,3 +1,5 @@
+import { HIERARCHY, HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
+
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
 import { AddHierarchyComponent } from '../components/hierarchy/AddHierarchyComponent';
 import { AddPermissionsComponent } from '../components/permissions/AddPermissionsComponent';
@@ -164,22 +166,19 @@ export class GameObject implements IGameObject
     }
 
     //#ifdef GET_DISPLAY_DATA
-    /*
-    getDisplayData (): { id: number, index: number, parent: number, world: number, worldDepth: number, numChildren: number }
+    getDisplayData (): { id: number, parent: number, world: number, numChildren: number }
     {
         const id = this.id;
 
+        const data = HierarchyComponent.data[id];
+
         return {
             id,
-            index: HierarchyComponent.index[id],
-            parent: HierarchyComponent.parent[id],
-            world: HierarchyComponent.world[id],
-            worldDepth: HierarchyComponent.worldDepth[id],
-            numChildren: HierarchyComponent.numChildren[id]
-            // children: GameObjectTree.get(id)
+            parent: data[HIERARCHY.PARENT],
+            world: data[HIERARCHY.WORLD],
+            numChildren: data[HIERARCHY.NUM_CHILDREN]
         };
     }
-    */
     //#endif
 
     toString (): string
