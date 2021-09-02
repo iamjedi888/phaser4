@@ -3,12 +3,20 @@ import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
 import { HasRenderableChildren } from '../components/permissions/HasRenderableChildren';
+import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IsInView } from '../components/transform/IsInView';
 import { WillCacheChildren } from '../components/permissions/WillCacheChildren';
 import { WillRender } from '../components/permissions/WillRender';
 
+const RENDER_LIST: IGameObject[] = [];
+
 let RENDER_CHILD_TOTAL: number = 0;
+
+export function GetRenderList (): IGameObject[]
+{
+    return RENDER_LIST;
+}
 
 export function GetRenderChildTotal (): number
 {
@@ -18,6 +26,7 @@ export function GetRenderChildTotal (): number
 export function ResetRenderChildTotal (): void
 {
     RENDER_CHILD_TOTAL = 0;
+    RENDER_LIST.length = 0;
 }
 
 export function RenderChild <T extends IRenderPass> (renderPass: T, id: number): void
@@ -33,6 +42,7 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
         gameObject.renderGL(renderPass);
 
         RENDER_CHILD_TOTAL++;
+        RENDER_LIST.push(gameObject);
     }
 
     const numChildren = HasRenderableChildren(id, renderPass.isCameraDirty());
@@ -57,6 +67,7 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
                     childGameObject.postRenderGL(renderPass);
 
                     RENDER_CHILD_TOTAL++;
+                    RENDER_LIST.push(childGameObject);
                 }
             }
 
