@@ -117,7 +117,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         let dirtyLocal = 0;
         let dirtyWorld = 0;
         let dirtyQuad = 0;
-        // let dirtyColor = 0;
+        let dirtyColor = 0;
         let dirtyView = 0;
 
         if (HasDirtyChildTransform(id))
@@ -138,14 +138,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             ClearDirtyChildWorldTransform(id);
         }
 
-        /*
         if (HasDirtyChildColor(id))
         {
-            dirtyColor = UpdateQuadColorSystem(this.colorQuery(GameObjectWorld));
+            dirtyColor = UpdateQuadColorSystem(entities);
 
             ClearDirtyChildColor(id);
         }
-        */
 
         if (HasDirtyDisplayList(id))
         {
@@ -164,7 +162,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyLocal = dirtyLocal;
         renderData.dirtyWorld = dirtyWorld;
         renderData.dirtyQuad = dirtyQuad;
-        renderData.dirtyColor = 0;
+        renderData.dirtyColor = dirtyColor;
         renderData.dirtyView = dirtyView;
         renderData.rendered = GetRenderChildTotal();
 
