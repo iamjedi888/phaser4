@@ -4,13 +4,13 @@ export function DebugHierarchyComponent (id: number): void
 {
     const data = GameObjectStore.ui32[id];
 
-    const parent = data[HIERARCHY.PARENT];
     const world = data[HIERARCHY.WORLD];
+    const parent = data[HIERARCHY.PARENT];
     const next = data[HIERARCHY.NEXT];
     const prev = data[HIERARCHY.PREV];
 
     console.group(`Entity ID: ${id}`);
-    console.log(`- parent: ${parent} - world: ${world}`);
+    console.log(`Parent: ${parent} - World: ${world}`);
     console.log(`> next: ${next}      < prev: ${prev}`);
 
     const kids = data[HIERARCHY.NUM_CHILDREN];

@@ -6,7 +6,7 @@ import { SetDirtyParents } from '../dirty/SetDirtyParents';
 
 export function SetVisible (id: number, value: boolean): void
 {
-    GameObjectStore.ui8[id][PERMISSION.VISIBLE] = Number(value);
+    GameObjectStore.ui32[id][PERMISSION.VISIBLE] = Number(value);
 
     SetDirtyParents(id);
     SetDirtyDisplayList(GetWorldID(id));

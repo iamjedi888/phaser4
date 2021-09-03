@@ -5,20 +5,10 @@ export interface IGameObjectStore
     worldSize: number;
     offsets: number[];
 
-    vi8: Int8Array;
-    vui8: Uint8Array;
-    vui8c: Uint8ClampedArray;
-    vi16: Int16Array;
-    vui16: Uint16Array;
     vi32: Int32Array;
     vui32: Uint32Array;
     vf32: Float32Array;
 
-    i8: Int8Array[];
-    ui8: Uint8Array[];
-    ui8c: Uint8ClampedArray[];
-    i16: Int16Array[];
-    ui16: Uint16Array[];
     i32: Int32Array[];
     ui32: Uint32Array[];
     f32: Float32Array[];
@@ -33,20 +23,10 @@ export const GameObjectStore: IGameObjectStore = {
     worldSize: 0,
     offsets: [],
 
-    vi8: null,
-    vui8: null,
-    vui8c: null,
-    vi16: null,
-    vui16: null,
     vi32: null,
     vui32: null,
     vf32: null,
 
-    i8: null,
-    ui8: null,
-    ui8c: null,
-    i16: null,
-    ui16: null,
     i32: null,
     ui32: null,
     f32: null,
@@ -254,7 +234,6 @@ export const QUAD = {
 //     colorOffset: [ Types.f32, 4 ]
 // });
 
-
 function AddComponents (components: Record<string, number>[]): number
 {
     let index = 0;
@@ -269,6 +248,8 @@ function AddComponents (components: Record<string, number>[]): number
 
             component[key] = index;
 
+            // console.log(key, index);
+
             if (!offset)
             {
                 offset = true;
@@ -277,11 +258,89 @@ function AddComponents (components: Record<string, number>[]): number
 
             index += size;
         });
-
-        GameObjectStore.offsets.push(index);
     });
 
     return index;
+}
+
+export function DebugStore (id: number, message: string = ''): void
+{
+    console.log('-=-=-=-=-=-=-=-=-=-=-');
+    console.log('DebugStore', id, message);
+    console.log('-=-=-=-=-=-=-=-=-=-=-');
+
+    console.group('Hierarchy');
+    console.log('WORLD', GameObjectStore.ui32[id][HIERARCHY.WORLD]);
+    console.log('PARENT', GameObjectStore.ui32[id][HIERARCHY.PARENT]);
+    console.log('NEXT', GameObjectStore.ui32[id][HIERARCHY.NEXT]);
+    console.log('PREV', GameObjectStore.ui32[id][HIERARCHY.PREV]);
+    console.log('FIRST', GameObjectStore.ui32[id][HIERARCHY.FIRST]);
+    console.log('LAST', GameObjectStore.ui32[id][HIERARCHY.LAST]);
+    console.log('NUM_CHILDREN', GameObjectStore.ui32[id][HIERARCHY.NUM_CHILDREN]);
+    console.log('DEPTH', GameObjectStore.ui32[id][HIERARCHY.DEPTH]);
+    console.groupEnd();
+
+    console.groupCollapsed('Dirty');
+    console.log('CHILD', GameObjectStore.ui32[id][DIRTY.CHILD]);
+    console.log('CHILD_CACHE', GameObjectStore.ui32[id][DIRTY.CHILD_CACHE]);
+    console.log('CHILD_TRANSFORM', GameObjectStore.ui32[id][DIRTY.CHILD_TRANSFORM]);
+    console.log('CHILD_WORLD_TRANSFORM', GameObjectStore.ui32[id][DIRTY.CHILD_WORLD_TRANSFORM]);
+    console.log('CHILD_COLOR', GameObjectStore.ui32[id][DIRTY.CHILD_COLOR]);
+    console.log('DISPLAY_LIST', GameObjectStore.ui32[id][DIRTY.DISPLAY_LIST]);
+    console.log('COLOR', GameObjectStore.ui32[id][DIRTY.COLOR]);
+    console.groupEnd();
+
+    console.groupCollapsed('Permission');
+    console.log('VISIBLE', GameObjectStore.ui32[id][PERMISSION.VISIBLE]);
+    console.log('VISIBLE_CHILDREN', GameObjectStore.ui32[id][PERMISSION.VISIBLE_CHILDREN]);
+    console.log('WILL_UPDATE', GameObjectStore.ui32[id][PERMISSION.WILL_UPDATE]);
+    console.log('WILL_UPDATE_CHILDREN', GameObjectStore.ui32[id][PERMISSION.WILL_UPDATE_CHILDREN]);
+    console.log('WILL_RENDER', GameObjectStore.ui32[id][PERMISSION.WILL_RENDER]);
+    console.log('WILL_RENDER_CHILDREN', GameObjectStore.ui32[id][PERMISSION.WILL_RENDER_CHILDREN]);
+    console.log('WILL_CACHE_CHILDREN', GameObjectStore.ui32[id][PERMISSION.WILL_CACHE_CHILDREN]);
+    console.log('WILL_TRANSFORM_CHILDREN', GameObjectStore.ui32[id][PERMISSION.WILL_TRANSFORM_CHILDREN]);
+    console.log('WILL_COLOR_CHILDREN', GameObjectStore.ui32[id][PERMISSION.WILL_COLOR_CHILDREN]);
+    console.groupEnd();
+
+    console.groupCollapsed('Transform');
+    console.log('IS_ROOT', GameObjectStore.f32[id][TRANSFORM.IS_ROOT]);
+    console.log('DIRTY', GameObjectStore.f32[id][TRANSFORM.DIRTY]);
+    console.log('X', GameObjectStore.f32[id][TRANSFORM.X]);
+    console.log('Y', GameObjectStore.f32[id][TRANSFORM.Y]);
+    console.log('ROTATION', GameObjectStore.f32[id][TRANSFORM.ROTATION]);
+    console.log('SCALE_X', GameObjectStore.f32[id][TRANSFORM.SCALE_X]);
+    console.log('SCALE_Y', GameObjectStore.f32[id][TRANSFORM.SCALE_Y]);
+    console.log('SKEW_X', GameObjectStore.f32[id][TRANSFORM.SKEW_X]);
+    console.log('SKEW_Y', GameObjectStore.f32[id][TRANSFORM.SKEW_Y]);
+    console.log('AXIS_ALIGNED', GameObjectStore.f32[id][TRANSFORM.AXIS_ALIGNED]);
+    console.log('FRAME_X1', GameObjectStore.f32[id][TRANSFORM.FRAME_X1]);
+    console.log('FRAME_Y1', GameObjectStore.f32[id][TRANSFORM.FRAME_Y1]);
+    console.log('FRAME_X2', GameObjectStore.f32[id][TRANSFORM.FRAME_X2]);
+    console.log('FRAME_Y2', GameObjectStore.f32[id][TRANSFORM.FRAME_Y2]);
+    console.log('FRAME_WIDTH', GameObjectStore.f32[id][TRANSFORM.FRAME_WIDTH]);
+    console.log('FRAME_HEIGHT', GameObjectStore.f32[id][TRANSFORM.FRAME_HEIGHT]);
+    console.log('ORIGIN_X', GameObjectStore.f32[id][TRANSFORM.ORIGIN_X]);
+    console.log('ORIGIN_Y', GameObjectStore.f32[id][TRANSFORM.ORIGIN_Y]);
+    console.log('LOCAL_A', GameObjectStore.f32[id][TRANSFORM.LOCAL_A]);
+    console.log('LOCAL_B', GameObjectStore.f32[id][TRANSFORM.LOCAL_B]);
+    console.log('LOCAL_C', GameObjectStore.f32[id][TRANSFORM.LOCAL_C]);
+    console.log('LOCAL_D', GameObjectStore.f32[id][TRANSFORM.LOCAL_D]);
+    console.log('LOCAL_TX', GameObjectStore.f32[id][TRANSFORM.LOCAL_TX]);
+    console.log('LOCAL_TY', GameObjectStore.f32[id][TRANSFORM.LOCAL_TY]);
+    console.log('WORLD_A', GameObjectStore.f32[id][TRANSFORM.WORLD_A]);
+    console.log('WORLD_B', GameObjectStore.f32[id][TRANSFORM.WORLD_B]);
+    console.log('WORLD_C', GameObjectStore.f32[id][TRANSFORM.WORLD_C]);
+    console.log('WORLD_D', GameObjectStore.f32[id][TRANSFORM.WORLD_D]);
+    console.log('WORLD_TX', GameObjectStore.f32[id][TRANSFORM.WORLD_TX]);
+    console.log('WORLD_TY', GameObjectStore.f32[id][TRANSFORM.WORLD_TY]);
+    console.log('BOUNDS_X1', GameObjectStore.f32[id][TRANSFORM.BOUNDS_X1]);
+    console.log('BOUNDS_Y1', GameObjectStore.f32[id][TRANSFORM.BOUNDS_Y1]);
+    console.log('BOUNDS_X2', GameObjectStore.f32[id][TRANSFORM.BOUNDS_X2]);
+    console.log('BOUNDS_Y2', GameObjectStore.f32[id][TRANSFORM.BOUNDS_Y2]);
+    console.log('DIRTY_WORLD', GameObjectStore.f32[id][TRANSFORM.DIRTY_WORLD]);
+    console.log('IN_VIEW', GameObjectStore.f32[id][TRANSFORM.IN_VIEW]);
+    console.log('UPDATED', GameObjectStore.f32[id][TRANSFORM.UPDATED]);
+    console.groupEnd();
 }
 
 export function CreateWorld (worldSize: number): void
@@ -294,27 +353,22 @@ export function CreateWorld (worldSize: number): void
         QUAD
     ]);
 
-    console.log('slotSize', slotSize);
-    console.log('hierarchy, dirty, permission, transform, quad');
-    console.log('offsets', GameObjectStore.offsets);
+    // console.log('slotSize', slotSize);
+    // console.log('hierarchy, dirty, permission, transform, quad');
+    // console.log('offsets', GameObjectStore.offsets);
+    // console.log(HIERARCHY);
+    // console.log(DIRTY);
+    // console.log(PERMISSION);
+    // console.log(TRANSFORM);
+    // console.log(QUAD);
 
     const store = new ArrayBuffer(worldSize * (slotSize * Float32Array.BYTES_PER_ELEMENT));
     const indexes = new Uint32Array(worldSize);
 
-    const vi8 = new Int8Array(store);
-    const vui8 = new Uint8Array(store);
-    const vui8c = new Uint8ClampedArray(store);
-    const vi16 = new Int16Array(store);
-    const vui16 = new Uint16Array(store);
     const vi32 = new Int32Array(store);
     const vui32 = new Uint32Array(store);
     const vf32 = new Float32Array(store);
 
-    const i8: Int8Array[] = [];
-    const ui8: Uint8Array[] = [];
-    const ui8c: Uint8ClampedArray[] = [];
-    const i16: Int16Array[] = [];
-    const ui16: Uint16Array[] = [];
     const i32: Int32Array[] = [];
     const ui32: Uint32Array[] = [];
     const f32: Float32Array[] = [];
@@ -327,11 +381,6 @@ export function CreateWorld (worldSize: number): void
     {
         const end = begin + slotSize;
 
-        i8[i] = vi8.subarray(begin, end);
-        ui8[i] = vui8.subarray(begin, end);
-        ui8c[i] = vui8c.subarray(begin, end);
-        i16[i] = vi16.subarray(begin, end);
-        ui16[i] = vui16.subarray(begin, end);
         i32[i] = vi32.subarray(begin, end);
         ui32[i] = vui32.subarray(begin, end);
         f32[i] = vf32.subarray(begin, end);
@@ -341,7 +390,7 @@ export function CreateWorld (worldSize: number): void
         begin += slotSize;
     }
 
-    Object.assign(GameObjectStore, { store, worldSize, indexes, vi8, vui8, vui8c, vi16, vui16, vi32, vui32, vf32, i8, ui8, ui8c, i16, ui16, i32, ui32, f32, quad });
+    Object.assign(GameObjectStore, { store, worldSize, indexes, vi32, vui32, vf32, i32, ui32, f32, quad });
 }
 
 export function AddEntity (): number

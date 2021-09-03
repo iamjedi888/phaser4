@@ -36,7 +36,8 @@ export class Game extends EventEmitter
     {
         super();
 
-        CreateWorld(10000);
+        // CreateWorld(10);
+        CreateWorld(500000);
 
         this.time = new Time();
 

@@ -8,6 +8,6 @@ export function SetDirtyWorldDisplayList (id: number): void
 
     if (worldID > 0)
     {
-        GameObjectStore.ui8[worldID][DIRTY.DISPLAY_LIST];
+        GameObjectStore.ui32[worldID][DIRTY.DISPLAY_LIST];
     }
 }

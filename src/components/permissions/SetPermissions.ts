@@ -2,7 +2,7 @@ import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function SetPermissions (id: number): void
 {
-    const data = GameObjectStore.ui8[id];
+    const data = GameObjectStore.ui32[id];
 
     data[PERMISSION.VISIBLE] = 1;
     data[PERMISSION.VISIBLE_CHILDREN] = 1;
