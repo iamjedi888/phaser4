@@ -1,6 +1,6 @@
-import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function HasDirtyTransform (id: number): boolean
 {
-    return Boolean(GameObjectStore.f32[id][TRANSFORM.DIRTY]);
+    return !!(GameObjectStore.f32[id][DIRTY.LOCAL_TRANSFORM]);
 }

@@ -1,5 +1,7 @@
 import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
+
 //  The A, B, C, D, TX, TY elements are a short-form of a 3x3 Matrix, with the last column ignored:
 
 //  |----|----|----|
@@ -25,7 +27,6 @@ export function SetTransform2DComponent (id: number, x: number = 0, y: number = 
     const data = GameObjectStore.f32[id];
 
     data[TRANSFORM.IS_ROOT] = 0;
-    data[TRANSFORM.DIRTY] = 1;
     data[TRANSFORM.X] = x;
     data[TRANSFORM.Y] = y;
     data[TRANSFORM.SCALE_X] = 1;
@@ -34,4 +35,6 @@ export function SetTransform2DComponent (id: number, x: number = 0, y: number = 
     data[TRANSFORM.ORIGIN_Y] = originY;
     data[TRANSFORM.AXIS_ALIGNED] = 1;
     data[TRANSFORM.IN_VIEW] = 1;
+
+    SetDirtyTransform(id);
 }

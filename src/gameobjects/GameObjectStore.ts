@@ -71,7 +71,9 @@ export const DIRTY = {
     CHILD_WORLD_TRANSFORM: 1,
     CHILD_COLOR: 1,
     DISPLAY_LIST: 1,
-    COLOR: 1
+    COLOR: 1,
+    LOCAL_TRANSFORM: 1,
+    WORLD_TRANSFORM: 1
 };
 
 //  ui8
@@ -107,7 +109,6 @@ export const PERMISSION = {
 //  f32
 export const TRANSFORM = {
     IS_ROOT: 1,
-    DIRTY: 1,
     X: 1,
     Y: 1,
     ROTATION: 1,
@@ -140,7 +141,6 @@ export const TRANSFORM = {
     BOUNDS_Y1: 1,
     BOUNDS_X2: 1,
     BOUNDS_Y2: 1,
-    DIRTY_WORLD: 1,
     IN_VIEW: 1,
     UPDATED: 1
 };
@@ -294,6 +294,8 @@ export function DebugStore (id: number, message: string = ''): void
     console.log('CHILD_COLOR', GameObjectStore.ui32[id][DIRTY.CHILD_COLOR]);
     console.log('DISPLAY_LIST', GameObjectStore.ui32[id][DIRTY.DISPLAY_LIST]);
     console.log('COLOR', GameObjectStore.ui32[id][DIRTY.COLOR]);
+    console.log('LOCAL_TRANSFORM', GameObjectStore.ui32[id][DIRTY.LOCAL_TRANSFORM]);
+    console.log('WORLD_TRANSFORM', GameObjectStore.ui32[id][DIRTY.WORLD_TRANSFORM]);
     console.groupEnd();
 
     console.groupCollapsed('Permission');
@@ -310,7 +312,6 @@ export function DebugStore (id: number, message: string = ''): void
 
     console.groupCollapsed('Transform');
     console.log('IS_ROOT', GameObjectStore.f32[id][TRANSFORM.IS_ROOT]);
-    console.log('DIRTY', GameObjectStore.f32[id][TRANSFORM.DIRTY]);
     console.log('X', GameObjectStore.f32[id][TRANSFORM.X]);
     console.log('Y', GameObjectStore.f32[id][TRANSFORM.Y]);
     console.log('ROTATION', GameObjectStore.f32[id][TRANSFORM.ROTATION]);
@@ -343,7 +344,6 @@ export function DebugStore (id: number, message: string = ''): void
     console.log('BOUNDS_Y1', GameObjectStore.f32[id][TRANSFORM.BOUNDS_Y1]);
     console.log('BOUNDS_X2', GameObjectStore.f32[id][TRANSFORM.BOUNDS_X2]);
     console.log('BOUNDS_Y2', GameObjectStore.f32[id][TRANSFORM.BOUNDS_Y2]);
-    console.log('DIRTY_WORLD', GameObjectStore.f32[id][TRANSFORM.DIRTY_WORLD]);
     console.log('IN_VIEW', GameObjectStore.f32[id][TRANSFORM.IN_VIEW]);
     console.log('UPDATED', GameObjectStore.f32[id][TRANSFORM.UPDATED]);
     console.groupEnd();

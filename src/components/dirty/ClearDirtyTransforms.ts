@@ -1,9 +1,9 @@
-import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function ClearDirtyTransforms (id: number): void
 {
     const data = GameObjectStore.f32[id];
 
-    data[TRANSFORM.DIRTY] = 0;
-    data[TRANSFORM.DIRTY_WORLD] = 0;
+    data[DIRTY.LOCAL_TRANSFORM] = 0;
+    data[DIRTY.WORLD_TRANSFORM] = 0;
 }
