@@ -1,8 +1,8 @@
-import { QuadVertexComponent } from './QuadVertexComponent';
+import { GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function SetQuadColor (id: number, red: number, green: number, blue: number, alpha: number): void
 {
-    const data = QuadVertexComponent.values[id];
+    const data = GameObjectStore.quad[id];
 
     data[5] = red;
     data[6] = green;

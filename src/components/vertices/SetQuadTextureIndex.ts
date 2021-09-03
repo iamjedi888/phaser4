@@ -1,8 +1,8 @@
-import { QuadVertexComponent } from './QuadVertexComponent';
+import { GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function SetQuadTextureIndex (id: number, textureIndex: number): void
 {
-    const data = QuadVertexComponent.values[id];
+    const data = GameObjectStore.quad[id];
 
     if (data[4] !== textureIndex)
     {

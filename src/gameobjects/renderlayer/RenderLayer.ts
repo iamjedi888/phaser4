@@ -1,4 +1,3 @@
-import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
@@ -14,6 +13,7 @@ import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
+import { SetQuadVertex } from '../../components/vertices/SetQuadVertex';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
 import { Texture } from '../../textures/Texture';
@@ -56,7 +56,7 @@ export class RenderLayer extends Layer implements IRenderLayer
             flipY: true
         });
 
-        AddQuadVertex(id, width, height, true);
+        SetQuadVertex(id, width, height, true);
 
         FlipFrameUVs(texture.getFrame());
 

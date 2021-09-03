@@ -1,14 +1,9 @@
-import { GameObjectWorld } from '../../GameObjectWorld';
-import { QuadVertexComponent } from './QuadVertexComponent';
 import { SetQuadColor } from './SetQuadColor';
 import { SetQuadPosition } from './SetQuadPosition';
 import { SetUV } from './SetUV';
-import { addComponent } from 'bitecs';
 
-export function AddQuadVertex (id: number, width: number = 0, height: number = 0, flipY: boolean = true): void
+export function SetQuadVertex (id: number, width: number = 0, height: number = 0, flipY: boolean = true): void
 {
-    addComponent(GameObjectWorld, QuadVertexComponent, id);
-
     if (width || height)
     {
         if (flipY)

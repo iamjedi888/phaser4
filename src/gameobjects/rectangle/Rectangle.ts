@@ -1,4 +1,3 @@
-import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { Container } from '../container/Container';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
@@ -7,6 +6,7 @@ import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { SetExtentFromFrame } from '../../textures/SetExtentFromFrame';
+import { SetQuadVertex } from '../../components/vertices/SetQuadVertex';
 import { SetVertexUVsFromFrame } from '../../textures/SetVertexUVsFromFrame';
 import { Texture } from '../../textures/Texture';
 import { WhiteTexture } from '../../textures';
@@ -25,7 +25,7 @@ export class Rectangle extends Container
 
         const id = this.id;
 
-        AddQuadVertex(id);
+        SetQuadVertex(id);
 
         this.texture = WhiteTexture.get();
 

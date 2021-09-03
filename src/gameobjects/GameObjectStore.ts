@@ -22,6 +22,8 @@ export interface IGameObjectStore
     i32: Int32Array[];
     ui32: Uint32Array[];
     f32: Float32Array[];
+
+    quad: Float32Array[];
 }
 
 export const GameObjectStore: IGameObjectStore = {
@@ -47,7 +49,9 @@ export const GameObjectStore: IGameObjectStore = {
     ui16: null,
     i32: null,
     ui32: null,
-    f32: null
+    f32: null,
+
+    quad: null
 
 };
 
@@ -63,38 +67,38 @@ export const GameObjectStore: IGameObjectStore = {
 
 //  ui32
 export const HIERARCHY = {
-    WORLD: 0,
-    PARENT: 0,
-    NEXT: 0,
-    PREV: 0,
-    FIRST: 0,
-    LAST: 0,
-    NUM_CHILDREN: 0,
-    DEPTH: 0
+    WORLD: 1,
+    PARENT: 1,
+    NEXT: 1,
+    PREV: 1,
+    FIRST: 1,
+    LAST: 1,
+    NUM_CHILDREN: 1,
+    DEPTH: 1
 };
 
 //  ui8
 export const DIRTY = {
-    CHILD: 0,
-    CHILD_CACHE: 0,
-    CHILD_TRANSFORM: 0,
-    CHILD_WORLD_TRANSFORM: 0,
-    CHILD_COLOR: 0,
-    DISPLAY_LIST: 0,
-    COLOR: 0
+    CHILD: 1,
+    CHILD_CACHE: 1,
+    CHILD_TRANSFORM: 1,
+    CHILD_WORLD_TRANSFORM: 1,
+    CHILD_COLOR: 1,
+    DISPLAY_LIST: 1,
+    COLOR: 1
 };
 
 //  ui8
 export const PERMISSION = {
-    VISIBLE: 0,
-    VISIBLE_CHILDREN: 0,
-    WILL_UPDATE: 0,
-    WILL_UPDATE_CHILDREN: 0,
-    WILL_RENDER: 0,
-    WILL_RENDER_CHILDREN: 0,
-    WILL_CACHE_CHILDREN: 0,
-    WILL_TRANSFORM_CHILDREN: 0,
-    WILL_COLOR_CHILDREN: 0
+    VISIBLE: 1,
+    VISIBLE_CHILDREN: 1,
+    WILL_UPDATE: 1,
+    WILL_UPDATE_CHILDREN: 1,
+    WILL_RENDER: 1,
+    WILL_RENDER_CHILDREN: 1,
+    WILL_CACHE_CHILDREN: 1,
+    WILL_TRANSFORM_CHILDREN: 1,
+    WILL_COLOR_CHILDREN: 1
 };
 
 //  The A, B, C, D, TX, TY elements are a short-form of a 3x3 Matrix, with the last column ignored:
@@ -116,44 +120,140 @@ export const PERMISSION = {
 
 //  f32
 export const TRANSFORM = {
-    IS_ROOT: 0,
-    DIRTY: 0,
-    X: 0,
-    Y: 0,
-    ROTATION: 0,
-    SCALE_X: 0,
-    SCALE_Y: 0,
-    SKEW_X: 0,
-    SKEW_Y: 0,
-    AXIS_ALIGNED: 0,
-    FRAME_X1: 0,
-    FRAME_Y1: 0,
-    FRAME_X2: 0,
-    FRAME_Y2: 0,
-    FRAME_WIDTH: 0,
-    FRAME_HEIGHT: 0,
-    ORIGIN_X: 0,
-    ORIGIN_Y: 0,
-    LOCAL_A: 0,
-    LOCAL_B: 0,
-    LOCAL_C: 0,
-    LOCAL_D: 0,
-    LOCAL_TX: 0,
-    LOCAL_TY: 0,
-    WORLD_A: 0,
-    WORLD_B: 0,
-    WORLD_C: 0,
-    WORLD_D: 0,
-    WORLD_TX: 0,
-    WORLD_TY: 0,
-    BOUNDS_X1: 0,
-    BOUNDS_Y1: 0,
-    BOUNDS_X2: 0,
-    BOUNDS_Y2: 0,
-    DIRTY_WORLD: 0,
-    IN_VIEW: 0,
-    UPDATED: 0
+    IS_ROOT: 1,
+    DIRTY: 1,
+    X: 1,
+    Y: 1,
+    ROTATION: 1,
+    SCALE_X: 1,
+    SCALE_Y: 1,
+    SKEW_X: 1,
+    SKEW_Y: 1,
+    AXIS_ALIGNED: 1,
+    FRAME_X1: 1,
+    FRAME_Y1: 1,
+    FRAME_X2: 1,
+    FRAME_Y2: 1,
+    FRAME_WIDTH: 1,
+    FRAME_HEIGHT: 1,
+    ORIGIN_X: 1,
+    ORIGIN_Y: 1,
+    LOCAL_A: 1,
+    LOCAL_B: 1,
+    LOCAL_C: 1,
+    LOCAL_D: 1,
+    LOCAL_TX: 1,
+    LOCAL_TY: 1,
+    WORLD_A: 1,
+    WORLD_B: 1,
+    WORLD_C: 1,
+    WORLD_D: 1,
+    WORLD_TX: 1,
+    WORLD_TY: 1,
+    BOUNDS_X1: 1,
+    BOUNDS_Y1: 1,
+    BOUNDS_X2: 1,
+    BOUNDS_Y2: 1,
+    DIRTY_WORLD: 1,
+    IN_VIEW: 1,
+    UPDATED: 1
 };
+
+/**
+ * Buffer Structure:
+ *
+ * Triangle 1:
+ *
+ * Top Left Vert
+ *
+ * 0 - x position
+ * 1 - y position
+ * 2 - u0
+ * 3 - v0
+ * 4 - Texture Index
+ * 5 - Red Component
+ * 6 - Green Component
+ * 7 - Blue Component
+ * 8 - Alpha Component
+ *
+ * Bottom Left Vert
+ *
+ * 9 - x position
+ * 10 - y position
+ * 11 - u0
+ * 12 - v1
+ * 13 - Texture Index
+ * 14 - Red Component
+ * 15 - Green Component
+ * 16 - Blue Component
+ * 17 - Alpha Component
+ *
+ * Bottom Right Vert
+ *
+ * 18 - x position
+ * 19 - y position
+ * 20 - u1
+ * 21 - v1
+ * 22 - Texture Index
+ * 23 - Red Component
+ * 24 - Green Component
+ * 25 - Blue Component
+ * 26 - Alpha Component
+ *
+ * Triangle 2:
+ *
+ * Top Left Vert
+ *
+ * 27 - x position
+ * 28 - y position
+ * 29 - u0
+ * 30 - v0
+ * 31 - Texture Index
+ * 32 - Red Component
+ * 33 - Green Component
+ * 34 - Blue Component
+ * 35 - Alpha Component
+ *
+ * Bottom Right Vert
+ *
+ * 36 - x position
+ * 37 - y position
+ * 38 - u1
+ * 39 - v1
+ * 40 - Texture Index
+ * 41 - Red Component
+ * 42 - Green Component
+ * 43 - Blue Component
+ * 44 - Alpha Component
+ *
+ * Top Right Vert
+ *
+ * 45 - x position
+ * 46 - y position
+ * 47 - u1
+ * 48 - v0
+ * 49 - Texture Index
+ * 50 - Red Component
+ * 51 - Green Component
+ * 52 - Blue Component
+ * 53 - Alpha Component
+ */
+
+//  f32
+export const QUAD = {
+    VERTEX: 54
+};
+
+//  ui8c
+// export const ColorComponent = defineComponent({
+//     r: Types.ui8c,
+//     g: Types.ui8c,
+//     b: Types.ui8c,
+//     a: Types.f32,
+//     colorMatrix: [ Types.f32, 16 ],
+//     colorOffset: [ Types.f32, 4 ]
+// });
+
 
 function AddComponents (components: Record<string, number>[]): number
 {
@@ -165,6 +265,8 @@ function AddComponents (components: Record<string, number>[]): number
 
         Object.keys(component).map(key =>
         {
+            const size = component[key];
+
             component[key] = index;
 
             if (!offset)
@@ -173,7 +275,7 @@ function AddComponents (components: Record<string, number>[]): number
                 GameObjectStore.offsets.push(index);
             }
 
-            index++;
+            index += size;
         });
 
         GameObjectStore.offsets.push(index);
@@ -188,8 +290,13 @@ export function CreateWorld (worldSize: number): void
         HIERARCHY,
         DIRTY,
         PERMISSION,
-        TRANSFORM
+        TRANSFORM,
+        QUAD
     ]);
+
+    console.log('slotSize', slotSize);
+    console.log('hierarchy, dirty, permission, transform, quad');
+    console.log('offsets', GameObjectStore.offsets);
 
     const store = new ArrayBuffer(worldSize * (slotSize * Float32Array.BYTES_PER_ELEMENT));
     const indexes = new Uint32Array(worldSize);
@@ -211,8 +318,10 @@ export function CreateWorld (worldSize: number): void
     const i32: Int32Array[] = [];
     const ui32: Uint32Array[] = [];
     const f32: Float32Array[] = [];
+    const quad: Float32Array[] = [];
 
     let begin = 0;
+    const quadSize = 54;
 
     for (let i = 0; i < worldSize; i++)
     {
@@ -226,6 +335,8 @@ export function CreateWorld (worldSize: number): void
         i32[i] = vi32.subarray(begin, end);
         ui32[i] = vui32.subarray(begin, end);
         f32[i] = vf32.subarray(begin, end);
+
+        quad[i] = vf32.subarray(begin + quadSize, end + quadSize);
 
         begin += slotSize;
     }

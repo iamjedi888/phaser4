@@ -9,7 +9,7 @@ export function UpdateInView (id: number, gameFrame: number, cx: number, cy: num
 {
     SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
 
-    const numChildren = HasRenderableChildren(id);
+    const numChildren = HasRenderableChildren(id, false);
 
     if (numChildren)
     {

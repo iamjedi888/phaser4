@@ -1,8 +1,8 @@
-import { QuadVertexComponent } from './QuadVertexComponent';
+import { GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function SetQuadPosition (id: number, x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number): void
 {
-    const data = QuadVertexComponent.values[id];
+    const data = GameObjectStore.quad[id];
 
     //  top left
     data[0] = x0;

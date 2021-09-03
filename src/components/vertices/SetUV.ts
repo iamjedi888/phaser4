@@ -1,8 +1,8 @@
-import { QuadVertexComponent } from './QuadVertexComponent';
+import { GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function SetUV (id: number, u0: number, v0: number, u1: number, v1: number): void
 {
-    const data = QuadVertexComponent.values[id];
+    const data = GameObjectStore.quad[id];
 
     //  top left
     data[2] = u0;

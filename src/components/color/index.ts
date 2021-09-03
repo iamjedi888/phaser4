@@ -1,13 +1,15 @@
 import { AddColorComponent } from './AddColorComponent';
-import { ColorComponent } from './ColorComponent';
+import { Color } from './Color';
 import { CompareColorMatrix } from './CompareColorMatrix';
 import { SetAlpha } from './SetAlpha';
+import { SetTint } from './SetTint';
 import { UpdateQuadColorSystem } from './UpdateQuadColorSystem';
 
 export {
     AddColorComponent,
-    ColorComponent,
+    Color,
     CompareColorMatrix,
-    UpdateQuadColorSystem,
-    SetAlpha
+    SetAlpha,
+    SetTint,
+    UpdateQuadColorSystem
 };
