@@ -1,7 +1,7 @@
+import { GameObjectStore } from '../../../gameobjects/GameObjectStore';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
-import { QuadVertexComponent } from '../../../components/vertices/QuadVertexComponent';
 import { SetQuadTextureIndex } from '../../../components/vertices/SetQuadTextureIndex';
 
 export function BatchTexturedQuadBuffer <T extends ITexture> (texture: T, id: number, renderPass: IRenderPass): void
@@ -12,5 +12,5 @@ export function BatchTexturedQuadBuffer <T extends ITexture> (texture: T, id: nu
 
     SetQuadTextureIndex(id, textureIndex);
 
-    F32.set(QuadVertexComponent.values[id], offset);
+    F32.set(GameObjectStore.quad[id], offset);
 }
