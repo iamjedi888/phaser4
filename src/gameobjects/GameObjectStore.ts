@@ -4,6 +4,9 @@ export interface IGameObjectStore
     indexes: Uint32Array;
     worldSize: number;
     offsets: number[];
+    total: number;
+    pointer: number;
+    recycle: number[];
 
     vi32: Int32Array;
     vui32: Uint32Array;
@@ -22,6 +25,9 @@ export const GameObjectStore: IGameObjectStore = {
     indexes: null,
     worldSize: 0,
     offsets: [],
+    total: 0,
+    pointer: 0,
+    recycle: [],
 
     vi32: null,
     vui32: null,
@@ -364,6 +370,8 @@ export function CreateWorld (worldSize: number): void
 
     const store = new ArrayBuffer(worldSize * (slotSize * Float32Array.BYTES_PER_ELEMENT));
     const indexes = new Uint32Array(worldSize);
+    const pointer = 0;
+    const recycle: number[] = [];
 
     const vi32 = new Int32Array(store);
     const vui32 = new Uint32Array(store);
@@ -390,17 +398,26 @@ export function CreateWorld (worldSize: number): void
         begin += slotSize;
     }
 
-    Object.assign(GameObjectStore, { store, worldSize, indexes, vi32, vui32, vf32, i32, ui32, f32, quad });
+    Object.assign(GameObjectStore, { store, worldSize, indexes, pointer, recycle, vi32, vui32, vf32, i32, ui32, f32, quad });
 }
 
 export function AddEntity (): number
 {
-    const id = GameObjectStore.indexes.findIndex(element => element === 0);
-
-    if (id === -1)
+    if (GameObjectStore.total === GameObjectStore.worldSize)
     {
         throw new Error('GameObjectStore is full');
     }
+
+    let id = GameObjectStore.recycle.pop();
+
+    if (id === undefined)
+    {
+        id = GameObjectStore.pointer;
+
+        GameObjectStore.pointer++;
+    }
+
+    GameObjectStore.total++;
 
     GameObjectStore.indexes[id] = 1;
 
@@ -411,5 +428,9 @@ export function RemoveEntity (id: number): void
 {
     GameObjectStore.f32[id].fill(0);
 
+    GameObjectStore.total--;
+
     GameObjectStore.indexes[id] = 0;
+
+    GameObjectStore.recycle.push(id);
 }
