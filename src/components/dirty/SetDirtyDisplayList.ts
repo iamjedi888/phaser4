@@ -1,6 +1,6 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function SetDirtyDisplayList (id: number): void
 {
-    DirtyComponent.data[id][DIRTY.DISPLAY_LIST] = 1;
+    GameObjectStore.ui8[id][DIRTY.DISPLAY_LIST] = 1;
 }

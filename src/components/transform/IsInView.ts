@@ -1,6 +1,6 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 export function IsInView (id: number): boolean
 {
-    return Boolean(Transform2DComponent.data[id][TRANSFORM.IN_VIEW]);
+    return Boolean(GameObjectStore.f32[id][TRANSFORM.IN_VIEW]);
 }

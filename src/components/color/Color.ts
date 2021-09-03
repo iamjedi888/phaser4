@@ -1,6 +1,6 @@
 import { AddColorComponent } from './AddColorComponent';
 import { ColorComponent } from './ColorComponent';
-import { SetDirtyColor } from '../dirty';
+import { SetDirtyColor } from '../dirty/SetDirtyColor';
 import { SetWillColorChildren } from '../permissions/SetWillColorChildren';
 import { WillColorChildren } from '../permissions/WillColorChildren';
 

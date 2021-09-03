@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function GetPreviousSiblingID (id: number): number
 {
-    return HierarchyComponent.data[id][HIERARCHY.PREV];
+    return GameObjectStore.ui32[id][HIERARCHY.PREV];
 }

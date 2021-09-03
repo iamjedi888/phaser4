@@ -1,4 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 
@@ -6,7 +6,7 @@ import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 
 export function SetExtent (id: number, x: number, y: number, width: number, height: number): void
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     data[TRANSFORM.FRAME_X1] = x;
     data[TRANSFORM.FRAME_Y1] = y;

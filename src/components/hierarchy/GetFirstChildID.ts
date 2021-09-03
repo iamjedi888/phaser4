@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function GetFirstChildID (parentID: number): number
 {
-    return HierarchyComponent.data[parentID][HIERARCHY.FIRST];
+    return GameObjectStore.ui32[parentID][HIERARCHY.FIRST];
 }

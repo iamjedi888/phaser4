@@ -1,6 +1,6 @@
-import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function GetVisible (id: number): boolean
 {
-    return Boolean(PermissionsComponent.data[id][PERMISSION.VISIBLE]);
+    return Boolean(GameObjectStore.ui8[id][PERMISSION.VISIBLE]);
 }

@@ -1,8 +1,6 @@
-import { AddPermissionsComponent } from './AddPermissionsComponent';
 import { GetVisible } from './GetVisible';
 import { GetVisibleChildren } from './GetVisibleChildren';
 import { HasRenderableChildren } from './HasRenderableChildren';
-import { PermissionsComponent } from './PermissionsComponent';
 import { SetVisible } from './SetVisible';
 import { SetVisibleChildren } from './SetVisibleChildren';
 import { SetWillCacheChildren } from './SetWillCacheChildren';
@@ -21,11 +19,9 @@ import { WillUpdate } from './WillUpdate';
 import { WillUpdateChildren } from './WillUpdateChildren';
 
 export {
-    AddPermissionsComponent,
     GetVisible,
     GetVisibleChildren,
     HasRenderableChildren,
-    PermissionsComponent,
     SetVisible,
     SetVisibleChildren,
     SetWillCacheChildren,

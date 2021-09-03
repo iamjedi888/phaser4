@@ -1,6 +1,6 @@
-import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function WillRender (id: number): boolean
 {
-    return Boolean(PermissionsComponent.data[id][PERMISSION.VISIBLE]) && Boolean(PermissionsComponent.data[id][PERMISSION.WILL_RENDER]);
+    return Boolean(GameObjectStore.ui8[id][PERMISSION.VISIBLE]) && Boolean(GameObjectStore.ui8[id][PERMISSION.WILL_RENDER]);
 }

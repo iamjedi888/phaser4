@@ -1,6 +1,5 @@
-import { TRANSFORM, Transform2DComponent } from '../../components/transform/Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../GameObjectStore';
 
-import { AddTransform2DComponent } from '../../components/transform/AddTransform2DComponent';
 import { Color } from '../../components/color/Color';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GameObject } from '../GameObject';
@@ -18,6 +17,7 @@ import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { Scale } from '../../components/transform/Scale';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyTransform } from '../../components/dirty/SetDirtyTransform';
+import { SetTransform2DComponent } from '../../components/transform/SetTransform2DComponent';
 import { Size } from '../../components/transform/Size';
 import { Skew } from '../../components/transform/Skew';
 import { UpdateAxisAligned } from '../../components/transform/UpdateAxisAligned';
@@ -43,7 +43,7 @@ export class Container extends GameObject implements IContainer
 
         const id = this.id;
 
-        AddTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
+        SetTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
 
         this.position = new Position(id, x, y);
         this.scale = new Scale(id);
@@ -105,7 +105,7 @@ export class Container extends GameObject implements IContainer
 
         const id = this.id;
 
-        Transform2DComponent.data[id][TRANSFORM.ROTATION] = value;
+        GameObjectStore.f32[id][TRANSFORM.ROTATION] = value;
 
         UpdateAxisAligned(id);
         SetDirtyTransform(id);
@@ -170,7 +170,7 @@ export class Container extends GameObject implements IContainer
 
     getBounds (): IRectangle
     {
-        const data = Transform2DComponent.data[this.id];
+        const data = GameObjectStore.f32[this.id];
 
         const x = data[TRANSFORM.BOUNDS_X1];
         const y = data[TRANSFORM.BOUNDS_Y1];

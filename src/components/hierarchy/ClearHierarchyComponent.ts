@@ -1,6 +1,6 @@
-import { HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function ClearHierarchyComponent (id: number): void
 {
-    HierarchyComponent.data[id].fill(0);
+    // GameObjectStore.ui32[id].fill(0);
 }

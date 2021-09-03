@@ -2,7 +2,7 @@ import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DCompone
 
 export function SetInViewFromBounds (id: number, gameFrame: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
-    const data: Float32Array = Transform2DComponent.data[id];
+    const data: Float32Array = GameObjectStore.f32[id];
 
     if (data[TRANSFORM.UPDATED] < gameFrame)
     {

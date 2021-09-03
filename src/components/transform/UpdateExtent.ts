@@ -1,10 +1,10 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 
 export function UpdateExtent (id: number, width: number, height: number): void
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     const x = -(data[TRANSFORM.ORIGIN_X]) * width;
     const y = -(data[TRANSFORM.ORIGIN_Y]) * height;

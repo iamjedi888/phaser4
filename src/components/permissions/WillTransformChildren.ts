@@ -1,6 +1,6 @@
-import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function WillTransformChildren (id: number): boolean
 {
-    return Boolean(PermissionsComponent.data[id][PERMISSION.WILL_TRANSFORM_CHILDREN]);
+    return Boolean(GameObjectStore.ui8[id][PERMISSION.WILL_TRANSFORM_CHILDREN]);
 }

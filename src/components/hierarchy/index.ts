@@ -1,4 +1,3 @@
-import { AddHierarchyComponent } from './AddHierarchyComponent';
 import { ClearWorldAndParentID } from './ClearWorldAndParentID';
 import { DepthFirstSearchFromParentID } from './DepthFirstSearchFromParentID';
 import { GetChildIDsFromParent } from './GetChildIDsFromParent';
@@ -13,7 +12,6 @@ import { GetWorldFromID } from './GetWorldFromID';
 import { GetWorldFromParentID } from './GetWorldFromParentID';
 import { GetWorldID } from './GetWorldID';
 import { HasParent } from './HasParent';
-import { HierarchyComponent } from './HierarchyComponent';
 import { SetDepth } from './SetDepth';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
@@ -21,7 +19,6 @@ import { SetWorldAndParentID } from './SetWorldAndParentID';
 import { SetWorldID } from './SetWorldID';
 
 export {
-    AddHierarchyComponent,
     ClearWorldAndParentID,
     DepthFirstSearchFromParentID,
     GetChildIDsFromParent,
@@ -36,7 +33,6 @@ export {
     GetWorldFromParentID,
     GetWorldID,
     HasParent,
-    HierarchyComponent,
     SetDepth,
     SetNumChildren,
     SetParentID,

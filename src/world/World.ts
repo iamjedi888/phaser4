@@ -1,9 +1,9 @@
-import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BaseWorld } from './BaseWorld';
 import { Camera } from '../camera/Camera';
 import { ICamera } from '../camera/ICamera';
 import { IScene } from '../scenes/IScene';
 import { IWorld } from './IWorld';
+import { SetTransform2DComponent } from '../components/transform/SetTransform2DComponent';
 
 export class World extends BaseWorld implements IWorld
 {
@@ -17,7 +17,7 @@ export class World extends BaseWorld implements IWorld
 
         this.camera = new Camera();
 
-        AddTransform2DComponent(this.id);
+        SetTransform2DComponent(this.id);
     }
 
     //  TODO: An out-of-bounds parent with in-bounds children will be cull checked against in postRender, stop this.

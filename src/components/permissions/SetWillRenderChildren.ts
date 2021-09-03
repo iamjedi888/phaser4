@@ -1,6 +1,6 @@
-import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function SetWillRenderChildren (id: number, value: boolean): void
 {
-    PermissionsComponent.data[id][PERMISSION.WILL_RENDER_CHILDREN] = Number(value);
+    GameObjectStore.ui8[id][PERMISSION.WILL_RENDER_CHILDREN] = Number(value);
 }

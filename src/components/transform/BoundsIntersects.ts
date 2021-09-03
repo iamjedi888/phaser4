@@ -1,8 +1,8 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 export function BoundsIntersects (id: number, x: number, y: number, right: number, bottom: number): boolean
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     const bx = data[TRANSFORM.BOUNDS_X1];
     const by = data[TRANSFORM.BOUNDS_Y1];

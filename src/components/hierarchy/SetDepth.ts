@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function SetDepth (id: number, depth: number): void
 {
-    HierarchyComponent.data[id][HIERARCHY.DEPTH] = depth;
+    GameObjectStore.ui32[id][HIERARCHY.DEPTH] = depth;
 }

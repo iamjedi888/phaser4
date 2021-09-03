@@ -1,6 +1,6 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function HasDirtyColor (id: number): boolean
 {
-    return Boolean(DirtyComponent.data[id][DIRTY.COLOR]);
+    return Boolean(GameObjectStore.ui8[id][DIRTY.COLOR]);
 }

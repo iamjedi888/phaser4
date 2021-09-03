@@ -2,5 +2,5 @@ import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DCompone
 
 export function ClearDirtyTransform (id: number): void
 {
-    Transform2DComponent.data[id][TRANSFORM.DIRTY] = 0;
+    GameObjectStore.f32[id][TRANSFORM.DIRTY] = 0;
 }

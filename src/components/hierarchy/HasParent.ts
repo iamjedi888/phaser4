@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function HasParent (id: number): boolean
 {
-    return HierarchyComponent.data[id][HIERARCHY.PARENT] > 0;
+    return GameObjectStore.ui32[id][HIERARCHY.PARENT] > 0;
 }

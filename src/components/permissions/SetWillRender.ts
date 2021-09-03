@@ -1,6 +1,6 @@
-import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function SetWillRender (id: number, value: boolean): void
 {
-    PermissionsComponent.data[id][PERMISSION.WILL_RENDER] = Number(value);
+    GameObjectStore.ui8[id][PERMISSION.WILL_RENDER] = Number(value);
 }

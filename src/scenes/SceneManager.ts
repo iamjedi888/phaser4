@@ -1,6 +1,5 @@
 import { Game } from '../Game';
 import { GameInstance } from '../GameInstance';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { GetScenes } from '../config/scenes/GetScenes';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from './IScene';
@@ -8,12 +7,9 @@ import { Once } from '../events/Once';
 import { ResetRenderStats } from './ResetRenderStats';
 import { SceneManagerInstance } from './SceneManagerInstance';
 import { WorldList } from '../world/WorldList';
-import { addEntity } from 'bitecs';
 
 export class SceneManager
 {
-    readonly id: number = addEntity(GameObjectWorld);
-
     game: Game;
 
     scenes: Map<string, IScene> = new Map();

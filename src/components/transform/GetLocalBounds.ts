@@ -1,8 +1,8 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 export function GetLocalBounds (id: number): { x: number, y: number, right: number, bottom: number }
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     const x = data[TRANSFORM.BOUNDS_X1];
     const y = data[TRANSFORM.BOUNDS_Y1];

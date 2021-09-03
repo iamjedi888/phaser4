@@ -1,6 +1,6 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function SetDirtyChildColor (id: number): void
 {
-    DirtyComponent.data[id][DIRTY.CHILD_COLOR] = 1;
+    GameObjectStore.ui8[id][DIRTY.CHILD_COLOR] = 1;
 }

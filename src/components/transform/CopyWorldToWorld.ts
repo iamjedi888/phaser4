@@ -1,11 +1,11 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 
 export function CopyWorldToWorld (source: number, target: number): void
 {
-    const targetData = Transform2DComponent.data[target];
-    const sourceData = Transform2DComponent.data[source];
+    const targetData = GameObjectStore.f32[target];
+    const sourceData = GameObjectStore.f32[source];
 
     targetData[TRANSFORM.WORLD_A] = sourceData[TRANSFORM.WORLD_A];
     targetData[TRANSFORM.WORLD_B] = sourceData[TRANSFORM.WORLD_B];

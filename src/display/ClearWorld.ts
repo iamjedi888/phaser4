@@ -1,4 +1,4 @@
-import { HIERARCHY, HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../gameobjects/GameObjectStore';
 
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -8,7 +8,7 @@ import { removeComponent } from 'bitecs';
 
 export function ClearWorld (childID: number): void
 {
-    const worldID = HierarchyComponent.data[childID][HIERARCHY.WORLD];
+    const worldID = GameObjectStore.ui32[childID][HIERARCHY.WORLD];
 
     if (worldID !== 0)
     {
@@ -16,7 +16,7 @@ export function ClearWorld (childID: number): void
 
         removeComponent(GameObjectWorld, world.tag, childID);
 
-        HierarchyComponent.data[childID][HIERARCHY.WORLD] = 0;
+        GameObjectStore.ui32[childID][HIERARCHY.WORLD] = 0;
 
         SetDirtyDisplayList(worldID);
     }

@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function SetWorldID (id: number, worldID: number): void
 {
-    HierarchyComponent.data[id][HIERARCHY.WORLD] = worldID;
+    GameObjectStore.ui32[id][HIERARCHY.WORLD] = worldID;
 }

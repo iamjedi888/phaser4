@@ -1,6 +1,6 @@
-import { PERMISSION, PermissionsComponent } from './PermissionsComponent';
+import { GameObjectStore, PERMISSION } from '../../gameobjects/GameObjectStore';
 
 export function SetWillCacheChildren (id: number, value: boolean): void
 {
-    PermissionsComponent.data[id][PERMISSION.WILL_CACHE_CHILDREN] = Number(value);
+    GameObjectStore.ui8[id][PERMISSION.WILL_CACHE_CHILDREN] = Number(value);
 }

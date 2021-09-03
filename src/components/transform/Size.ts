@@ -1,4 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { IVec2 } from '../../math/vec2/IVec2';
 import { UpdateExtent } from './UpdateExtent';
@@ -29,7 +29,7 @@ export class Size implements IVec2
 
     get width (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.FRAME_WIDTH];
+        return GameObjectStore.f32[this.id][TRANSFORM.FRAME_WIDTH];
     }
 
     set height (value: number)
@@ -39,7 +39,7 @@ export class Size implements IVec2
 
     get height (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.FRAME_HEIGHT];
+        return GameObjectStore.f32[this.id][TRANSFORM.FRAME_HEIGHT];
     }
 
     set x (value: number)

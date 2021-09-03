@@ -1,6 +1,6 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function ClearDirtyColor (id: number): void
 {
-    DirtyComponent.data[id][DIRTY.COLOR] = 0;
+    GameObjectStore.ui8[id][DIRTY.COLOR] = 0;
 }

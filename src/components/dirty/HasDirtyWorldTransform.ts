@@ -2,5 +2,5 @@ import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DCompone
 
 export function HasDirtyWorldTransform (id: number): boolean
 {
-    return Boolean(Transform2DComponent.data[id][TRANSFORM.DIRTY_WORLD]);
+    return Boolean(GameObjectStore.f32[id][TRANSFORM.DIRTY_WORLD]);
 }

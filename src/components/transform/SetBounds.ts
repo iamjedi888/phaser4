@@ -1,8 +1,8 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 export function SetBounds (id: number, x: number, y: number, right: number, bottom: number): void
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     data[TRANSFORM.BOUNDS_X1] = x;
     data[TRANSFORM.BOUNDS_Y1] = y;

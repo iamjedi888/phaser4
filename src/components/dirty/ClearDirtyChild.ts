@@ -1,6 +1,6 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function ClearDirtyChild (id: number): void
 {
-    DirtyComponent.data[id][DIRTY.CHILD] = 0;
+    GameObjectStore.ui8[id][DIRTY.CHILD] = 0;
 }

@@ -1,8 +1,8 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function DecreaseNumChildren (parentID: number, total: number = 1): void
 {
-    const data = HierarchyComponent.data[parentID];
+    const data = GameObjectStore.ui32[parentID];
 
     data[HIERARCHY.NUM_CHILDREN] -= total;
 

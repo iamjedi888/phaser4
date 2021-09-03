@@ -1,6 +1,6 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 export function HasDirtyDisplayList (id: number): boolean
 {
-    return Boolean(DirtyComponent.data[id][DIRTY.DISPLAY_LIST]);
+    return Boolean(GameObjectStore.ui8[id][DIRTY.DISPLAY_LIST]);
 }

@@ -1,8 +1,8 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function DebugHierarchyComponent (id: number): void
 {
-    const data = HierarchyComponent.data[id];
+    const data = GameObjectStore.ui32[id];
 
     const index = data[HIERARCHY.INDEX];
     const parent = data[HIERARCHY.PARENT];

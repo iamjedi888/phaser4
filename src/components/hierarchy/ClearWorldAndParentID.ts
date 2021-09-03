@@ -1,4 +1,4 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 import { hasComponent, removeComponent } from 'bitecs';
 
 import { DecreaseNumChildren } from './DecreaseNumChildren';
@@ -15,8 +15,8 @@ export function ClearWorldAndParentID (id: number): void
     const parentID = GetParentID(id);
     const world = GameObjectCache.get(worldID) as IBaseWorld;
 
-    HierarchyComponent.data[id][HIERARCHY.WORLD] = 0;
-    HierarchyComponent.data[id][HIERARCHY.PARENT] = 0;
+    GameObjectStore.ui32[id][HIERARCHY.WORLD] = 0;
+    GameObjectStore.ui32[id][HIERARCHY.PARENT] = 0;
 
     if (world && hasComponent(GameObjectWorld, world.tag, id))
     {

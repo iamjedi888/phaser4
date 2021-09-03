@@ -1,10 +1,8 @@
-import { AddDirtyComponent } from './AddDirtyComponent';
 import { ClearDirtyChild } from './ClearDirtyChild';
 import { ClearDirtyChildCache } from './ClearDirtyChildCache';
 import { ClearDirtyColor } from './ClearDirtyColor';
 import { ClearDirtyDisplayList } from './ClearDirtyDisplayList';
 import { ClearDirtyTransform } from './ClearDirtyTransform';
-import { DirtyComponent } from './DirtyComponent';
 import { HasDirtyChild } from './HasDirtyChild';
 import { HasDirtyChildCache } from './HasDirtyChildCache';
 import { HasDirtyColor } from './HasDirtyColor';
@@ -19,13 +17,11 @@ import { SetDirtyTransform } from './SetDirtyTransform';
 import { SetDirtyWorldDisplayList } from './SetDirtyWorldDisplayList';
 
 export {
-    AddDirtyComponent,
     ClearDirtyChild,
     ClearDirtyChildCache,
     ClearDirtyColor,
     ClearDirtyDisplayList,
     ClearDirtyTransform,
-    DirtyComponent,
     HasDirtyChild,
     HasDirtyChildCache,
     HasDirtyColor,

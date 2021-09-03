@@ -5,7 +5,7 @@ import { SetDirtyChildTransform } from './SetDirtyChildTransform';
 
 export function SetDirtyTransform (id: number): void
 {
-    Transform2DComponent.data[id][TRANSFORM.DIRTY] = 1;
+    GameObjectStore.f32[id][TRANSFORM.DIRTY] = 1;
 
     const worldID = GetWorldID(id);
 

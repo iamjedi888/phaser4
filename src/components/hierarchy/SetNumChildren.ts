@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function SetNumChildren (parentID: number, total: number): void
 {
-    HierarchyComponent.data[parentID][HIERARCHY.NUM_CHILDREN] = total;
+    GameObjectStore.ui32[parentID][HIERARCHY.NUM_CHILDREN] = total;
 }

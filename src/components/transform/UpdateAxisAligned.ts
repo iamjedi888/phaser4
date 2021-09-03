@@ -1,8 +1,8 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 export function UpdateAxisAligned (id: number): void
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     const rotation = data[TRANSFORM.ROTATION];
     const skewX = data[TRANSFORM.SKEW_X];

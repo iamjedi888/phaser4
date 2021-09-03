@@ -1,16 +1,14 @@
-import { TRANSFORM, Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { addEntity, removeComponent, removeEntity } from 'bitecs';
+import { AddEntity, GameObjectStore, RemoveEntity, TRANSFORM } from '../gameobjects/GameObjectStore';
 
-import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { IMatrix4 } from '../math/mat4/IMatrix4';
 import { IStaticCamera } from './IStaticCamera';
 import { Matrix4 } from '../math/mat4/Matrix4';
 import { SetBounds } from '../components/transform/SetBounds';
+import { SetTransform2DComponent } from '../components/transform/SetTransform2DComponent';
 
 export class StaticCamera implements IStaticCamera
 {
-    readonly id: number = addEntity(GameObjectWorld);
+    readonly id: number = AddEntity();
 
     readonly type: string = 'StaticCamera';
 
@@ -25,7 +23,7 @@ export class StaticCamera implements IStaticCamera
     {
         const id = this.id;
 
-        AddTransform2DComponent(id, 0, 0, 0, 0);
+        SetTransform2DComponent(id, 0, 0, 0, 0);
 
         this.matrix = new Matrix4();
 
@@ -34,22 +32,22 @@ export class StaticCamera implements IStaticCamera
 
     getBoundsX (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X1];
+        return GameObjectStore.f32[this.id][TRANSFORM.BOUNDS_X1];
     }
 
     getBoundsY (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y1];
+        return GameObjectStore.f32[this.id][TRANSFORM.BOUNDS_Y1];
     }
 
     getBoundsRight (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X2];
+        return GameObjectStore.f32[this.id][TRANSFORM.BOUNDS_X2];
     }
 
     getBoundsBottom (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y2];
+        return GameObjectStore.f32[this.id][TRANSFORM.BOUNDS_Y2];
     }
 
     getMatrix (): Float32Array
@@ -76,10 +74,6 @@ export class StaticCamera implements IStaticCamera
 
     destroy (): void
     {
-        const id = this.id;
-
-        removeComponent(GameObjectWorld, Transform2DComponent, id);
-
-        removeEntity(GameObjectWorld, id);
+        RemoveEntity(this.id);
     }
 }

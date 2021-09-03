@@ -1,9 +1,5 @@
-import { HIERARCHY, HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
+import { AddEntity, GameObjectStore, HIERARCHY, RemoveEntity } from './GameObjectStore';
 
-import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
-import { AddEntity } from './GameObjectStore';
-import { AddHierarchyComponent } from '../components/hierarchy/AddHierarchyComponent';
-import { AddPermissionsComponent } from '../components/permissions/AddPermissionsComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
@@ -21,6 +17,8 @@ import { IGameObject } from './IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { ReparentChildren } from '../display/ReparentChildren';
 import { SetDepth } from '../components/hierarchy/SetDepth';
+import { SetDirtyColor } from '../components/dirty/SetDirtyColor';
+import { SetPermissions } from '../components/permissions/SetPermissions';
 import { SetVisible } from '../components/permissions/SetVisible';
 import { SetVisibleChildren } from '../components/permissions/SetVisibleChildren';
 import { WillRender } from '../components/permissions/WillRender';
@@ -40,11 +38,10 @@ export class GameObject implements IGameObject
     {
         const id = this.id;
 
-        AddHierarchyComponent(id);
-        AddPermissionsComponent(id);
-        AddDirtyComponent(id);
-
         GameObjectCache.set(id, this);
+
+        SetPermissions(id);
+        SetDirtyColor(id);
 
         this.events = new Map();
     }
@@ -169,7 +166,7 @@ export class GameObject implements IGameObject
     {
         const id = this.id;
 
-        const data = HierarchyComponent.data[id];
+        const data = GameObjectStore.ui32[id];
 
         return {
             id,
@@ -202,6 +199,10 @@ export class GameObject implements IGameObject
 
         this.events = null;
 
-        //  TODO - Destroy process, remove from Cache, Tree, etc.
+        const id = this.id;
+
+        GameObjectCache.remove(id);
+
+        RemoveEntity(id);
     }
 }

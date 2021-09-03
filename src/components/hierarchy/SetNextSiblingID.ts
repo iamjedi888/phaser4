@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function SetNextSiblingID (parentID: number, childID: number): void
 {
-    HierarchyComponent.data[parentID][HIERARCHY.NEXT] = childID;
+    GameObjectStore.ui32[parentID][HIERARCHY.NEXT] = childID;
 }

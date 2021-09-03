@@ -1,6 +1,6 @@
-import { HIERARCHY, HierarchyComponent } from './HierarchyComponent';
+import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
 
 export function IncreaseNumChildren (parentID: number, total: number = 1): void
 {
-    HierarchyComponent.data[parentID][HIERARCHY.NUM_CHILDREN] += total;
+    GameObjectStore.ui32[parentID][HIERARCHY.NUM_CHILDREN] += total;
 }

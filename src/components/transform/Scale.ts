@@ -1,4 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { IVec2 } from '../../math/vec2/IVec2';
 import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
@@ -30,7 +30,7 @@ export class Scale implements IVec2
 
         const id = this.id;
 
-        Transform2DComponent.data[id][TRANSFORM.SCALE_X] = value;
+        GameObjectStore.f32[id][TRANSFORM.SCALE_X] = value;
 
         SetDirtyTransform(id);
     }
@@ -46,7 +46,7 @@ export class Scale implements IVec2
 
         const id = this.id;
 
-        Transform2DComponent.data[id][TRANSFORM.SCALE_Y] = value;
+        GameObjectStore.f32[id][TRANSFORM.SCALE_Y] = value;
 
         SetDirtyTransform(id);
     }

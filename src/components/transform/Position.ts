@@ -1,7 +1,7 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { IVec2 } from '../../math/vec2/IVec2';
-import { SetDirtyTransform } from '../dirty';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 
 export class Position implements IVec2
 {
@@ -30,7 +30,7 @@ export class Position implements IVec2
 
         const id = this.id;
 
-        Transform2DComponent.data[id][TRANSFORM.X] = value;
+        GameObjectStore.f32[id][TRANSFORM.X] = value;
 
         SetDirtyTransform(id);
     }
@@ -46,7 +46,7 @@ export class Position implements IVec2
 
         const id = this.id;
 
-        Transform2DComponent.data[id][TRANSFORM.Y] = value;
+        GameObjectStore.f32[id][TRANSFORM.Y] = value;
 
         SetDirtyTransform(id);
     }

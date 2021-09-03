@@ -1,4 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { GetParentID } from '../hierarchy/GetParentID';
 import { GetWorldID } from '../hierarchy/GetWorldID';
@@ -22,5 +22,5 @@ export function UpdateRootTransform (id: number): void
         currentParent = GetParentID(currentParent);
     }
 
-    Transform2DComponent.data[id][TRANSFORM.IS_ROOT] = Number(isRootTransform);
+    GameObjectStore.f32[id][TRANSFORM.IS_ROOT] = Number(isRootTransform);
 }

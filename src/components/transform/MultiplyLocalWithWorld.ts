@@ -1,11 +1,11 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 
 export function MultiplyLocalWithWorld (parentID: number, childID: number): void
 {
-    const parentData = Transform2DComponent.data[parentID];
-    const childData = Transform2DComponent.data[childID];
+    const parentData = GameObjectStore.f32[parentID];
+    const childData = GameObjectStore.f32[childID];
 
     const pa = parentData[TRANSFORM.WORLD_A];
     const pb = parentData[TRANSFORM.WORLD_B];

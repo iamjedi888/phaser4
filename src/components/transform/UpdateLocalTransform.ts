@@ -1,4 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
 import { GetParentID } from '../hierarchy/GetParentID';
@@ -21,7 +21,7 @@ export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, e
     {
         const id = entities[i];
 
-        const data: Float32Array = Transform2DComponent.data[id];
+        const data: Float32Array = GameObjectStore.f32[id];
 
         const isRoot = data[TRANSFORM.IS_ROOT];
 

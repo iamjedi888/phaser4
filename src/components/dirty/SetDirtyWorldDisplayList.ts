@@ -1,4 +1,4 @@
-import { DIRTY, DirtyComponent } from './DirtyComponent';
+import { DIRTY, GameObjectStore } from '../../gameobjects/GameObjectStore';
 
 import { GetWorldID } from '../hierarchy/GetWorldID';
 
@@ -8,6 +8,6 @@ export function SetDirtyWorldDisplayList (id: number): void
 
     if (worldID > 0)
     {
-        DirtyComponent.data[worldID][DIRTY.DISPLAY_LIST];
+        GameObjectStore.ui8[worldID][DIRTY.DISPLAY_LIST];
     }
 }

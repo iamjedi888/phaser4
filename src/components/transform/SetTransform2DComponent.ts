@@ -1,7 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
-
-import { GameObjectWorld } from '../../GameObjectWorld';
-import { addComponent } from 'bitecs';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 //  The A, B, C, D, TX, TY elements are a short-form of a 3x3 Matrix, with the last column ignored:
 
@@ -20,14 +17,12 @@ import { addComponent } from 'bitecs';
 //  [4] = tx - X translation
 //  [5] = ty - Y translation
 
-export function AddTransform2DComponent (id: number, x: number = 0, y: number = 0, originX: number = 0, originY: number = 0): void
+export function SetTransform2DComponent (id: number, x: number = 0, y: number = 0, originX: number = 0, originY: number = 0): void
 {
-    addComponent(GameObjectWorld, Transform2DComponent, id);
-
     //  Component defaults to zero, so we only need to set the other values
     //  We could do this via data.set once the array structure is set in stone
 
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     data[TRANSFORM.IS_ROOT] = 0;
     data[TRANSFORM.DIRTY] = 1;

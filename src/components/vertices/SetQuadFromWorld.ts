@@ -4,7 +4,7 @@ import { SetQuadPosition } from './SetQuadPosition';
 
 export function SetQuadFromWorld (id: number, gameFrame: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
-    const data = Transform2DComponent.data[id];
+    const data = GameObjectStore.f32[id];
 
     const a = data[TRANSFORM.WORLD_A];
     const b = data[TRANSFORM.WORLD_B];
