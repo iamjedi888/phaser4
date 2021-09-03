@@ -1,7 +1,5 @@
-import { BoundsComponent } from '../bounds/BoundsComponent';
 import { IContainer } from '../../gameobjects/container/IContainer';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
-import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateWorldTransform } from './UpdateWorldTransform';
 
 export function SyncTransform <T extends IContainer> (gameObject: T): void

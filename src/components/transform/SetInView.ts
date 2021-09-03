@@ -1,4 +1,4 @@
-import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DComponent';
+import { GameObjectStore, TRANSFORM } from '../../gameobjects/GameObjectStore';
 
 export function SetInView (id: number, value: boolean): void
 {

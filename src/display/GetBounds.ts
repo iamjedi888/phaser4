@@ -1,9 +1,6 @@
-import { GameObjectWorld } from '../GameObjectWorld';
 import { GetLocalBounds } from '../components/transform/GetLocalBounds';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { Rectangle } from '../geom/rectangle/Rectangle';
-import { Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { hasComponent } from 'bitecs';
 
 export function GetBounds (...children: IGameObject[]): Rectangle
 {
@@ -16,29 +13,26 @@ export function GetBounds (...children: IGameObject[]): Rectangle
     {
         const childID = child.id;
 
-        if (hasComponent(GameObjectWorld, Transform2DComponent, childID))
+        const { x, y, right, bottom } = GetLocalBounds(childID);
+
+        if (x < minX)
         {
-            const { x, y, right, bottom } = GetLocalBounds(childID);
+            minX = x;
+        }
 
-            if (x < minX)
-            {
-                minX = x;
-            }
+        if (y < minY)
+        {
+            minY = y;
+        }
 
-            if (y < minY)
-            {
-                minY = y;
-            }
+        if (right > maxX)
+        {
+            maxX = right;
+        }
 
-            if (right > maxX)
-            {
-                maxX = right;
-            }
-
-            if (bottom > maxY)
-            {
-                maxY = bottom;
-            }
+        if (bottom > maxY)
+        {
+            maxY = bottom;
         }
     });
 
