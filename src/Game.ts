@@ -4,22 +4,21 @@ import { AddToParent } from './config/parent/AddToParent';
 import { CreateRenderer } from './config/renderer/CreateRenderer';
 import { CreateSceneManager } from './scenes/CreateSceneManager';
 import { CreateTextureManager } from './textures/CreateTextureManager';
+import { CreateWorld } from './gameobjects/GameObjectStore';
 import { DOMContentLoaded } from './dom/DOMContentLoaded';
 import { Emit } from './events/Emit';
 import { EventEmitter } from './events/EventEmitter';
 import { GameInstance } from './GameInstance';
-import { GameObjectWorld } from './GameObjectWorld';
 import { IGameObject } from './gameobjects/IGameObject';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
 import { RendererInstance } from './renderer/RendererInstance';
 import { SceneManagerInstance } from './scenes';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
 import { Time } from './components/timer/Time';
-import { addEntity } from 'bitecs';
 
 export class Game extends EventEmitter
 {
-    readonly id: number = addEntity(GameObjectWorld);
+    readonly id: number = 0;
 
     time: Time;
 
@@ -36,6 +35,8 @@ export class Game extends EventEmitter
     constructor (...settings: { (): void }[])
     {
         super();
+
+        CreateWorld(10000);
 
         this.time = new Time();
 
