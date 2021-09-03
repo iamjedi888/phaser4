@@ -1,13 +1,13 @@
 import { HIERARCHY, HierarchyComponent } from '../components/hierarchy/HierarchyComponent';
 
 import { AddDirtyComponent } from '../components/dirty/AddDirtyComponent';
+import { AddEntity } from './GameObjectStore';
 import { AddHierarchyComponent } from '../components/hierarchy/AddHierarchyComponent';
 import { AddPermissionsComponent } from '../components/permissions/AddPermissionsComponent';
 import { DestroyChildren } from '../display/DestroyChildren';
 import { DestroyEvent } from './events/DestroyEvent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from './GameObjectCache';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { GetChildrenFromParentID } from '../components/hierarchy/GetChildrenFromParentID';
 import { GetDepth } from '../components/hierarchy/GetDepth';
 import { GetNumChildren } from '../components/hierarchy/GetNumChildren';
@@ -24,11 +24,10 @@ import { SetDepth } from '../components/hierarchy/SetDepth';
 import { SetVisible } from '../components/permissions/SetVisible';
 import { SetVisibleChildren } from '../components/permissions/SetVisibleChildren';
 import { WillRender } from '../components/permissions/WillRender';
-import { addEntity } from 'bitecs';
 
 export class GameObject implements IGameObject
 {
-    readonly id: number = addEntity(GameObjectWorld);
+    readonly id: number = AddEntity();
 
     readonly type: string = 'GameObject';
 
