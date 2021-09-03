@@ -321,7 +321,7 @@ export function CreateWorld (worldSize: number): void
     const quad: Float32Array[] = [];
 
     let begin = 0;
-    const quadSize = 54;
+    const quadSize = 61;
 
     for (let i = 0; i < worldSize; i++)
     {
@@ -336,12 +336,12 @@ export function CreateWorld (worldSize: number): void
         ui32[i] = vui32.subarray(begin, end);
         f32[i] = vf32.subarray(begin, end);
 
-        quad[i] = vf32.subarray(begin + quadSize, end + quadSize);
+        quad[i] = vf32.subarray(begin + quadSize, end);
 
         begin += slotSize;
     }
 
-    Object.assign(GameObjectStore, { store, worldSize, indexes, vi8, vui8, vui8c, vi16, vui16, vi32, vui32, vf32, i8, ui8, ui8c, i16, ui16, i32, ui32, f32 });
+    Object.assign(GameObjectStore, { store, worldSize, indexes, vi8, vui8, vui8c, vi16, vui16, vi32, vui32, vf32, i8, ui8, ui8c, i16, ui16, i32, ui32, f32, quad });
 }
 
 export function AddEntity (): number
