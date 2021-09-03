@@ -3,7 +3,6 @@ import * as WorldEvents from './events';
 import { Color } from '../components/color/Color';
 import { Emit } from '../events/Emit';
 import { GameObject } from '../gameobjects/GameObject';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';

@@ -1,6 +1,5 @@
 import { ClearWorld } from './ClearWorld';
 import { DepthFirstSearchFromParentID } from '../components/hierarchy/DepthFirstSearchFromParentID';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { GetWorldID } from '../components/hierarchy/GetWorldID';
 import { IBaseWorld } from '../world/IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
@@ -8,12 +7,10 @@ import { SetDirtyChildColor } from '../components/dirty/SetDirtyChildColor';
 import { SetDirtyChildTransform } from '../components/dirty/SetDirtyChildTransform';
 import { SetDirtyDisplayList } from '../components/dirty/SetDirtyDisplayList';
 import { SetWorldID } from '../components/hierarchy/SetWorldID';
-import { addComponent } from 'bitecs';
 
 export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObject[]): IGameObject[]
 {
     const worldID = world.id;
-    const worldTag = world.tag;
 
     let setNewWorld = false;
 
@@ -31,8 +28,6 @@ export function SetWorld <W extends IBaseWorld> (world: W, ...entries: IGameObje
                 {
                     ClearWorld(id);
                 }
-
-                addComponent(GameObjectWorld, worldTag, id);
 
                 SetWorldID(id, worldID);
 

@@ -1,11 +1,7 @@
 import { DEFAULT_COLOR_MATRIX } from '../../colormatrix/const';
-import { GameObjectWorld } from '../../GameObjectWorld';
-import { addComponent } from 'bitecs';
 
 export function AddColorComponent (id: number): void
 {
-    // addComponent(GameObjectWorld, ColorComponent, id);
-
     // ColorComponent.r[id] = 255;
     // ColorComponent.g[id] = 255;
     // ColorComponent.b[id] = 255;

@@ -1,9 +1,7 @@
 import { GameObjectStore, HIERARCHY } from '../../gameobjects/GameObjectStore';
-import { hasComponent, removeComponent } from 'bitecs';
 
 import { DecreaseNumChildren } from './DecreaseNumChildren';
 import { GameObjectCache } from '../../gameobjects/GameObjectCache';
-import { GameObjectWorld } from '../../GameObjectWorld';
 import { GetParentID } from './GetParentID';
 import { GetWorldID } from './GetWorldID';
 import { IBaseWorld } from '../../world/IBaseWorld';
@@ -18,10 +16,10 @@ export function ClearWorldAndParentID (id: number): void
     GameObjectStore.ui32[id][HIERARCHY.WORLD] = 0;
     GameObjectStore.ui32[id][HIERARCHY.PARENT] = 0;
 
-    if (world && hasComponent(GameObjectWorld, world.tag, id))
-    {
-        removeComponent(GameObjectWorld, world.tag, id);
-    }
+    // if (world)
+    // {
+
+    // }
 
     DecreaseNumChildren(parentID);
 
