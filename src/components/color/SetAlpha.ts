@@ -1,9 +1,8 @@
-import { ColorComponent } from './ColorComponent';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 
 export function SetAlpha (id: number, value: number): void
 {
-    ColorComponent.a[id] = value;
+    // ColorComponent.a[id] = value;
 
     SetDirtyParents(id);
 }
