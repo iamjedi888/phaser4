@@ -1,7 +1,5 @@
 import * as WorldEvents from './events';
 
-import { Query, defineComponent, defineQuery } from 'bitecs';
-
 import { Color } from '../components/color/Color';
 import { Emit } from '../events/Emit';
 import { GameObject } from '../gameobjects/GameObject';
@@ -23,8 +21,6 @@ export class BaseWorld extends GameObject implements IBaseWorld
 {
     readonly type: string = 'BaseWorld';
 
-    tag = defineComponent();
-
     scene: IScene;
 
     camera: IBaseCamera;
@@ -33,26 +29,25 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     color: Color;
 
-    private totalChildren: number = 0;
+    children: number[];
 
-    private totalChildrenQuery: Query;
+    private totalChildren: number = 0;
 
     constructor (scene: IScene)
     {
         super();
 
         const id = this.id;
-        const tag = this.tag;
 
         this.scene = scene;
-
-        this.totalChildrenQuery = defineQuery([ tag ]);
 
         SetWorldID(id, id);
 
         WorldList.get(scene).push(this);
 
         this.color = new Color(id);
+
+        this.children = [];
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
@@ -61,7 +56,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     {
         if (HasDirtyDisplayList(this.id))
         {
-            this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
+            this.totalChildren = this.children.length;
         }
 
         return this.totalChildren;

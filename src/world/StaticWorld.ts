@@ -1,7 +1,6 @@
 import * as WorldEvents from './events';
 
 import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
-import { Query, defineQuery } from 'bitecs';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
@@ -10,10 +9,8 @@ import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
 import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChildWorldTransform';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
-import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
@@ -27,13 +24,11 @@ import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
-import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
-import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateChildTransform } from '../components/transform/UpdateChildTransform';
 import { UpdateInViewSystem } from '../components/vertices/UpdateInViewSystem';
 import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
@@ -55,8 +50,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     // declare camera: IStaticCamera;
     declare camera: WorldCamera;
 
-    private colorQuery: Query;
-    private transformQuery: Query;
+    // private colorQuery: Query;
+    // private transformQuery: Query;
 
     renderList: Uint32Array;
 
@@ -66,10 +61,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     {
         super(scene);
 
-        const tag = this.tag;
+        // const tag = this.tag;
 
-        this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
-        this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
+        // this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
+        // this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
 
         const renderer = RendererInstance.get();
 
@@ -115,14 +110,14 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const camera = this.camera;
         const cameraUpdated = camera.updateBounds();
 
-        const entities = this.transformQuery(GameObjectWorld);
+        const entities = this.children;
 
         const list = this.renderList;
 
         let dirtyLocal = 0;
         let dirtyWorld = 0;
         let dirtyQuad = 0;
-        let dirtyColor = 0;
+        // let dirtyColor = 0;
         let dirtyView = 0;
 
         if (HasDirtyChildTransform(id))
@@ -143,12 +138,14 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             ClearDirtyChildWorldTransform(id);
         }
 
+        /*
         if (HasDirtyChildColor(id))
         {
             dirtyColor = UpdateQuadColorSystem(this.colorQuery(GameObjectWorld));
 
             ClearDirtyChildColor(id);
         }
+        */
 
         if (HasDirtyDisplayList(id))
         {
@@ -167,7 +164,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyLocal = dirtyLocal;
         renderData.dirtyWorld = dirtyWorld;
         renderData.dirtyQuad = dirtyQuad;
-        renderData.dirtyColor = dirtyColor;
+        renderData.dirtyColor = 0;
         renderData.dirtyView = dirtyView;
         renderData.rendered = GetRenderChildTotal();
 

@@ -1,5 +1,3 @@
-import { ComponentType, ISchema } from 'bitecs';
-
 import { Color } from '../components/color/Color';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IColorComponent } from '../components/color/IColorComponent';
@@ -9,8 +7,6 @@ import { IScene } from '../scenes/IScene';
 
 export interface IBaseWorld extends IGameObject, IColorComponent
 {
-    tag: ComponentType<ISchema>;
-
     scene: IScene;
 
     camera: IBaseCamera;
@@ -18,6 +14,8 @@ export interface IBaseWorld extends IGameObject, IColorComponent
     is3D: boolean;
 
     color: Color;
+
+    children: number[];
 
     beforeUpdate (delta: number, time: number): void;
     update (delta: number, time: number): void;
