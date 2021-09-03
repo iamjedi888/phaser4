@@ -3,6 +3,7 @@ export interface IGameObjectStore
     store: ArrayBuffer;
     indexes: Uint32Array;
     worldSize: number;
+    offsets: number[];
 
     vi8: Int8Array;
     vui8: Uint8Array;
@@ -28,6 +29,7 @@ export const GameObjectStore: IGameObjectStore = {
     store: null,
     indexes: null,
     worldSize: 0,
+    offsets: [],
 
     vi8: null,
     vui8: null,
@@ -49,9 +51,145 @@ export const GameObjectStore: IGameObjectStore = {
 
 };
 
+//  world = The ID of the World entity the owner of this component belongs to
+//  parent = The ID of the Parent entity. If it has no parent, will match the world ID
+//  next = The ID of the next entity in the display list (horizontally, the next sibling)
+//  prev = The ID of the previous entity in the display list (horizontally, the previous sibling)
+//  first = The ID of the left-most (first) child entity of this parent
+//  last = The ID of the right-most (last) child entity of this parent
+//  numChildren = The number of direct descendants this entity has
+//  depth = Reserved to allow for per-child depth sorting outside of the display list index
+
+
+//  ui32
+export const HIERARCHY = {
+    WORLD: 0,
+    PARENT: 0,
+    NEXT: 0,
+    PREV: 0,
+    FIRST: 0,
+    LAST: 0,
+    NUM_CHILDREN: 0,
+    DEPTH: 0
+};
+
+//  ui8
+export const DIRTY = {
+    CHILD: 0,
+    CHILD_CACHE: 0,
+    CHILD_TRANSFORM: 0,
+    CHILD_WORLD_TRANSFORM: 0,
+    CHILD_COLOR: 0,
+    DISPLAY_LIST: 0,
+    COLOR: 0
+};
+
+//  ui8
+export const PERMISSION = {
+    VISIBLE: 0,
+    VISIBLE_CHILDREN: 0,
+    WILL_UPDATE: 0,
+    WILL_UPDATE_CHILDREN: 0,
+    WILL_RENDER: 0,
+    WILL_RENDER_CHILDREN: 0,
+    WILL_CACHE_CHILDREN: 0,
+    WILL_TRANSFORM_CHILDREN: 0,
+    WILL_COLOR_CHILDREN: 0
+};
+
+//  The A, B, C, D, TX, TY elements are a short-form of a 3x3 Matrix, with the last column ignored:
+
+//  |----|----|----|
+//  | a  | b  | 0  |
+//  |----|----|----|
+//  | c  | d  | 0  |
+//  |----|----|----|
+//  | tx | ty | 1  |
+//  |----|----|----|
+
+//  [0] = a - X scale
+//  [1] = b - X skew
+//  [2] = c - Y skew
+//  [3] = d - Y scale
+//  [4] = tx - X translation
+//  [5] = ty - Y translation
+
+//  f32
+export const TRANSFORM = {
+    IS_ROOT: 0,
+    DIRTY: 0,
+    X: 0,
+    Y: 0,
+    ROTATION: 0,
+    SCALE_X: 0,
+    SCALE_Y: 0,
+    SKEW_X: 0,
+    SKEW_Y: 0,
+    AXIS_ALIGNED: 0,
+    FRAME_X1: 0,
+    FRAME_Y1: 0,
+    FRAME_X2: 0,
+    FRAME_Y2: 0,
+    FRAME_WIDTH: 0,
+    FRAME_HEIGHT: 0,
+    ORIGIN_X: 0,
+    ORIGIN_Y: 0,
+    LOCAL_A: 0,
+    LOCAL_B: 0,
+    LOCAL_C: 0,
+    LOCAL_D: 0,
+    LOCAL_TX: 0,
+    LOCAL_TY: 0,
+    WORLD_A: 0,
+    WORLD_B: 0,
+    WORLD_C: 0,
+    WORLD_D: 0,
+    WORLD_TX: 0,
+    WORLD_TY: 0,
+    BOUNDS_X1: 0,
+    BOUNDS_Y1: 0,
+    BOUNDS_X2: 0,
+    BOUNDS_Y2: 0,
+    DIRTY_WORLD: 0,
+    IN_VIEW: 0,
+    UPDATED: 0
+};
+
+function AddComponents (components: Record<string, number>[]): number
+{
+    let index = 0;
+
+    components.forEach(component =>
+    {
+        let offset = false;
+
+        Object.keys(component).map(key =>
+        {
+            component[key] = index;
+
+            if (!offset)
+            {
+                offset = true;
+                GameObjectStore.offsets.push(index);
+            }
+
+            index++;
+        });
+
+        GameObjectStore.offsets.push(index);
+    });
+
+    return index;
+}
+
 export function CreateWorld (worldSize: number): void
 {
-    const slotSize = 4;
+    const slotSize = AddComponents([
+        HIERARCHY,
+        DIRTY,
+        PERMISSION,
+        TRANSFORM
+    ]);
 
     const store = new ArrayBuffer(worldSize * (slotSize * Float32Array.BYTES_PER_ELEMENT));
     const indexes = new Uint32Array(worldSize);
