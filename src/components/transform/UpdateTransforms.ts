@@ -5,7 +5,7 @@ import { SetDirtyParentTransform } from '../dirty/SetDirtyParentTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateTransforms (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number): void
+export function UpdateTransforms (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
 {
     const data: Float32Array = Transform2DComponent.data[id];
 
@@ -47,6 +47,8 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
         data[TRANSFORM.WORLD_D] = d;
         data[TRANSFORM.WORLD_TX] = tx;
         data[TRANSFORM.WORLD_TY] = ty;
+
+        // console.log('-- UpdateTransform', id, 'isRoot');
     }
     else
     {
@@ -76,6 +78,8 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
 
         //  Recalc or just set false? Saves on the extra ops and min/maxing
         axisAligned = false;
+
+        // console.log('-- UpdateTransform', id, 'world');
     }
 
     //  Update Quad and InView:
@@ -101,6 +105,8 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
     let x3 = (right * a) + tx;
     let y3 = (y * d) + ty;
 
+    let inView = 0;
+
     if (axisAligned)
     {
         data[TRANSFORM.BOUNDS_X1] = x0;
@@ -108,7 +114,7 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
         data[TRANSFORM.BOUNDS_X2] = x2;
         data[TRANSFORM.BOUNDS_Y2] = y2;
 
-        data[TRANSFORM.IN_VIEW] = Number(!(cright < x0 || cbottom < y0 || cx > x2 || cy > y2));
+        inView = Number(!(cright < x0 || cbottom < y0 || cx > x2 || cy > y2));
     }
     else
     {
@@ -131,12 +137,18 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
         data[TRANSFORM.BOUNDS_X2] = br;
         data[TRANSFORM.BOUNDS_Y2] = bb;
 
-        data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
+        inView = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
     }
 
-    SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    data[TRANSFORM.IN_VIEW] = inView;
 
-    if (GetNumChildren(id))
+    if (inView === 1 || cameraUpdated)
+    {
+        //  Don't need to do this if the entity isn't in the camera view
+        SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    }
+
+    if (GetNumChildren(id) && WillTransformChildren(id))
     {
         SetDirtyParentTransform(id);
     }
