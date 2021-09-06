@@ -19,6 +19,7 @@ import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetParentID } from '../components/hierarchy/GetParentID';
+import { HasChildren } from '../components/hierarchy/HasChildren';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
@@ -100,6 +101,49 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         SetWillCacheChildren(this.id, false);
     }
 
+    processChild (id: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
+    {
+        if (checkColor && HasDirtyColor(id))
+        {
+            const r = ColorComponent.r[id] / 255;
+            const g = ColorComponent.g[id] / 255;
+            const b = ColorComponent.b[id] / 255;
+            const a = ColorComponent.a[id];
+
+            SetQuadColor(id, r, g, b, a);
+
+            ClearDirtyColor(id);
+
+            // dirtyColor++;
+        }
+
+        if (checkTransform)
+        {
+            const parentID = GetParentID(id);
+
+            if (HasDirtyTransform(id))
+            {
+                UpdateTransforms(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
+
+                ClearDirtyTransform(id);
+
+                // dirtyLocal++;
+            }
+            else if (HasDirtyParentTransform(parentID))
+            {
+                UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
+
+                // dirtyWorld++;
+            }
+            else if (cameraUpdated)
+            {
+                SetInViewFromBounds(id, cx, cy, cright, cbottom);
+
+                // dirtyView++;
+            }
+        }
+    }
+
     preRender (gameFrame: number): boolean
     {
         const id = this.id;
@@ -126,15 +170,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const cbottom = camera.getBoundsBottom();
 
         const checkColor = HasDirtyChildColor(id);
-        const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id);
+        const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id) || cameraUpdated;
 
-        // console.log('--------------------------------------------------', gameFrame);
-
+        /*
         const process = (id: number): void =>
         {
             const parentID = GetParentID(id);
-
-            // console.log('Processing', id, 'parent', parentID);
 
             if (checkColor && HasDirtyColor(id))
             {
@@ -154,8 +195,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             {
                 if (HasDirtyTransform(id))
                 {
-                    // console.log('local dirty');
-
                     UpdateTransforms(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
 
                     ClearDirtyTransform(id);
@@ -164,16 +203,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 }
                 else if (HasDirtyParentTransform(parentID))
                 {
-                    // console.log('parent dirty');
-
                     UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
 
                     dirtyWorld++;
                 }
                 else if (cameraUpdated)
                 {
-                    // console.log('in view update');
-
                     SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
 
                     dirtyView++;
@@ -181,15 +216,106 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             }
             else if (cameraUpdated)
             {
-                // console.log('in view update');
-
                 SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
 
                 dirtyView++;
             }
         };
+        */
 
-        BranchSearch(id, process);
+        // BranchSearch(id, process);
+
+        //  Inlined BranchSearch:
+
+        //  TODO:
+
+        //  If parent doesn't have dirty child color or transform, we don't need
+        //  to run process on _any_ of its children (as long as they don't also have children)
+
+        const stack: number[] = [ id ];
+
+        let node = GetFirstChildID(id);
+
+        stackBlock:
+        {
+            while (stack.length > 0)
+            {
+                this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+
+                //  Dive as deep as we can go, adding all parents to the stack for _this branch_
+
+                while (HasChildren(node))
+                {
+                    stack.push(node);
+
+                    node = GetFirstChildID(node);
+
+                    this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                }
+
+                //  We're at the bottom of the branch
+                //  Move horizontally through the siblings, until we hit one with kids
+
+                let next = GetNextSiblingID(node);
+
+                let climb = true;
+
+                if (next)
+                {
+                    let hasChildren = false;
+
+                    do
+                    {
+                        hasChildren = HasChildren(next);
+
+                        if (hasChildren)
+                        {
+                            //  We're going deeper
+                            climb = false;
+                            node = next;
+                            break;
+                        }
+                        else
+                        {
+                            this.processChild(next, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+
+                            next = GetNextSiblingID(next);
+                        }
+
+                    } while (next && !hasChildren);
+                }
+
+                //  The moment we get here, we need to treat it like a whole new branch
+                //  We have either run out of siblings, or found one with children
+
+                if (climb)
+                {
+                    //  No children and no more siblings, so let's climb
+                    //  Go back up the stack until we find a node with a sibling
+
+                    do
+                    {
+                        node = stack.pop();
+
+                        if (!node)
+                        {
+                            break stackBlock;
+                        }
+
+                        next = GetNextSiblingID(node);
+
+                    } while (next === 0);
+                }
+
+                if (!node)
+                {
+                    break stackBlock;
+                }
+
+                //  'next' now contains the sibling of the stack parent, set it to 'node'
+                node = next;
+            }
+        }
 
         dirtyQuad = dirtyLocal + dirtyWorld;
 
@@ -203,57 +329,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             ClearDirtyDisplayList(id);
         }
-
-        /*
-        const entities = this.transformQuery(GameObjectWorld);
-
-        const list = this.renderList;
-
-        let dirtyLocal = 0;
-        let dirtyWorld = 0;
-        let dirtyQuad = 0;
-        let dirtyColor = 0;
-        let dirtyView = 0;
-
-        if (HasDirtyChildTransform(id))
-        {
-            dirtyLocal = UpdateChildTransform(id, entities, list);
-
-            UpdateLocalTransform(id, list, dirtyLocal, camera, gameFrame);
-
-            ClearDirtyChildTransform(id);
-        }
-
-        if (HasDirtyChildWorldTransform(id))
-        {
-            dirtyWorld = RebuildWorldTransforms(entities);
-
-            dirtyQuad = UpdateVertexPositionSystem(entities, camera, gameFrame);
-
-            ClearDirtyChildWorldTransform(id);
-        }
-
-        if (HasDirtyChildColor(id))
-        {
-            dirtyColor = UpdateQuadColorSystem(this.colorQuery(GameObjectWorld));
-
-            ClearDirtyChildColor(id);
-        }
-
-        if (HasDirtyDisplayList(id))
-        {
-            this.getNumChildren();
-
-            ClearDirtyDisplayList(id);
-        }
-
-        const totalUpdated = dirtyLocal + dirtyQuad;
-
-        if (cameraUpdated && totalUpdated !== entities.length)
-        {
-            dirtyView = UpdateInViewSystem(entities, camera, gameFrame);
-        }
-        */
 
         renderData.dirtyLocal = dirtyLocal;
         renderData.dirtyWorld = dirtyWorld;
