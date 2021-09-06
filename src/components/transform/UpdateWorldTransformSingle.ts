@@ -3,8 +3,9 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 import { GetNumChildren } from '../hierarchy/GetNumChildren';
 import { SetDirtyParentTransform } from '../dirty/SetDirtyParentTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
+import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateWorldTransformSingle (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number): void
+export function UpdateWorldTransformSingle (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
 {
     const parentData = Transform2DComponent.data[parentID];
     const data = Transform2DComponent.data[id];
@@ -16,12 +17,12 @@ export function UpdateWorldTransformSingle (id: number, parentID: number, cx: nu
     const ptx = parentData[TRANSFORM.WORLD_TX];
     const pty = parentData[TRANSFORM.WORLD_TY];
 
-    const a = data[TRANSFORM.LOCAL_A];
-    const b = data[TRANSFORM.LOCAL_B];
-    const c = data[TRANSFORM.LOCAL_C];
-    const d = data[TRANSFORM.LOCAL_D];
-    const tx = data[TRANSFORM.LOCAL_TX];
-    const ty = data[TRANSFORM.LOCAL_TY];
+    let a = data[TRANSFORM.LOCAL_A];
+    let b = data[TRANSFORM.LOCAL_B];
+    let c = data[TRANSFORM.LOCAL_C];
+    let d = data[TRANSFORM.LOCAL_D];
+    let tx = data[TRANSFORM.LOCAL_TX];
+    let ty = data[TRANSFORM.LOCAL_TY];
 
     data[TRANSFORM.WORLD_A] = a * pa + b * pc;
     data[TRANSFORM.WORLD_B] = a * pb + b * pd;
@@ -29,6 +30,13 @@ export function UpdateWorldTransformSingle (id: number, parentID: number, cx: nu
     data[TRANSFORM.WORLD_D] = c * pb + d * pd;
     data[TRANSFORM.WORLD_TX] = tx * pa + ty * pc + ptx;
     data[TRANSFORM.WORLD_TY] = tx * pb + ty * pd + pty;
+
+    a = data[TRANSFORM.WORLD_A];
+    b = data[TRANSFORM.WORLD_B];
+    c = data[TRANSFORM.WORLD_C];
+    d = data[TRANSFORM.WORLD_D];
+    tx = data[TRANSFORM.WORLD_TX];
+    ty = data[TRANSFORM.WORLD_TY];
 
     //  Update Quad and InView:
 
@@ -72,11 +80,17 @@ export function UpdateWorldTransformSingle (id: number, parentID: number, cx: nu
     data[TRANSFORM.BOUNDS_X2] = br;
     data[TRANSFORM.BOUNDS_Y2] = bb;
 
-    data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
+    const inView = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
 
-    SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    data[TRANSFORM.IN_VIEW] = inView;
 
-    if (GetNumChildren(id))
+    if (inView === 1 || cameraUpdated)
+    {
+        //  Don't need to do this if the entity isn't in the camera view
+        SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    }
+
+    if (GetNumChildren(id) && WillTransformChildren(id))
     {
         SetDirtyParentTransform(id);
     }
