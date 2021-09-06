@@ -2,7 +2,7 @@ import { GetFirstChildID } from './GetFirstChildID';
 import { GetNextSiblingID } from './GetNextSiblingID';
 import { HasChildren } from './HasChildren';
 
-export function BranchSearch (parentID: number, ids: string[]): void
+export function BranchSearch (parentID: number, processCallback: (id: number) => void, ids?: string[]): void
 {
     const stack: number[] = [ parentID ];
 
@@ -14,7 +14,8 @@ export function BranchSearch (parentID: number, ids: string[]): void
         {
             // console.log('Starting from', ids[node]);
 
-            console.log('Process', ids[node]);
+            processCallback(node);
+            // console.log('Process', ids[node]);
 
             //  Dive as deep as we can go, adding all parents to the stack for _this branch_
 
@@ -24,7 +25,8 @@ export function BranchSearch (parentID: number, ids: string[]): void
 
                 node = GetFirstChildID(node);
 
-                console.log('Process', ids[node]);
+                processCallback(node);
+                // console.log('Process', ids[node]);
             }
 
             //  We're at the bottom of the branch
@@ -51,7 +53,8 @@ export function BranchSearch (parentID: number, ids: string[]): void
                     }
                     else
                     {
-                        console.log('Process4', ids[next]);
+                        processCallback(next);
+                        // console.log('Process4', ids[next]);
 
                         next = GetNextSiblingID(next);
                     }
