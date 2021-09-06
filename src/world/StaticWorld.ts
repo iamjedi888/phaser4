@@ -128,9 +128,13 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const checkColor = HasDirtyChildColor(id);
         const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id);
 
+        // console.log('--------------------------------------------------', gameFrame);
+
         const process = (id: number): void =>
         {
             const parentID = GetParentID(id);
+
+            // console.log('Processing', id, 'parent', parentID);
 
             if (checkColor && HasDirtyColor(id))
             {
@@ -150,7 +154,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             {
                 if (HasDirtyTransform(id))
                 {
-                    UpdateTransforms(id, parentID, cx, cy, cright, cbottom);
+                    // console.log('local dirty');
+
+                    UpdateTransforms(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
 
                     ClearDirtyTransform(id);
 
@@ -158,13 +164,25 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 }
                 else if (HasDirtyParentTransform(parentID))
                 {
-                    UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom);
+                    // console.log('parent dirty');
+
+                    UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
 
                     dirtyWorld++;
+                }
+                else if (cameraUpdated)
+                {
+                    // console.log('in view update');
+
+                    SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
+
+                    dirtyView++;
                 }
             }
             else if (cameraUpdated)
             {
+                // console.log('in view update');
+
                 SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
 
                 dirtyView++;
