@@ -6,5 +6,5 @@ export function AddPermissionsComponent (id: number): void
 {
     addComponent(GameObjectWorld, PermissionsComponent, id);
 
-    PermissionsComponent.data[id].set([ 1, 1, 1, 1, 1, 1, 1, 1, 1 ]);
+    PermissionsComponent.data[id].set([ 1, 1, 1, 1, 1, 1, 0, 1, 1 ]);
 }
