@@ -1,6 +1,6 @@
 import * as WorldEvents from './events';
 
-import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
+import { GetProcessChildTotal, GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
@@ -102,6 +102,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const renderData = this.renderData;
 
+        const start = performance.now();
+
         renderData.gameFrame = gameFrame;
         renderData.rendered = 0;
 
@@ -162,9 +164,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyLocal = dirtyLocal;
         renderData.dirtyWorld = dirtyWorld;
         renderData.dirtyQuad = dirtyQuad;
-        renderData.dirtyColor = dirtyColor;
-        renderData.dirtyView = dirtyView;
+        // renderData.dirtyColor = dirtyColor;
+        renderData.dirtyColor = GetProcessChildTotal();
+        // renderData.dirtyView = dirtyView;
         renderData.rendered = GetRenderChildTotal();
+        renderData.dirtyView = performance.now() - start;
 
         return true;
     }

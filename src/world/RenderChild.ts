@@ -12,6 +12,7 @@ import { WillRender } from '../components/permissions/WillRender';
 const RENDER_LIST: IGameObject[] = [];
 
 let RENDER_CHILD_TOTAL: number = 0;
+let PROCESS_CHILD_TOTAL: number = 0;
 
 export function GetRenderList (): IGameObject[]
 {
@@ -23,10 +24,16 @@ export function GetRenderChildTotal (): number
     return RENDER_CHILD_TOTAL;
 }
 
+export function GetProcessChildTotal (): number
+{
+    return PROCESS_CHILD_TOTAL;
+}
+
 export function ResetRenderChildTotal (): void
 {
     RENDER_CHILD_TOTAL = 0;
     RENDER_LIST.length = 0;
+    PROCESS_CHILD_TOTAL = 0;
 }
 
 export function RenderChild <T extends IRenderPass> (renderPass: T, id: number): void
@@ -49,10 +56,29 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
 
     if (numChildren)
     {
+        PROCESS_CHILD_TOTAL += numChildren;
+
         let childID = GetFirstChildID(id);
+
+        while (childID > 0)
+        {
+            if (IsInView(childID))
+            {
+                const childGameObject = GameObjectCache.get(childID);
+
+                childGameObject.renderGL(renderPass);
+                childGameObject.postRenderGL(renderPass);
+
+                RENDER_CHILD_TOTAL++;
+                // RENDER_LIST.push(childGameObject);
+            }
+
+            childID = GetNextSiblingID(childID);
+        }
 
         for (let i = 0; i < numChildren; i++)
         {
+            /*
             if (WillRender(childID))
             {
                 if (GetNumChildren(childID))
@@ -70,8 +96,9 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
                     // RENDER_LIST.push(childGameObject);
                 }
             }
+            */
 
-            childID = GetNextSiblingID(childID);
+            // childID = GetNextSiblingID(childID);
         }
     }
 
