@@ -2,14 +2,17 @@ import * as WorldEvents from './events';
 
 import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
 import { Query, defineQuery } from 'bitecs';
+import { UpdateLocalTransformSingle, UpdateTransforms } from '../components/transform/UpdateTransforms';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
+import { BranchSearch } from '../components/hierarchy/BranchSearch';
 import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
 import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChildWorldTransform';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
+import { ClearDirtyTransforms } from '../components/dirty/ClearDirtyTransforms';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
@@ -20,6 +23,7 @@ import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
+import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
@@ -98,7 +102,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         //  TODO: This should probably be Game level, not World level, as they'll never need one each
         //  TODO: Needs to match the bitecs world size
-        this.renderList = new Uint32Array(500000);
+        // this.renderList = new Uint32Array(500000);
     }
 
     preRender (gameFrame: number): boolean
@@ -115,6 +119,41 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const camera = this.camera;
         const cameraUpdated = camera.updateBounds();
 
+        let dirtyLocal = 0;
+        let dirtyWorld = 0;
+        let dirtyQuad = 0;
+        let dirtyColor = 0;
+        let dirtyView = 0;
+
+        const cx = camera.getBoundsX();
+        const cy = camera.getBoundsY();
+        const cright = camera.getBoundsRight();
+        const cbottom = camera.getBoundsBottom();
+
+        const process = (id: number): void =>
+        {
+            if (HasDirtyTransform(id))
+            {
+                UpdateTransforms(id, cx, cy, cright, cbottom);
+
+                ClearDirtyTransforms(id);
+
+                dirtyLocal++;
+            }
+
+            // if (HasDirtyChildTransform(id))
+            // {
+
+            // }
+
+
+
+
+        };
+
+        BranchSearch(id, process);
+
+        /*
         const entities = this.transformQuery(GameObjectWorld);
 
         const list = this.renderList;
@@ -163,6 +202,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             dirtyView = UpdateInViewSystem(entities, camera, gameFrame);
         }
+        */
 
         renderData.dirtyLocal = dirtyLocal;
         renderData.dirtyWorld = dirtyWorld;
