@@ -2,7 +2,6 @@ import * as WorldEvents from './events';
 
 import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
 import { Query, defineQuery } from 'bitecs';
-import { UpdateLocalTransformSingle, UpdateTransforms } from '../components/transform/UpdateTransforms';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
@@ -11,38 +10,38 @@ import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
 import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChildWorldTransform';
+import { ClearDirtyColor } from '../components/dirty/ClearDirtyColor';
 import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
-import { ClearDirtyTransforms } from '../components/dirty/ClearDirtyTransforms';
+import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
+import { GetParentID } from '../components/hierarchy/GetParentID';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
+import { HasDirtyColor } from '../components/dirty/HasDirtyColor';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
+import { HasDirtyParentTransform } from '../components/dirty/HasDirtyParentTransform';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
-import { IStaticCamera } from '../camera/IStaticCamera';
 import { IStaticWorld } from './IStaticWorld';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
 import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
-import { RebuildWorldTransforms } from './RebuildWorldTransforms';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
+import { SetInViewFromBounds } from '../components/transform/SetInViewFromBounds';
+import { SetQuadColor } from '../components/vertices/SetQuadColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { UpdateChildTransform } from '../components/transform/UpdateChildTransform';
-import { UpdateInViewSystem } from '../components/vertices/UpdateInViewSystem';
-import { UpdateLocalTransform } from '../components/transform/UpdateLocalTransform';
-import { UpdateQuadColorSystem } from '../components/color/UpdateQuadColorSystem';
-import { UpdateVertexPositionSystem } from '../components/vertices/UpdateVertexPositionSystem';
+import { UpdateTransforms } from '../components/transform/UpdateTransforms';
+import { UpdateWorldTransformSingle } from '../components/transform/UpdateWorldTransformSingle';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillUpdate } from '../components/permissions/WillUpdate';
 import { WorldCamera } from '../camera/WorldCamera';
@@ -99,10 +98,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         SetWillTransformChildren(this.id, false);
         SetWillCacheChildren(this.id, false);
-
-        //  TODO: This should probably be Game level, not World level, as they'll never need one each
-        //  TODO: Needs to match the bitecs world size
-        // this.renderList = new Uint32Array(500000);
     }
 
     preRender (gameFrame: number): boolean
@@ -130,28 +125,66 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const cright = camera.getBoundsRight();
         const cbottom = camera.getBoundsBottom();
 
+        const checkColor = HasDirtyChildColor(id);
+        const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id);
+
         const process = (id: number): void =>
         {
-            if (HasDirtyTransform(id))
+            const parentID = GetParentID(id);
+
+            if (checkColor && HasDirtyColor(id))
             {
-                UpdateTransforms(id, cx, cy, cright, cbottom);
+                const r = ColorComponent.r[id] / 255;
+                const g = ColorComponent.g[id] / 255;
+                const b = ColorComponent.b[id] / 255;
+                const a = ColorComponent.a[id];
 
-                ClearDirtyTransforms(id);
+                SetQuadColor(id, r, g, b, a);
 
-                dirtyLocal++;
+                ClearDirtyColor(id);
+
+                dirtyColor++;
             }
 
-            // if (HasDirtyChildTransform(id))
-            // {
+            if (checkTransform)
+            {
+                if (HasDirtyTransform(id))
+                {
+                    UpdateTransforms(id, parentID, cx, cy, cright, cbottom);
 
-            // }
+                    ClearDirtyTransform(id);
 
+                    dirtyLocal++;
+                }
+                else if (HasDirtyParentTransform(parentID))
+                {
+                    UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom);
 
+                    dirtyWorld++;
+                }
+            }
+            else if (cameraUpdated)
+            {
+                SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
 
-
+                dirtyView++;
+            }
         };
 
         BranchSearch(id, process);
+
+        dirtyQuad = dirtyLocal + dirtyWorld;
+
+        ClearDirtyChildColor(id);
+        ClearDirtyChildTransform(id);
+        ClearDirtyChildWorldTransform(id);
+
+        if (HasDirtyDisplayList(id))
+        {
+            this.getNumChildren();
+
+            ClearDirtyDisplayList(id);
+        }
 
         /*
         const entities = this.transformQuery(GameObjectWorld);
