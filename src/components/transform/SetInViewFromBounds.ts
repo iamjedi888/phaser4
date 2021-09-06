@@ -1,6 +1,6 @@
 import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DComponent';
 
-export function SetInViewFromBounds (id: number, gameFrame: number, cx: number, cy: number, cright: number, cbottom: number): void
+export function SetInViewFromBounds (id: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
     const data: Float32Array = Transform2DComponent.data[id];
 
