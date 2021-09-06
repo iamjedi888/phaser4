@@ -1,3 +1,4 @@
+import { ClearDirtyParentTransform } from '../components/dirty/ClearDirtyParentTransform';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
@@ -79,4 +80,6 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
     {
         gameObject.postRenderGL(renderPass);
     }
+
+    ClearDirtyParentTransform(id);
 }
