@@ -7,9 +7,10 @@ export const DIRTY = {
     CHILD_WORLD_TRANSFORM: 3,
     CHILD_COLOR: 4,
     DISPLAY_LIST: 5,
-    COLOR: 6
+    COLOR: 6,
+    PARENT_TRANSFORM: 7
 };
 
 export const DirtyComponent = defineComponent({
-    data: [ Types.ui8, 7 ]
+    data: [ Types.ui8, 8 ]
 });

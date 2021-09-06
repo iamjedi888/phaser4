@@ -1,13 +1,12 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { GetParentID } from '../hierarchy/GetParentID';
+import { GetNumChildren } from '../hierarchy/GetNumChildren';
+import { SetDirtyParentTransform } from '../dirty/SetDirtyParentTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateTransforms (id: number, cx: number, cy: number, cright: number, cbottom: number): void
+export function UpdateTransforms (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
-    const parentID = GetParentID(id);
-
     const data: Float32Array = Transform2DComponent.data[id];
 
     let tx = data[TRANSFORM.X];
@@ -79,6 +78,8 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
         axisAligned = false;
     }
 
+    //  Update Quad and InView:
+
     const x = data[TRANSFORM.FRAME_X1];
     const y = data[TRANSFORM.FRAME_Y1];
     const right = data[TRANSFORM.FRAME_X2];
@@ -134,4 +135,9 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
     }
 
     SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+
+    if (GetNumChildren(id))
+    {
+        SetDirtyParentTransform(id);
+    }
 }
