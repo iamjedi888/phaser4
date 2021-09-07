@@ -60,7 +60,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     renderList: Uint32Array;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number, preRenderMs: number };
 
     constructor (scene: IScene)
     {
@@ -86,11 +86,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             numChildren: 0,
             rendered: 0,
             renderMs: 0,
+            preRenderMs: 0,
             updated: 0,
             updateMs: 0,
             fps: 0,
-            delta: 0,
-            renderList: []
+            delta: 0
         };
 
         SetWillTransformChildren(this.id, false);
@@ -103,6 +103,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     preRender (gameFrame: number): boolean
     {
+        const start = performance.now();
+
         const id = this.id;
 
         const renderData = this.renderData;
@@ -170,6 +172,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyColor = dirtyColor;
         renderData.dirtyView = dirtyView;
         renderData.rendered = GetRenderChildTotal();
+        renderData.preRenderMs = performance.now() - start;
 
         return true;
     }

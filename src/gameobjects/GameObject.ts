@@ -47,7 +47,7 @@ export class GameObject implements IGameObject
 
         GameObjectCache.set(id, this);
 
-        this.events = new Map();
+        // this.events = new Map();
     }
 
     isRenderable (): boolean
