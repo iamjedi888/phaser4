@@ -6,7 +6,6 @@ import { Color } from '../components/color/Color';
 import { Emit } from '../events/Emit';
 import { GameObject } from '../gameobjects/GameObject';
 import { GameObjectWorld } from '../GameObjectWorld';
-import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { IBaseCamera } from '../camera/IBaseCamera';
 import { IBaseWorld } from './IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
@@ -30,6 +29,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
     camera: IBaseCamera;
 
     is3D: boolean = false;
+    updateDisplayList: boolean = true;
 
     color: Color;
 
@@ -59,9 +59,11 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     getNumChildren (): number
     {
-        if (HasDirtyDisplayList(this.id))
+        if (this.updateDisplayList)
         {
             this.totalChildren = this.totalChildrenQuery(GameObjectWorld).length;
+
+            this.updateDisplayList = false;
         }
 
         return this.totalChildren;

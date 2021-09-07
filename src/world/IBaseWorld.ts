@@ -16,6 +16,7 @@ export interface IBaseWorld extends IGameObject, IColorComponent
     camera: IBaseCamera;
 
     is3D: boolean;
+    updateDisplayList: boolean;
 
     color: Color;
 

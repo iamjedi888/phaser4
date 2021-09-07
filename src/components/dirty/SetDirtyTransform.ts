@@ -1,16 +1,17 @@
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DComponent';
 
-import { GetWorldID } from '../hierarchy/GetWorldID';
-import { SetDirtyChildTransform } from './SetDirtyChildTransform';
+import { SetDirtyParents } from './SetDirtyParents';
+import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
 export function SetDirtyTransform (id: number): void
 {
-    Transform2DComponent.data[id][TRANSFORM.DIRTY] = 1;
+    DirtyComponent.data[id][DIRTY.TRANSFORM] = 1;
 
-    const worldID = GetWorldID(id);
+    // if (WillTransformChildren(id))
+    // {
+    //     SetDirtyParentTransform(id);
+    // }
 
-    if (worldID)
-    {
-        SetDirtyChildTransform(worldID);
-    }
+    SetDirtyParents(id);
 }

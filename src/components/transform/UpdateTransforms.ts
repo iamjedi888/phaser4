@@ -1,11 +1,9 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { GetNumChildren } from '../hierarchy/GetNumChildren';
-import { SetDirtyParentTransform } from '../dirty/SetDirtyParentTransform';
+import { GetParentID } from '../hierarchy/GetParentID';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
-import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateTransforms (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
+export function UpdateTransforms (id: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
 {
     const data: Float32Array = Transform2DComponent.data[id];
 
@@ -39,7 +37,7 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
     data[TRANSFORM.LOCAL_TY] = ty;
 
     //  This is a root transform, so world is the same as local
-    if (data[TRANSFORM.IS_ROOT] || !WillTransformChildren(parentID))
+    if (data[TRANSFORM.IS_ROOT])
     {
         data[TRANSFORM.WORLD_A] = a;
         data[TRANSFORM.WORLD_B] = b;
@@ -53,6 +51,8 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
     else
     {
         //  Otherwise, multiply by the parent transform
+        const parentID = GetParentID(id);
+
         const parentData: Float32Array = Transform2DComponent.data[parentID];
 
         const pa = parentData[TRANSFORM.WORLD_A];
@@ -146,10 +146,5 @@ export function UpdateTransforms (id: number, parentID: number, cx: number, cy: 
     {
         //  Don't need to do this if the entity isn't in the camera view
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
-    }
-
-    if (GetNumChildren(id) && WillTransformChildren(id))
-    {
-        SetDirtyParentTransform(id);
     }
 }

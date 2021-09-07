@@ -6,12 +6,9 @@ import { Query, defineQuery } from 'bitecs';
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { BranchSearch } from '../components/hierarchy/BranchSearch';
-import { ClearDirtyChild } from '../components/dirty/ClearDirtyChild';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
-import { ClearDirtyChildWorldTransform } from '../components/dirty/ClearDirtyChildWorldTransform';
 import { ClearDirtyColor } from '../components/dirty/ClearDirtyColor';
-import { ClearDirtyDisplayList } from '../components/dirty/ClearDirtyDisplayList';
 import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
@@ -22,10 +19,7 @@ import { GetParentID } from '../components/hierarchy/GetParentID';
 import { HasChildren } from '../components/hierarchy/HasChildren';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
-import { HasDirtyChildWorldTransform } from '../components/dirty/HasDirtyChildWorldTransform';
 import { HasDirtyColor } from '../components/dirty/HasDirtyColor';
-import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
-import { HasDirtyParentTransform } from '../components/dirty/HasDirtyParentTransform';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
@@ -59,10 +53,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     // declare camera: IStaticCamera;
     declare camera: WorldCamera;
 
-    private colorQuery: Query;
-    private transformQuery: Query;
+    // private colorQuery: Query;
+    // private transformQuery: Query;
 
-    renderList: Uint32Array;
+    // renderList: Uint32Array;
 
     renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
 
@@ -70,10 +64,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     {
         super(scene);
 
-        const tag = this.tag;
+        // const tag = this.tag;
 
-        this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
-        this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
+        // this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
+        // this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
 
         const renderer = RendererInstance.get();
 
@@ -101,6 +95,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         SetWillCacheChildren(this.id, false);
     }
 
+    /*
     processChild (id: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
     {
         if (checkColor && HasDirtyColor(id))
@@ -143,6 +138,50 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             }
         }
     }
+    */
+
+    updateChildColor (id: number): void
+    {
+        if (HasDirtyColor(id))
+        {
+            const r = ColorComponent.r[id] / 255;
+            const g = ColorComponent.g[id] / 255;
+            const b = ColorComponent.b[id] / 255;
+            const a = ColorComponent.a[id];
+
+            SetQuadColor(id, r, g, b, a);
+
+            ClearDirtyColor(id);
+
+            // dirtyColor++;
+        }
+    }
+
+    updateChildTransform (id: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
+    {
+        const parentID = GetParentID(id);
+
+        if (HasDirtyTransform(id))
+        {
+            UpdateTransforms(id, cx, cy, cright, cbottom, cameraUpdated);
+
+            ClearDirtyTransform(id);
+
+            // dirtyLocal++;
+        }
+        else if (HasDirtyParentTransform(parentID))
+        {
+            UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
+
+            // dirtyWorld++;
+        }
+        else if (cameraUpdated)
+        {
+            SetInViewFromBounds(id, cx, cy, cright, cbottom);
+
+            // dirtyView++;
+        }
+    }
 
     preRender (gameFrame: number): boolean
     {
@@ -153,7 +192,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.gameFrame = gameFrame;
         renderData.rendered = 0;
 
-        ClearDirtyChild(id);
+        // ClearDirtyChild(id);
 
         const camera = this.camera;
         const cameraUpdated = camera.updateBounds();
@@ -169,8 +208,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const cright = camera.getBoundsRight();
         const cbottom = camera.getBoundsBottom();
 
+        const hasDirtyDisplayList = this.updateDisplayList;
         const checkColor = HasDirtyChildColor(id);
-        const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id) || cameraUpdated;
+        const checkTransform = true;
+        // const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id) || cameraUpdated;
 
         /*
         const process = (id: number): void =>
@@ -240,17 +281,31 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             while (stack.length > 0)
             {
-                this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                this.updateChildColor(node);
+                this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
+
+                // this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
 
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
+                //  If the parent isn't dirty, we need go no further down the branch
 
-                while (HasChildren(node))
+                while (HasChildren(node) && HasDirtyChildTransform(node))
                 {
                     stack.push(node);
 
                     node = GetFirstChildID(node);
 
-                    this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                    if (checkColor)
+                    {
+                        this.updateChildColor(node);
+                    }
+
+                    if (checkTransform)
+                    {
+                        this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
+                    }
+
+                    // this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
                 }
 
                 //  We're at the bottom of the branch
@@ -266,7 +321,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                     do
                     {
-                        hasChildren = HasChildren(next);
+                        hasChildren = HasChildren(next) && HasDirtyChildTransform(next);
 
                         if (hasChildren)
                         {
@@ -277,7 +332,17 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                         }
                         else
                         {
-                            this.processChild(next, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                            if (checkColor)
+                            {
+                                this.updateChildColor(next);
+                            }
+
+                            if (checkTransform)
+                            {
+                                this.updateChildTransform(next, cx, cy, cright, cbottom, cameraUpdated);
+                            }
+
+                            // this.processChild(next, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
 
                             next = GetNextSiblingID(next);
                         }
@@ -307,10 +372,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     } while (next === 0);
                 }
 
-                if (!node)
-                {
-                    break stackBlock;
-                }
+                // if (!node)
+                // {
+                //     break stackBlock;
+                // }
 
                 //  'next' now contains the sibling of the stack parent, set it to 'node'
                 node = next;
@@ -321,14 +386,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         ClearDirtyChildColor(id);
         ClearDirtyChildTransform(id);
-        ClearDirtyChildWorldTransform(id);
 
-        if (HasDirtyDisplayList(id))
-        {
-            this.getNumChildren();
-
-            ClearDirtyDisplayList(id);
-        }
+        this.getNumChildren();
 
         renderData.dirtyLocal = dirtyLocal;
         renderData.dirtyWorld = dirtyWorld;
