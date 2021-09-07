@@ -1,11 +1,9 @@
 import * as WorldEvents from './events';
 
 import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
-import { Query, defineQuery } from 'bitecs';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
-import { BranchSearch } from '../components/hierarchy/BranchSearch';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
 import { ClearDirtyColor } from '../components/dirty/ClearDirtyColor';
@@ -21,20 +19,19 @@ import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyColor } from '../components/dirty/HasDirtyColor';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
+import { HasDirtyWorldTransform } from '../components/dirty/HasDirtyWorldTransform';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticWorld } from './IStaticWorld';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
-import { QuadVertexComponent } from '../components/vertices/QuadVertexComponent';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
 import { SetInViewFromBounds } from '../components/transform/SetInViewFromBounds';
 import { SetQuadColor } from '../components/vertices/SetQuadColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
-import { Transform2DComponent } from '../components/transform/Transform2DComponent';
 import { UpdateTransforms } from '../components/transform/UpdateTransforms';
 import { UpdateWorldTransformSingle } from '../components/transform/UpdateWorldTransformSingle';
 import { WillRender } from '../components/permissions/WillRender';
@@ -53,21 +50,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     // declare camera: IStaticCamera;
     declare camera: WorldCamera;
 
-    // private colorQuery: Query;
-    // private transformQuery: Query;
-
-    // renderList: Uint32Array;
-
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
 
     constructor (scene: IScene)
     {
         super(scene);
-
-        // const tag = this.tag;
-
-        // this.colorQuery = defineQuery([ tag, ColorComponent, QuadVertexComponent ]);
-        // this.transformQuery = defineQuery([ tag, Transform2DComponent ]);
 
         const renderer = RendererInstance.get();
 
@@ -84,6 +71,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             numChildren: 0,
             rendered: 0,
             renderMs: 0,
+            preRenderMs: 0,
             updated: 0,
             updateMs: 0,
             fps: 0,
@@ -94,51 +82,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         SetWillTransformChildren(this.id, false);
         SetWillCacheChildren(this.id, false);
     }
-
-    /*
-    processChild (id: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
-    {
-        if (checkColor && HasDirtyColor(id))
-        {
-            const r = ColorComponent.r[id] / 255;
-            const g = ColorComponent.g[id] / 255;
-            const b = ColorComponent.b[id] / 255;
-            const a = ColorComponent.a[id];
-
-            SetQuadColor(id, r, g, b, a);
-
-            ClearDirtyColor(id);
-
-            // dirtyColor++;
-        }
-
-        if (checkTransform)
-        {
-            const parentID = GetParentID(id);
-
-            if (HasDirtyTransform(id))
-            {
-                UpdateTransforms(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
-
-                ClearDirtyTransform(id);
-
-                // dirtyLocal++;
-            }
-            else if (HasDirtyParentTransform(parentID))
-            {
-                UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
-
-                // dirtyWorld++;
-            }
-            else if (cameraUpdated)
-            {
-                SetInViewFromBounds(id, cx, cy, cright, cbottom);
-
-                // dirtyView++;
-            }
-        }
-    }
-    */
 
     updateChildColor (id: number): void
     {
@@ -153,7 +96,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             ClearDirtyColor(id);
 
-            // dirtyColor++;
+            this.renderData.dirtyColor++;
         }
     }
 
@@ -167,111 +110,53 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             ClearDirtyTransform(id);
 
-            // dirtyLocal++;
+            this.renderData.dirtyLocal++;
         }
-        else if (HasDirtyParentTransform(parentID))
+        else if (HasDirtyWorldTransform(parentID))
         {
             UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
 
-            // dirtyWorld++;
+            this.renderData.dirtyWorld++;
         }
         else if (cameraUpdated)
         {
             SetInViewFromBounds(id, cx, cy, cright, cbottom);
 
-            // dirtyView++;
+            this.renderData.dirtyView++;
         }
     }
 
     preRender (gameFrame: number): boolean
     {
+        const start = performance.now();
+
         const id = this.id;
 
         const renderData = this.renderData;
 
         renderData.gameFrame = gameFrame;
         renderData.rendered = 0;
-
-        // ClearDirtyChild(id);
+        renderData.dirtyColor = 0;
+        renderData.dirtyLocal = 0;
+        renderData.dirtyView = 0;
+        renderData.dirtyWorld = 0;
+        renderData.dirtyQuad = 0;
 
         const camera = this.camera;
         const cameraUpdated = camera.updateBounds();
-
-        let dirtyLocal = 0;
-        let dirtyWorld = 0;
-        let dirtyQuad = 0;
-        let dirtyColor = 0;
-        let dirtyView = 0;
 
         const cx = camera.getBoundsX();
         const cy = camera.getBoundsY();
         const cright = camera.getBoundsRight();
         const cbottom = camera.getBoundsBottom();
 
-        const hasDirtyDisplayList = this.updateDisplayList;
         const checkColor = HasDirtyChildColor(id);
-        const checkTransform = true;
-        // const checkTransform = HasDirtyChildTransform(id) || HasDirtyChildWorldTransform(id) || cameraUpdated;
+        const checkTransform = HasDirtyChildTransform(id) || cameraUpdated;
 
-        /*
-        const process = (id: number): void =>
+        const ProcessNode = (node: number): boolean =>
         {
-            const parentID = GetParentID(id);
-
-            if (checkColor && HasDirtyColor(id))
-            {
-                const r = ColorComponent.r[id] / 255;
-                const g = ColorComponent.g[id] / 255;
-                const b = ColorComponent.b[id] / 255;
-                const a = ColorComponent.a[id];
-
-                SetQuadColor(id, r, g, b, a);
-
-                ClearDirtyColor(id);
-
-                dirtyColor++;
-            }
-
-            if (checkTransform)
-            {
-                if (HasDirtyTransform(id))
-                {
-                    UpdateTransforms(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
-
-                    ClearDirtyTransform(id);
-
-                    dirtyLocal++;
-                }
-                else if (HasDirtyParentTransform(parentID))
-                {
-                    UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
-
-                    dirtyWorld++;
-                }
-                else if (cameraUpdated)
-                {
-                    SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
-
-                    dirtyView++;
-                }
-            }
-            else if (cameraUpdated)
-            {
-                SetInViewFromBounds(id, gameFrame, cx, cy, cright, cbottom);
-
-                dirtyView++;
-            }
+            return (HasChildren(node) && (cameraUpdated || (HasDirtyWorldTransform(node) || HasDirtyChildTransform(node))));
         };
-        */
-
-        // BranchSearch(id, process);
-
-        //  Inlined BranchSearch:
-
-        //  TODO:
-
-        //  If parent doesn't have dirty child color or transform, we don't need
-        //  to run process on _any_ of its children (as long as they don't also have children)
 
         const stack: number[] = [ id ];
 
@@ -281,15 +166,20 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             while (stack.length > 0)
             {
-                this.updateChildColor(node);
-                this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
+                if (checkColor)
+                {
+                    this.updateChildColor(node);
+                }
 
-                // this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                if (checkTransform)
+                {
+                    this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
+                }
 
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
-                //  If the parent isn't dirty, we need go no further down the branch
+                //  If the parent isn't dirty and has no dirty children, go no further down this branch
 
-                while (HasChildren(node) && HasDirtyChildTransform(node))
+                while (ProcessNode(node))
                 {
                     stack.push(node);
 
@@ -304,12 +194,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     {
                         this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
                     }
-
-                    // this.processChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
                 }
 
                 //  We're at the bottom of the branch
-                //  Move horizontally through the siblings, until we hit one with kids
+                //  Move horizontally through the siblings, until we hit one with kids, or the end.
 
                 let next = GetNextSiblingID(node);
 
@@ -317,21 +205,22 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 if (next)
                 {
-                    let hasChildren = false;
+                    let processChildren = false;
 
                     do
                     {
-                        hasChildren = HasChildren(next) && HasDirtyChildTransform(next);
+                        processChildren = ProcessNode(next);
 
-                        if (hasChildren)
+                        if (processChildren)
                         {
                             //  We're going deeper
                             climb = false;
                             node = next;
-                            break;
                         }
                         else
                         {
+                            // renderData.dirtyQuad++;
+
                             if (checkColor)
                             {
                                 this.updateChildColor(next);
@@ -342,12 +231,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                                 this.updateChildTransform(next, cx, cy, cright, cbottom, cameraUpdated);
                             }
 
-                            // this.processChild(next, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
-
                             next = GetNextSiblingID(next);
                         }
 
-                    } while (next && !hasChildren);
+                    } while (next && !processChildren);
                 }
 
                 //  The moment we get here, we need to treat it like a whole new branch
@@ -372,29 +259,20 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     } while (next === 0);
                 }
 
-                // if (!node)
-                // {
-                //     break stackBlock;
-                // }
-
                 //  'next' now contains the sibling of the stack parent, set it to 'node'
                 node = next;
             }
         }
-
-        dirtyQuad = dirtyLocal + dirtyWorld;
 
         ClearDirtyChildColor(id);
         ClearDirtyChildTransform(id);
 
         this.getNumChildren();
 
-        renderData.dirtyLocal = dirtyLocal;
-        renderData.dirtyWorld = dirtyWorld;
-        renderData.dirtyQuad = dirtyQuad;
-        renderData.dirtyColor = dirtyColor;
-        renderData.dirtyView = dirtyView;
+        // renderData.dirtyQuad = renderData.dirtyLocal + renderData.dirtyWorld;
         renderData.rendered = GetRenderChildTotal();
+
+        renderData.preRenderMs = performance.now() - start;
 
         return true;
     }
