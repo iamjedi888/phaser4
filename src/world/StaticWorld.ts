@@ -50,7 +50,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     // declare camera: IStaticCamera;
     declare camera: WorldCamera;
 
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
+    // renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number };
 
     constructor (scene: IScene)
     {
@@ -75,8 +76,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             updated: 0,
             updateMs: 0,
             fps: 0,
-            delta: 0,
-            renderList: []
+            delta: 0
         };
 
         SetWillTransformChildren(this.id, false);
@@ -126,6 +126,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         }
     }
 
+    processNode (node: number, cameraUpdated: boolean): boolean
+    {
+        return (HasChildren(node) && (cameraUpdated || (HasDirtyWorldTransform(node) || HasDirtyChildTransform(node))));
+    }
+
     preRender (gameFrame: number): boolean
     {
         const start = performance.now();
@@ -153,10 +158,10 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const checkColor = HasDirtyChildColor(id);
         const checkTransform = HasDirtyChildTransform(id) || cameraUpdated;
 
-        const ProcessNode = (node: number): boolean =>
-        {
-            return (HasChildren(node) && (cameraUpdated || (HasDirtyWorldTransform(node) || HasDirtyChildTransform(node))));
-        };
+        // const ProcessNode = (node: number): boolean =>
+        // {
+        //     return (HasChildren(node) && (cameraUpdated || (HasDirtyWorldTransform(node) || HasDirtyChildTransform(node))));
+        // };
 
         const stack: number[] = [ id ];
 
@@ -179,7 +184,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
                 //  If the parent isn't dirty and has no dirty children, go no further down this branch
 
-                while (ProcessNode(node))
+                while (this.processNode(node, cameraUpdated))
                 {
                     stack.push(node);
 
@@ -209,7 +214,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                     do
                     {
-                        processChildren = ProcessNode(next);
+                        processChildren = this.processNode(next, cameraUpdated);
 
                         if (processChildren)
                         {
@@ -245,18 +250,31 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     //  No children and no more siblings, so let's climb
                     //  Go back up the stack until we find a node with a sibling
 
-                    do
+                    //  Try the first step-up to save entering the while loop
+                    node = stack.pop();
+
+                    if (!node)
                     {
-                        node = stack.pop();
+                        break stackBlock;
+                    }
 
-                        if (!node)
+                    next = GetNextSiblingID(node);
+
+                    if (next === 0)
+                    {
+                        do
                         {
-                            break stackBlock;
-                        }
+                            node = stack.pop();
 
-                        next = GetNextSiblingID(node);
+                            if (!node)
+                            {
+                                break stackBlock;
+                            }
 
-                    } while (next === 0);
+                            next = GetNextSiblingID(node);
+
+                        } while (next === 0);
+                    }
                 }
 
                 //  'next' now contains the sibling of the stack parent, set it to 'node'
