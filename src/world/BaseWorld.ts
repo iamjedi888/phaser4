@@ -54,6 +54,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.color = new Color(id);
 
+        this.events = new Map();
+
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
 
