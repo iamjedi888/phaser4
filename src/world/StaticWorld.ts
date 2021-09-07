@@ -36,6 +36,7 @@ import { UpdateTransforms } from '../components/transform/UpdateTransforms';
 import { UpdateWorldTransformSingle } from '../components/transform/UpdateWorldTransformSingle';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillUpdate } from '../components/permissions/WillUpdate';
+import { WillUpdateTransform } from '../components/dirty/WillUpdateTransform';
 import { WorldCamera } from '../camera/WorldCamera';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -128,15 +129,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     processNode (node: number, cameraUpdated: boolean): boolean
     {
-        return (HasChildren(node) && (cameraUpdated || (HasDirtyWorldTransform(node) || HasDirtyChildTransform(node))));
+        return (HasChildren(node) && (cameraUpdated || WillUpdateTransform(node)));
     }
 
-    preRender (gameFrame: number): boolean
+    //#ifdef RENDER_STATS
+    resetRenderData (gameFrame: number): void
     {
-        const start = performance.now();
-
-        const id = this.id;
-
         const renderData = this.renderData;
 
         renderData.gameFrame = gameFrame;
@@ -146,22 +144,37 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyView = 0;
         renderData.dirtyWorld = 0;
         renderData.dirtyQuad = 0;
+    }
+    //#endif
+
+    preRender (gameFrame: number): boolean
+    {
+        const start = performance.now();
+
+        const id = this.id;
+
+        const renderData = this.renderData;
+
+        this.resetRenderData(gameFrame);
 
         const camera = this.camera;
         const cameraUpdated = camera.updateBounds();
+
+        const checkColor = HasDirtyChildColor(id);
+        const checkTransform = HasDirtyChildTransform(id) || cameraUpdated;
+
+        if (!checkColor && !checkTransform)
+        {
+            //  Nothing needs updating, so let's get out of here
+            renderData.preRenderMs = 0;
+
+            return false;
+        }
 
         const cx = camera.getBoundsX();
         const cy = camera.getBoundsY();
         const cright = camera.getBoundsRight();
         const cbottom = camera.getBoundsBottom();
-
-        const checkColor = HasDirtyChildColor(id);
-        const checkTransform = HasDirtyChildTransform(id) || cameraUpdated;
-
-        // const ProcessNode = (node: number): boolean =>
-        // {
-        //     return (HasChildren(node) && (cameraUpdated || (HasDirtyWorldTransform(node) || HasDirtyChildTransform(node))));
-        // };
 
         const stack: number[] = [ id ];
 
@@ -202,6 +215,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 }
 
                 //  We're at the bottom of the branch
+                //  We know 'node' doesn't have any children, but the next sibling might
                 //  Move horizontally through the siblings, until we hit one with kids, or the end.
 
                 let next = GetNextSiblingID(node);
@@ -288,7 +302,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         this.getNumChildren();
 
         // renderData.dirtyQuad = renderData.dirtyLocal + renderData.dirtyWorld;
-        renderData.rendered = GetRenderChildTotal();
 
         renderData.preRenderMs = performance.now() - start;
 
@@ -359,6 +372,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.numChildren = this.getNumChildren();
         renderData.fps = this.scene.game.time.fps;
         renderData.delta = this.scene.game.time.delta;
+        renderData.rendered = GetRenderChildTotal();
         // renderData.renderList = GetRenderList();
 
         this.scene.game.renderStats = renderData;
