@@ -1,7 +1,10 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
+import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 import { GetParentID } from '../hierarchy/GetParentID';
+import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
+import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
 export function UpdateTransforms (id: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
 {
@@ -146,5 +149,12 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
     {
         //  Don't need to do this if the entity isn't in the camera view
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    }
+
+    ClearDirtyTransform(id);
+
+    if (WillTransformChildren(id))
+    {
+        SetDirtyWorldTransform(id);
     }
 }

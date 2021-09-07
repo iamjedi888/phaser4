@@ -1,7 +1,5 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
-
 export function CopyWorldToWorld (source: number, target: number): void
 {
     const targetData = Transform2DComponent.data[target];
@@ -14,5 +12,5 @@ export function CopyWorldToWorld (source: number, target: number): void
     targetData[TRANSFORM.WORLD_TX] = sourceData[TRANSFORM.WORLD_TX];
     targetData[TRANSFORM.WORLD_TY] = sourceData[TRANSFORM.WORLD_TY];
 
-    SetDirtyWorldTransform(target);
+    // SetDirtyWorldTransform(target);
 }

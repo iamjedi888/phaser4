@@ -1,7 +1,6 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { GetNumChildren } from '../hierarchy/GetNumChildren';
-import { SetDirtyParentTransform } from '../dirty/SetDirtyParentTransform';
+import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
@@ -90,8 +89,8 @@ export function UpdateWorldTransformSingle (id: number, parentID: number, cx: nu
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
     }
 
-    if (GetNumChildren(id) && WillTransformChildren(id))
+    if (WillTransformChildren(id))
     {
-        SetDirtyParentTransform(id);
+        SetDirtyWorldTransform(id);
     }
 }
