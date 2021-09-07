@@ -19,6 +19,7 @@ import { SetDirtyColor } from './SetDirtyColor';
 import { SetDirtyParents } from './SetDirtyParents';
 import { SetDirtyTransform } from './SetDirtyTransform';
 import { SetDirtyWorldTransform } from './SetDirtyWorldTransform';
+import { WillUpdateTransform } from './WillUpdateTransform';
 
 export {
     AddDirtyComponent,
@@ -41,5 +42,6 @@ export {
     SetDirtyColor,
     SetDirtyParents,
     SetDirtyTransform,
-    SetDirtyWorldTransform
+    SetDirtyWorldTransform,
+    WillUpdateTransform
 };
