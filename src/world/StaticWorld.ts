@@ -222,38 +222,30 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 let climb = true;
 
-                if (next)
+                while (next && climb)
                 {
-                    let processChildren = false;
-
-                    do
+                    if (this.processNode(next, cameraUpdated))
                     {
-                        processChildren = this.processNode(next, cameraUpdated);
+                        //  The 'next' sibliong has a child, so we're going deeper
+                        climb = false;
+                        node = next;
+                    }
+                    else
+                    {
+                        // renderData.dirtyQuad++;
 
-                        if (processChildren)
+                        if (checkColor)
                         {
-                            //  We're going deeper
-                            climb = false;
-                            node = next;
-                        }
-                        else
-                        {
-                            // renderData.dirtyQuad++;
-
-                            if (checkColor)
-                            {
-                                this.updateChildColor(next);
-                            }
-
-                            if (checkTransform)
-                            {
-                                this.updateChildTransform(next, cx, cy, cright, cbottom, cameraUpdated);
-                            }
-
-                            next = GetNextSiblingID(next);
+                            this.updateChildColor(next);
                         }
 
-                    } while (next && !processChildren);
+                        if (checkTransform)
+                        {
+                            this.updateChildTransform(next, cx, cy, cright, cbottom, cameraUpdated);
+                        }
+
+                        next = GetNextSiblingID(next);
+                    }
                 }
 
                 //  The moment we get here, we need to treat it like a whole new branch
