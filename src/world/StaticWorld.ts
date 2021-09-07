@@ -133,6 +133,21 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         }
     }
 
+    updateChild (id: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
+    {
+        if (checkColor)
+        {
+            this.updateChildColor(id);
+        }
+
+        if (checkTransform)
+        {
+            this.updateChildTransform(id, cx, cy, cright, cbottom, cameraUpdated);
+        }
+
+        // renderData.dirtyQuad++;
+    }
+
     processNode (node: number, cameraUpdated: boolean): boolean
     {
         return (HasChildren(node) && (cameraUpdated || WillUpdateTransform(node)));
@@ -194,15 +209,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             while (stackIndex > 0)
             {
-                if (checkColor)
-                {
-                    this.updateChildColor(node);
-                }
-
-                if (checkTransform)
-                {
-                    this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
-                }
+                this.updateChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
 
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
                 //  If the parent isn't dirty and has no dirty children, go no further down this branch
@@ -213,15 +220,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                     node = GetFirstChildID(node);
 
-                    if (checkColor)
-                    {
-                        this.updateChildColor(node);
-                    }
-
-                    if (checkTransform)
-                    {
-                        this.updateChildTransform(node, cx, cy, cright, cbottom, cameraUpdated);
-                    }
+                    this.updateChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
                 }
 
                 //  We're at the bottom of the branch
@@ -242,17 +241,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     }
                     else
                     {
-                        // renderData.dirtyQuad++;
-
-                        if (checkColor)
-                        {
-                            this.updateChildColor(next);
-                        }
-
-                        if (checkTransform)
-                        {
-                            this.updateChildTransform(next, cx, cy, cright, cbottom, cameraUpdated);
-                        }
+                        this.updateChild(next, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
 
                         next = GetNextSiblingID(next);
                     }
@@ -266,31 +255,16 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     //  No children and no more siblings, so let's climb
                     //  Go back up the stack until we find a node with a sibling
 
-                    //  Try the first step-up to save entering the while loop
-
-                    node = stack[--stackIndex];
-
-                    if (!node)
+                    while (next === 0)
                     {
-                        break stackBlock;
-                    }
+                        node = stack[--stackIndex];
 
-                    next = GetNextSiblingID(node);
-
-                    if (next === 0)
-                    {
-                        do
+                        if (!node)
                         {
-                            node = stack[--stackIndex];
+                            break stackBlock;
+                        }
 
-                            if (!node)
-                            {
-                                break stackBlock;
-                            }
-
-                            next = GetNextSiblingID(node);
-
-                        } while (next === 0);
+                        next = GetNextSiblingID(node);
                     }
                 }
 
