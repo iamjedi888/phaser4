@@ -31,7 +31,6 @@ export function AddTransform2DComponent (id: number, x: number = 0, y: number = 
     const data = Transform2DComponent.data[id];
 
     data[TRANSFORM.IS_ROOT] = 0;
-    // data[TRANSFORM.DIRTY] = 1;
     data[TRANSFORM.X] = x;
     data[TRANSFORM.Y] = y;
     data[TRANSFORM.SCALE_X] = 1;
