@@ -189,9 +189,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         stack[0] = id;
 
         let stackIndex = 1;
-
-        let node = GetFirstChildID(id);
         let parentNode = id;
+        let node = GetFirstChildID(id);
 
         stackBlock:
         {
@@ -221,7 +220,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 let climb = true;
 
-                //  This while loop runs 50,002 times (for each updating child + layers?)
                 while (next && climb)
                 {
                     if (this.processNode(next, cameraUpdated))
