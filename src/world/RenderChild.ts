@@ -1,4 +1,5 @@
-import { ClearDirtyParentTransform } from '../components/dirty/ClearDirtyParentTransform';
+import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
+import { ClearDirtyWorldTransform } from '../components/dirty/ClearDirtyWorldTransform';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
@@ -43,7 +44,6 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
         gameObject.renderGL(renderPass);
 
         RENDER_CHILD_TOTAL++;
-        // RENDER_LIST.push(gameObject);
     }
 
     const numChildren = HasRenderableChildren(id, renderPass.isCameraDirty());
@@ -68,7 +68,6 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
                     childGameObject.postRenderGL(renderPass);
 
                     RENDER_CHILD_TOTAL++;
-                    // RENDER_LIST.push(childGameObject);
                 }
             }
 
@@ -81,5 +80,6 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
         gameObject.postRenderGL(renderPass);
     }
 
-    ClearDirtyParentTransform(id);
+    ClearDirtyChildTransform(id);
+    ClearDirtyWorldTransform(id);
 }

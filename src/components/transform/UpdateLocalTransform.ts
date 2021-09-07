@@ -1,9 +1,8 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { ClearDirtyTransforms } from '../dirty/ClearDirtyTransforms';
+import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { IBaseCamera } from '../../camera/IBaseCamera';
-import { SetDirtyChildWorldTransform } from '../dirty/SetDirtyChildWorldTransform';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 
@@ -131,7 +130,7 @@ export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, e
                 SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
             }
 
-            ClearDirtyTransforms(id);
+            ClearDirtyTransform(id);
         }
         else
         {
@@ -148,8 +147,8 @@ export function UpdateLocalTransform <C extends IBaseCamera> (worldID: number, e
         }
     }
 
-    if (dirtyWorld)
-    {
-        SetDirtyChildWorldTransform(worldID);
-    }
+    // if (dirtyWorld)
+    // {
+    //     SetDirtyChildWorldTransform(worldID);
+    // }
 }
