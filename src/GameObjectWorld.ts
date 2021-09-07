@@ -9,9 +9,9 @@ import { createWorld, setDefaultSize } from 'bitecs';
 // setDefaultSize(350000);
 // setDefaultSize(400000);
 // setDefaultSize(500000);
-setDefaultSize(750000);
+// setDefaultSize(750000);
 // setDefaultSize(550000);
-// setDefaultSize(1000000);
+setDefaultSize(1000000);
 // setDefaultSize(2000000);
 
 const world = createWorld();
