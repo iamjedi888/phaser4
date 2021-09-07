@@ -11,10 +11,8 @@ import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
-import { GetDepth } from '../components/hierarchy/GetDepth';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
-import { GetParentID } from '../components/hierarchy/GetParentID';
 import { HasChildren } from '../components/hierarchy/HasChildren';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
@@ -268,8 +266,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         ClearDirtyChildTransform(id);
 
         this.getNumChildren();
-
-        // renderData.dirtyQuad = renderData.dirtyLocal + renderData.dirtyWorld;
 
         renderData.preRenderMs = performance.now() - start;
 
