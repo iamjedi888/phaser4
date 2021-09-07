@@ -11,6 +11,7 @@ import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
+import { GetDepth } from '../components/hierarchy/GetDepth';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { GetParentID } from '../components/hierarchy/GetParentID';
@@ -54,6 +55,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     // renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
     renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number };
 
+    stack: Uint32Array;
+
     constructor (scene: IScene)
     {
         super(scene);
@@ -82,6 +85,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         SetWillTransformChildren(this.id, false);
         SetWillCacheChildren(this.id, false);
+
+        //  The stack can be up to 32 layers deep
+        this.stack = new Uint32Array(32);
     }
 
     updateChildColor (id: number): void
@@ -176,13 +182,17 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const cright = camera.getBoundsRight();
         const cbottom = camera.getBoundsBottom();
 
-        const stack: number[] = [ id ];
+        const stack = this.stack;
+
+        stack[0] = id;
+
+        let stackIndex = 1;
 
         let node = GetFirstChildID(id);
 
         stackBlock:
         {
-            while (stack.length > 0)
+            while (stackIndex > 0)
             {
                 if (checkColor)
                 {
@@ -199,7 +209,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 while (this.processNode(node, cameraUpdated))
                 {
-                    stack.push(node);
+                    stack[stackIndex++] = node;
 
                     node = GetFirstChildID(node);
 
@@ -226,9 +236,9 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 {
                     if (this.processNode(next, cameraUpdated))
                     {
-                        //  The 'next' sibliong has a child, so we're going deeper
+                        //  The 'next' sibling has a child, so we're going deeper
                         climb = false;
-                        node = next;
+                        break;
                     }
                     else
                     {
@@ -257,7 +267,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     //  Go back up the stack until we find a node with a sibling
 
                     //  Try the first step-up to save entering the while loop
-                    node = stack.pop();
+
+                    node = stack[--stackIndex];
 
                     if (!node)
                     {
@@ -270,7 +281,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     {
                         do
                         {
-                            node = stack.pop();
+                            node = stack[--stackIndex];
 
                             if (!node)
                             {
