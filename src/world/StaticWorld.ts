@@ -90,9 +90,13 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         this.stack = new Uint32Array(32);
     }
 
-    updateChildColor (id: number): void
+    updateChild (id: number, parentID: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
     {
-        if (HasDirtyColor(id))
+        const renderData = this.renderData;
+
+        renderData.dirtyQuad++;
+
+        if (checkColor && HasDirtyColor(id))
         {
             const r = ColorComponent.r[id] / 255;
             const g = ColorComponent.g[id] / 255;
@@ -103,49 +107,32 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             ClearDirtyColor(id);
 
-            this.renderData.dirtyColor++;
-        }
-    }
-
-    updateChildTransform (id: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
-    {
-        const parentID = GetParentID(id);
-
-        if (HasDirtyTransform(id))
-        {
-            UpdateTransforms(id, cx, cy, cright, cbottom, cameraUpdated);
-
-            ClearDirtyTransform(id);
-
-            this.renderData.dirtyLocal++;
-        }
-        else if (HasDirtyWorldTransform(parentID))
-        {
-            UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
-
-            this.renderData.dirtyWorld++;
-        }
-        else if (cameraUpdated)
-        {
-            SetInViewFromBounds(id, cx, cy, cright, cbottom);
-
-            this.renderData.dirtyView++;
-        }
-    }
-
-    updateChild (id: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
-    {
-        if (checkColor)
-        {
-            this.updateChildColor(id);
+            renderData.dirtyColor++;
         }
 
         if (checkTransform)
         {
-            this.updateChildTransform(id, cx, cy, cright, cbottom, cameraUpdated);
-        }
+            if (HasDirtyTransform(id))
+            {
+                UpdateTransforms(id, cx, cy, cright, cbottom, cameraUpdated);
 
-        // renderData.dirtyQuad++;
+                ClearDirtyTransform(id);
+
+                renderData.dirtyLocal++;
+            }
+            else if (HasDirtyWorldTransform(parentID))
+            {
+                UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
+
+                renderData.dirtyWorld++;
+            }
+            else if (cameraUpdated)
+            {
+                SetInViewFromBounds(id, cx, cy, cright, cbottom);
+
+                renderData.dirtyView++;
+            }
+        }
     }
 
     processNode (node: number, cameraUpdated: boolean): boolean
@@ -204,12 +191,13 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         let stackIndex = 1;
 
         let node = GetFirstChildID(id);
+        let parentNode = id;
 
         stackBlock:
         {
             while (stackIndex > 0)
             {
-                this.updateChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
 
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
                 //  If the parent isn't dirty and has no dirty children, go no further down this branch
@@ -218,9 +206,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 {
                     stack[stackIndex++] = node;
 
+                    parentNode = node;
+
                     node = GetFirstChildID(node);
 
-                    this.updateChild(node, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                    this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
                 }
 
                 //  We're at the bottom of the branch
@@ -231,6 +221,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 let climb = true;
 
+                //  This while loop runs 50,002 times (for each updating child + layers?)
                 while (next && climb)
                 {
                     if (this.processNode(next, cameraUpdated))
@@ -241,7 +232,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     }
                     else
                     {
-                        this.updateChild(next, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                        this.updateChild(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
 
                         next = GetNextSiblingID(next);
                     }
@@ -266,6 +257,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                         next = GetNextSiblingID(node);
                     }
+
+                    parentNode = stack[stackIndex - 1];
                 }
 
                 //  'next' now contains the sibling of the stack parent, set it to 'node'
