@@ -1,4 +1,4 @@
-import { BoundsComponent } from '../../components/bounds/BoundsComponent';
+import { GetLocalBounds } from '../../components/transform/GetLocalBounds';
 
 export class SpatialHashGrid
 {
@@ -10,7 +10,7 @@ export class SpatialHashGrid
 
     cells: Map<string, Set<number>>;
 
-    debug: Array<{ x: number, y: number, width: number, height: number }>;
+    debug: Array<{ key: string, x: number, y: number, width: number, height: number }>;
 
     constructor (minX: number, minY: number, maxX: number, maxY: number, cellWidth: number, cellHeight: number)
     {
@@ -36,11 +36,9 @@ export class SpatialHashGrid
             {
                 this.cells.set(this.getKey(x, y), new Set());
 
-                this.debug.push({ x: x, y: y, width: cellWidth, height: cellHeight });
+                this.debug.push({ key: this.getKey(x, y), x: x, y: y, width: cellWidth, height: cellHeight });
             }
         }
-
-        console.log('grid', this);
     }
 
     clear (): void
@@ -55,12 +53,27 @@ export class SpatialHashGrid
 
     getY (y: number): number
     {
-        return (Math.floor(y / this.cellHeight) * this.width);
+        return Math.floor(y / this.cellHeight);
+    }
+
+    getXC (x: number): number
+    {
+        return Math.ceil(x / this.cellWidth);
+    }
+
+    getYC (y: number): number
+    {
+        return Math.ceil(y / this.cellHeight);
     }
 
     getKey (x: number, y: number): string
     {
         return `${this.getX(x)} ${this.getY(y)}`;
+    }
+
+    getKeyC (x: number, y: number): string
+    {
+        return `${this.getXC(x)} ${this.getYC(y)}`;
     }
 
     getGridKey (x: number, y: number): string
@@ -91,13 +104,18 @@ export class SpatialHashGrid
         return [];
     }
 
-    intersects (left: number, top: number, right: number, bottom: number): number[]
+    intersects (left: number, top: number, right: number, bottom: number): Set<number>
     {
         const topLeftX = this.getX(left);
         const topLeftY = this.getY(top);
 
-        const bottomRightX = this.getX(right);
-        const bottomRightY = this.getY(bottom);
+        const bottomRightX = this.getXC(right);
+        const bottomRightY = this.getYC(bottom);
+
+        // console.log('----------');
+        // console.log('INTERSECTS');
+        // console.log('----------');
+        // console.log(topLeftX, topLeftY, 'to', bottomRightX, bottomRightY);
 
         const cells = this.cells;
 
@@ -108,29 +126,32 @@ export class SpatialHashGrid
 
             // console.log('Single cell', key);
 
-            return [ ...cells.get(key) ];
+            return new Set([ ...cells.get(key) ]);
         }
 
-        const topRightX = bottomRightX;
-        const bottomLeftY = bottomRightY;
-
-        const width = (topRightX - topLeftX) + 1;
-        const height = Math.max(1, Math.ceil((bottomLeftY - topLeftY) / this.height));
+        const width = (bottomRightX - topLeftX) + 1;
+        const height = (bottomRightY - topLeftY) + 1;
 
         // console.log('width', width, 'height', height);
-        // console.log('topleft', topLeftX, topLeftY, 'topright', topRightX, topRightY, 'bottomleft', bottomLeftX, bottomLeftY, 'bottomright', bottomRightX, bottomRightY);
 
         let gridX = topLeftX;
         let gridY = topLeftY;
         let placed = 0;
 
-        const results: number[] = [];
+        let results: number[] = [];
 
         for (let i = 0; i < width * height; i++)
         {
             const key = this.getGridKey(gridX, gridY);
 
-            results.concat(...cells.get(key));
+            // console.log('getting cell', key, cells.has(key), ...cells.get(key));
+
+            if (cells.has(key))
+            {
+                // console.log(...cells.get(key));
+
+                results = results.concat(...cells.get(key));
+            }
 
             gridX++;
             placed++;
@@ -143,41 +164,33 @@ export class SpatialHashGrid
             }
         }
 
-        return results;
+        return new Set(results);
     }
 
     insert (id: number): void
     {
-        //  0 = left, 1 = top, 2 = right, 3 = bottom
-        const [ left, top, right, bottom ] = BoundsComponent.global[id];
+        const { left, top, right, bottom } = GetLocalBounds(id);
 
         const topLeftX = this.getX(left);
         const topLeftY = this.getY(top);
 
-        const bottomRightX = this.getX(right);
-        const bottomRightY = this.getY(bottom);
+        const bottomRightX = this.getXC(right);
+        const bottomRightY = this.getYC(bottom);
+
+        const width = (bottomRightX - topLeftX);
+        const height = (bottomRightY - topLeftY);
+
+        // console.log('INSERT', id, '>', topLeftX, topLeftY, 'to', bottomRightX, bottomRightY, 'width/height', width, height);
 
         //  Quick abort if entity fits into 1 cell
-        if (topLeftX === bottomRightX && topLeftY === bottomRightY)
+        if (width === 1 && height === 1)
         {
-            // console.log('ltrb', left, 'x', top, 'to', right, 'x', bottom);
-            // console.log('topleft', topLeftX, 'x', topLeftY, 'bottomright', bottomRightX, 'x', bottomRightY);
+            // console.log('FAST INSERTING', id, 'INTO', topLeftX, topLeftY);
 
             this.add(topLeftX, topLeftY, id);
 
-            // console.log('Single cell', key);
-
             return;
         }
-
-        const topRightX = bottomRightX;
-        const bottomLeftY = bottomRightY;
-
-        const width = (topRightX - topLeftX) + 1;
-        const height = Math.max(1, Math.ceil((bottomLeftY - topLeftY) / this.height));
-
-        // console.log('width', width, 'height', height);
-        // console.log('topleft', topLeftX, topLeftY, 'topright', topRightX, topRightY, 'bottomleft', bottomLeftX, bottomLeftY, 'bottomright', bottomRightX, bottomRightY);
 
         let gridX = topLeftX;
         let gridY = topLeftY;
@@ -185,9 +198,9 @@ export class SpatialHashGrid
 
         for (let i = 0; i < width * height; i++)
         {
-            this.add(gridX, gridY, id);
+            // console.log('INSERTING', id, 'INTO', gridX, gridY);
 
-            // console.log('adding to index', key);
+            this.add(gridX, gridY, id);
 
             gridX++;
             placed++;
