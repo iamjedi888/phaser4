@@ -1,11 +1,25 @@
+import { GameInstance } from '../../GameInstance';
 import { GetParentID } from '../hierarchy/GetParentID';
 import { SetDirtyChildCache } from './SetDirtyChildCache';
 import { SetDirtyChildTransform } from './SetDirtyChildTransform';
 import { WillCacheChildren } from '../permissions/WillCacheChildren';
 
+let prevParentID: number;
+let prevFrame: number;
+
 export function SetDirtyParents (childID: number): void
 {
     let id = GetParentID(childID);
+
+    const frame = GameInstance.getFrame();
+
+    if (id === prevParentID && frame === prevFrame)
+    {
+        return;
+    }
+
+    prevParentID = id;
+    prevFrame = frame;
 
     while (id)
     {
