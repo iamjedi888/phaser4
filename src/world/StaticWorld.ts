@@ -7,7 +7,6 @@ import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
 import { ClearDirtyColor } from '../components/dirty/ClearDirtyColor';
-import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
 import { ColorComponent } from '../components/color/ColorComponent';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
@@ -113,8 +112,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             if (HasDirtyTransform(id))
             {
                 UpdateTransforms(id, cx, cy, cright, cbottom, cameraUpdated);
-
-                ClearDirtyTransform(id);
 
                 renderData.dirtyLocal++;
             }
