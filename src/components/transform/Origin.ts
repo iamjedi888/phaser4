@@ -6,52 +6,68 @@ import { UpdateExtent } from './UpdateExtent';
 export class Origin implements IVec2
 {
     private id: number;
+    private _x: number;
+    private _y: number;
+    private _data: Float32Array;
 
     constructor (id: number, x: number = 0, y: number = 0)
     {
         this.id = id;
 
-        this.x = x;
-        this.y = y;
+        this._data = Transform2DComponent.data[id];
+
+        this.set(x, y);
     }
 
     set (x: number, y: number = x): this
     {
-        const id = this.id;
+        const data = this._data;
 
-        Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = x;
-        Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = y;
+        this._x = x;
+        this._y = y;
 
-        UpdateExtent(id, Transform2DComponent.data[id][TRANSFORM.FRAME_WIDTH], Transform2DComponent.data[id][TRANSFORM.FRAME_HEIGHT]);
+        data[TRANSFORM.ORIGIN_X] = x;
+        data[TRANSFORM.ORIGIN_Y] = y;
+
+        UpdateExtent(this.id, data[TRANSFORM.FRAME_WIDTH], data[TRANSFORM.FRAME_HEIGHT]);
 
         return this;
     }
 
     set x (value: number)
     {
-        const id = this.id;
+        const data = this._data;
 
-        Transform2DComponent.data[id][TRANSFORM.ORIGIN_X] = value;
+        this._x = value;
 
-        UpdateExtent(id, Transform2DComponent.data[id][TRANSFORM.FRAME_WIDTH], Transform2DComponent.data[id][TRANSFORM.FRAME_HEIGHT]);
+        data[TRANSFORM.ORIGIN_X] = value;
+
+        UpdateExtent(this.id, data[TRANSFORM.FRAME_WIDTH], data[TRANSFORM.FRAME_HEIGHT]);
     }
 
     get x (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.ORIGIN_X];
+        return this._x;
     }
 
     set y (value: number)
     {
-        const id = this.id;
+        const data = this._data;
 
-        Transform2DComponent.data[id][TRANSFORM.ORIGIN_Y] = value;
+        this._y = value;
 
-        UpdateExtent(id, Transform2DComponent.data[id][TRANSFORM.FRAME_WIDTH], Transform2DComponent.data[id][TRANSFORM.FRAME_HEIGHT]);
+        data[TRANSFORM.ORIGIN_Y] = value;
+
+        UpdateExtent(this.id, data[TRANSFORM.FRAME_WIDTH], data[TRANSFORM.FRAME_HEIGHT]);
     }
 
     get y (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.ORIGIN_Y];
+        return this._y;
+    }
+
+    destroy (): void
+    {
+        this._data = null;
     }
 }

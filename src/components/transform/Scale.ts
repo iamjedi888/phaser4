@@ -8,10 +8,13 @@ export class Scale implements IVec2
     private id: number;
     private _x: number;
     private _y: number;
+    private _data: Float32Array;
 
     constructor (id: number, x: number = 1, y: number = 1)
     {
         this.id = id;
+
+        this._data = Transform2DComponent.data[id];
 
         this.set(x, y);
     }
@@ -28,11 +31,9 @@ export class Scale implements IVec2
     {
         this._x = value;
 
-        const id = this.id;
+        this._data[TRANSFORM.SCALE_X] = value;
 
-        Transform2DComponent.data[id][TRANSFORM.SCALE_X] = value;
-
-        SetDirtyTransform(id);
+        SetDirtyTransform(this.id);
     }
 
     get x (): number
@@ -44,15 +45,18 @@ export class Scale implements IVec2
     {
         this._y = value;
 
-        const id = this.id;
+        this._data[TRANSFORM.SCALE_Y] = value;
 
-        Transform2DComponent.data[id][TRANSFORM.SCALE_Y] = value;
-
-        SetDirtyTransform(id);
+        SetDirtyTransform(this.id);
     }
 
     get y (): number
     {
         return this._y;
+    }
+
+    destroy (): void
+    {
+        this._data = null;
     }
 }

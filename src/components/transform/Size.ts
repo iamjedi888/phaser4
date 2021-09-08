@@ -6,10 +6,13 @@ import { UpdateExtent } from './UpdateExtent';
 export class Size implements IVec2
 {
     private id: number;
+    private _data: Float32Array;
 
     constructor (id: number, width: number = 0, height: number = 0)
     {
         this.id = id;
+
+        this._data = Transform2DComponent.data[id];
 
         this.set(width, height);
     }
@@ -29,7 +32,7 @@ export class Size implements IVec2
 
     get width (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.FRAME_WIDTH];
+        return this._data[TRANSFORM.FRAME_WIDTH];
     }
 
     set height (value: number)
@@ -39,7 +42,7 @@ export class Size implements IVec2
 
     get height (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.FRAME_HEIGHT];
+        return this._data[TRANSFORM.FRAME_HEIGHT];
     }
 
     set x (value: number)
@@ -60,5 +63,10 @@ export class Size implements IVec2
     get y (): number
     {
         return this.height;
+    }
+
+    destroy (): void
+    {
+        this._data = null;
     }
 }

@@ -1,17 +1,20 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
 import { IVec2 } from '../../math/vec2/IVec2';
-import { SetDirtyTransform } from '../dirty';
+import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 
 export class Position implements IVec2
 {
     private id: number;
     private _x: number;
     private _y: number;
+    private _data: Float32Array;
 
     constructor (id: number, x: number = 0, y: number = 0)
     {
         this.id = id;
+
+        this._data = Transform2DComponent.data[id];
 
         this.set(x, y);
     }
@@ -28,11 +31,9 @@ export class Position implements IVec2
     {
         this._x = value;
 
-        const id = this.id;
+        this._data[TRANSFORM.X] = value;
 
-        Transform2DComponent.data[id][TRANSFORM.X] = value;
-
-        SetDirtyTransform(id);
+        SetDirtyTransform(this.id);
     }
 
     get x (): number
@@ -44,15 +45,18 @@ export class Position implements IVec2
     {
         this._y = value;
 
-        const id = this.id;
+        this._data[TRANSFORM.Y] = value;
 
-        Transform2DComponent.data[id][TRANSFORM.Y] = value;
-
-        SetDirtyTransform(id);
+        SetDirtyTransform(this.id);
     }
 
     get y (): number
     {
         return this._y;
+    }
+
+    destroy (): void
+    {
+        this._data = null;
     }
 }

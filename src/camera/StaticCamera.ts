@@ -21,11 +21,15 @@ export class StaticCamera implements IStaticCamera
 
     matrix: IMatrix4;
 
+    private _data: Float32Array;
+
     constructor (width: number, height: number)
     {
         const id = this.id;
 
-        AddTransform2DComponent(id, 0, 0, 0, 0);
+        AddTransform2DComponent(id);
+
+        this._data = Transform2DComponent.data[id];
 
         this.matrix = new Matrix4();
 
@@ -34,22 +38,22 @@ export class StaticCamera implements IStaticCamera
 
     getBoundsX (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X1];
+        return this._data[TRANSFORM.BOUNDS_X1];
     }
 
     getBoundsY (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y1];
+        return this._data[TRANSFORM.BOUNDS_Y1];
     }
 
     getBoundsRight (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_X2];
+        return this._data[TRANSFORM.BOUNDS_X2];
     }
 
     getBoundsBottom (): number
     {
-        return Transform2DComponent.data[this.id][TRANSFORM.BOUNDS_Y2];
+        return this._data[TRANSFORM.BOUNDS_Y2];
     }
 
     getMatrix (): Float32Array
