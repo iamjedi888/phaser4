@@ -84,8 +84,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         SetWillTransformChildren(this.id, false);
         SetWillCacheChildren(this.id, false);
 
-        //  The stack can be up to 32 layers deep
-        this.stack = new Uint32Array(32);
+        //  The stack can be up to 256 layers deep
+        this.stack = new Uint32Array(256);
     }
 
     updateChild (id: number, parentID: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
