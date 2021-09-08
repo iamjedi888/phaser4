@@ -32,7 +32,7 @@ export class WorldCamera implements IStaticCamera
     {
         const id = this.id;
 
-        AddTransform2DComponent(id, 0, 0, 0, 0);
+        AddTransform2DComponent(id);
 
         this.matrix = new Matrix4();
 
