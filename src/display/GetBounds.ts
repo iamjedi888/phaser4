@@ -18,16 +18,16 @@ export function GetBounds (...children: IGameObject[]): Rectangle
 
         if (hasComponent(GameObjectWorld, Transform2DComponent, childID))
         {
-            const { x, y, right, bottom } = GetLocalBounds(childID);
+            const { left, top, right, bottom } = GetLocalBounds(childID);
 
-            if (x < minX)
+            if (left < minX)
             {
-                minX = x;
+                minX = left;
             }
 
-            if (y < minY)
+            if (top < minY)
             {
-                minY = y;
+                minY = top;
             }
 
             if (right > maxX)
