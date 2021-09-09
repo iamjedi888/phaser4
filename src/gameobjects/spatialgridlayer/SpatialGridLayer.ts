@@ -6,11 +6,9 @@ import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { SetCustomDisplayList } from '../../components/permissions/SetCustomDisplayList';
 import { SetDirtyDisplayList } from '../../components/dirty/SetDirtyDisplayList';
-import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../../components/permissions/SetWillTransformChildren';
 import { SetWillUpdateChildren } from '../../components/permissions/SetWillUpdateChildren';
 import { SpatialHashGrid } from '../../math/spatialgrid/SpatialHashGrid';
-import { UpdateTransforms } from '../../components/transform/UpdateTransforms';
 
 export class SpatialGridLayer extends GameObject
 {
@@ -26,16 +24,13 @@ export class SpatialGridLayer extends GameObject
 
         const id = this.id;
 
-        SetWillTransformChildren(id, false);
-        SetWillCacheChildren(id, true);
         SetCustomDisplayList(id, true);
+        SetWillTransformChildren(id, false);
         SetWillUpdateChildren(id, updateChildren);
     }
 
     getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     {
-        const start = performance.now();
-
         const camera = renderPass.current2DCamera;
 
         const cx = camera.getBoundsX();
@@ -52,30 +47,31 @@ export class SpatialGridLayer extends GameObject
             result.push(GameObjectCache.get(id));
         });
 
-        window['gc'] = performance.now() - start;
-
         ClearDirtyDisplayList(this.id);
 
         return result;
     }
 
-    onAddChild (child: IGameObject): void
+    onAddChild (childID: number): void
     {
-        if (HasDirtyTransform(child.id))
+        //  We only add it directly to the hash if its transform is clean.
+        //  As it will be added by `onUpdateChild` as part of the World.preRender step if its transform is dirty.
+        if (!HasDirtyTransform(childID))
         {
-            const max = Number.MAX_SAFE_INTEGER;
-
-            UpdateTransforms(child.id, 0, 0, max, max, true);
+            this.hash.add(childID);
         }
-
-        this.hash.add(child.id);
 
         SetDirtyDisplayList(this.id);
     }
 
-    onRemoveChild (child: IGameObject): void
+    onUpdateChild (childID: number): void
     {
-        this.hash.remove(child.id);
+        this.hash.update(childID);
+    }
+
+    onRemoveChild (childID: number): void
+    {
+        this.hash.remove(childID);
 
         SetDirtyDisplayList(this.id);
     }
