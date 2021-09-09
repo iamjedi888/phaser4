@@ -14,7 +14,7 @@ export class SpatialHashGrid
 
     debug: Array<{ key: string, x: number, y: number, width: number, height: number }>;
 
-    constructor (minX: number, minY: number, maxX: number, maxY: number, cellWidth: number, cellHeight: number)
+    constructor (cellWidth: number, cellHeight: number)
     {
         this.cellWidth = Math.abs(cellWidth);
         this.cellHeight = Math.abs(cellHeight);
@@ -23,6 +23,7 @@ export class SpatialHashGrid
 
         this.indexes = [];
 
+        /*
         this.debug = [];
 
         for (let y = minY; y < maxX; y += cellHeight)
@@ -34,6 +35,7 @@ export class SpatialHashGrid
                 this.debug.push({ key: this.getKey(x, y), x: x, y: y, width: cellWidth, height: cellHeight });
             }
         }
+        */
     }
 
     clear (): void
