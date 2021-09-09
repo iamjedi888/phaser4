@@ -13,9 +13,11 @@ import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { HasChildren } from '../components/hierarchy/HasChildren';
+import { HasCustomDisplayList } from '../components/permissions/HasCustomDisplayList';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { HasDirtyColor } from '../components/dirty/HasDirtyColor';
+import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
 import { HasDirtyWorldTransform } from '../components/dirty/HasDirtyWorldTransform';
 import { IGameObject } from '../gameobjects/IGameObject';
@@ -50,7 +52,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     declare camera: WorldCamera;
 
     // renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number };
+    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, processed: number };
 
     stack: Uint32Array;
 
@@ -77,7 +79,8 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             updated: 0,
             updateMs: 0,
             fps: 0,
-            delta: 0
+            delta: 0,
+            processed: 0
         };
 
         SetWillTransformChildren(this.id, false);
@@ -132,7 +135,16 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
     processNode (node: number, cameraUpdated: boolean): boolean
     {
-        return (HasChildren(node) && (cameraUpdated || WillUpdateTransform(node)));
+        if (HasCustomDisplayList(node))
+        {
+            return HasDirtyDisplayList(node);
+        }
+        else if (HasChildren(node) && (cameraUpdated || WillUpdateTransform(node)))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     //#ifdef RENDER_STATS
@@ -147,6 +159,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.dirtyView = 0;
         renderData.dirtyWorld = 0;
         renderData.dirtyQuad = 0;
+        renderData.processed = 0;
     }
     //#endif
 
@@ -334,7 +347,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.fps = this.scene.game.time.fps;
         renderData.delta = this.scene.game.time.delta;
         renderData.rendered = GetRenderChildTotal();
-        renderData.dirtyQuad = GetProcessTotal();
+        renderData.processed = GetProcessTotal();
         // renderData.renderList = GetRenderList();
 
         this.scene.game.renderStats = renderData;
