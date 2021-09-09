@@ -12,7 +12,7 @@ export interface IGameObject
     visible: boolean;
     visibleChildren: boolean;
 
-    events?: Map<string, Set<IEventInstance>>;
+    events: Map<string, Set<IEventInstance>>;
 
     // depth: number;
 
@@ -31,7 +31,7 @@ export interface IGameObject
 
     hasParent (id?: number): boolean;
     getParent (): IGameObject;
-    getChildren (): IGameObject[];
+    getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     getNumChildren (): number;
 
     onAddChild (child: IGameObject): void;

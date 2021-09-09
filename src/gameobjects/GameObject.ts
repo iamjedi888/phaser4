@@ -35,7 +35,7 @@ export class GameObject implements IGameObject
     //  User defined name. Never used internally.
     name: string = '';
 
-    events?: Map<string, Set<IEventInstance>>;
+    events: Map<string, Set<IEventInstance>>;
 
     constructor ()
     {
@@ -157,7 +157,8 @@ export class GameObject implements IGameObject
         return GetParentGameObject(this.id);
     }
 
-    getChildren (): IGameObject[]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     {
         return GetChildrenFromParentID(this.id);
     }
