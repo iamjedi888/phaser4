@@ -12,8 +12,6 @@ export class SpatialHashGrid
     //  id insertion order array
     indexes: number[];
 
-    debug: Array<{ key: string, x: number, y: number, width: number, height: number }>;
-
     constructor (cellWidth: number, cellHeight: number)
     {
         this.cellWidth = Math.abs(cellWidth);
@@ -22,20 +20,6 @@ export class SpatialHashGrid
         this.cells = new Map();
 
         this.indexes = [];
-
-        /*
-        this.debug = [];
-
-        for (let y = minY; y < maxX; y += cellHeight)
-        {
-            for (let x = minX; x < maxX; x += cellWidth)
-            {
-                this.cells.set(this.getKey(x, y), new Set());
-
-                this.debug.push({ key: this.getKey(x, y), x: x, y: y, width: cellWidth, height: cellHeight });
-            }
-        }
-        */
     }
 
     clear (): void
@@ -112,12 +96,10 @@ export class SpatialHashGrid
 
         let results: number[] = [];
 
-        //  Quick abort if we only need the contents of 1 cell
+        //  Quick exit if we only need the contents of 1 cell
         if (topLeftX === bottomRightX && topLeftY === bottomRightY)
         {
             const key = this.getGridKey(topLeftX, topLeftY);
-
-            // console.log('Single cell', key);
 
             if (cells.has(key))
             {
@@ -139,8 +121,6 @@ export class SpatialHashGrid
 
                 if (cells.has(key))
                 {
-                    // console.log('getting cell', key, cells.has(key), ...cells.get(key));
-
                     results = results.concat(...cells.get(key));
                 }
 
@@ -183,13 +163,9 @@ export class SpatialHashGrid
 
         this.indexes.push(id);
 
-        // console.log('INSERT', id, '>', topLeftX, topLeftY, 'to', bottomRightX, bottomRightY, 'width/height', width, height);
-
-        //  Quick abort if entity fits into 1 cell
+        //  Quick exit if entity fits into 1 cell
         if (width === 1 && height === 1)
         {
-            // console.log('FAST INSERTING', id, 'INTO', topLeftX, topLeftY);
-
             this.addToCell(id, topLeftX, topLeftY);
 
             return;
@@ -201,8 +177,6 @@ export class SpatialHashGrid
 
         for (let i = 0; i < width * height; i++)
         {
-            // console.log('INSERTING', id, 'INTO', gridX, gridY);
-
             this.addToCell(id, gridX, gridY);
 
             gridX++;
