@@ -48,8 +48,6 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
         data[TRANSFORM.WORLD_D] = d;
         data[TRANSFORM.WORLD_TX] = tx;
         data[TRANSFORM.WORLD_TY] = ty;
-
-        // console.log('-- UpdateTransform', id, 'isRoot');
     }
     else
     {
@@ -81,8 +79,6 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
 
         //  Recalc or just set false? Saves on the extra ops and min/maxing
         axisAligned = false;
-
-        // console.log('-- UpdateTransform', id, 'world');
     }
 
     //  Update Quad and InView:
