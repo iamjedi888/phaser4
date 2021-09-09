@@ -10,7 +10,8 @@ export class SpatialHashGrid
     cells: Map<string, Set<number>>;
 
     //  id insertion order array
-    indexes: number[];
+    ids: number[];
+    index: number;
 
     constructor (cellWidth: number, cellHeight: number)
     {
@@ -19,7 +20,8 @@ export class SpatialHashGrid
 
         this.cells = new Map();
 
-        this.indexes = [];
+        this.ids = [];
+        this.index = 0;
     }
 
     clear (): void
@@ -28,7 +30,8 @@ export class SpatialHashGrid
 
         this.cells.clear();
 
-        this.indexes = [];
+        this.ids = [];
+        this.index = 0;
     }
 
     getX (x: number): number
@@ -138,11 +141,11 @@ export class SpatialHashGrid
 
         //  Sort by insertion index
 
-        const indexes = this.indexes;
+        const ids = this.ids;
 
         results.sort((a: number, b: number): number =>
         {
-            return indexes.indexOf(a) - indexes.indexOf(b);
+            return ids[a] - ids[b];
         });
 
         return new Set(results);
@@ -161,7 +164,7 @@ export class SpatialHashGrid
         const width = (bottomRightX - topLeftX);
         const height = (bottomRightY - topLeftY);
 
-        this.indexes.push(id);
+        this.ids[id] = this.index++;
 
         //  Quick exit if entity fits into 1 cell
         if (width === 1 && height === 1)
@@ -193,30 +196,13 @@ export class SpatialHashGrid
 
     has (id: number): boolean
     {
-        let result = false;
-
-        this.cells.forEach(cell =>
-        {
-            if (cell.has(id))
-            {
-                result = true;
-
-                return;
-            }
-        });
-
-        return result;
+        return !!this.ids[id];
     }
 
     remove (id: number): void
     {
         this.cells.forEach(cell => cell.delete(id));
 
-        const idx = this.indexes.indexOf(id);
-
-        if (idx > -1)
-        {
-            this.indexes.splice(idx, 1);
-        }
+        this.ids[id] = 0;
     }
 }
