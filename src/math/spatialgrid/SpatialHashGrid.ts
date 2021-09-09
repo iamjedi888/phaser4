@@ -194,6 +194,13 @@ export class SpatialHashGrid
         }
     }
 
+    update (id: number): void
+    {
+        this.remove(id);
+
+        this.add(id);
+    }
+
     has (id: number): boolean
     {
         return !!this.ids[id];
@@ -201,8 +208,11 @@ export class SpatialHashGrid
 
     remove (id: number): void
     {
-        this.cells.forEach(cell => cell.delete(id));
+        if (this.has(id))
+        {
+            this.cells.forEach(cell => cell.delete(id));
 
-        this.ids[id] = 0;
+            this.ids[id] = 0;
+        }
     }
 }
