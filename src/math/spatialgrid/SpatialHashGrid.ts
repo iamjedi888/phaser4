@@ -1,3 +1,4 @@
+import { Clamp } from '../Clamp';
 import { GetLocalBounds } from '../../components/transform/GetLocalBounds';
 
 export class SpatialHashGrid
@@ -11,6 +12,10 @@ export class SpatialHashGrid
     cells: Map<string, Set<number>>;
 
     debug: Array<{ key: string, x: number, y: number, width: number, height: number }>;
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
 
     constructor (minX: number, minY: number, maxX: number, maxY: number, cellWidth: number, cellHeight: number)
     {
@@ -19,6 +24,11 @@ export class SpatialHashGrid
 
         const width = Math.floor((maxX - minX) / cellWidth);
         const height = Math.floor((maxY - minY) / cellHeight);
+
+        this.minX = minX;
+        this.minY = minY;
+        this.maxX = maxX;
+        this.maxY = maxY;
 
         this.width = width;
         this.height = height;
@@ -104,18 +114,23 @@ export class SpatialHashGrid
         return [];
     }
 
+    inView (x: number, y: number, width: number, height: number): Set<number>
+    {
+        return this.intersects(x, y, x + width, y + height);
+    }
+
     intersects (left: number, top: number, right: number, bottom: number): Set<number>
     {
+        left = Clamp(left, this.minX, this.maxX);
+        top = Clamp(top, this.minY, this.maxY);
+        right = Clamp(right, this.minX, this.maxX);
+        bottom = Clamp(bottom, this.minY, this.maxY);
+
         const topLeftX = this.getX(left);
         const topLeftY = this.getY(top);
 
-        const bottomRightX = this.getXC(right);
-        const bottomRightY = this.getYC(bottom);
-
-        // console.log('----------');
-        // console.log('INTERSECTS');
-        // console.log('----------');
-        // console.log(topLeftX, topLeftY, 'to', bottomRightX, bottomRightY);
+        const bottomRightX = this.getX(right);
+        const bottomRightY = this.getY(bottom);
 
         const cells = this.cells;
 
@@ -126,13 +141,18 @@ export class SpatialHashGrid
 
             // console.log('Single cell', key);
 
-            return new Set([ ...cells.get(key) ]);
+            if (cells.has(key))
+            {
+                return new Set([ ...cells.get(key) ]);
+            }
+            else
+            {
+                return new Set();
+            }
         }
 
         const width = (bottomRightX - topLeftX) + 1;
         const height = (bottomRightY - topLeftY) + 1;
-
-        // console.log('width', width, 'height', height);
 
         let gridX = topLeftX;
         let gridY = topLeftY;
@@ -144,11 +164,9 @@ export class SpatialHashGrid
         {
             const key = this.getGridKey(gridX, gridY);
 
-            // console.log('getting cell', key, cells.has(key), ...cells.get(key));
-
             if (cells.has(key))
             {
-                // console.log(...cells.get(key));
+                // console.log('getting cell', key, cells.has(key), ...cells.get(key));
 
                 results = results.concat(...cells.get(key));
             }
