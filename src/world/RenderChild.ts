@@ -58,6 +58,12 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
 
     if (HasCustomDisplayList(id))
     {
+        gameObject = GameObjectCache.get(id);
+
+        gameObject.renderGL(renderPass);
+
+        RENDER_CHILD_TOTAL++;
+
         const children = gameObject.getChildren(renderPass);
 
         const numChildren = children.length;
@@ -84,6 +90,8 @@ export function RenderChild <T extends IRenderPass> (renderPass: T, id: number):
                 }
             }
         }
+
+        gameObject.postRenderGL(renderPass);
     }
     else
     {
