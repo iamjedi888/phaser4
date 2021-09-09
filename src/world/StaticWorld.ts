@@ -112,15 +112,21 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         if (checkTransform)
         {
+            let hasUpdated = false;
+
             if (HasDirtyTransform(id))
             {
                 UpdateTransforms(id, cx, cy, cright, cbottom, cameraUpdated);
+
+                hasUpdated = true;
 
                 renderData.dirtyLocal++;
             }
             else if (HasDirtyWorldTransform(parentID))
             {
                 UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
+
+                hasUpdated = true;
 
                 renderData.dirtyWorld++;
             }
@@ -129,6 +135,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                 SetInViewFromBounds(id, cx, cy, cright, cbottom);
 
                 renderData.dirtyView++;
+            }
+
+            if (hasUpdated && HasCustomDisplayList(parentID))
+            {
+                GameObjectCache.get(parentID).onUpdateChild(id);
             }
         }
     }
