@@ -169,12 +169,17 @@ export class GameObject implements IGameObject
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onAddChild (child: IGameObject): void
+    onAddChild (childID: number): void
     {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onRemoveChild (child: IGameObject): void
+    onUpdateChild (childID: number): void
+    {
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onRemoveChild (childID: number): void
     {
     }
 

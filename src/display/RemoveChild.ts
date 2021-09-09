@@ -13,7 +13,7 @@ export function RemoveChild <P extends IGameObject, C extends IGameObject> (pare
 
         DecreaseNumChildren(parentID);
 
-        parent.onRemoveChild(child);
+        parent.onRemoveChild(childID);
     }
 
     return child;

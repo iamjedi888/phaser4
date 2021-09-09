@@ -34,8 +34,9 @@ export interface IGameObject
     getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     getNumChildren (): number;
 
-    onAddChild (child: IGameObject): void;
-    onRemoveChild (child: IGameObject): void;
+    onAddChild (childID: number): void;
+    onUpdateChild (childID: number): void;
+    onRemoveChild (childID: number): void;
 
     toString (): string;
 

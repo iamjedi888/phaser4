@@ -33,7 +33,7 @@ export function AddChild <P extends IGameObject, C extends IGameObject> (parent:
 
         SetAndUpdateParent(parentID, childID);
 
-        parent.onAddChild(child);
+        parent.onAddChild(childID);
     }
 
     return child;
