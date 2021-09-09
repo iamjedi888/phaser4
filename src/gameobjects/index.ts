@@ -9,6 +9,7 @@ import { GameObjectCache } from './GameObjectCache';
 import { Layer } from './layer/Layer';
 import { Rectangle } from './rectangle/Rectangle';
 import { RenderLayer } from './renderlayer/RenderLayer';
+import { SpatialGridLayer } from './spatialgridlayer/SpatialGridLayer';
 import { Sprite } from './sprite/Sprite';
 import { SpriteBatch } from './spritebatch/SpriteBatch';
 import { Text } from './text/Text';
@@ -24,6 +25,7 @@ export {
     Layer,
     Rectangle,
     RenderLayer,
+    SpatialGridLayer,
     Sprite,
     SpriteBatch,
     Text
