@@ -37,6 +37,8 @@ export function AddChildBefore <T extends IGameObject, C extends IGameObject> (b
         SetPreviousSiblingID(childID, prevID);
 
         SetAndUpdateParent(parentID, childID);
+
+        parent.onAddChild(child);
     }
 
     return child;

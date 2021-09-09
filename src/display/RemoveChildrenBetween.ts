@@ -29,6 +29,8 @@ export function RemoveChildrenBetween <P extends IGameObject> (parent: P, beginI
 
         RelinkChildren(parentID, children);
 
+        removed.forEach(id => parent.onRemoveChild(GameObjectCache.get(id)));
+
         return removed.map(id => GameObjectCache.get(id));
     }
     else
