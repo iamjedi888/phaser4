@@ -32,7 +32,7 @@ export class Game extends EventEmitter
     willRender: boolean = true;
 
     // renderStats: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
-    renderStats: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number };
+    renderStats: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, processed: number };
 
     constructor (...settings: { (): void }[])
     {
