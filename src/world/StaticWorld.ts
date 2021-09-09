@@ -1,6 +1,6 @@
 import * as WorldEvents from './events';
 
-import { GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
+import { GetProcessTotal, GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
@@ -334,6 +334,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         renderData.fps = this.scene.game.time.fps;
         renderData.delta = this.scene.game.time.delta;
         renderData.rendered = GetRenderChildTotal();
+        renderData.dirtyQuad = GetProcessTotal();
         // renderData.renderList = GetRenderList();
 
         this.scene.game.renderStats = renderData;
