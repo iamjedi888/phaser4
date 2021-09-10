@@ -4,7 +4,7 @@ import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateWorldTransformSingle (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean): void
+export function UpdateWorldTransform (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean): void
 {
     const parentData = Transform2DComponent.data[parentID];
     const data = Transform2DComponent.data[id];

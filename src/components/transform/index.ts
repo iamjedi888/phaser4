@@ -31,7 +31,7 @@ import { Transform2DComponent } from './Transform2DComponent';
 import { UpdateAxisAligned } from './UpdateAxisAligned';
 import { UpdateExtent } from './UpdateExtent';
 import { UpdateTransforms } from './UpdateTransforms';
-import { UpdateWorldTransformSingle } from './UpdateWorldTransformSingle';
+import { UpdateWorldTransform } from './UpdateWorldTransform';
 
 export {
     AddTransform2DComponent,
@@ -67,5 +67,5 @@ export {
     UpdateAxisAligned,
     UpdateExtent,
     UpdateTransforms,
-    UpdateWorldTransformSingle
+    UpdateWorldTransform
 };

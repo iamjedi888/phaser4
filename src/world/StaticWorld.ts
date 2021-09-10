@@ -33,7 +33,7 @@ import { SetQuadColor } from '../components/vertices/SetQuadColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { UpdateTransforms } from '../components/transform/UpdateTransforms';
-import { UpdateWorldTransformSingle } from '../components/transform/UpdateWorldTransformSingle';
+import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillUpdate } from '../components/permissions/WillUpdate';
 import { WillUpdateTransform } from '../components/dirty/WillUpdateTransform';
@@ -124,7 +124,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             }
             else if (HasDirtyWorldTransform(parentID))
             {
-                UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
+                UpdateWorldTransform(id, parentID, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
 
                 hasUpdated = true;
 
