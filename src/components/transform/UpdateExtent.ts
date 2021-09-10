@@ -16,13 +16,13 @@ export function UpdateExtent (id: number, width: number, height: number): void
     data[TRANSFORM.FRAME_WIDTH] = width;
     data[TRANSFORM.FRAME_HEIGHT] = height;
 
-    //  Really?!
-    data[TRANSFORM.WORLD_A] = x;
-    data[TRANSFORM.WORLD_B] = y;
-    data[TRANSFORM.WORLD_C] = x + width;
-    data[TRANSFORM.WORLD_D] = y + height;
-    data[TRANSFORM.WORLD_TX] = width;
-    data[TRANSFORM.WORLD_TY] = height;
+    //  TODO - Do we really need to do this?
+    // data[TRANSFORM.WORLD_A] = x;
+    // data[TRANSFORM.WORLD_B] = y;
+    // data[TRANSFORM.WORLD_C] = x + width;
+    // data[TRANSFORM.WORLD_D] = y + height;
+    // data[TRANSFORM.WORLD_TX] = width;
+    // data[TRANSFORM.WORLD_TY] = height;
 
     SetDirtyTransform(id);
 }
