@@ -1,7 +1,7 @@
 import { IBaseWorld } from './IBaseWorld';
-import { ICamera } from '../camera/ICamera';
+import { IWorldCamera } from '../camera/IWorldCamera';
 
 export interface IWorld extends IBaseWorld
 {
-    camera: ICamera;
+    camera: IWorldCamera;
 }

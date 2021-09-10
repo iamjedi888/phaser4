@@ -1,48 +1,41 @@
-import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
 import { BaseWorld } from './BaseWorld';
-import { Camera } from '../camera/Camera';
-import { ICamera } from '../camera/ICamera';
+import { GetRenderList } from './RenderGLNode';
+import { IGameObject } from '../gameobjects/IGameObject';
+import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IWorld } from './IWorld';
+import { PreRenderWorld } from './PreRenderWorld';
+import { RenderGLWorld } from './RenderGLWorld';
+import { RendererInstance } from '../renderer/RendererInstance';
+import { WorldCamera } from '../camera/WorldCamera';
 
 export class World extends BaseWorld implements IWorld
 {
-    declare camera: ICamera;
+    readonly type: string = 'World';
 
-    enableCameraCull: boolean = true;
+    declare camera: WorldCamera;
 
     constructor (scene: IScene)
     {
         super(scene);
 
-        this.camera = new Camera();
+        const renderer = RendererInstance.get();
 
-        AddTransform2DComponent(this.id);
+        this.camera = new WorldCamera(renderer.width, renderer.height);
     }
 
-    //  TODO: An out-of-bounds parent with in-bounds children will be cull checked against in postRender, stop this.
-    //  TODO: Use circle-circle check when camera is rotated.
-    /*
-    addNode (node: IGameObject, renderData: IWorldRenderData): boolean
+    preRender (gameFrame: number): boolean
     {
-        const cull = this.enableCameraCull;
-
-        if (node.isRenderable())
-        {
-            if (node.isDirty(DIRTY_CONST.PENDING_RENDER) || node === this)
-            {
-                //  Already been cull checked once, so add to renderList and return
-                renderData.renderList.push(node);
-            }
-            else if (!cull || (cull && RectangleToRectangle(node.bounds.get(), this.camera.bounds)))
-            {
-                renderData.renderList.push(node);
-
-                return true;
-            }
-        }
-
-        return false;
+        return PreRenderWorld(this, gameFrame);
     }
-    */
+
+    renderGL <T extends IRenderPass> (renderPass: T): void
+    {
+        RenderGLWorld(this, renderPass);
+    }
+
+    getRenderList (): IGameObject[]
+    {
+        return GetRenderList();
+    }
 }
