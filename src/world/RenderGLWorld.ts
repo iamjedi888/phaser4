@@ -1,6 +1,6 @@
 import * as WorldEvents from './events';
 
-import { GetProcessTotal, GetRenderChildTotal, RenderNode, ResetRenderChildTotal } from './RenderNode';
+import { GetProcessTotal, GetRenderChildTotal, RenderGLNode, ResetRenderChildTotal } from './RenderGLNode';
 
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { Emit } from '../events/Emit';
@@ -33,7 +33,7 @@ export function RenderGLWorld <T extends IBaseWorld, P extends IRenderPass> (wor
     {
         if (WillRender(id))
         {
-            RenderNode(renderPass, id);
+            RenderGLNode(renderPass, id);
         }
 
         id = GetNextSiblingID(id);

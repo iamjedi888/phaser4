@@ -39,7 +39,7 @@ export function ResetRenderChildTotal (): void
     RENDER_LIST.length = 0;
 }
 
-export function RenderNode <T extends IRenderPass> (renderPass: T, id: number): void
+export function RenderGLNode <T extends IRenderPass> (renderPass: T, id: number): void
 {
     const inView = IsInView(id) || WillCacheChildren(id);
 
@@ -79,7 +79,7 @@ export function RenderNode <T extends IRenderPass> (renderPass: T, id: number): 
             {
                 if (GetNumChildren(childID))
                 {
-                    RenderNode(renderPass, childID);
+                    RenderGLNode(renderPass, childID);
                 }
                 else
                 {
@@ -109,7 +109,7 @@ export function RenderNode <T extends IRenderPass> (renderPass: T, id: number): 
                 {
                     if (GetNumChildren(childID))
                     {
-                        RenderNode(renderPass, childID);
+                        RenderGLNode(renderPass, childID);
                     }
                     else if (IsInView(childID))
                     {
