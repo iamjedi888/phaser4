@@ -39,20 +39,31 @@ export function RenderGLWorld <T extends IBaseWorld, P extends IRenderPass> (wor
         id = GetNextSiblingID(id);
     }
 
-    camera.isDirty = false;
-
     PopColor(renderPass, world.color);
 
     //#ifdef RENDER_STATS
     renderData.renderMs = performance.now() - start;
     renderData.numChildren = world.getNumChildren();
-    renderData.fps = world.scene.game.time.fps;
-    renderData.delta = world.scene.game.time.delta;
+    // renderData.fps = world.scene.game.time.fps;
+    // renderData.delta = world.scene.game.time.delta;
     renderData.rendered = GetRenderChildTotal();
     renderData.processed = GetProcessTotal();
     // renderData.renderList = GetRenderList();
 
-    world.scene.game.renderStats = renderData;
+    const gameStats = world.scene.game.renderStats;
+
+    gameStats.rendered += renderData.rendered;
+    gameStats.dirtyColor += renderData.dirtyColor;
+    gameStats.dirtyLocal += renderData.dirtyLocal;
+    gameStats.dirtyView += renderData.dirtyView;
+    gameStats.dirtyWorld += renderData.dirtyWorld;
+    gameStats.dirtyQuad += renderData.dirtyQuad;
+    gameStats.processed += renderData.processed;
+    gameStats.renderMs += renderData.renderMs;
+    gameStats.numChildren += renderData.numChildren;
+    gameStats.preRenderMs += renderData.preRenderMs;
+    gameStats.updated += renderData.updated;
+    gameStats.updateMs += renderData.updateMs;
     //#endif
 
     Emit(world, WorldEvents.WorldPostRenderEvent, renderPass, world);
