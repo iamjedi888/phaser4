@@ -13,7 +13,9 @@ export class SpatialHashGrid
     ids: number[];
     index: number;
 
-    constructor (cellWidth: number, cellHeight: number)
+    getBounds: (id: number) => { left: number; top: number; right: number; bottom: number };
+
+    constructor (cellWidth: number, cellHeight: number, getBounds: (id: number) => { left: number; top: number; right: number; bottom: number } = GetLocalBounds)
     {
         this.cellWidth = Math.abs(cellWidth);
         this.cellHeight = Math.abs(cellHeight);
@@ -22,6 +24,8 @@ export class SpatialHashGrid
 
         this.ids = [];
         this.index = 0;
+
+        this.getBounds = getBounds;
     }
 
     clear (): void
@@ -153,7 +157,7 @@ export class SpatialHashGrid
 
     add (id: number): void
     {
-        const { left, top, right, bottom } = GetLocalBounds(id);
+        const { left, top, right, bottom } = this.getBounds(id);
 
         const topLeftX = this.getX(left);
         const topLeftY = this.getY(top);
@@ -206,13 +210,18 @@ export class SpatialHashGrid
         return !!this.ids[id];
     }
 
+    getAll (): number[]
+    {
+        return this.ids.filter((index, id) => id !== undefined);
+    }
+
     remove (id: number): void
     {
         if (this.has(id))
         {
             this.cells.forEach(cell => cell.delete(id));
 
-            this.ids[id] = 0;
+            this.ids[id] = undefined;
         }
     }
 }
