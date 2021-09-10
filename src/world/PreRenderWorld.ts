@@ -1,5 +1,6 @@
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
+import { Emit } from '../events/Emit';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
 import { HasCustomDisplayList } from '../components/permissions/HasCustomDisplayList';
@@ -9,6 +10,7 @@ import { IBaseWorld } from './IBaseWorld';
 import { ProcessNode } from './ProcessNode';
 import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { UpdateNode } from './UpdateNode';
+import { WorldPreRenderEvent } from './events/WorldPreRenderEvent';
 
 export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: number): boolean
 {
@@ -22,6 +24,8 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
 
     const camera = world.camera;
     const cameraUpdated = camera.updateBounds();
+
+    Emit(world, WorldPreRenderEvent, world);
 
     const checkColor = HasDirtyChildColor(id);
     const checkTransform = HasDirtyChildTransform(id) || cameraUpdated;
