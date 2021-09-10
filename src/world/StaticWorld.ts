@@ -1,5 +1,5 @@
 import { BaseWorld } from './BaseWorld';
-import { GetRenderList } from './RenderNode';
+import { GetRenderList } from './RenderGLNode';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
