@@ -1,10 +1,13 @@
 import { ClearDirtyDisplayList } from '../../components/dirty/ClearDirtyDisplayList';
 import { GameObject } from '../GameObject';
 import { GameObjectCache } from '../GameObjectCache';
+import { GetWorldID } from '../../components/hierarchy/GetWorldID';
 import { HasDirtyTransform } from '../../components/dirty/HasDirtyTransform';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { SetCustomDisplayList } from '../../components/permissions/SetCustomDisplayList';
+import { SetDirtyChildColor } from '../../components/dirty/SetDirtyChildColor';
+import { SetDirtyChildTransform } from '../../components/dirty/SetDirtyChildTransform';
 import { SetDirtyDisplayList } from '../../components/dirty/SetDirtyDisplayList';
 import { SetWillTransformChildren } from '../../components/permissions/SetWillTransformChildren';
 import { SetWillUpdateChildren } from '../../components/permissions/SetWillUpdateChildren';
@@ -15,6 +18,8 @@ export class SpatialGridLayer extends GameObject
     readonly type: string = 'SpatialGridLayer';
 
     hash: SpatialHashGrid;
+
+    onSortChildren: (a: IGameObject, b: IGameObject) => number;
 
     constructor (cellWidth: number = 512, cellHeight: number = 512, updateChildren: boolean = false)
     {
@@ -31,6 +36,8 @@ export class SpatialGridLayer extends GameObject
 
     getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     {
+        ClearDirtyDisplayList(this.id);
+
         const camera = renderPass.current2DCamera;
 
         const cx = camera.getBoundsX();
@@ -47,7 +54,10 @@ export class SpatialGridLayer extends GameObject
             result.push(GameObjectCache.get(id));
         });
 
-        ClearDirtyDisplayList(this.id);
+        if (this.onSortChildren)
+        {
+            result.sort(this.onSortChildren);
+        }
 
         return result;
     }
@@ -61,7 +71,12 @@ export class SpatialGridLayer extends GameObject
             this.hash.add(childID);
         }
 
+        const worldID = GetWorldID(this.id);
+
         SetDirtyDisplayList(this.id);
+
+        SetDirtyChildTransform(worldID);
+        SetDirtyChildColor(worldID);
     }
 
     onUpdateChild (childID: number): void
