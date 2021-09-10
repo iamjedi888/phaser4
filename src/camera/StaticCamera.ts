@@ -78,7 +78,9 @@ export class StaticCamera implements IStaticCamera
             return true;
         }
 
-        return false;
+        return true;
+
+        // return false;
     }
 
     getBoundsX (): number

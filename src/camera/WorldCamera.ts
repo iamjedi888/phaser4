@@ -116,7 +116,8 @@ export class WorldCamera implements IWorldCamera
             return true;
         }
 
-        return false;
+        return true;
+        // return false;
     }
 
     getBoundsX (): number
