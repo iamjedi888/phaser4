@@ -10,8 +10,7 @@ import { RendererInstance } from '../renderer/RendererInstance';
 import { StaticCamera } from '../camera/StaticCamera';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
-//  and a camera that doesn't move at all (no scrolling, rotation, etc)
-//  Because it has a fixed size, there is no camera culling enabled.
+//  and a camera that doesn't move at all (no moving or scaling)
 //  Games that use this kind of world include Pacman, Bejeweled and 2048.
 
 export class StaticWorld extends BaseWorld implements IStaticWorld
