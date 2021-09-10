@@ -1,65 +1,55 @@
 import { GetFirstChildID } from './GetFirstChildID';
 import { GetNextSiblingID } from './GetNextSiblingID';
-import { HasChildren } from './HasChildren';
 
-export function BranchSearch (parentID: number, processCallback: (id: number) => void, ids?: string[]): void
+export function BranchSearch (id: number, processCallback: (id: number) => boolean): number[]
 {
-    const stack: number[] = [ parentID ];
+    const stack = [ id ];
 
-    let node = GetFirstChildID(parentID);
+    let stackIndex = 1;
+    let node = GetFirstChildID(id);
+
+    const results = [];
 
     stackBlock:
     {
-        while (stack.length > 0)
+        while (stackIndex > 0)
         {
-            // console.log('Starting from', ids[node]);
-
-            processCallback(node);
-            // console.log('Process', ids[node]);
+            results.push(node);
 
             //  Dive as deep as we can go, adding all parents to the stack for _this branch_
+            //  If the parent isn't dirty and has no dirty children, go no further down this branch
 
-            while (HasChildren(node))
+            while (processCallback(node))
             {
-                stack.push(node);
+                stack[stackIndex++] = node;
 
                 node = GetFirstChildID(node);
 
-                processCallback(node);
-                // console.log('Process', ids[node]);
+                results.push(node);
             }
 
             //  We're at the bottom of the branch
-            //  Move horizontally through the siblings, until we hit one with kids
+            //  We know 'node' doesn't have any children, but the next sibling might
+            //  Move horizontally through the siblings, until we hit one with kids, or the end.
 
             let next = GetNextSiblingID(node);
 
             let climb = true;
 
-            if (next)
+            while (next && climb)
             {
-                let hasChildren = false;
-
-                do
+                if (processCallback(next))
                 {
-                    hasChildren = HasChildren(next);
+                    //  The 'next' sibling has a child, so we're going deeper
+                    climb = false;
+                    break;
+                }
+                else
+                {
+                    results.push(next);
 
-                    if (hasChildren)
-                    {
-                        //  We're going deeper
-                        climb = false;
-                        node = next;
-                        break;
-                    }
-                    else
-                    {
-                        processCallback(next);
-                        // console.log('Process4', ids[next]);
-
-                        next = GetNextSiblingID(next);
-                    }
-
-                } while (next && !hasChildren);
+                    next = GetNextSiblingID(next);
+                }
             }
 
             //  The moment we get here, we need to treat it like a whole new branch
@@ -70,11 +60,9 @@ export function BranchSearch (parentID: number, processCallback: (id: number) =>
                 //  No children and no more siblings, so let's climb
                 //  Go back up the stack until we find a node with a sibling
 
-                // console.log('Climbing up from last sibling');
-
-                do
+                while (next === 0)
                 {
-                    node = stack.pop();
+                    node = stack[--stackIndex];
 
                     if (!node)
                     {
@@ -82,19 +70,13 @@ export function BranchSearch (parentID: number, processCallback: (id: number) =>
                     }
 
                     next = GetNextSiblingID(node);
-
-                    // console.log('Popped', ids[node], ' - sibling?', ids[next]);
-
-                } while (next === 0);
-            }
-
-            if (!node)
-            {
-                break stackBlock;
+                }
             }
 
             //  'next' now contains the sibling of the stack parent, set it to 'node'
             node = next;
         }
     }
+
+    return results;
 }
