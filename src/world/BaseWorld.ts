@@ -22,6 +22,9 @@ import { SetWorldID } from '../components/hierarchy/SetWorldID';
 import { UpdateWorld } from './UpdateWorld';
 import { WorldList } from './WorldList';
 
+//  The base World class. You should not create an instance of this, but instead extend it,
+//  or use a class that does, such as StaticWorld or World.
+
 export class BaseWorld extends GameObject implements IBaseWorld
 {
     readonly type: string = 'BaseWorld';
