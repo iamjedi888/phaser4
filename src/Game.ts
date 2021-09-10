@@ -4,6 +4,7 @@ import { AddToParent } from './config/parent/AddToParent';
 import { CreateRenderer } from './config/renderer/CreateRenderer';
 import { CreateSceneManager } from './scenes/CreateSceneManager';
 import { CreateTextureManager } from './textures/CreateTextureManager';
+import { CreateWorldRenderData } from './world/CreateWorldRenderData';
 import { DOMContentLoaded } from './dom/DOMContentLoaded';
 import { Emit } from './events/Emit';
 import { EventEmitter } from './events/EventEmitter';
@@ -12,6 +13,7 @@ import { GameObjectWorld } from './GameObjectWorld';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
 import { IWorldRenderData } from './world/IWorldRenderData';
 import { RendererInstance } from './renderer/RendererInstance';
+import { ResetWorldRenderData } from './world/ResetWorldRenderData';
 import { SceneManagerInstance } from './scenes';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
 import { Time } from './components/timer/Time';
@@ -60,6 +62,7 @@ export class Game extends EventEmitter
         AddToParent();
 
         this.isBooted = true;
+        this.renderStats = CreateWorldRenderData();
 
         Emit(this, 'boot');
 
@@ -94,6 +97,8 @@ export class Game extends EventEmitter
         const sceneManager = SceneManagerInstance.get();
 
         const time = this.time;
+
+        ResetWorldRenderData(this.renderStats, time.frame);
 
         time.update(now);
 
@@ -131,6 +136,9 @@ export class Game extends EventEmitter
         time.updateDelta(now);
 
         Emit(this, 'step');
+
+        this.renderStats.fps = time.fps;
+        this.renderStats.delta = time.delta;
 
         requestAnimationFrame(now => this.step(now));
     }
