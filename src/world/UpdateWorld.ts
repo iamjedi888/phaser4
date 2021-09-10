@@ -1,15 +1,17 @@
-import * as WorldEvents from './events';
-
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { IBaseWorld } from './IBaseWorld';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { WillUpdate } from '../components/permissions/WillUpdate';
+import { WorldUpdateEvent } from './events/WorldUpdateEvent';
 
 export function UpdateWorld <T extends IBaseWorld> (world: T, delta: number, time: number): void
 {
-    Emit(world, WorldEvents.WorldBeforeUpdateEvent, delta, time);
+    if (!WillUpdate(world.id))
+    {
+        return;
+    }
 
     const start = performance.now();
 
@@ -32,5 +34,5 @@ export function UpdateWorld <T extends IBaseWorld> (world: T, delta: number, tim
     world.renderData.updated = total;
     world.renderData.updateMs = performance.now() - start;
 
-    Emit(world, WorldEvents.WorldUpdateEvent, delta, time);
+    Emit(world, WorldUpdateEvent, delta, time);
 }
