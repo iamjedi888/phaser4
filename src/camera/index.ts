@@ -1,7 +1,7 @@
-import { Camera } from './Camera';
 import { StaticCamera } from './StaticCamera';
+import { WorldCamera } from './WorldCamera';
 
 export {
-    Camera,
-    StaticCamera
+    StaticCamera,
+    WorldCamera
 };
