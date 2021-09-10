@@ -7,9 +7,6 @@ import { IStaticWorld } from './IStaticWorld';
 import { PreRenderWorld } from './PreRenderWorld';
 import { RenderGLWorld } from './RenderGLWorld';
 import { RendererInstance } from '../renderer/RendererInstance';
-import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
-import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
-import { UpdateWorld } from './UpdateWorld';
 import { WorldCamera } from '../camera/WorldCamera';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -32,19 +29,11 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         // this.camera = new StaticCamera(renderer.width, renderer.height);
         this.camera = new WorldCamera(renderer.width, renderer.height);
-
-        SetWillTransformChildren(this.id, false);
-        SetWillCacheChildren(this.id, false);
     }
 
     preRender (gameFrame: number): boolean
     {
         return PreRenderWorld(this, gameFrame);
-    }
-
-    update (delta: number, time: number): void
-    {
-        UpdateWorld(this, delta, time);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void

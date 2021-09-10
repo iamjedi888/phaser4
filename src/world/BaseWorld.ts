@@ -16,8 +16,10 @@ import { IWorldRenderData } from './IWorldRenderData';
 import { Once } from '../events/Once';
 import { RemoveChildren } from '../display/RemoveChildren';
 import { SceneDestroyEvent } from '../scenes/events/SceneDestroyEvent';
+import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
+import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
 import { SetWorldID } from '../components/hierarchy/SetWorldID';
-import { WillUpdate } from '../components/permissions/WillUpdate';
+import { UpdateWorld } from './UpdateWorld';
 import { WorldList } from './WorldList';
 
 export class BaseWorld extends GameObject implements IBaseWorld
@@ -31,17 +33,17 @@ export class BaseWorld extends GameObject implements IBaseWorld
     camera: IBaseCamera;
 
     is3D: boolean = false;
+
     updateDisplayList: boolean = true;
 
     color: Color;
 
     renderData: IWorldRenderData;
 
-    private totalChildren: number = 0;
-
-    private totalChildrenQuery: Query;
-
     stack: Uint32Array;
+
+    private totalChildren: number = 0;
+    private totalChildrenQuery: Query;
 
     constructor (scene: IScene)
     {
@@ -64,8 +66,11 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
         this.renderData = CreateWorldRenderData();
 
-        //  The stack can be up to 256 layers deep
+        //  TODO - Set from Game Config: The stack can be up to 256 layers deep
         this.stack = new Uint32Array(256);
+
+        SetWillTransformChildren(id, false);
+        SetWillCacheChildren(id, false);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }
@@ -89,14 +94,7 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     update (delta: number, time: number): void
     {
-        if (!WillUpdate(this.id))
-        {
-            return;
-        }
-
-        Emit(this, WorldEvents.WorldUpdateEvent, delta, time, this);
-
-        super.update(delta, time);
+        UpdateWorld(this, delta, time);
     }
 
     afterUpdate (delta: number, time: number): void
@@ -104,11 +102,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, WorldEvents.WorldAfterUpdateEvent, delta, time, this);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     preRender (gameFrame: number): boolean
     {
         return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
     }
