@@ -1,4 +1,5 @@
 import { GetLocalBounds } from '../../components/transform/GetLocalBounds';
+import { IBounds } from '../../components/transform/IBounds';
 
 export class SpatialHashGrid
 {
@@ -13,9 +14,9 @@ export class SpatialHashGrid
     ids: number[];
     index: number;
 
-    getBounds: (id: number) => { left: number; top: number; right: number; bottom: number };
+    getBounds: (id: number) => IBounds;
 
-    constructor (cellWidth: number, cellHeight: number, getBounds: (id: number) => { left: number; top: number; right: number; bottom: number } = GetLocalBounds)
+    constructor (cellWidth: number, cellHeight: number, getBounds: (id: number) => IBounds = GetLocalBounds)
     {
         this.cellWidth = Math.abs(cellWidth);
         this.cellHeight = Math.abs(cellHeight);

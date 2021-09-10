@@ -1,6 +1,8 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-export function GetLocalBounds (id: number): { left: number, top: number, right: number, bottom: number }
+import { IBounds } from './IBounds';
+
+export function GetLocalBounds (id: number): IBounds
 {
     const data = Transform2DComponent.data[id];
 
