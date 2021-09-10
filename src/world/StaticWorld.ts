@@ -1,42 +1,35 @@
 import * as WorldEvents from './events';
 
-import { GetProcessTotal, GetRenderChildTotal, GetRenderList, RenderChild, ResetRenderChildTotal } from './RenderChild';
+import { GetProcessTotal, GetRenderChildTotal, GetRenderList, RenderNode, ResetRenderChildTotal } from './RenderNode';
 
 import { BaseWorld } from './BaseWorld';
 import { Begin } from '../renderer/webgl1/renderpass/Begin';
 import { ClearDirtyChildColor } from '../components/dirty/ClearDirtyChildColor';
 import { ClearDirtyChildTransform } from '../components/dirty/ClearDirtyChildTransform';
-import { ClearDirtyColor } from '../components/dirty/ClearDirtyColor';
-import { ColorComponent } from '../components/color/ColorComponent';
+import { CreateWorldRenderData } from './CreateWorldRenderData';
 import { Emit } from '../events/Emit';
 import { GameObjectCache } from '../gameobjects/GameObjectCache';
 import { GetFirstChildID } from '../components/hierarchy/GetFirstChildID';
 import { GetNextSiblingID } from '../components/hierarchy/GetNextSiblingID';
-import { HasChildren } from '../components/hierarchy/HasChildren';
 import { HasCustomDisplayList } from '../components/permissions/HasCustomDisplayList';
 import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
-import { HasDirtyColor } from '../components/dirty/HasDirtyColor';
-import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
-import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
-import { HasDirtyWorldTransform } from '../components/dirty/HasDirtyWorldTransform';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
 import { IStaticWorld } from './IStaticWorld';
+import { IWorldRenderData } from './IWorldRenderData';
 import { MoveNextUpdatable } from '../components/hierarchy/MoveNextUpdatable';
 import { PopColor } from '../renderer/webgl1/renderpass/PopColor';
+import { ProcessNode } from './ProcessNode';
 import { RendererInstance } from '../renderer/RendererInstance';
+import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SetColor } from '../renderer/webgl1/renderpass/SetColor';
-import { SetInViewFromBounds } from '../components/transform/SetInViewFromBounds';
-import { SetQuadColor } from '../components/vertices/SetQuadColor';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
-import { UpdateTransforms } from '../components/transform/UpdateTransforms';
-import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
+import { UpdateNode } from './UpdateNode';
 import { WillRender } from '../components/permissions/WillRender';
 import { WillUpdate } from '../components/permissions/WillUpdate';
-import { WillUpdateTransform } from '../components/dirty/WillUpdateTransform';
 import { WorldCamera } from '../camera/WorldCamera';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
@@ -51,8 +44,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
     // declare camera: IStaticCamera;
     declare camera: WorldCamera;
 
-    // renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
-    renderData: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, processed: number };
+    renderData: IWorldRenderData;
 
     stack: Uint32Array;
 
@@ -65,23 +57,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         // this.camera = new StaticCamera(renderer.width, renderer.height);
         this.camera = new WorldCamera(renderer.width, renderer.height);
 
-        this.renderData = {
-            gameFrame: 0,
-            dirtyLocal: 0,
-            dirtyWorld: 0,
-            dirtyQuad: 0,
-            dirtyColor: 0,
-            dirtyView: 0,
-            numChildren: 0,
-            rendered: 0,
-            renderMs: 0,
-            preRenderMs: 0,
-            updated: 0,
-            updateMs: 0,
-            fps: 0,
-            delta: 0,
-            processed: 0
-        };
+        this.renderData = CreateWorldRenderData();
 
         SetWillTransformChildren(this.id, false);
         SetWillCacheChildren(this.id, false);
@@ -89,90 +65,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         //  The stack can be up to 256 layers deep
         this.stack = new Uint32Array(256);
     }
-
-    updateChild (id: number, parentID: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean): void
-    {
-        const renderData = this.renderData;
-
-        renderData.dirtyQuad++;
-
-        if (checkColor && HasDirtyColor(id))
-        {
-            const r = ColorComponent.r[id] / 255;
-            const g = ColorComponent.g[id] / 255;
-            const b = ColorComponent.b[id] / 255;
-            const a = ColorComponent.a[id];
-
-            SetQuadColor(id, r, g, b, a);
-
-            ClearDirtyColor(id);
-
-            renderData.dirtyColor++;
-        }
-
-        if (checkTransform)
-        {
-            let hasUpdated = false;
-
-            if (HasDirtyTransform(id))
-            {
-                UpdateTransforms(id, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
-
-                hasUpdated = true;
-
-                renderData.dirtyLocal++;
-            }
-            else if (HasDirtyWorldTransform(parentID))
-            {
-                UpdateWorldTransform(id, parentID, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
-
-                hasUpdated = true;
-
-                renderData.dirtyWorld++;
-            }
-            else if (forceUpdate)
-            {
-                SetInViewFromBounds(id, cx, cy, cright, cbottom);
-
-                renderData.dirtyView++;
-            }
-
-            if (hasUpdated && parentIsDisplayList)
-            {
-                GameObjectCache.get(parentID).onUpdateChild(id);
-            }
-        }
-    }
-
-    processNode (node: number, cameraUpdated: boolean, isDisplayList: boolean): boolean
-    {
-        if (isDisplayList)
-        {
-            return HasDirtyDisplayList(node);
-        }
-        else if (HasChildren(node) && (cameraUpdated || WillUpdateTransform(node)))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    //#ifdef RENDER_STATS
-    resetRenderData (gameFrame: number): void
-    {
-        const renderData = this.renderData;
-
-        renderData.gameFrame = gameFrame;
-        renderData.rendered = 0;
-        renderData.dirtyColor = 0;
-        renderData.dirtyLocal = 0;
-        renderData.dirtyView = 0;
-        renderData.dirtyWorld = 0;
-        renderData.dirtyQuad = 0;
-        renderData.processed = 0;
-    }
-    //#endif
 
     preRender (gameFrame: number): boolean
     {
@@ -182,7 +74,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         const renderData = this.renderData;
 
-        this.resetRenderData(gameFrame);
+        ResetWorldRenderData(renderData, gameFrame);
 
         const camera = this.camera;
         const cameraUpdated = camera.updateBounds();
@@ -193,8 +85,6 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         if (!checkColor && !checkTransform)
         {
             //  Nothing needs updating, so let's get out of here
-            renderData.preRenderMs = 0;
-
             return false;
         }
 
@@ -216,12 +106,12 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             while (stackIndex > 0)
             {
-                this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList);
+                UpdateNode(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList, renderData);
 
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
                 //  If the parent isn't dirty and has no dirty children, go no further down this branch
 
-                while (this.processNode(node, cameraUpdated, isDisplayList))
+                while (ProcessNode(node, cameraUpdated, isDisplayList))
                 {
                     stack[stackIndex++] = node;
 
@@ -230,7 +120,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                     node = GetFirstChildID(node);
 
-                    this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList);
+                    UpdateNode(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList, renderData);
                 }
 
                 //  We're at the bottom of the branch
@@ -243,7 +133,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 while (next && climb)
                 {
-                    if (this.processNode(next, cameraUpdated, isDisplayList))
+                    if (ProcessNode(next, cameraUpdated, isDisplayList))
                     {
                         //  The 'next' sibling has a child, so we're going deeper
                         climb = false;
@@ -251,7 +141,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     }
                     else
                     {
-                        this.updateChild(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList);
+                        UpdateNode(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList, renderData);
 
                         next = GetNextSiblingID(next);
                     }
@@ -345,7 +235,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         {
             if (WillRender(id))
             {
-                RenderChild(renderPass, id);
+                RenderNode(renderPass, id);
             }
 
             id = GetNextSiblingID(id);
