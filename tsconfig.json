@@ -32,6 +32,7 @@
     ],
     "exclude": [
         "node_modules",
+        "wip/",
         "src/stats/",
         "src/motion/tween/index.ts",
         "src/motion/tween/Tween.ts",

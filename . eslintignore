@@ -3,6 +3,7 @@
 /tempdist/*
 /dev/*
 /src/stats/*
+/wip/*
 **/*.js
 /build.mjs
 .eslintrc.js
