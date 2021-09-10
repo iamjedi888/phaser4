@@ -3,6 +3,7 @@ import * as WorldEvents from './events';
 import { Query, defineComponent, defineQuery } from 'bitecs';
 
 import { Color } from '../components/color/Color';
+import { CreateWorldRenderData } from './CreateWorldRenderData';
 import { Emit } from '../events/Emit';
 import { GameObject } from '../gameobjects/GameObject';
 import { GameObjectWorld } from '../GameObjectWorld';
@@ -11,6 +12,7 @@ import { IBaseWorld } from './IBaseWorld';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
+import { IWorldRenderData } from './IWorldRenderData';
 import { Once } from '../events/Once';
 import { RemoveChildren } from '../display/RemoveChildren';
 import { SceneDestroyEvent } from '../scenes/events/SceneDestroyEvent';
@@ -33,9 +35,13 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     color: Color;
 
+    renderData: IWorldRenderData;
+
     private totalChildren: number = 0;
 
     private totalChildrenQuery: Query;
+
+    stack: Uint32Array;
 
     constructor (scene: IScene)
     {
@@ -55,6 +61,11 @@ export class BaseWorld extends GameObject implements IBaseWorld
         this.color = new Color(id);
 
         this.events = new Map();
+
+        this.renderData = CreateWorldRenderData();
+
+        //  The stack can be up to 256 layers deep
+        this.stack = new Uint32Array(256);
 
         Once(scene, SceneDestroyEvent, () => this.destroy());
     }

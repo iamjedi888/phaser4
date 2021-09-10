@@ -6,6 +6,7 @@ import { IColorComponent } from '../components/color/IColorComponent';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
 import { IScene } from '../scenes/IScene';
+import { IWorldRenderData } from './IWorldRenderData';
 
 export interface IBaseWorld extends IGameObject, IColorComponent
 {
@@ -19,6 +20,9 @@ export interface IBaseWorld extends IGameObject, IColorComponent
     updateDisplayList: boolean;
 
     color: Color;
+
+    renderData: IWorldRenderData;
+    stack: Uint32Array;
 
     beforeUpdate (delta: number, time: number): void;
     update (delta: number, time: number): void;
