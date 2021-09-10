@@ -9,8 +9,8 @@ import { Emit } from './events/Emit';
 import { EventEmitter } from './events/EventEmitter';
 import { GameInstance } from './GameInstance';
 import { GameObjectWorld } from './GameObjectWorld';
-import { IGameObject } from './gameobjects/IGameObject';
 import { IRenderPass } from './renderer/webgl1/renderpass/IRenderPass';
+import { IWorldRenderData } from './world/IWorldRenderData';
 import { RendererInstance } from './renderer/RendererInstance';
 import { SceneManagerInstance } from './scenes';
 import { SetConfigDefaults } from './config/SetConfigDefaults';
@@ -31,8 +31,7 @@ export class Game extends EventEmitter
     willUpdate: boolean = true;
     willRender: boolean = true;
 
-    // renderStats: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, renderList: IGameObject[] };
-    renderStats: { gameFrame: number; dirtyLocal: number; dirtyWorld: number; dirtyQuad: number, dirtyColor: number; dirtyView: number, numChildren: number; rendered: number; renderMs: number; preRenderMs: number, updated: number; updateMs: number, fps: number, delta: number, processed: number };
+    renderStats: IWorldRenderData;
 
     constructor (...settings: { (): void }[])
     {
