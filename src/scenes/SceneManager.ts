@@ -49,9 +49,9 @@ export class SceneManager
 
         const delta = time.delta;
         const now = time.lastTick;
-        const gameFrame = time.frame;
 
-        ResetRenderStats(gameFrame, this.scenes.size);
+        // const gameFrame = time.frame;
+        // ResetRenderStats(gameFrame, this.scenes.size);
 
         for (const scene of this.scenes.values())
         {
