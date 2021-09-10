@@ -90,7 +90,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         this.stack = new Uint32Array(256);
     }
 
-    updateChild (id: number, parentID: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
+    updateChild (id: number, parentID: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean): void
     {
         const renderData = this.renderData;
 
@@ -116,7 +116,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
             if (HasDirtyTransform(id))
             {
-                UpdateTransforms(id, cx, cy, cright, cbottom, cameraUpdated);
+                UpdateTransforms(id, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
 
                 hasUpdated = true;
 
@@ -124,29 +124,29 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
             }
             else if (HasDirtyWorldTransform(parentID))
             {
-                UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, cameraUpdated);
+                UpdateWorldTransformSingle(id, parentID, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
 
                 hasUpdated = true;
 
                 renderData.dirtyWorld++;
             }
-            else if (cameraUpdated)
+            else if (forceUpdate)
             {
                 SetInViewFromBounds(id, cx, cy, cright, cbottom);
 
                 renderData.dirtyView++;
             }
 
-            if (hasUpdated && HasCustomDisplayList(parentID))
+            if (hasUpdated && parentIsDisplayList)
             {
                 GameObjectCache.get(parentID).onUpdateChild(id);
             }
         }
     }
 
-    processNode (node: number, cameraUpdated: boolean): boolean
+    processNode (node: number, cameraUpdated: boolean, isDisplayList: boolean): boolean
     {
-        if (HasCustomDisplayList(node))
+        if (isDisplayList)
         {
             return HasDirtyDisplayList(node);
         }
@@ -209,26 +209,28 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
         let stackIndex = 1;
         let parentNode = id;
+        let isDisplayList = false;
         let node = GetFirstChildID(id);
 
         stackBlock:
         {
             while (stackIndex > 0)
             {
-                this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList);
 
                 //  Dive as deep as we can go, adding all parents to the stack for _this branch_
                 //  If the parent isn't dirty and has no dirty children, go no further down this branch
 
-                while (this.processNode(node, cameraUpdated))
+                while (this.processNode(node, cameraUpdated, isDisplayList))
                 {
                     stack[stackIndex++] = node;
 
                     parentNode = node;
+                    isDisplayList = HasCustomDisplayList(node);
 
                     node = GetFirstChildID(node);
 
-                    this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                    this.updateChild(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList);
                 }
 
                 //  We're at the bottom of the branch
@@ -241,7 +243,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
 
                 while (next && climb)
                 {
-                    if (this.processNode(next, cameraUpdated))
+                    if (this.processNode(next, cameraUpdated, isDisplayList))
                     {
                         //  The 'next' sibling has a child, so we're going deeper
                         climb = false;
@@ -249,7 +251,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     }
                     else
                     {
-                        this.updateChild(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated);
+                        this.updateChild(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList);
 
                         next = GetNextSiblingID(next);
                     }
@@ -276,6 +278,7 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
                     }
 
                     parentNode = stack[stackIndex - 1];
+                    isDisplayList = HasCustomDisplayList(parentNode);
                 }
 
                 //  'next' now contains the sibling of the stack parent, set it to 'node'

@@ -4,7 +4,7 @@ import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateWorldTransformSingle (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, cameraUpdated: boolean): void
+export function UpdateWorldTransformSingle (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean): void
 {
     const parentData = Transform2DComponent.data[parentID];
     const data = Transform2DComponent.data[id];
@@ -83,7 +83,7 @@ export function UpdateWorldTransformSingle (id: number, parentID: number, cx: nu
 
     data[TRANSFORM.IN_VIEW] = inView;
 
-    if (inView === 1 || cameraUpdated)
+    if (inView === 1 || forceUpdate || parentIsDisplayList)
     {
         //  Don't need to do this if the entity isn't in the camera view
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
