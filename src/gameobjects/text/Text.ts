@@ -38,6 +38,8 @@ export class Text extends Sprite
     {
         super(x, y, CanvasTexture());
 
+        this.texture.key = `Text${this.id}`;
+
         const renderer = RendererInstance.get();
 
         this.resolution = renderer.resolution;
