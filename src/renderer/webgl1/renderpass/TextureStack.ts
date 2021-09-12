@@ -22,7 +22,7 @@ export class TextureStack
     }
 
     //  directly bind a texture to an index slot
-    bind (texture: Texture, index: number = 0): void
+    bind (texture: Texture, index: number = 1): void
     {
         const binding = texture.binding;
 
@@ -32,7 +32,7 @@ export class TextureStack
         gl.bindTexture(gl.TEXTURE_2D, binding.texture);
     }
 
-    unbind (index: number = 0): void
+    unbind (index: number = 1): void
     {
         gl.activeTexture(gl.TEXTURE0 + index);
         gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
@@ -112,6 +112,8 @@ export class TextureStack
         {
             this.textureIndex.push(index);
         });
+
+        this.textures.set(0, this.tempTextures[0]);
     }
 
     clear (): void
@@ -119,6 +121,8 @@ export class TextureStack
         this.textures.forEach(texture => texture.binding.unbind());
 
         this.textures.clear();
+
+        this.textures.set(0, this.tempTextures[0]);
     }
 
     reset (): void
