@@ -39,7 +39,7 @@
         "@typescript-eslint/eslint-plugin": "4.31.0",
         "@typescript-eslint/parser": "4.31.0",
         "bitecs": "^0.3.20",
-        "boxen": "^5.0.1",
+        "boxen": "^5.1.0",
         "directory-tree": "^2.3.1",
         "esbuild": "^0.12.26",
         "esbuild-plugin-ifdef": "^1.0.1",
@@ -50,7 +50,7 @@
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.30.0",
         "tslib": "^2.3.1",
-        "typescript": "^4.4.2",
+        "typescript": "^4.4.3",
         "uplot": "^1.6.15"
     },
     "dependencies": {
