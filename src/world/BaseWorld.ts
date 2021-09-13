@@ -15,6 +15,7 @@ import { IScene } from '../scenes/IScene';
 import { IWorldRenderData } from './IWorldRenderData';
 import { Once } from '../events/Once';
 import { RemoveChildren } from '../display/RemoveChildren';
+import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { SceneDestroyEvent } from '../scenes/events/SceneDestroyEvent';
 import { SetWillCacheChildren } from '../components/permissions/SetWillCacheChildren';
 import { SetWillTransformChildren } from '../components/permissions/SetWillTransformChildren';
@@ -92,6 +93,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
 
     beforeUpdate (delta: number, time: number): void
     {
+        ResetWorldRenderData(this.renderData);
+
         Emit(this, WorldEvents.WorldBeforeUpdateEvent, delta, time, this);
     }
 

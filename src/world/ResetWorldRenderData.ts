@@ -1,9 +1,7 @@
 import { IWorldRenderData } from './IWorldRenderData';
 
-export function ResetWorldRenderData (renderData: IWorldRenderData, gameFrame: number): void
+export function ResetWorldRenderData (renderData: IWorldRenderData): void
 {
-    renderData.gameFrame = gameFrame;
-
     renderData.rendered = 0;
     renderData.dirtyColor = 0;
     renderData.dirtyLocal = 0;
