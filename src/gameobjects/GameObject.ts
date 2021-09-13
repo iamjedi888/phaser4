@@ -126,6 +126,7 @@ export class GameObject implements IGameObject
         return GetVisibleChildren(this.id);
     }
 
+    /*
     set depth (value: number)
     {
         SetDepth(this.id, value);
@@ -135,6 +136,7 @@ export class GameObject implements IGameObject
     {
         return GetDepth(this.id);
     }
+    */
 
     hasParent (id?: number): boolean
     {
@@ -155,7 +157,8 @@ export class GameObject implements IGameObject
         return GetParentGameObject(this.id);
     }
 
-    getChildren (): IGameObject[]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     {
         return GetChildrenFromParentID(this.id);
     }
@@ -163,6 +166,21 @@ export class GameObject implements IGameObject
     getNumChildren (): number
     {
         return GetNumChildren(this.id);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onAddChild (childID: number): void
+    {
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onUpdateChild (childID: number): void
+    {
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onRemoveChild (childID: number): void
+    {
     }
 
     //#ifdef GET_DISPLAY_DATA
@@ -197,12 +215,11 @@ export class GameObject implements IGameObject
             DestroyChildren(this);
         }
 
-        Emit(this, DestroyEvent, this);
-
-        this.events.clear();
-
-        this.events = null;
-
         //  TODO - Destroy process, remove from Cache, Tree, etc.
+
+        // Emit(this, DestroyEvent, this);
+        // this.events.clear();
+        // this.events = null;
+
     }
 }

@@ -9,9 +9,10 @@ export const PERMISSION = {
     WILL_RENDER_CHILDREN: 5,
     WILL_CACHE_CHILDREN: 6,
     WILL_TRANSFORM_CHILDREN: 7,
-    WILL_COLOR_CHILDREN: 8
+    WILL_COLOR_CHILDREN: 8,
+    CUSTOM_DISPLAY_LIST: 9
 };
 
 export const PermissionsComponent = defineComponent({
-    data: [ Types.ui8, 9 ]
+    data: [ Types.ui8, 10 ]
 });

@@ -12,6 +12,8 @@ export function RemoveChild <P extends IGameObject, C extends IGameObject> (pare
         RemoveChildID(childID);
 
         DecreaseNumChildren(parentID);
+
+        parent.onRemoveChild(childID);
     }
 
     return child;

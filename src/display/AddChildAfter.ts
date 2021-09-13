@@ -37,6 +37,8 @@ export function AddChildAfter <T extends IGameObject, C extends IGameObject> (af
         LinkSiblings(afterID, childID);
 
         SetAndUpdateParent(parentID, childID);
+
+        parent.onAddChild(childID);
     }
 
     return child;

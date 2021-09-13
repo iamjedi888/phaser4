@@ -4,7 +4,7 @@ import { GetParentID } from '../hierarchy/GetParentID';
 import { GetWorldID } from '../hierarchy/GetWorldID';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateRootTransform (id: number): void
+export function SetRootTransform (id: number): void
 {
     const worldID = GetWorldID(id);
     let currentParent = GetParentID(id);

@@ -9,10 +9,13 @@ export class Skew implements IVec2
     private id: number;
     private _x: number;
     private _y: number;
+    private _data: Float32Array;
 
     constructor (id: number, x: number = 0, y: number = 0)
     {
         this.id = id;
+
+        this._data = Transform2DComponent.data[id];
 
         this.set(x, y);
     }
@@ -29,9 +32,9 @@ export class Skew implements IVec2
     {
         this._x = value;
 
-        const id = this.id;
+        this._data[TRANSFORM.SKEW_X] = value;
 
-        Transform2DComponent.data[id][TRANSFORM.SKEW_X] = value;
+        const id = this.id;
 
         UpdateAxisAligned(id);
         SetDirtyTransform(id);
@@ -46,9 +49,9 @@ export class Skew implements IVec2
     {
         this._y = value;
 
-        const id = this.id;
+        this._data[TRANSFORM.SKEW_Y] = value;
 
-        Transform2DComponent.data[id][TRANSFORM.SKEW_Y] = value;
+        const id = this.id;
 
         UpdateAxisAligned(id);
         SetDirtyTransform(id);
@@ -57,5 +60,10 @@ export class Skew implements IVec2
     get y (): number
     {
         return this._y;
+    }
+
+    destroy (): void
+    {
+        this._data = null;
     }
 }

@@ -14,7 +14,7 @@ export interface IGameObject
 
     events: Map<string, Set<IEventInstance>>;
 
-    depth: number;
+    // depth: number;
 
     isRenderable (): boolean;
 
@@ -31,8 +31,12 @@ export interface IGameObject
 
     hasParent (id?: number): boolean;
     getParent (): IGameObject;
-    getChildren (): IGameObject[];
+    getChildren <T extends IRenderPass> (renderPass?: T): IGameObject[]
     getNumChildren (): number;
+
+    onAddChild (childID: number): void;
+    onUpdateChild (childID: number): void;
+    onRemoveChild (childID: number): void;
 
     toString (): string;
 

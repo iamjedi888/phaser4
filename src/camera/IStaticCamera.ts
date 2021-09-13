@@ -1,6 +1,7 @@
 import { IBaseCamera } from './IBaseCamera';
+import { Size } from '../components/transform/Size';
 
 export interface IStaticCamera extends IBaseCamera
 {
-    updateBounds (): boolean;
+    size: Size;
 }

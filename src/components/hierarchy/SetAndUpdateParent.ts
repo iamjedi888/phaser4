@@ -1,11 +1,13 @@
 import { GetNumChildren } from './GetNumChildren';
 import { GetWorldFromParentID } from './GetWorldFromParentID';
+import { SetDirtyChildCache } from '../dirty/SetDirtyChildCache';
 import { SetDirtyParents } from '../dirty/SetDirtyParents';
 import { SetDirtyTransform } from '../dirty/SetDirtyTransform';
 import { SetNumChildren } from './SetNumChildren';
 import { SetParentID } from './SetParentID';
+import { SetRootTransform } from '../transform/SetRootTransform';
 import { SetWorldTag } from './SetWorldTag';
-import { UpdateRootTransform } from '../transform/UpdateRootTransform';
+import { WillCacheChildren } from '../permissions/WillCacheChildren';
 
 export function SetAndUpdateParent (parentID: number, childID: number, addChildren: number = 1): void
 {
@@ -13,9 +15,14 @@ export function SetAndUpdateParent (parentID: number, childID: number, addChildr
 
     SetDirtyTransform(childID);
     SetDirtyParents(childID);
-    UpdateRootTransform(childID);
+    SetRootTransform(childID);
 
     SetNumChildren(parentID, GetNumChildren(parentID) + addChildren);
+
+    if (WillCacheChildren(parentID))
+    {
+        SetDirtyChildCache(parentID);
+    }
 
     const world = GetWorldFromParentID(parentID);
 

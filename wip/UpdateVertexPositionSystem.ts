@@ -1,6 +1,4 @@
 import { ClearDirtyChildTransform } from '../dirty/ClearDirtyChildTransform';
-import { ClearDirtyWorldTransform } from '../dirty/ClearDirtyWorldTransform';
-import { HasDirtyWorldTransform } from '../dirty/HasDirtyWorldTransform';
 import { IBaseCamera } from '../../camera/IBaseCamera';
 import { SetQuadFromWorld } from './SetQuadFromWorld';
 
@@ -19,15 +17,16 @@ export function UpdateVertexPositionSystem <C extends IBaseCamera> (entities: nu
     {
         const id = entities[i];
 
+        /*
         if (HasDirtyWorldTransform(id))
         {
             SetQuadFromWorld(id, gameFrame, cx, cy, cright, cbottom);
 
-            ClearDirtyWorldTransform(id);
             ClearDirtyChildTransform(id);
 
             total++;
         }
+        */
     }
 
     return total;

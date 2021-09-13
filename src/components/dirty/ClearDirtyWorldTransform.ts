@@ -1,6 +1,6 @@
-import { TRANSFORM, Transform2DComponent } from '../transform/Transform2DComponent';
+import { DIRTY, DirtyComponent } from './DirtyComponent';
 
 export function ClearDirtyWorldTransform (id: number): void
 {
-    Transform2DComponent.data[id][TRANSFORM.DIRTY_WORLD] = 0;
+    DirtyComponent.data[id][DIRTY.WORLD_TRANSFORM] = 0;
 }

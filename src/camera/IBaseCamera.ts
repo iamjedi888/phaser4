@@ -1,8 +1,12 @@
+import { IMatrix4 } from '../math/mat4/IMatrix4';
+
 export interface IBaseCamera
 {
     id: number;
     type: string;
-    isDirty: boolean;
+    name: string;
+
+    matrix: IMatrix4;
 
     getBoundsX (): number;
     getBoundsY (): number;

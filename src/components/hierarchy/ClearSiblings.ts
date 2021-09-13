@@ -1,8 +1,8 @@
 import { SetNextSiblingID } from './SetNextSiblingID';
 import { SetPreviousSiblingID } from './SetPreviousSiblingID';
 
-export function ClearSiblings (childID: number): void
+export function ClearSiblings (id: number): void
 {
-    SetNextSiblingID(childID, 0);
-    SetPreviousSiblingID(childID, 0);
+    SetNextSiblingID(id, 0);
+    SetPreviousSiblingID(id, 0);
 }

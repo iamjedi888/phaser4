@@ -43,7 +43,7 @@ export class Container extends GameObject implements IContainer
 
         const id = this.id;
 
-        AddTransform2DComponent(id, x, y, GetDefaultOriginX(), GetDefaultOriginY());
+        AddTransform2DComponent(id);
 
         this.position = new Position(id, x, y);
         this.scale = new Scale(id);
@@ -182,6 +182,11 @@ export class Container extends GameObject implements IContainer
 
     destroy (reparentChildren?: IGameObject): void
     {
+        this.position.destroy();
+        this.scale.destroy();
+        this.skew.destroy();
+        this.origin.destroy();
+
         super.destroy(reparentChildren);
     }
 }

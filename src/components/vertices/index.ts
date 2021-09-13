@@ -1,13 +1,15 @@
 import { AddQuadVertex } from './AddQuadVertex';
 import { QuadVertexComponent } from './QuadVertexComponent';
+import { SetQuadColor } from './SetQuadColor';
 import { SetQuadPosition } from './SetQuadPosition';
+import { SetQuadTextureIndex } from './SetQuadTextureIndex';
 import { SetUV } from './SetUV';
-import { UpdateVertexPositionSystem } from './UpdateVertexPositionSystem';
 
 export {
     AddQuadVertex,
     QuadVertexComponent,
+    SetQuadColor,
     SetQuadPosition,
-    SetUV,
-    UpdateVertexPositionSystem
+    SetQuadTextureIndex,
+    SetUV
 };

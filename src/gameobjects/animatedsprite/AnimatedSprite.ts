@@ -1,4 +1,3 @@
-import { AnimationFrame } from '../../animation/AnimationFrame';
 import { CreateAnimData } from '../../animation/CreateAnimData';
 import { Frame } from '../../textures/Frame';
 import { IAnimation } from '../../animation/IAnimation';
@@ -19,8 +18,6 @@ export class AnimatedSprite extends Sprite
     forward: boolean = true;
     inReverse: boolean = false;
 
-
-
     private accumulator: number = 0;
     private nextTick: number = 0;
     private delayCounter: number = 0;
@@ -34,8 +31,6 @@ export class AnimatedSprite extends Sprite
     constructor (x: number, y: number, texture: string | Texture | Frame, frame?: string | number | Frame)
     {
         super(x, y, texture, frame);
-
-        this.currentAnimation;
 
         this.animData = CreateAnimData();
     }
@@ -386,18 +381,6 @@ export class AnimatedSprite extends Sprite
         {
             this.handleComplete();
         }
-
-        /*
-        //  Queue - implement?
-        if (this.nextAnim)
-        {
-            var key = this.nextAnim;
-
-            this.nextAnim = (this.nextAnimsQueue.length > 0) ? this.nextAnimsQueue.shift() : null;
-
-            this.play(key);
-        }
-        */
     }
 
     play (): this
