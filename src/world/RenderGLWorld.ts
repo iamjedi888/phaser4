@@ -60,7 +60,7 @@ export function RenderGLWorld <T extends IBaseWorld, P extends IRenderPass> (wor
     gameStats.dirtyQuad += renderData.dirtyQuad;
     gameStats.processed += renderData.processed;
     gameStats.renderMs += renderData.renderMs;
-    gameStats.numChildren += renderData.numChildren;
+    gameStats.numChildren = renderData.numChildren;
     gameStats.preRenderMs += renderData.preRenderMs;
     gameStats.updated += renderData.updated;
     gameStats.updateMs += renderData.updateMs;
