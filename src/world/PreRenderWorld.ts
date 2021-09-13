@@ -8,7 +8,6 @@ import { HasDirtyChildColor } from '../components/dirty/HasDirtyChildColor';
 import { HasDirtyChildTransform } from '../components/dirty/HasDirtyChildTransform';
 import { IBaseWorld } from './IBaseWorld';
 import { ProcessNode } from './ProcessNode';
-import { ResetWorldRenderData } from './ResetWorldRenderData';
 import { UpdateNode } from './UpdateNode';
 import { WorldPreRenderEvent } from './events/WorldPreRenderEvent';
 
@@ -20,7 +19,7 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
 
     const renderData = world.renderData;
 
-    ResetWorldRenderData(renderData, gameFrame);
+    renderData.gameFrame = gameFrame;
 
     const camera = world.camera;
     const cameraUpdated = camera.updateBounds();
@@ -47,8 +46,8 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
 
     let stackIndex = 1;
     let parentNode = id;
-    let isDisplayList = false;
     let node = GetFirstChildID(id);
+    let isDisplayList = HasCustomDisplayList(node);
 
     stackBlock:
     {
