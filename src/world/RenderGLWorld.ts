@@ -66,5 +66,7 @@ export function RenderGLWorld <T extends IBaseWorld, P extends IRenderPass> (wor
     gameStats.updateMs += renderData.updateMs;
     //#endif
 
+    camera.postRender();
+
     Emit(world, WorldEvents.WorldPostRenderEvent, renderPass, world);
 }
