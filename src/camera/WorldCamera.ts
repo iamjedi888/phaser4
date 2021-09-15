@@ -1,50 +1,23 @@
-import { TRANSFORM, Transform2DComponent } from '../components/transform/Transform2DComponent';
-import { addEntity, removeComponent, removeEntity } from 'bitecs';
-
-import { AddTransform2DComponent } from '../components/transform/AddTransform2DComponent';
+import { BaseCamera } from './BaseCamera';
 import { ClearDirtyTransform } from '../components/dirty/ClearDirtyTransform';
-import { GameObjectWorld } from '../GameObjectWorld';
 import { HasDirtyTransform } from '../components/dirty/HasDirtyTransform';
-import { IMatrix4 } from '../math/mat4/IMatrix4';
 import { IWorldCamera } from './IWorldCamera';
-import { Matrix4 } from '../math/mat4/Matrix4';
 import { Position } from '../components/transform/Position';
 import { SetBounds } from '../components/transform/SetBounds';
-import { Size } from '../components/transform/Size';
 
 //  A World Camera has a size, position and scale.
 
-export class WorldCamera implements IWorldCamera
+export class WorldCamera extends BaseCamera implements IWorldCamera
 {
-    readonly id: number = addEntity(GameObjectWorld);
-
     readonly type: string = 'WorldCamera';
 
-    //  User defined name. Never used internally.
-    name: string = '';
-
-    size: Size;
     position: Position;
-
-    //  For loading into the shaders
-    matrix: IMatrix4;
-
-    private _data: Float32Array;
 
     constructor (width: number, height: number)
     {
-        const id = this.id;
+        super(width, height);
 
-        AddTransform2DComponent(id);
-
-        this.matrix = new Matrix4();
-
-        this.position = new Position(id, 0, 0);
-        this.size = new Size(id, width, height);
-
-        this._data = Transform2DComponent.data[id];
-
-        this.reset(width, height);
+        this.position = new Position(this.id, 0, 0);
     }
 
     set x (value: number)
@@ -74,7 +47,7 @@ export class WorldCamera implements IWorldCamera
         return this;
     }
 
-    updateBounds (): boolean
+    preRender (): boolean
     {
         const id = this.id;
 
@@ -94,18 +67,6 @@ export class WorldCamera implements IWorldCamera
 
             SetBounds(id, bx, by, bx + w, by + h);
 
-            return true;
-        }
-
-        return false;
-    }
-
-    update (): boolean
-    {
-        const id = this.id;
-
-        if (HasDirtyTransform(id))
-        {
             const data = this.matrix.data;
 
             data[12] = this.x;
@@ -113,49 +74,11 @@ export class WorldCamera implements IWorldCamera
 
             ClearDirtyTransform(id);
 
+            this.isDirty = true;
+
             return true;
         }
 
-        return true;
-        // return false;
-    }
-
-    getBoundsX (): number
-    {
-        return this._data[TRANSFORM.BOUNDS_X1];
-    }
-
-    getBoundsY (): number
-    {
-        return this._data[TRANSFORM.BOUNDS_Y1];
-    }
-
-    getBoundsRight (): number
-    {
-        return this._data[TRANSFORM.BOUNDS_X2];
-    }
-
-    getBoundsBottom (): number
-    {
-        return this._data[TRANSFORM.BOUNDS_Y2];
-    }
-
-    getMatrix (): Float32Array
-    {
-        return this.matrix.data;
-    }
-
-    reset (width: number, height: number): void
-    {
-        this.size.set(width, height);
-    }
-
-    destroy (): void
-    {
-        const id = this.id;
-
-        removeComponent(GameObjectWorld, Transform2DComponent, id);
-
-        removeEntity(GameObjectWorld, id);
+        return false;
     }
 }

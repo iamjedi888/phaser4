@@ -1,12 +1,16 @@
 import { IMatrix4 } from '../math/mat4/IMatrix4';
+import { Size } from '../components/transform/Size';
 
 export interface IBaseCamera
 {
     id: number;
     type: string;
     name: string;
+    isDirty: boolean;
 
     matrix: IMatrix4;
+
+    size: Size;
 
     getBoundsX (): number;
     getBoundsY (): number;
@@ -15,7 +19,7 @@ export interface IBaseCamera
 
     getMatrix (): Float32Array;
     reset (width: number, height: number): void;
-    updateBounds (): boolean;
-    update (): boolean;
+    preRender (): boolean;
+    postRender (): void;
     destroy (): void;
 }

@@ -12,8 +12,7 @@ export function SetCamera (renderPass: IRenderPass, camera: IBaseCamera): void
         renderPass.cameraMatrix = camera.getMatrix();
     }
 
-    //  TODO - This needs to check new camera vs. prev camera matrix
-    if (camera.update())
+    if (camera.isDirty)
     {
         renderPass.getCurrentShader().bind(renderPass);
     }
