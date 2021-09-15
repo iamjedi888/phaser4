@@ -1,6 +1,7 @@
 import { DepthFirstSearchFromParentID } from './DepthFirstSearchFromParentID';
 import { GameObjectWorld } from '../../GameObjectWorld';
 import { IBaseWorld } from '../../world/IBaseWorld';
+import { SetDirtyChildColor } from '../dirty/SetDirtyChildColor';
 import { SetWorldID } from './SetWorldID';
 import { addComponent } from 'bitecs';
 
@@ -19,4 +20,6 @@ export function SetWorldTag <W extends IBaseWorld> (world: W, id: number): void
     });
 
     world.updateDisplayList = true;
+
+    SetDirtyChildColor(worldID);
 }
