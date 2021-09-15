@@ -1,6 +1,7 @@
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
+import { FlipFrameUVs } from '../../textures/FlipFrameUVs';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
 import { IEffectLayer } from './IEffectLayer';
@@ -30,6 +31,8 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
         {
             this.shaders = shaders;
         }
+
+        FlipFrameUVs(this.texture.getFrame());
     }
 
     postRenderGL <T extends IRenderPass> (renderPass: T): void
