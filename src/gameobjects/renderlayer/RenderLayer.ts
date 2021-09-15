@@ -77,7 +77,12 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
-            renderPass.textures.unbindTexture(this.texture);
+            const texture = this.texture;
+
+            if (texture.binding.isBound)
+            {
+                renderPass.textures.unbindTexture(texture);
+            }
 
             Flush(renderPass);
 
