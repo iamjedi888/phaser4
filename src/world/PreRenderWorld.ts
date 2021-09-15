@@ -22,7 +22,7 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
     renderData.gameFrame = gameFrame;
 
     const camera = world.camera;
-    const cameraUpdated = camera.updateBounds();
+    const cameraUpdated = camera.preRender();
 
     Emit(world, WorldPreRenderEvent, world);
 
