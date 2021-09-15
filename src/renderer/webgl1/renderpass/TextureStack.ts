@@ -35,7 +35,7 @@ export class TextureStack
     unbind (index: number = 1): void
     {
         gl.activeTexture(gl.TEXTURE0 + index);
-        gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
+        gl.bindTexture(gl.TEXTURE_2D, this.tempTextures.get(index));
     }
 
     unbindTexture (texture: Texture): void
@@ -47,7 +47,7 @@ export class TextureStack
         binding.unbind();
 
         gl.activeTexture(gl.TEXTURE0 + index);
-        gl.bindTexture(gl.TEXTURE_2D, this.tempTextures[ index ]);
+        gl.bindTexture(gl.TEXTURE_2D, this.tempTextures.get(index));
     }
 
     setWhite (): number
@@ -112,8 +112,6 @@ export class TextureStack
         {
             this.textureIndex.push(index);
         });
-
-        this.textures.set(0, this.tempTextures[0]);
     }
 
     clear (): void
@@ -127,8 +125,6 @@ export class TextureStack
         });
 
         this.textures.clear();
-
-        this.textures.set(0, this.tempTextures[0]);
     }
 
     reset (): void
