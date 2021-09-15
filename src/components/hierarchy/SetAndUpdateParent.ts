@@ -13,8 +13,13 @@ export function SetAndUpdateParent (parentID: number, childID: number, addChildr
 {
     SetParentID(childID, parentID);
 
-    SetDirtyTransform(childID);
+    if (!WillCacheChildren(childID))
+    {
+        SetDirtyTransform(childID);
+    }
+
     SetDirtyParents(childID);
+
     SetRootTransform(childID);
 
     SetNumChildren(parentID, GetNumChildren(parentID) + addChildren);
