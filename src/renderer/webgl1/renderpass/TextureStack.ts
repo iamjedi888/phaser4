@@ -118,7 +118,13 @@ export class TextureStack
 
     clear (): void
     {
-        this.textures.forEach(texture => texture.binding.unbind());
+        this.textures.forEach(texture =>
+        {
+            if (texture)
+            {
+                texture.binding.unbind();
+            }
+        });
 
         this.textures.clear();
 
