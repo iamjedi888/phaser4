@@ -1,11 +1,11 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
+import { Color } from '../../components/color/Color';
 import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
 import { FlipFrameUVs } from '../../textures/FlipFrameUVs';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
-import { GameInstance } from '../../GameInstance';
 import { GetHeight } from '../../config/size/GetHeight';
 import { GetResolution } from '../../config/size/GetResolution';
 import { GetWidth } from '../../config/size/GetWidth';
@@ -13,6 +13,8 @@ import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Layer } from '../layer/Layer';
+import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
+import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
@@ -32,6 +34,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
     texture: Texture;
     framebuffer: WebGLFramebuffer;
+    color: Color;
 
     constructor ()
     {
@@ -62,11 +65,15 @@ export class RenderLayer extends Layer implements IRenderLayer
 
         this.texture = texture;
         this.framebuffer = binding.framebuffer;
+
+        this.color = new Color(id);
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
         const id = this.id;
+
+        SetColor(renderPass, this.color);
 
         if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
@@ -99,5 +106,7 @@ export class RenderLayer extends Layer implements IRenderLayer
             //  If we didn't draw to the FBO this frame we can batch our previous texture:
             BatchTexturedQuadBuffer(this.texture, id, renderPass);
         }
+
+        PopColor(renderPass, this.color);
     }
 }
