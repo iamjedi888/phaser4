@@ -9,6 +9,7 @@ import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { RenderLayer } from '../renderlayer/RenderLayer';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
+import { SetInversedQuadFromCamera } from '../../components/vertices/SetInversedQuadFromCamera';
 import { WillCacheChildren } from '../../components/permissions/WillCacheChildren';
 
 //  A WebGL specific EffectLayer
@@ -47,6 +48,8 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
             ClearDirtyChildCache(id);
 
             SetDirtyParents(id);
+
+            SetInversedQuadFromCamera(id, renderPass.current2DCamera, texture.width, texture.height);
         }
 
         //  this.framebuffer contains a texture with all of this layers sprites drawn to it

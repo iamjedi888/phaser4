@@ -15,6 +15,7 @@ import { Layer } from '../layer/Layer';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
+import { SetInversedQuadFromCamera } from '../../components/vertices/SetInversedQuadFromCamera';
 import { SetQuadPosition } from '../../components/vertices/SetQuadPosition';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
@@ -32,9 +33,10 @@ export class RenderLayer extends Layer implements IRenderLayer
 {
     readonly type: string = 'RenderLayer';
 
+    color: Color;
+
     texture: Texture;
     framebuffer: WebGLFramebuffer;
-    color: Color;
 
     constructor ()
     {
@@ -55,13 +57,12 @@ export class RenderLayer extends Layer implements IRenderLayer
         texture.key = this.type + id.toString();
 
         const binding = new GLTextureBinding(texture, {
-            createFramebuffer: true,
-            flipY: true
+            createFramebuffer: true
         });
 
         AddQuadVertex(id, width, height);
 
-        //  Flip the quad this Batch Renders to, instead of the texture UVs
+        //  Flip the quad vertices instead of the texture UVs
         //  so the flipped UV coords don't mess-up our shaders
 
         SetQuadPosition(id, 0, height, 0, 0, width, 0, width, height);
@@ -96,6 +97,7 @@ export class RenderLayer extends Layer implements IRenderLayer
     postRenderGL <T extends IRenderPass> (renderPass: T): void
     {
         const id = this.id;
+        const texture = this.texture;
 
         if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
         {
@@ -107,7 +109,9 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             SetDirtyParents(id);
 
-            DrawTexturedQuadFlipped(renderPass, this.texture);
+            DrawTexturedQuadFlipped(renderPass, texture);
+
+            SetInversedQuadFromCamera(id, renderPass.current2DCamera, texture.width, texture.height);
         }
         else
         {
