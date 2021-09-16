@@ -4,7 +4,7 @@ import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
 import { Texture } from '../../../textures/Texture';
 
-export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Texture, shader?: IShader): void
+export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Texture, x: number, y: number, shader?: IShader): void
 {
     if (!shader)
     {
@@ -24,10 +24,10 @@ export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Textu
 
     const camera = renderPass.current2DCamera;
 
-    const x = camera.getBoundsX();
-    const y = camera.getBoundsY();
+    const cx = camera.getBoundsX() + x;
+    const cy = camera.getBoundsY() + y;
 
-    BatchSingleQuadFlipped(renderPass, x, y, texture.width, texture.height, u0, v0, u1, v1, 0);
+    BatchSingleQuadFlipped(renderPass, cx, cy, texture.width, texture.height, u0, v0, u1, v1, 0);
 
     //  Flush our single quad and unbind it
     Flush(renderPass);
