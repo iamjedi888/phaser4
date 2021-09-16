@@ -1,31 +1,30 @@
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
+import { ClearDirty } from '../../components/dirty/ClearDirty';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { DrawTexturedQuadFlipped } from '../../renderer/webgl1/draw/DrawTexturedQuadFlipped';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
-import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
+import { GetHeight } from '../../config/size/GetHeight';
+import { GetResolution } from '../../config/size/GetResolution';
+import { GetWidth } from '../../config/size/GetWidth';
 import { IEffectLayer } from './IEffectLayer';
-import { IRectangle } from '../../geom/rectangle/IRectangle';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
+import { IsDirty } from '../../components/dirty/IsDirty';
 import { RenderLayer } from '../renderlayer/RenderLayer';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
 import { SetInversedQuadFromCamera } from '../../components/vertices/SetInversedQuadFromCamera';
-import { WillCacheChildren } from '../../components/permissions/WillCacheChildren';
 
 //  A WebGL specific EffectLayer
-//  EffectLayerCanvas is a canvas alternative
 
 export class EffectLayer extends RenderLayer implements IEffectLayer
 {
     readonly type: string = 'EffectLayer';
 
-    filterArea: IRectangle;
-
     shaders: IShader[] = [];
 
-    constructor (...shaders: IShader[])
+    constructor (width: number = GetWidth(), height: number = GetHeight(), resolution: number = GetResolution(), ...shaders: IShader[])
     {
-        super();
+        super(0, 0, width, height, resolution);
 
         if (Array.isArray(shaders))
         {
@@ -39,17 +38,18 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
         const shaders = this.shaders;
         const texture = this.texture;
 
-        if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
+        if (IsDirty(id))
         {
             Flush(renderPass);
 
             renderPass.framebuffer.pop();
 
+            ClearDirty(id);
             ClearDirtyChildCache(id);
 
             SetDirtyParents(id);
 
-            SetInversedQuadFromCamera(id, renderPass.current2DCamera, texture.width, texture.height);
+            SetInversedQuadFromCamera(id, renderPass.current2DCamera, this.x, this.y, texture.width, texture.height);
         }
 
         //  this.framebuffer contains a texture with all of this layers sprites drawn to it
@@ -63,18 +63,20 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
             // renderPass.textures.clear();
             // renderPass.viewport.set(0, 0, 400, 600);
 
+            const x = this.x;
+            const y = this.y;
             let prevTexture = texture;
 
             for (let i: number = 0; i < shaders.length; i++)
             {
                 const shader = shaders[i];
 
-                DrawTexturedQuadFlipped(renderPass, prevTexture, shader);
+                DrawTexturedQuadFlipped(renderPass, prevTexture, x, y, shader);
 
                 prevTexture = shader.texture;
             }
 
-            DrawTexturedQuadFlipped(renderPass, prevTexture);
+            DrawTexturedQuadFlipped(renderPass, prevTexture, x, y);
 
             // renderPass.viewport.pop();
         }
