@@ -52,7 +52,7 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
             SetInversedQuadFromCamera(id, renderPass.current2DCamera, this.x, this.y, texture.width, texture.height);
         }
 
-        //  this.framebuffer contains a texture with all of this layers sprites drawn to it
+        //  framebuffer contains a texture with all of this layers sprites drawn to it
 
         if (shaders.length === 0)
         {
@@ -60,9 +60,6 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
         }
         else
         {
-            // renderPass.textures.clear();
-            // renderPass.viewport.set(0, 0, 400, 600);
-
             const x = this.x;
             const y = this.y;
             let prevTexture = texture;
@@ -77,8 +74,6 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
             }
 
             DrawTexturedQuadFlipped(renderPass, prevTexture, x, y);
-
-            // renderPass.viewport.pop();
         }
     }
 }
