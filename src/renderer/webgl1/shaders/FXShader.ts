@@ -5,7 +5,7 @@ import { IShader } from './IShader';
 import { QuadShader } from './QuadShader';
 
 //  A Quad Shader with built in time and resolution uniforms.
-//  It will automatically look for uniforms called "Uime" and "uResolution"
+//  It will automatically look for uniforms called "uTime" and "uResolution"
 //  and if it doesn't find those, it will look for "time" and "resolution".
 //  If you use other uniform names then pass them in the config object.
 
@@ -27,7 +27,7 @@ export class FXShader extends QuadShader implements IShader
         const {
             timeUniform = 'uTime',
             resolutionUniform = 'uResolution',
-            timeScale = 1
+            timeScale = 0.001
         } = config;
 
         const uniforms = [ ... this.uniformSetters.keys() ];
