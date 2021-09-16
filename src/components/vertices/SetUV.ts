@@ -1,5 +1,8 @@
 import { QuadVertexComponent } from './QuadVertexComponent';
 
+//  0, 0, 1, 1 = normal
+//  0, 1, 1, 0 = flipped on Y
+
 export function SetUV (id: number, u0: number, v0: number, u1: number, v1: number): void
 {
     const data = QuadVertexComponent.values[id];
