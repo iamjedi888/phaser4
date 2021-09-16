@@ -5,7 +5,7 @@ import { SetQuadPosition } from './SetQuadPosition';
 import { SetUV } from './SetUV';
 import { addComponent } from 'bitecs';
 
-export function AddQuadVertex (id: number, width: number = 0, height: number = 0, flipY: boolean = true): void
+export function AddQuadVertex (id: number, width: number = 0, height: number = 0, flipY: boolean = false): void
 {
     addComponent(GameObjectWorld, QuadVertexComponent, id);
 
