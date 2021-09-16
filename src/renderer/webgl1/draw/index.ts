@@ -1,5 +1,6 @@
 import { BatchQuad } from './BatchQuad';
 import { BatchSingleQuad } from './BatchSingleQuad';
+import { BatchSingleQuadFlipped } from './BatchSingleQuadFlipped';
 import { BatchTexturedQuad } from './BatchTexturedQuad';
 import { BatchTexturedQuadBuffer } from './BatchTexturedQuadBuffer';
 import { BatchTriangle } from './BatchTriangle';
@@ -8,6 +9,8 @@ import { DrawImage } from './DrawImage';
 import { DrawImagePart } from './DrawImagePart';
 import { DrawQuad } from './DrawQuad';
 import { DrawTexturedQuad } from './DrawTexturedQuad';
+import { DrawTexturedQuadFlipped } from './DrawTexturedQuadFlipped';
+import { DrawTiles } from './DrawTiles';
 import { FillArc } from './FillArc';
 import { FillLine } from './FillLine';
 import { FillRect } from './FillRect';
@@ -18,6 +21,7 @@ import { GetTriBuffer } from './GetTriBuffer';
 export {
     BatchQuad,
     BatchSingleQuad,
+    BatchSingleQuadFlipped,
     BatchTexturedQuad,
     BatchTexturedQuadBuffer,
     BatchTriangle,
@@ -26,6 +30,8 @@ export {
     DrawImagePart,
     DrawQuad,
     DrawTexturedQuad,
+    DrawTexturedQuadFlipped,
+    DrawTiles,
     FillArc,
     FillLine,
     FillRect,
