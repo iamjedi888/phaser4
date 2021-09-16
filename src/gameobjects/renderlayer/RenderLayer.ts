@@ -1,5 +1,6 @@
 import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
+import { ClearDirty } from '../../components/dirty/ClearDirty';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { Color } from '../../components/color/Color';
 import { DrawTexturedQuadFlipped } from '../../renderer/webgl1/draw/DrawTexturedQuadFlipped';
@@ -9,18 +10,22 @@ import { GetHeight } from '../../config/size/GetHeight';
 import { GetResolution } from '../../config/size/GetResolution';
 import { GetWidth } from '../../config/size/GetWidth';
 import { HasDirtyChildCache } from '../../components/dirty/HasDirtyChildCache';
+import { IRectangle } from '../../geom/rectangle/IRectangle';
 import { IRenderLayer } from './IRenderLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
+import { IsDirty } from '../../components/dirty/IsDirty';
 import { Layer } from '../layer/Layer';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
+import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
+import { SetDirty } from '../../components/dirty/SetDirty';
+import { SetDirtyChildCache } from '../../components/dirty/SetDirtyChildCache';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
 import { SetInversedQuadFromCamera } from '../../components/vertices/SetInversedQuadFromCamera';
 import { SetQuadPosition } from '../../components/vertices/SetQuadPosition';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
 import { Texture } from '../../textures/Texture';
-import { WillCacheChildren } from '../../components/permissions/WillCacheChildren';
 
 //  The RenderLayer works like a normal Layer, except it automatically caches
 //  all of its renderable children to its own texture. The children are drawn
@@ -38,7 +43,12 @@ export class RenderLayer extends Layer implements IRenderLayer
     texture: Texture;
     framebuffer: WebGLFramebuffer;
 
-    constructor ()
+    viewport: IRectangle;
+
+    private _x: number;
+    private _y: number;
+
+    constructor (x: number = 0, y: number = 0, width: number = GetWidth(), height: number = GetHeight(), resolution: number = GetResolution())
     {
         super();
 
@@ -47,14 +57,9 @@ export class RenderLayer extends Layer implements IRenderLayer
         SetWillCacheChildren(id, true);
         SetWillRenderChildren(id, true);
 
-        const width = GetWidth();
-        const height = GetHeight();
-        const resolution = GetResolution();
-
-        //  TODO: Allow them to set this via a filterArea
         const texture = new Texture(null, width * resolution, height * resolution);
 
-        texture.key = this.type + id.toString();
+        texture.key = `${this.type}${id}`;
 
         const binding = new GLTextureBinding(texture, {
             createFramebuffer: true
@@ -68,20 +73,66 @@ export class RenderLayer extends Layer implements IRenderLayer
         SetQuadPosition(id, 0, height, 0, 0, width, 0, width, height);
 
         this.texture = texture;
+
         this.framebuffer = binding.framebuffer;
 
         this.color = new Color(id);
+
+        this.x = x;
+        this.y = y;
+
+        this.viewport = new Rectangle();
+    }
+
+    set x (value: number)
+    {
+        this._x = value;
+
+        SetDirty(this.id);
+    }
+
+    get x (): number
+    {
+        return this._x;
+    }
+
+    set y (value: number)
+    {
+        this._y = value;
+
+        SetDirty(this.id);
+    }
+
+    get y (): number
+    {
+        return this._y;
     }
 
     renderGL <T extends IRenderPass> (renderPass: T): void
     {
         const id = this.id;
+        const view = this.viewport;
+        const texture = this.texture;
+
+        if (IsDirty(id))
+        {
+            const rendererHeight = renderPass.renderer.height;
+
+            view.set(
+                -this.x,
+                -(rendererHeight - texture.height - this.y),
+                renderPass.renderer.width,
+                rendererHeight
+            );
+
+            SetDirtyChildCache(id);
+        }
 
         SetColor(renderPass, this.color);
 
-        if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
+        if (renderPass.isCameraDirty() || HasDirtyChildCache(id))
         {
-            const texture = this.texture;
+            SetDirty(id);
 
             if (texture.binding.isBound)
             {
@@ -90,7 +141,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             Flush(renderPass);
 
-            renderPass.framebuffer.set(this.framebuffer, true);
+            renderPass.framebuffer.set(this.framebuffer, true, view);
         }
     }
 
@@ -99,19 +150,20 @@ export class RenderLayer extends Layer implements IRenderLayer
         const id = this.id;
         const texture = this.texture;
 
-        if (renderPass.isCameraDirty() || (WillCacheChildren(id) && HasDirtyChildCache(id)))
+        if (IsDirty(id))
         {
             Flush(renderPass);
 
             renderPass.framebuffer.pop();
 
+            ClearDirty(id);
             ClearDirtyChildCache(id);
 
             SetDirtyParents(id);
 
-            DrawTexturedQuadFlipped(renderPass, texture);
+            SetInversedQuadFromCamera(id, renderPass.current2DCamera, this.x, this.y, texture.width, texture.height);
 
-            SetInversedQuadFromCamera(id, renderPass.current2DCamera, texture.width, texture.height);
+            DrawTexturedQuadFlipped(renderPass, texture, this.x, this.y);
         }
         else
         {
