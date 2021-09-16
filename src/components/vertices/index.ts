@@ -1,4 +1,5 @@
 import { AddQuadVertex } from './AddQuadVertex';
+import { GetQuadVertices } from './GetQuadVertices';
 import { QuadVertexComponent } from './QuadVertexComponent';
 import { SetQuadColor } from './SetQuadColor';
 import { SetQuadPosition } from './SetQuadPosition';
@@ -7,6 +8,7 @@ import { SetUV } from './SetUV';
 
 export {
     AddQuadVertex,
+    GetQuadVertices,
     QuadVertexComponent,
     SetQuadColor,
     SetQuadPosition,
