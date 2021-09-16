@@ -2,8 +2,7 @@ import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
 import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
 import { ClearDirtyChildCache } from '../../components/dirty/ClearDirtyChildCache';
 import { Color } from '../../components/color/Color';
-import { DrawTexturedQuad } from '../../renderer/webgl1/draw/DrawTexturedQuad';
-import { FlipFrameUVs } from '../../textures/FlipFrameUVs';
+import { DrawTexturedQuadFlipped } from '../../renderer/webgl1/draw/DrawTexturedQuadFlipped';
 import { Flush } from '../../renderer/webgl1/renderpass/Flush';
 import { GLTextureBinding } from '../../renderer/webgl1/textures/GLTextureBinding';
 import { GetHeight } from '../../config/size/GetHeight';
@@ -16,6 +15,7 @@ import { Layer } from '../layer/Layer';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
+import { SetQuadPosition } from '../../components/vertices/SetQuadPosition';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
 import { Texture } from '../../textures/Texture';
@@ -59,9 +59,12 @@ export class RenderLayer extends Layer implements IRenderLayer
             flipY: true
         });
 
-        AddQuadVertex(id, width, height, true);
+        AddQuadVertex(id, width, height);
 
-        FlipFrameUVs(texture.getFrame());
+        //  Flip the quad this Batch Renders to, instead of the texture UVs
+        //  so the flipped UV coords don't mess-up our shaders
+
+        SetQuadPosition(id, 0, height, 0, 0, width, 0, width, height);
 
         this.texture = texture;
         this.framebuffer = binding.framebuffer;
@@ -104,7 +107,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             SetDirtyParents(id);
 
-            DrawTexturedQuad(renderPass, this.texture);
+            DrawTexturedQuadFlipped(renderPass, this.texture);
         }
         else
         {
