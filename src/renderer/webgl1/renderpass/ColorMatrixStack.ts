@@ -2,6 +2,7 @@ import { Color } from '../../../components/color/Color';
 import { CompareColorMatrix } from '../../../components/color/CompareColorMatrix';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
+import { SetUniform } from '../shaders/SetUniform';
 
 export type ColorMatrixStackEntry = {
     colorMatrix: Float32Array;
@@ -64,8 +65,8 @@ export class ColorMatrixStack
 
         Flush(this.renderPass);
 
-        shader.setUniform('uColorMatrix', entry.colorMatrix);
-        shader.setUniform('uColorOffset', entry.colorOffset);
+        SetUniform(shader, 'uColorMatrix', entry.colorMatrix);
+        SetUniform(shader, 'uColorOffset', entry.colorOffset);
     }
 
     pop (): void
