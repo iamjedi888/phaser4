@@ -9,6 +9,7 @@ import { GetResolution } from '../../../config/size/GetResolution';
 import { GetWidth } from '../../../config/size/GetWidth';
 import { IShader } from './IShader';
 import { IShaderConfig } from './IShaderConfig';
+import { Rectangle } from '../../../geom/rectangle/Rectangle';
 import { SINGLE_QUAD_FRAG } from '../glsl/SINGLE_QUAD_FRAG';
 import { SINGLE_QUAD_VERT } from '../glsl/SINGLE_QUAD_VERT';
 import { Texture } from '../../../textures/Texture';
@@ -47,6 +48,7 @@ export function SetShaderFromConfig <T extends IShader> (shader: T, config: ISha
 
         shader.texture = texture;
         shader.framebuffer = binding.framebuffer;
+        shader.viewport = new Rectangle(0, 0, width, height);
     }
 
     return shader;
