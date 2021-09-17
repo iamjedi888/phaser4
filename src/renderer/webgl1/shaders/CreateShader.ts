@@ -2,11 +2,17 @@ import { CompileShader } from './CompileShader';
 import { CreateAttributes } from './CreateAttributes';
 import { CreateProgram } from './CreateProgram';
 import { CreateUniforms } from './CreateUniforms';
+import { GetMaxTextures } from '../../../config/maxtextures/GetMaxTextures';
 import { IShader } from './IShader';
 import { gl } from '../GL';
 
 export function CreateShader <T extends IShader> (shader: T, fragmentShaderSource: string, vertexShaderSource: string, uniforms: {}, attribs: {}): T
 {
+    const maxTextures = GetMaxTextures();
+
+    //  Replace %count% by default, as lots of shaders will need it (and it won't hurt if it doesn't exist)
+    fragmentShaderSource = fragmentShaderSource.replace(/%count%/gi, `${maxTextures}`);
+
     const fragmentShader = CompileShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
     const vertexShader = CompileShader(vertexShaderSource, gl.VERTEX_SHADER);
 
