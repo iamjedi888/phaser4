@@ -1,8 +1,8 @@
+import { AlphaTexture } from '../../../textures/AlphaTexture';
 import { BatchSingleQuad } from './BatchSingleQuad';
 import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
-import { WhiteTexture } from '../../../textures/WhiteTexture';
 
 export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
 {
@@ -11,9 +11,9 @@ export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
 
     renderPass.textures.clear();
 
-    const white = WhiteTexture.get();
+    const alpha = AlphaTexture.get();
 
-    renderPass.textures.bind(white, 0);
+    renderPass.textures.bind(alpha, 0);
 
     renderPass.shader.set(shader, 0);
 
@@ -24,7 +24,7 @@ export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
     //  Flush our single quad and unbind it
     Flush(renderPass);
 
-    renderPass.textures.unbindTexture(white);
+    renderPass.textures.unbindTexture(alpha);
 
     renderPass.shader.pop();
 }
