@@ -17,7 +17,7 @@ export function Draw (renderPass: IRenderPass): void
 
     if (renderToFramebuffer)
     {
-        renderPass.framebuffer.set(currentShader.shader.framebuffer, true);
+        renderPass.framebuffer.set(currentShader.shader.framebuffer, true, currentShader.shader.viewport);
     }
 
     if (count === currentBuffer.batchSize)
