@@ -8,8 +8,11 @@ export function SetUniform <T extends IShader> (shader: T, key: string, value: u
     {
         uniforms.set(key, value);
 
-        const setter = shader.uniformSetters.get(key);
+        if (shader.isActive)
+        {
+            const setter = shader.uniformSetters.get(key);
 
-        setter(value);
+            setter(value);
+        }
     }
 }
