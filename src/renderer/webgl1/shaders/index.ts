@@ -14,6 +14,7 @@ import { MultiTextureQuadShader } from './MultiTextureQuadShader';
 import { SetAttributes } from './SetAttributes';
 import { SetShaderFromConfig } from './SetShaderFromConfig';
 import { SetUniform } from './SetUniform';
+import { SetUniforms } from './SetUniforms';
 import { Shader } from './Shader';
 
 export {
@@ -33,5 +34,6 @@ export {
     SetAttributes,
     SetShaderFromConfig,
     SetUniform,
+    SetUniforms,
     Shader
 };
