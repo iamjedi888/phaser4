@@ -16,6 +16,8 @@ import { SetShaderFromConfig } from './SetShaderFromConfig';
 import { SetUniform } from './SetUniform';
 import { SetUniforms } from './SetUniforms';
 import { Shader } from './Shader';
+import { SingleTextureQuadShader } from './SingleTextureQuadShader';
+import { TextureShader } from './TextureShader';
 
 export {
     BindShader,
@@ -35,5 +37,7 @@ export {
     SetShaderFromConfig,
     SetUniform,
     SetUniforms,
-    Shader
+    Shader,
+    SingleTextureQuadShader,
+    TextureShader
 };

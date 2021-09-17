@@ -8,6 +8,7 @@ import { DrawFrame } from './DrawFrame';
 import { DrawImage } from './DrawImage';
 import { DrawImagePart } from './DrawImagePart';
 import { DrawQuad } from './DrawQuad';
+import { DrawShaderQuad } from './DrawShaderQuad';
 import { DrawTexturedQuad } from './DrawTexturedQuad';
 import { DrawTexturedQuadFlipped } from './DrawTexturedQuadFlipped';
 import { DrawTiles } from './DrawTiles';
@@ -29,6 +30,7 @@ export {
     DrawImage,
     DrawImagePart,
     DrawQuad,
+    DrawShaderQuad,
     DrawTexturedQuad,
     DrawTexturedQuadFlipped,
     DrawTiles,
