@@ -1,8 +1,8 @@
+import { CompileShader } from './CompileShader';
 import { CreateAttributes } from './CreateAttributes';
 import { CreateDepthBuffer } from '../fbo/CreateDepthBuffer';
 import { CreateFramebuffer } from '../fbo/CreateFramebuffer';
 import { CreateProgram } from './CreateProgram';
-import { CreateShader } from './CreateShader';
 import { CreateUniforms } from './CreateUniforms';
 import { DefaultQuadAttributes } from './DefaultQuadAttributes';
 import { DefaultQuadUniforms } from './DefaultQuadUniforms';
@@ -89,8 +89,8 @@ export class Shader implements IShader
 
     create (fragmentShaderSource: string, vertexShaderSource: string, uniforms: {}, attribs: {}): void
     {
-        const fragmentShader = CreateShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
-        const vertexShader = CreateShader(vertexShaderSource, gl.VERTEX_SHADER);
+        const fragmentShader = CompileShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
+        const vertexShader = CompileShader(vertexShaderSource, gl.VERTEX_SHADER);
 
         if (!fragmentShader || !vertexShader)
         {
