@@ -1,3 +1,4 @@
+import { AlphaTexture } from './AlphaTexture';
 import { CreateCanvas } from './CreateCanvas';
 import { IGLTextureBindingConfig } from '../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { Texture } from './Texture';
@@ -19,7 +20,9 @@ export class TextureManager
 
     private createDefaultTextures (): void
     {
-        this.add('__BLANK', new Texture(CreateCanvas(2, 2).canvas));
+        const alphaTexture = this.add('__BLANK', new Texture(CreateCanvas(2, 2).canvas));
+
+        AlphaTexture.set(alphaTexture);
 
         const missing = CreateCanvas(32, 32);
 

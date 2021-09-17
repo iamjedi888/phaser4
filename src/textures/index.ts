@@ -2,6 +2,7 @@ import * as Palettes from './palettes';
 import * as Parsers from './parsers';
 import * as Types from './types';
 
+import { AlphaTexture } from './AlphaTexture';
 import { CreateCanvas } from './CreateCanvas';
 import { CreateTextureManager } from './CreateTextureManager';
 import { Frame } from './Frame';
@@ -14,6 +15,7 @@ import { TextureManager } from './TextureManager';
 import { WhiteTexture } from './WhiteTexture';
 
 export {
+    AlphaTexture,
     CreateCanvas,
     CreateTextureManager,
     Frame,
