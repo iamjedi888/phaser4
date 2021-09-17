@@ -1,5 +1,6 @@
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from './IShader';
+import { SetUniforms } from './SetUniforms';
 
 export function BindShader <T extends IShader> (shader: T, renderPass: IRenderPass): boolean
 {
@@ -8,9 +9,7 @@ export function BindShader <T extends IShader> (shader: T, renderPass: IRenderPa
     uniforms.set('uProjectionMatrix', renderPass.projectionMatrix);
     uniforms.set('uCameraMatrix', renderPass.cameraMatrix);
 
-    // this.updateUniforms(renderPass);
+    shader.updateUniforms(renderPass);
 
-    // return this.setUniforms(renderPass);
-
-    return true;
+    return SetUniforms(shader, renderPass);
 }
