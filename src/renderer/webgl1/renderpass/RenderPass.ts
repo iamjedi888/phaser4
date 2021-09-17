@@ -11,8 +11,8 @@ import { IShader } from '../shaders/IShader';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
-import { Shader } from '../shaders/Shader';
 import { ShaderStack } from './ShaderStack';
+import { SingleTextureQuadShader } from '../shaders/SingleTextureQuadShader';
 import { StaticCamera } from '../../../camera/StaticCamera';
 import { TextureStack } from './TextureStack';
 import { VertexBuffer } from '../buffers/VertexBuffer';
@@ -85,7 +85,7 @@ export class RenderPass implements IRenderPass
 
         //  Default QuadShader (for FBO drawing)
 
-        this.quadShader = new Shader();
+        this.quadShader = new SingleTextureQuadShader();
         this.quadCamera = new StaticCamera(this.renderer.width, this.renderer.height);
 
         //  Default settings
@@ -95,7 +95,7 @@ export class RenderPass implements IRenderPass
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         this.colorMatrix.setDefault(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
         this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize() }));
-        this.shader.setDefault((GetMaxTextures() === 1) ? new Shader() : new MultiTextureQuadShader());
+        this.shader.setDefault((GetMaxTextures() === 1) ? new SingleTextureQuadShader() : new MultiTextureQuadShader());
     }
 
     resize (width: number, height: number): void
