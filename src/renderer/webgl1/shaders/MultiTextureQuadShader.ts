@@ -2,9 +2,9 @@ import { GetMaxTextures } from '../../../config/maxtextures/GetMaxTextures';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShaderConfig } from './IShaderConfig';
 import { MULTI_QUAD_FRAG } from '../glsl/MULTI_QUAD_FRAG';
-import { QuadShader } from './QuadShader';
+import { Shader } from './Shader';
 
-export class MultiTextureQuadShader extends QuadShader
+export class MultiTextureQuadShader extends Shader
 {
     constructor (config: IShaderConfig = {})
     {

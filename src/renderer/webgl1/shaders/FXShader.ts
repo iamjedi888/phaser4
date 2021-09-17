@@ -2,14 +2,14 @@ import { DefaultQuadAttributes } from './DefaultQuadAttributes';
 import { IFXShaderConfig } from './IFXShaderConfig';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from './IShader';
-import { QuadShader } from './QuadShader';
+import { Shader } from './Shader';
 
 //  A Quad Shader with built in time and resolution uniforms.
 //  It will automatically look for uniforms called "uTime" and "uResolution"
 //  and if it doesn't find those, it will look for "time" and "resolution".
 //  If you use other uniform names then pass them in the config object.
 
-export class FXShader extends QuadShader implements IShader
+export class FXShader extends Shader implements IShader
 {
     private timeVar: string;
     private resolutionVar: string;
