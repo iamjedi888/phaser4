@@ -13,6 +13,7 @@ export interface IShader
     isActive: boolean;
     texture: Texture;
     uniforms: Map<string, unknown>;
+    uniformSetters: Map<string, Function>;
     fromConfig (config: IShaderConfig): void;
     bind (renderPass: IRenderPass, uTexture?: number): boolean;
     create (fragmentShaderSource: string, vertexShaderSource: string, uniforms: Object, attribs: Object): void;
