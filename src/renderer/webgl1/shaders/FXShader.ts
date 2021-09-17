@@ -1,3 +1,4 @@
+import { BindShader } from './BindShader';
 import { DefaultQuadAttributes } from './DefaultQuadAttributes';
 import { IFXShaderConfig } from './IFXShaderConfig';
 import { IRenderPass } from '../renderpass/IRenderPass';
@@ -50,18 +51,21 @@ export class FXShader extends Shader implements IShader
 
     bind (renderPass: IRenderPass): boolean
     {
-        const renderer = renderPass.renderer;
+        const timeVar = this.timeVar;
+        const resolutionVar = this.resolutionVar;
 
-        if (this.timeVar)
+        if (timeVar)
         {
-            this.uniforms.set(this.timeVar, performance.now() * this.timeScale);
+            this.uniforms.set(timeVar, performance.now() * this.timeScale);
         }
 
-        if (this.resolutionVar)
+        if (resolutionVar)
         {
-            this.uniforms.set(this.resolutionVar, [ renderer.width, renderer.height ]);
+            const renderer = renderPass.renderer;
+
+            this.uniforms.set(resolutionVar, [ renderer.width, renderer.height ]);
         }
 
-        return super.bind(renderPass);
+        return BindShader(this, renderPass);
     }
 }
