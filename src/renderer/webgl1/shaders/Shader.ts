@@ -1,4 +1,5 @@
 import { BindShader } from './BindShader';
+import { IRectangle } from '../../../geom/rectangle/IRectangle';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from './IShader';
 import { IShaderConfig } from './IShaderConfig';
@@ -25,6 +26,8 @@ export class Shader implements IShader
     renderToDepthbuffer: boolean = false;
 
     isActive: boolean = false;
+
+    viewport?: IRectangle;
 
     constructor (config?: IShaderConfig)
     {
