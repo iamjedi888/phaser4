@@ -1,5 +1,6 @@
 import { IRenderPass } from './IRenderPass';
 import { IShader } from '../shaders/IShader';
+import { SetAttributes } from '../shaders/SetAttributes';
 
 export type ShaderStackEntry = {
     shader: IShader;
@@ -65,7 +66,7 @@ export class ShaderStack
 
             if (success)
             {
-                entry.shader.setAttributes(this.renderPass);
+                SetAttributes(entry.shader, this.renderPass);
 
                 if (this.active && this.active !== entry.shader)
                 {
