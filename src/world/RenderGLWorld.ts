@@ -16,7 +16,7 @@ export function RenderGLWorld <T extends IBaseWorld, P extends IRenderPass> (wor
 {
     SetColor(renderPass, world.color);
 
-    Emit(world, WorldEvents.WorldRenderEvent, world);
+    Emit(world, WorldEvents.WorldRenderEvent, renderPass, world);
 
     const camera = world.camera;
     const renderData = world.renderData;
