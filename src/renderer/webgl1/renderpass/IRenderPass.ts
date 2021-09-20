@@ -20,7 +20,6 @@ export interface IRenderPass
     flushTotal: number;
 
     vertexbuffer: VertexBufferStack;
-    blendMode: BlendModeStack;
     shader: ShaderStack;
     viewport: ViewportStack;
     textures: TextureStack;
