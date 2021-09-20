@@ -1,4 +1,5 @@
 import { BufferEntry } from '../draw/BufferEntry';
+import { CurrentVertexBuffer } from './CurrentVertexBuffer';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 
@@ -10,7 +11,7 @@ const bufferEntry: BufferEntry = {
 
 export function GetVertexBufferEntry (renderPass: IRenderPass, addToCount: number = 0): BufferEntry
 {
-    const buffer = renderPass.vertexbuffer.current;
+    const buffer = CurrentVertexBuffer();
 
     //  If batch cannot take the size of this entry, flush it first
     if (renderPass.count + addToCount >= buffer.batchSize)

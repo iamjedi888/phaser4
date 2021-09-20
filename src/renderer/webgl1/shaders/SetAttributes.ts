@@ -1,3 +1,4 @@
+import { CurrentVertexBuffer } from '../renderpass/CurrentVertexBuffer';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from './IShader';
 import { gl } from '../GL';
@@ -7,7 +8,7 @@ export function SetAttributes <T extends IShader> (shader: T, renderPass: IRende
     if (shader.program)
     {
         //  stride = vertexByteSize
-        const stride = renderPass.vertexbuffer.current.vertexByteSize;
+        const stride = CurrentVertexBuffer().vertexByteSize;
 
         shader.attributes.forEach(attrib =>
         {

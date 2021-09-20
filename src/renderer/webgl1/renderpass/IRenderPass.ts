@@ -19,7 +19,6 @@ export interface IRenderPass
     prevCount: number;
     flushTotal: number;
 
-    vertexbuffer: VertexBufferStack;
     shader: ShaderStack;
     viewport: ViewportStack;
     textures: TextureStack;

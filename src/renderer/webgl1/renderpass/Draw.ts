@@ -1,3 +1,4 @@
+import { CurrentVertexBuffer } from './CurrentVertexBuffer';
 import { IRenderPass } from './IRenderPass';
 import { PopFramebuffer } from './PopFramebuffer';
 import { SetFramebuffer } from './index';
@@ -12,7 +13,7 @@ export function Draw (renderPass: IRenderPass): void
         return;
     }
 
-    const currentBuffer = renderPass.vertexbuffer.current;
+    const currentBuffer = CurrentVertexBuffer();
     const currentShader = renderPass.shader.current;
 
     const renderToFramebuffer = currentShader.shader.renderToFramebuffer;
