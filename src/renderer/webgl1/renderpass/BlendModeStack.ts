@@ -1,27 +1,30 @@
+import { BlendModeStackEntry } from './BlendModeStackEntry';
 import { IRenderPass } from './IRenderPass';
-import { gl } from '../GL';
 
-export type BlendModeStackEntry = {
-    enable: boolean;
-    sfactor?: number;
-    dfactor?: number;
-};
-
-export class BlendModeStack
+export type IBlendModeStack =
 {
     renderPass: IRenderPass;
-
     stack: BlendModeStackEntry[];
     default: BlendModeStackEntry;
     index: number;
+    init: <T extends IRenderPass> (renderPass: T) => void;
+};
 
-    constructor (renderPass: IRenderPass)
+export const BlendModeStack: IBlendModeStack =
+{
+    renderPass: null,
+    stack: [],
+    default: null,
+    index: 0,
+
+    init: <T extends IRenderPass> (renderPass: T): void =>
     {
-        this.renderPass = renderPass;
-        this.stack = [];
+        BlendModeStack.renderPass = renderPass;
     }
+};
 
-    get current (): BlendModeStackEntry
+/*
+get current (): BlendModeStackEntry
     {
         return this.stack[this.index];
     }
@@ -102,3 +105,4 @@ export class BlendModeStack
         this.default = entry;
     }
 }
+*/
