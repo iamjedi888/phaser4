@@ -1,10 +1,13 @@
 import { BatchSingleQuadFlipped } from './BatchSingleQuadFlipped';
+import { BindTexture } from '../renderpass/BindTexture';
+import { ClearTextures } from '../renderpass/ClearTextures';
 import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
 import { PopShader } from '../renderpass/PopShader';
 import { SetShader } from '../renderpass/SetShader';
 import { Texture } from '../../../textures/Texture';
+import { UnbindTexture } from '../renderpass/UnbindTexture';
 
 export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Texture, x: number, y: number, shader?: IShader): void
 {
@@ -18,9 +21,9 @@ export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Textu
     //  Clear out anything already in the batch
     Flush(renderPass);
 
-    renderPass.textures.clear();
+    ClearTextures();
 
-    renderPass.textures.bind(texture, 0);
+    BindTexture(texture, 0);
 
     SetShader(shader, 0);
 
@@ -34,7 +37,7 @@ export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Textu
     //  Flush our single quad and unbind it
     Flush(renderPass);
 
-    renderPass.textures.unbindTexture(texture);
+    UnbindTexture(texture);
 
     PopShader();
 }

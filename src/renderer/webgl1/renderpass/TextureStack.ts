@@ -24,13 +24,3 @@ export const TextureStack: ITextureStack =
         TextureStack.renderPass = renderPass;
     }
 };
-
-/*
-    //  Renamed: UnbindtextureFromSlot
-    unbind (index: number = 1): void
-    {
-        gl.activeTexture(gl.TEXTURE0 + index);
-        gl.bindTexture(gl.TEXTURE_2D, this.tempTextures.get(index));
-    }
-}
-*/

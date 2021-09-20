@@ -1,12 +1,13 @@
 import { BatchQuad } from './BatchQuad';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
+import { SetWhiteTexture } from '../renderpass/SetWhiteTexture';
 
 export function FillLine (renderPass: IRenderPass, x1: number, y1: number, x2: number, y2: number, width: number, red: number, green: number, blue: number, alpha: number): void
 {
     const { F32, offset } = GetVertexBufferEntry(renderPass, 2);
 
-    const textureIndex = renderPass.textures.setWhite();
+    const textureIndex = SetWhiteTexture();
 
     const dx = x2 - x1;
     const dy = y2 - y1;

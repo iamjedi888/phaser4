@@ -28,6 +28,7 @@ import { SetQuadPosition } from '../../components/vertices/SetQuadPosition';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
 import { SetWillRenderChildren } from '../../components/permissions/SetWillRenderChildren';
 import { Texture } from '../../textures/Texture';
+import { UnbindTexture } from '../../renderer/webgl1/renderpass/UnbindTexture';
 
 //  The RenderLayer works like a normal Layer, except it automatically caches
 //  all of its renderable children to its own texture. The children are drawn
@@ -138,7 +139,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             if (texture.binding.isBound)
             {
-                renderPass.textures.unbindTexture(texture);
+                UnbindTexture(texture);
             }
 
             Flush(renderPass);

@@ -3,6 +3,7 @@ import { Circle } from '../../../geom/circle/Circle';
 import { GetCirclePointsBetween } from '../../../geom/circle/GetCirclePointsBetween';
 import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IRenderPass } from '../renderpass/IRenderPass';
+import { SetWhiteTexture } from '../renderpass/SetWhiteTexture';
 import { Triangulate } from '../../../geom/PolyPartition';
 
 let circle: Circle;
@@ -27,7 +28,7 @@ export function FillArc (renderPass: IRenderPass, x: number, y: number, radius: 
 
     const { F32, offset } = GetVertexBufferEntry(renderPass, tris.length);
 
-    const textureIndex = renderPass.textures.setWhite();
+    const textureIndex = SetWhiteTexture();
 
     let idx = offset;
 

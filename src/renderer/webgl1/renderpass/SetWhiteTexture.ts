@@ -1,7 +1,7 @@
 import { SetTexture } from './SetTexture';
 import { WhiteTexture } from '../../../textures/WhiteTexture';
 
-export function SetWhiteTexture (): void
+export function SetWhiteTexture (): number
 {
-    SetTexture(WhiteTexture.get());
+    return SetTexture(WhiteTexture.get());
 }

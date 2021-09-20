@@ -15,6 +15,7 @@ import { SetDefaultBlendMode } from './SetDefaultBlendMode';
 import { SetDefaultColorMatrix } from './SetDefaultColorMatrix';
 import { SetDefaultFramebuffer } from './index';
 import { SetDefaultShader } from './SetDefaultShader';
+import { SetDefaultTextures } from './SetDefaultTextures';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
 import { SetDefaultViewport } from './SetDefaultViewport';
 import { ShaderStack } from './ShaderStack';
@@ -36,16 +37,6 @@ export class RenderPass implements IRenderPass
     prevCount: number = 0;
     flushTotal: number = 0;
 
-    //  Stacks
-    // framebuffer: IFramebufferStack;
-    // vertexbuffer: VertexBufferStack;
-    // blendMode: BlendModeStack;
-    // viewport: ViewportStack;
-    // shader: ShaderStack;
-    // colorMatrix: ColorMatrixStack;
-
-    textures: TextureStack;
-
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
     quadCamera: IBaseCamera;
@@ -65,8 +56,7 @@ export class RenderPass implements IRenderPass
         ViewportStack.init(this);
         ShaderStack.init(this);
         ColorMatrixStack.init(this);
-
-        this.textures = new TextureStack(this);
+        TextureStack.init(this);
 
         this.reset();
     }
@@ -93,8 +83,7 @@ export class RenderPass implements IRenderPass
 
         //  Default settings
 
-        this.textures.setDefault();
-
+        SetDefaultTextures();
         SetDefaultFramebuffer();
         SetDefaultBlendMode(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         SetDefaultVertexBuffer(new VertexBuffer({ batchSize: GetBatchSize() }));
