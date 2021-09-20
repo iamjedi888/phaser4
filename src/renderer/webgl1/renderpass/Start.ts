@@ -1,3 +1,4 @@
+import { BindDefaultBlendMode } from './BindDefaultBlendMode';
 import { BindDefaultFramebuffer } from './BindDefaultFramebuffer';
 import { IRenderPass } from './IRenderPass';
 
@@ -13,8 +14,8 @@ export function Start (renderPass: IRenderPass): IRenderPass
     renderPass.flushTotal = 0;
 
     BindDefaultFramebuffer();
+    BindDefaultBlendMode();
 
-    renderPass.blendMode.bindDefault();
     renderPass.viewport.bindDefault();
     renderPass.vertexbuffer.bindDefault();
     renderPass.shader.bindDefault();

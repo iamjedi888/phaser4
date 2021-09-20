@@ -11,6 +11,7 @@ import { IShader } from '../shaders/IShader';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
+import { SetDefaultBlendMode } from './SetDefaultBlendMode';
 import { SetDefaultFramebuffer } from './index';
 import { ShaderStack } from './ShaderStack';
 import { SingleTextureQuadShader } from '../shaders/SingleTextureQuadShader';
@@ -34,7 +35,7 @@ export class RenderPass implements IRenderPass
     //  Stacks
     // framebuffer: IFramebufferStack;
     vertexbuffer: VertexBufferStack;
-    blendMode: BlendModeStack;
+    // blendMode: BlendModeStack;
     shader: ShaderStack;
     viewport: ViewportStack;
     textures: TextureStack;
@@ -54,9 +55,9 @@ export class RenderPass implements IRenderPass
         this.projectionMatrix = new Float32Array(16);
 
         FramebufferStack.init(this);
+        BlendModeStack.init(this);
 
         this.vertexbuffer = new VertexBufferStack(this);
-        this.blendMode = new BlendModeStack(this);
         this.shader = new ShaderStack(this);
         this.viewport = new ViewportStack(this);
         this.textures = new TextureStack(this);
@@ -97,7 +98,9 @@ export class RenderPass implements IRenderPass
         SetDefaultFramebuffer();
         // this.framebuffer.setDefault();
 
-        this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        SetDefaultBlendMode(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        // this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
         this.colorMatrix.setDefault(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
         this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize() }));
         this.shader.setDefault((GetMaxTextures() === 1) ? new SingleTextureQuadShader() : new MultiTextureQuadShader());
