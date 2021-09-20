@@ -1,3 +1,4 @@
+import { FlipFrameUVs } from '../../../textures/FlipFrameUVs';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShaderConfig } from './IShaderConfig';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
@@ -19,6 +20,9 @@ export class TextureShader extends Shader
         this.projectionMatrix = new Float32Array(16);
 
         Mat4Ortho(this.projectionMatrix, 0, this.viewport.width, this.viewport.height, 0, -1, 1);
+
+        //  Only for TextureShaders
+        FlipFrameUVs(this.texture.firstFrame);
     }
 
     bind (renderPass: IRenderPass): boolean
