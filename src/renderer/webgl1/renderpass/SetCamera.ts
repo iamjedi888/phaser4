@@ -1,3 +1,4 @@
+import { CurrentShader } from './CurrentShader';
 import { Flush } from './Flush';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
@@ -14,6 +15,6 @@ export function SetCamera (renderPass: IRenderPass, camera: IBaseCamera): void
 
     if (camera.isDirty)
     {
-        renderPass.getCurrentShader().bind(renderPass);
+        CurrentShader().shader.bind(renderPass);
     }
 }

@@ -1,5 +1,6 @@
 import { Color } from '../../../components/color/Color';
 import { CompareColorMatrix } from '../../../components/color/CompareColorMatrix';
+import { CurrentShader } from './CurrentShader';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 import { SetUniform } from '../shaders/SetUniform';
@@ -61,7 +62,7 @@ export class ColorMatrixStack
             entry = this.current;
         }
 
-        const shader = this.renderPass.getCurrentShader();
+        const shader = CurrentShader().shader;
 
         Flush(this.renderPass);
 

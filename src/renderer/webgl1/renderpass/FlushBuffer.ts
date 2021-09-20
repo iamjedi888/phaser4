@@ -1,3 +1,4 @@
+import { CurrentShader } from './CurrentShader';
 import { Flush } from './Flush';
 import { IRenderPass } from './IRenderPass';
 import { IVertexBuffer } from '../buffers/IVertexBuffer';
@@ -10,7 +11,7 @@ export function FlushBuffer (renderPass: IRenderPass, buffer: IVertexBuffer): bo
     SetVertexBuffer(buffer);
 
     //  Needs setting every time the buffer changes
-    SetAttributes(renderPass.shader.current.shader, renderPass);
+    SetAttributes(CurrentShader().shader, renderPass);
 
     const result = Flush(renderPass, buffer.count);
 

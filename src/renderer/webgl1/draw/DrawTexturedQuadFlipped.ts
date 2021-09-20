@@ -2,6 +2,8 @@ import { BatchSingleQuadFlipped } from './BatchSingleQuadFlipped';
 import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
+import { PopShader } from '../renderpass/PopShader';
+import { SetShader } from '../renderpass/SetShader';
 import { Texture } from '../../../textures/Texture';
 
 export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Texture, x: number, y: number, shader?: IShader): void
@@ -20,7 +22,7 @@ export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Textu
 
     renderPass.textures.bind(texture, 0);
 
-    renderPass.shader.set(shader, 0);
+    SetShader(shader, 0);
 
     const camera = renderPass.current2DCamera;
 
@@ -34,5 +36,5 @@ export function DrawTexturedQuadFlipped (renderPass: IRenderPass, texture: Textu
 
     renderPass.textures.unbindTexture(texture);
 
-    renderPass.shader.pop();
+    PopShader();
 }

@@ -10,6 +10,7 @@ import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
 import { SetFrame } from './SetFrame';
+import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
 import { SetTexture } from './SetTexture';
 import { Texture } from '../../textures/Texture';
 import { WillRender } from '../../components/permissions/WillRender';
@@ -58,7 +59,7 @@ export class Sprite extends Container implements ISprite
         {
             Flush(renderPass);
 
-            renderPass.shader.set(this.shader, 0);
+            SetShader(this.shader, 0);
         }
 
         if (color.colorMatrixEnabled)

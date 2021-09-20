@@ -19,7 +19,6 @@ export interface IRenderPass
     prevCount: number;
     flushTotal: number;
 
-    shader: ShaderStack;
     textures: TextureStack;
     colorMatrix: ColorMatrixStack;
 
@@ -30,7 +29,6 @@ export interface IRenderPass
 
     reset (): void;
     flush (): void;
-    getCurrentShader (): IShader;
     resize (width: number, height: number): void;
     isCameraDirty (): boolean;
 }

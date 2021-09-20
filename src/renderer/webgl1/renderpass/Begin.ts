@@ -1,3 +1,4 @@
+import { BindDefaultShader } from './BindDefaultShader';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IRenderPass } from './IRenderPass';
 import { SetCamera } from './SetCamera';
@@ -6,7 +7,7 @@ import { SetCamera } from './SetCamera';
 
 export function Begin (renderPass: IRenderPass, camera: IBaseCamera): void
 {
-    renderPass.shader.bindDefault();
+    BindDefaultShader();
 
     SetCamera(renderPass, camera);
 }

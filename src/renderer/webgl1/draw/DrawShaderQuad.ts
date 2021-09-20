@@ -3,6 +3,8 @@ import { BatchSingleQuad } from './BatchSingleQuad';
 import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
+import { PopShader } from '../renderpass/PopShader';
+import { SetShader } from '../renderpass/SetShader';
 
 export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
 {
@@ -15,7 +17,7 @@ export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
 
     renderPass.textures.bind(alpha, 0);
 
-    renderPass.shader.set(shader, 0);
+    SetShader(shader, 0);
 
     const view = shader.viewport;
 
@@ -26,5 +28,5 @@ export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
 
     renderPass.textures.unbindTexture(alpha);
 
-    renderPass.shader.pop();
+    PopShader();
 }

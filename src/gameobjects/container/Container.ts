@@ -13,11 +13,13 @@ import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { Origin } from '../../components/transform/Origin';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
+import { PopShader } from '../../renderer/webgl1/renderpass/PopShader';
 import { Position } from '../../components/transform/Position';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { Scale } from '../../components/transform/Scale';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirtyTransform } from '../../components/dirty/SetDirtyTransform';
+import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
 import { Size } from '../../components/transform/Size';
 import { Skew } from '../../components/transform/Skew';
 import { UpdateAxisAligned } from '../../components/transform/UpdateAxisAligned';
@@ -59,7 +61,7 @@ export class Container extends GameObject implements IContainer
         {
             Flush(renderPass);
 
-            renderPass.shader.set(this.shader, 0);
+            SetShader(this.shader, 0);
         }
 
         SetColor(renderPass, this.color);
@@ -73,7 +75,7 @@ export class Container extends GameObject implements IContainer
         {
             Flush(renderPass);
 
-            renderPass.shader.pop();
+            PopShader();
         }
 
         PopColor(renderPass, this.color);

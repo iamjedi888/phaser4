@@ -7,6 +7,7 @@ import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { SetExtentFromFrame } from '../../textures/SetExtentFromFrame';
+import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
 import { SetVertexUVsFromFrame } from '../../textures/SetVertexUVsFromFrame';
 import { Texture } from '../../textures/Texture';
 import { WhiteTexture } from '../../textures';
@@ -52,7 +53,7 @@ export class Rectangle extends Container
         {
             Flush(renderPass);
 
-            renderPass.shader.set(this.shader, 0);
+            SetShader(this.shader, 0);
         }
 
         if (color.colorMatrixEnabled)

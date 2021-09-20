@@ -13,6 +13,7 @@ import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
 import { SetDefaultBlendMode } from './SetDefaultBlendMode';
 import { SetDefaultFramebuffer } from './index';
+import { SetDefaultShader } from './SetDefaultShader';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
 import { SetDefaultViewport } from './SetDefaultViewport';
 import { ShaderStack } from './ShaderStack';
@@ -39,8 +40,8 @@ export class RenderPass implements IRenderPass
     // vertexbuffer: VertexBufferStack;
     // blendMode: BlendModeStack;
     // viewport: ViewportStack;
+    // shader: ShaderStack;
 
-    shader: ShaderStack;
     textures: TextureStack;
     colorMatrix: ColorMatrixStack;
 
@@ -61,17 +62,12 @@ export class RenderPass implements IRenderPass
         BlendModeStack.init(this);
         VertexBufferStack.init(this);
         ViewportStack.init(this);
+        ShaderStack.init(this);
 
-        this.shader = new ShaderStack(this);
         this.textures = new TextureStack(this);
         this.colorMatrix = new ColorMatrixStack(this);
 
         this.reset();
-    }
-
-    getCurrentShader (): IShader
-    {
-        return this.shader.current.shader;
     }
 
     flush (): void
@@ -101,10 +97,9 @@ export class RenderPass implements IRenderPass
         SetDefaultFramebuffer();
         SetDefaultBlendMode(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         SetDefaultVertexBuffer(new VertexBuffer({ batchSize: GetBatchSize() }));
+        SetDefaultShader((GetMaxTextures() === 1) ? new SingleTextureQuadShader() : new MultiTextureQuadShader());
 
         this.colorMatrix.setDefault(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
-
-        this.shader.setDefault((GetMaxTextures() === 1) ? new SingleTextureQuadShader() : new MultiTextureQuadShader());
     }
 
     resize (width: number, height: number): void
