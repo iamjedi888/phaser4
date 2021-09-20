@@ -12,9 +12,12 @@ import { BindDefaultFramebuffer } from './BindDefaultFramebuffer';
 import { BindDefaultVertexBuffer } from './BindDefaultVertexBuffer';
 import { BindDefaultViewport } from './BindDefaultViewport';
 import { BindFramebuffer } from './BindFramebuffer';
+import { BindShaderEntry } from './BindShaderEntry';
+import { BindTexture } from './BindTexture';
 import { BindVertexBuffer } from './BindVertexBuffer';
 import { BindViewport } from './BindViewport';
 import { BlendModeStack } from './BlendModeStack';
+import { ClearTextures } from './ClearTextures';
 import { ColorMatrixStack } from './ColorMatrixStack';
 import { CurrentBlendMode } from './CurrentBlendMode';
 import { CurrentColorMatrix } from './CurrentColorMatrix';
@@ -59,9 +62,12 @@ export {
     BindDefaultVertexBuffer,
     BindDefaultViewport,
     BindFramebuffer,
+    BindShaderEntry,
+    BindTexture,
     BindVertexBuffer,
     BindViewport,
     BlendModeStack,
+    ClearTextures,
     ColorMatrixStack,
     CurrentColorMatrix,
     CurrentBlendMode,
