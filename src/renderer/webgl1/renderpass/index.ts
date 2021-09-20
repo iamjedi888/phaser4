@@ -1,10 +1,13 @@
 import { AddBlendMode } from './AddBlendMode';
+import { AddColorMatrix } from './AddColorMatrix';
 import { AddFramebuffer } from './AddFramebuffer';
 import { AddVertexBuffer } from './AddVertexBuffer';
 import { AddViewport } from './AddViewport';
 import { Begin } from './Begin';
 import { BindBlendMode } from './BindBlendMode';
+import { BindColorMatrix } from './BindColorMatrix';
 import { BindDefaultBlendMode } from './BindDefaultBlendMode';
+import { BindDefaultColorMatrix } from './BindDefaultColorMatrix';
 import { BindDefaultFramebuffer } from './BindDefaultFramebuffer';
 import { BindDefaultVertexBuffer } from './BindDefaultVertexBuffer';
 import { BindDefaultViewport } from './BindDefaultViewport';
@@ -12,7 +15,9 @@ import { BindFramebuffer } from './BindFramebuffer';
 import { BindVertexBuffer } from './BindVertexBuffer';
 import { BindViewport } from './BindViewport';
 import { BlendModeStack } from './BlendModeStack';
+import { ColorMatrixStack } from './ColorMatrixStack';
 import { CurrentBlendMode } from './CurrentBlendMode';
+import { CurrentColorMatrix } from './CurrentColorMatrix';
 import { CurrentFramebuffer } from './CurrentFramebuffer';
 import { CurrentVertexBuffer } from './CurrentVertexBuffer';
 import { CurrentViewport } from './CurrentViewport';
@@ -23,12 +28,14 @@ import { FlushBuffer } from './FlushBuffer';
 import { FramebufferStack } from './FramebufferStack';
 import { GetVertexBufferEntry } from './GetVertexBufferEntry';
 import { PopBlendMode } from './PopBlendMode';
+import { PopColorMatrix } from './PopColorMatrix';
 import { PopFramebuffer } from './PopFramebuffer';
 import { PopVertexBuffer } from './PopVertexBuffer';
 import { PopViewport } from './PopViewport';
 import { ProcessBindingQueue } from './ProcessBindingQueue';
 import { RenderPass } from './RenderPass';
 import { SetDefaultBlendMode } from './SetDefaultBlendMode';
+import { SetDefaultColorMatrix } from './SetDefaultColorMatrix';
 import { SetDefaultFramebuffer } from './SetDefaultFramebuffer';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
 import { SetDefaultViewport } from './SetDefaultViewport';
@@ -39,12 +46,15 @@ import { ViewportStack } from './ViewportStack';
 
 export {
     AddBlendMode,
+    AddColorMatrix,
     AddFramebuffer,
     AddVertexBuffer,
     AddViewport,
     Begin,
     BindBlendMode,
+    BindColorMatrix,
     BindDefaultBlendMode,
+    BindDefaultColorMatrix,
     BindDefaultFramebuffer,
     BindDefaultVertexBuffer,
     BindDefaultViewport,
@@ -52,6 +62,8 @@ export {
     BindVertexBuffer,
     BindViewport,
     BlendModeStack,
+    ColorMatrixStack,
+    CurrentColorMatrix,
     CurrentBlendMode,
     CurrentFramebuffer,
     CurrentVertexBuffer,
@@ -63,12 +75,14 @@ export {
     FramebufferStack,
     GetVertexBufferEntry,
     PopBlendMode,
+    PopColorMatrix,
     PopFramebuffer,
     PopVertexBuffer,
     PopViewport,
     ProcessBindingQueue,
     RenderPass,
     SetDefaultBlendMode,
+    SetDefaultColorMatrix,
     SetDefaultFramebuffer,
     SetDefaultVertexBuffer,
     SetDefaultViewport,
