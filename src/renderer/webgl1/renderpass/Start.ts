@@ -1,4 +1,5 @@
 import { BindDefaultBlendMode } from './BindDefaultBlendMode';
+import { BindDefaultColorMatrix } from './BindDefaultColorMatrix';
 import { BindDefaultFramebuffer } from './BindDefaultFramebuffer';
 import { BindDefaultShader } from './BindDefaultShader';
 import { BindDefaultVertexBuffer } from './BindDefaultVertexBuffer';
@@ -21,8 +22,7 @@ export function Start (renderPass: IRenderPass): IRenderPass
     BindDefaultVertexBuffer();
     BindDefaultViewport();
     BindDefaultShader();
-
-    renderPass.colorMatrix.bindDefault();
+    BindDefaultColorMatrix();
 
     return renderPass;
 }

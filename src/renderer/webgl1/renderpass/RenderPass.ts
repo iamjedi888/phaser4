@@ -12,6 +12,7 @@ import { IWebGLRenderer } from '../IWebGLRenderer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
 import { SetDefaultBlendMode } from './SetDefaultBlendMode';
+import { SetDefaultColorMatrix } from './SetDefaultColorMatrix';
 import { SetDefaultFramebuffer } from './index';
 import { SetDefaultShader } from './SetDefaultShader';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
@@ -41,9 +42,9 @@ export class RenderPass implements IRenderPass
     // blendMode: BlendModeStack;
     // viewport: ViewportStack;
     // shader: ShaderStack;
+    // colorMatrix: ColorMatrixStack;
 
     textures: TextureStack;
-    colorMatrix: ColorMatrixStack;
 
     //  Single Texture Quad Shader + Camera
     quadShader: IShader;
@@ -63,9 +64,9 @@ export class RenderPass implements IRenderPass
         VertexBufferStack.init(this);
         ViewportStack.init(this);
         ShaderStack.init(this);
+        ColorMatrixStack.init(this);
 
         this.textures = new TextureStack(this);
-        this.colorMatrix = new ColorMatrixStack(this);
 
         this.reset();
     }
@@ -98,8 +99,7 @@ export class RenderPass implements IRenderPass
         SetDefaultBlendMode(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         SetDefaultVertexBuffer(new VertexBuffer({ batchSize: GetBatchSize() }));
         SetDefaultShader((GetMaxTextures() === 1) ? new SingleTextureQuadShader() : new MultiTextureQuadShader());
-
-        this.colorMatrix.setDefault(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
+        SetDefaultColorMatrix(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
     }
 
     resize (width: number, height: number): void

@@ -9,6 +9,8 @@ import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
+import { PopColorMatrix } from '../../renderer/webgl1/renderpass/PopColorMatrix';
+import { SetColorMatrix } from '../../renderer/webgl1/renderpass/SetColorMatrix';
 import { SetFrame } from './SetFrame';
 import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
 import { SetTexture } from './SetTexture';
@@ -64,7 +66,7 @@ export class Sprite extends Container implements ISprite
 
         if (color.colorMatrixEnabled)
         {
-            renderPass.colorMatrix.set(color);
+            SetColorMatrix(color);
         }
 
         this.preRenderGL(renderPass);
@@ -75,7 +77,7 @@ export class Sprite extends Container implements ISprite
         {
             Flush(renderPass);
 
-            renderPass.colorMatrix.pop();
+            PopColorMatrix();
         }
     }
 

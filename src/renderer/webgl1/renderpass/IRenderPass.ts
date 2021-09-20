@@ -1,13 +1,8 @@
-import { BlendModeStack } from './BlendModeStack';
-import { ColorMatrixStack } from './ColorMatrixStack';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IShader } from '../shaders/IShader';
 import { IStaticCamera } from '../../../camera/IStaticCamera';
 import { IWebGLRenderer } from '../IWebGLRenderer';
-import { ShaderStack } from './ShaderStack';
 import { TextureStack } from './TextureStack';
-import { VertexBufferStack } from './VertexBufferStack';
-import { ViewportStack } from './ViewportStack';
 
 export interface IRenderPass
 {
@@ -20,7 +15,6 @@ export interface IRenderPass
     flushTotal: number;
 
     textures: TextureStack;
-    colorMatrix: ColorMatrixStack;
 
     quadShader: IShader;
     quadCamera: IStaticCamera;

@@ -6,6 +6,8 @@ import { Frame } from '../../textures/Frame';
 import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
 import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
+import { PopColorMatrix } from '../../renderer/webgl1/renderpass/PopColorMatrix';
+import { SetColorMatrix } from '../../renderer/webgl1/renderpass/SetColorMatrix';
 import { SetExtentFromFrame } from '../../textures/SetExtentFromFrame';
 import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
 import { SetVertexUVsFromFrame } from '../../textures/SetVertexUVsFromFrame';
@@ -58,7 +60,7 @@ export class Rectangle extends Container
 
         if (color.colorMatrixEnabled)
         {
-            renderPass.colorMatrix.set(color);
+            SetColorMatrix(color);
         }
 
         this.preRenderGL(renderPass);
@@ -69,7 +71,7 @@ export class Rectangle extends Container
         {
             Flush(renderPass);
 
-            renderPass.colorMatrix.pop();
+            PopColorMatrix();
         }
     }
 
