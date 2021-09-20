@@ -1,6 +1,7 @@
 import { CurrentFramebuffer } from './CurrentFramebuffer';
 import { FramebufferStack } from './FramebufferStack';
 import { FramebufferStackEntry } from './FramebufferStackEntry';
+import { SetViewport } from './SetViewport';
 import { gl } from '../GL';
 
 export function BindFramebuffer (clear: boolean = true, entry?: FramebufferStackEntry): void
@@ -25,7 +26,7 @@ export function BindFramebuffer (clear: boolean = true, entry?: FramebufferStack
 
     if (viewport)
     {
-        FramebufferStack.renderPass.viewport.set(viewport.x, viewport.y, viewport.width, viewport.height);
+        SetViewport(viewport.x, viewport.y, viewport.width, viewport.height);
     }
 
     FramebufferStack.active = framebuffer;

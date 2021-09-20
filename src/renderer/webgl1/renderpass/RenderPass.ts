@@ -14,6 +14,7 @@ import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
 import { SetDefaultBlendMode } from './SetDefaultBlendMode';
 import { SetDefaultFramebuffer } from './index';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
+import { SetDefaultViewport } from './SetDefaultViewport';
 import { ShaderStack } from './ShaderStack';
 import { SingleTextureQuadShader } from '../shaders/SingleTextureQuadShader';
 import { StaticCamera } from '../../../camera/StaticCamera';
@@ -37,8 +38,9 @@ export class RenderPass implements IRenderPass
     // framebuffer: IFramebufferStack;
     // vertexbuffer: VertexBufferStack;
     // blendMode: BlendModeStack;
+    // viewport: ViewportStack;
+
     shader: ShaderStack;
-    viewport: ViewportStack;
     textures: TextureStack;
     colorMatrix: ColorMatrixStack;
 
@@ -58,9 +60,9 @@ export class RenderPass implements IRenderPass
         FramebufferStack.init(this);
         BlendModeStack.init(this);
         VertexBufferStack.init(this);
+        ViewportStack.init(this);
 
         this.shader = new ShaderStack(this);
-        this.viewport = new ViewportStack(this);
         this.textures = new TextureStack(this);
         this.colorMatrix = new ColorMatrixStack(this);
 
@@ -112,7 +114,7 @@ export class RenderPass implements IRenderPass
 
         this.quadCamera.reset(width, height);
 
-        this.viewport.setDefault(0, 0, width, height);
+        SetDefaultViewport(0, 0, width, height);
     }
 
     isCameraDirty (): boolean

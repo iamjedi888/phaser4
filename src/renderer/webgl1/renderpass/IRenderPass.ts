@@ -20,7 +20,6 @@ export interface IRenderPass
     flushTotal: number;
 
     shader: ShaderStack;
-    viewport: ViewportStack;
     textures: TextureStack;
     colorMatrix: ColorMatrixStack;
 
