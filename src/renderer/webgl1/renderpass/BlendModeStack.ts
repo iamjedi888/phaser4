@@ -64,7 +64,10 @@ export class BlendModeStack
             if (!gl.isEnabled(gl.BLEND) || (this.current.sfactor !== entry.sfactor || this.current.dfactor !== entry.dfactor))
             {
                 gl.enable(gl.BLEND);
-                gl.blendFunc(entry.sfactor, entry.dfactor);
+
+                //  pma blend func
+                // gl.blendFunc(entry.sfactor, entry.dfactor);
+                gl.blendFuncSeparate(entry.sfactor, entry.dfactor, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             }
         }
         else
