@@ -16,11 +16,13 @@ import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IsDirty } from '../../components/dirty/IsDirty';
 import { Layer } from '../layer/Layer';
 import { PopColor } from '../../renderer/webgl1/renderpass/PopColor';
+import { PopFramebuffer } from '../../renderer/webgl1/renderpass/PopFramebuffer';
 import { Rectangle } from '../../geom/rectangle/Rectangle';
 import { SetColor } from '../../renderer/webgl1/renderpass/SetColor';
 import { SetDirty } from '../../components/dirty/SetDirty';
 import { SetDirtyChildCache } from '../../components/dirty/SetDirtyChildCache';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
+import { SetFramebuffer } from '../../renderer/webgl1/renderpass/SetFramebuffer';
 import { SetInversedQuadFromCamera } from '../../components/vertices/SetInversedQuadFromCamera';
 import { SetQuadPosition } from '../../components/vertices/SetQuadPosition';
 import { SetWillCacheChildren } from '../../components/permissions/SetWillCacheChildren';
@@ -141,7 +143,7 @@ export class RenderLayer extends Layer implements IRenderLayer
 
             Flush(renderPass);
 
-            renderPass.framebuffer.set(this.framebuffer, true, view);
+            SetFramebuffer(this.framebuffer, true, view);
         }
     }
 
@@ -154,7 +156,7 @@ export class RenderLayer extends Layer implements IRenderLayer
         {
             Flush(renderPass);
 
-            renderPass.framebuffer.pop();
+            PopFramebuffer();
 
             ClearDirty(id);
             ClearDirtyChildCache(id);

@@ -11,6 +11,7 @@ import { IShader } from '../shaders/IShader';
 import { IWebGLRenderer } from '../IWebGLRenderer';
 import { Mat4Ortho } from '../../../math/mat4/Mat4Ortho';
 import { MultiTextureQuadShader } from '../shaders/MultiTextureQuadShader';
+import { SetDefaultFramebuffer } from './index';
 import { ShaderStack } from './ShaderStack';
 import { SingleTextureQuadShader } from '../shaders/SingleTextureQuadShader';
 import { StaticCamera } from '../../../camera/StaticCamera';
@@ -31,7 +32,7 @@ export class RenderPass implements IRenderPass
     flushTotal: number = 0;
 
     //  Stacks
-    framebuffer: FramebufferStack;
+    // framebuffer: IFramebufferStack;
     vertexbuffer: VertexBufferStack;
     blendMode: BlendModeStack;
     shader: ShaderStack;
@@ -52,7 +53,8 @@ export class RenderPass implements IRenderPass
 
         this.projectionMatrix = new Float32Array(16);
 
-        this.framebuffer = new FramebufferStack(this);
+        FramebufferStack.init(this);
+
         this.vertexbuffer = new VertexBufferStack(this);
         this.blendMode = new BlendModeStack(this);
         this.shader = new ShaderStack(this);
@@ -91,7 +93,10 @@ export class RenderPass implements IRenderPass
         //  Default settings
 
         this.textures.setDefault();
-        this.framebuffer.setDefault();
+
+        SetDefaultFramebuffer();
+        // this.framebuffer.setDefault();
+
         this.blendMode.setDefault(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         this.colorMatrix.setDefault(DEFAULT_COLOR_MATRIX, DEFAULT_COLOR_OFFSET);
         this.vertexbuffer.setDefault(new VertexBuffer({ batchSize: GetBatchSize() }));

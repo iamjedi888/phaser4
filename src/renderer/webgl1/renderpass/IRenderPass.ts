@@ -1,6 +1,5 @@
 import { BlendModeStack } from './BlendModeStack';
 import { ColorMatrixStack } from './ColorMatrixStack';
-import { FramebufferStack } from './FramebufferStack';
 import { IBaseCamera } from '../../../camera/IBaseCamera';
 import { IShader } from '../shaders/IShader';
 import { IStaticCamera } from '../../../camera/IStaticCamera';
@@ -20,7 +19,6 @@ export interface IRenderPass
     prevCount: number;
     flushTotal: number;
 
-    framebuffer: FramebufferStack;
     vertexbuffer: VertexBufferStack;
     blendMode: BlendModeStack;
     shader: ShaderStack;

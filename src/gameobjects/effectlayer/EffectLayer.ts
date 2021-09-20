@@ -10,6 +10,7 @@ import { IEffectLayer } from './IEffectLayer';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { IShader } from '../../renderer/webgl1/shaders/IShader';
 import { IsDirty } from '../../components/dirty/IsDirty';
+import { PopFramebuffer } from '../../renderer/webgl1/renderpass/PopFramebuffer';
 import { RenderLayer } from '../renderlayer/RenderLayer';
 import { SetDirtyParents } from '../../components/dirty/SetDirtyParents';
 import { SetInversedQuadFromCamera } from '../../components/vertices/SetInversedQuadFromCamera';
@@ -42,7 +43,7 @@ export class EffectLayer extends RenderLayer implements IEffectLayer
         {
             Flush(renderPass);
 
-            renderPass.framebuffer.pop();
+            PopFramebuffer();
 
             ClearDirty(id);
             ClearDirtyChildCache(id);

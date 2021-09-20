@@ -1,4 +1,6 @@
 import { IRenderPass } from './IRenderPass';
+import { PopFramebuffer } from './PopFramebuffer';
+import { SetFramebuffer } from './index';
 import { gl } from '../GL';
 
 export function Draw (renderPass: IRenderPass): void
@@ -17,7 +19,7 @@ export function Draw (renderPass: IRenderPass): void
 
     if (renderToFramebuffer)
     {
-        renderPass.framebuffer.set(currentShader.shader.framebuffer, true, currentShader.shader.viewport);
+        SetFramebuffer(currentShader.shader.framebuffer, true, currentShader.shader.viewport);
     }
 
     if (count === currentBuffer.batchSize)
@@ -46,6 +48,6 @@ export function Draw (renderPass: IRenderPass): void
 
     if (renderToFramebuffer)
     {
-        renderPass.framebuffer.pop();
+        PopFramebuffer();
     }
 }
