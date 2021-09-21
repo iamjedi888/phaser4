@@ -114,9 +114,10 @@ export class Mouse extends EventEmitter
         return this.localPoint.set(event.offsetX, event.offsetY);
     }
 
+    /*
     getInteractiveChildren <T extends IGameObject> (parent: T, results: IGameObject[]): void
     {
-        const children = parent.children;
+        const children = parent.getChildren();
 
         for (let i = 0; i < children.length; i++)
         {
@@ -224,6 +225,7 @@ export class Mouse extends EventEmitter
 
         return output;
     }
+    */
 
     shutdown (): void
     {
