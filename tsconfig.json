@@ -4,6 +4,7 @@
         "target": "esnext",
         "module": "es2015",
         "lib": [ "dom", "es5", "es6", "es7", "esnext", "WebWorker", "WebWorker.ImportScripts", "Webworker.Iterable" ],
+        "skipLibCheck": true,
         "outDir": "./dist",
         "declarationDir": "./dist",
         "emitDeclarationOnly": true,
@@ -33,10 +34,13 @@
     "exclude": [
         "node_modules",
         "wip/",
+        "src/camera3d/",
+        "src/display3d/",
+        "src/geom3d/",
+        "src/gameobjects3d/",
+        "src/materials3d/",
+        "src/world3d/",
         "src/stats/",
-        "src/motion/tween/index.ts",
-        "src/motion/tween/Tween.ts",
-        "src/motion/tween/TweenPlugin.ts",
-        "src/motion/tween/ITweenPlugin.ts"
+        "src/motion/"
     ]
 }
