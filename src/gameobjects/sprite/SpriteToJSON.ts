@@ -8,7 +8,6 @@ export function SpriteToJSON <T extends ISprite> (sprite: T): {}
         name: sprite.name,
         parentID: sprite.getParent().id,
         visible: sprite.visible,
-        depth: sprite.depth,
         hasTexture: sprite.hasTexture,
         texture: (sprite.hasTexture) ? sprite.texture.key : '',
         frame: (sprite.hasTexture) ? sprite.frame.key : '',
