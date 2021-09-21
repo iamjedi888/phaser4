@@ -4,7 +4,7 @@ export function SetInteractive <T extends IGameObject> (...children: T[]): T[]
 {
     children.forEach(child =>
     {
-        child.input.enabled = true;
+        // child.input.enabled = true;
     });
 
     return children;
