@@ -9,8 +9,6 @@ export class AmbientLightShader extends Shader implements IShader
 {
     constructor ()
     {
-        super();
-
         const tempMat4 = new Float32Array(16).fill(0);
         const tempVec3 = [ 0, 0, 0 ];
 
@@ -42,6 +40,6 @@ export class AmbientLightShader extends Shader implements IShader
             }
         };
 
-        this.fromConfig(config);
+        super(config);
     }
 }

@@ -11,8 +11,6 @@ export class GoraudLambertShader extends Shader implements IShader
 {
     constructor ()
     {
-        super();
-
         const config = {
             fragmentShader: AMBIENT_LIGHT_FRAG,
             vertexShader: AMBIENT_LIGHT_VERT,
@@ -44,6 +42,6 @@ export class GoraudLambertShader extends Shader implements IShader
             }
         };
 
-        this.fromConfig(config);
+        super(config);
     }
 }

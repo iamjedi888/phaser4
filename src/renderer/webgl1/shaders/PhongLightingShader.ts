@@ -9,8 +9,6 @@ export class PhongLightingShader extends Shader implements IShader
 {
     constructor ()
     {
-        super();
-
         const config = {
             fragmentShader: PHONG_TEXTURE_FRAG,
             vertexShader: PHONG_TEXTURE_VERT,
@@ -39,8 +37,6 @@ export class PhongLightingShader extends Shader implements IShader
             }
         };
 
-        this.fromConfig(config);
+        super(config);
     }
-
-
 }
