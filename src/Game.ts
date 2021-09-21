@@ -98,7 +98,7 @@ export class Game extends EventEmitter
 
         const time = this.time;
 
-        ResetWorldRenderData(this.renderStats, time.frame);
+        ResetWorldRenderData(this.renderStats);
 
         time.update(now);
 
