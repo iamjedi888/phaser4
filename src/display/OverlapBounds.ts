@@ -1,3 +1,4 @@
+import { GetBounds } from './GetBounds';
 import { IGameObject } from '../gameobjects/IGameObject';
 import { RectangleToRectangle } from '../geom/intersects/RectangleToRectangle';
 
@@ -5,7 +6,7 @@ import { RectangleToRectangle } from '../geom/intersects/RectangleToRectangle';
 
 export function OverlapBounds (source: IGameObject, ...targets: IGameObject[]): boolean
 {
-    const sourceBounds = source.getBounds();
+    const sourceBounds = GetBounds(source);
 
     for (let i = 0; i < targets.length; i++)
     {
@@ -16,7 +17,7 @@ export function OverlapBounds (source: IGameObject, ...targets: IGameObject[]): 
             continue;
         }
 
-        if (RectangleToRectangle(sourceBounds, target.getBounds()))
+        if (RectangleToRectangle(sourceBounds, GetBounds(target)))
         {
             return true;
         }
