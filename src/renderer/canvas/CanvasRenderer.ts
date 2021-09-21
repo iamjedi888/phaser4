@@ -4,9 +4,6 @@ import { GetCanvasContext } from '../../config/canvascontext/GetCanvasContext';
 import { GetHeight } from '../../config/size/GetHeight';
 import { GetResolution } from '../../config/size/GetResolution';
 import { GetWidth } from '../../config/size/GetWidth';
-import { ICamera } from '../../camera/ICamera';
-import { ISceneRenderData } from '../../scenes/ISceneRenderData';
-import { SearchEntry } from '../../display/SearchEntryType';
 
 export class CanvasRenderer
 {
@@ -91,8 +88,18 @@ export class CanvasRenderer
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    render (renderData: ISceneRenderData): void
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    begin (willRedraw: boolean): void
     {
+    }
+
+    end (): void
+    {
+    }
+
+    render (): void
+    {
+        /*
         BindingQueue.clear();
 
         const ctx = this.ctx;
@@ -142,10 +149,10 @@ export class CanvasRenderer
                 // }
             }
         }
+        */
     }
 
     destroy (): void
     {
-        //  TODO!
     }
 }
