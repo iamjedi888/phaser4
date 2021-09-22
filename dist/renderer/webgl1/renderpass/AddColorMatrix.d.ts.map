@@ -1,0 +1,1 @@
+{"version":3,"file":"AddColorMatrix.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/AddColorMatrix.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,qBAAqB,EAAE,MAAM,yBAAyB,CAAC;AAEhE,wBAAgB,cAAc,CAAE,WAAW,EAAE,YAAY,EAAE,WAAW,EAAE,YAAY,GAAG,qBAAqB,CAiB3G"}

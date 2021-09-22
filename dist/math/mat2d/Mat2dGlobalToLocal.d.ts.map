@@ -1,0 +1,1 @@
+{"version":3,"file":"Mat2dGlobalToLocal.d.ts","sourceRoot":"","sources":["../../../src/math/mat2d/Mat2dGlobalToLocal.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AACxC,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AAEpC,wBAAgB,kBAAkB,CAAE,GAAG,EAAE,SAAS,EAAE,CAAC,EAAE,MAAM,EAAE,CAAC,EAAE,MAAM,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAUtG"}

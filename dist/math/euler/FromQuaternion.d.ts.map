@@ -1,0 +1,1 @@
+{"version":3,"file":"FromQuaternion.d.ts","sourceRoot":"","sources":["../../../src/math/euler/FromQuaternion.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,SAAS,CAAC;AAIhC,OAAO,EAAE,UAAU,EAAE,MAAM,0BAA0B,CAAC;AAItD,wBAAgB,cAAc,CAAE,CAAC,EAAE,KAAK,EAAE,CAAC,EAAE,UAAU,EAAE,KAAK,GAAE,MAAgB,GAAG,KAAK,CAKvF"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"BindVertexBuffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/BindVertexBuffer.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,aAAa,EAAE,MAAM,0BAA0B,CAAC;AAIzD,wBAAgB,gBAAgB,CAAE,MAAM,CAAC,EAAE,aAAa,GAAG,IAAI,CAwB9D"}

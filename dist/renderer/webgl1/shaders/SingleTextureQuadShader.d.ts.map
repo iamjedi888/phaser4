@@ -1,0 +1,1 @@
+{"version":3,"file":"SingleTextureQuadShader.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/SingleTextureQuadShader.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAEhD,OAAO,EAAE,MAAM,EAAE,MAAM,UAAU,CAAC;AAElC,qBAAa,uBAAwB,SAAQ,MAAM;gBAElC,MAAM,GAAE,aAAkB;CAM1C"}

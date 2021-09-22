@@ -1,0 +1,1 @@
+{"version":3,"file":"TriangleContainsPoint.d.ts","sourceRoot":"","sources":["../../../src/geom/triangle/TriangleContainsPoint.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AAExC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAK5C,wBAAgB,qBAAqB,CAAE,QAAQ,EAAE,SAAS,EAAE,KAAK,EAAE,IAAI,GAAG,OAAO,CAGhF"}

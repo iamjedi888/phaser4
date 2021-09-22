@@ -1,0 +1,1 @@
+{"version":3,"file":"CreateDepthBuffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/fbo/CreateDepthBuffer.ts"],"names":[],"mappings":"AAEA,wBAAgB,iBAAiB,CAAE,WAAW,EAAE,gBAAgB,EAAE,YAAY,EAAE,MAAM,EAAE,aAAa,EAAE,MAAM,GAAG,iBAAiB,CAehI"}

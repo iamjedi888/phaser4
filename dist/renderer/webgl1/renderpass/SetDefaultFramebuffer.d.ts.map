@@ -1,0 +1,1 @@
+{"version":3,"file":"SetDefaultFramebuffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/SetDefaultFramebuffer.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,MAAM,oCAAoC,CAAC;AAEhE,wBAAgB,qBAAqB,CAAE,CAAC,SAAS,UAAU,EAAG,WAAW,GAAE,gBAAuB,EAAE,QAAQ,CAAC,EAAE,CAAC,GAAG,IAAI,CAUtH"}

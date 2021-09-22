@@ -1,0 +1,1 @@
+{"version":3,"file":"Vec3ClampLength.d.ts","sourceRoot":"","sources":["../../../src/math/vec3/Vec3ClampLength.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAI9B,wBAAgB,eAAe,CAAE,CAAC,EAAE,IAAI,EAAE,GAAG,EAAE,MAAM,EAAE,GAAG,EAAE,MAAM,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAOhG"}

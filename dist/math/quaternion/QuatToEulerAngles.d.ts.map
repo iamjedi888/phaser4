@@ -1,0 +1,1 @@
+{"version":3,"file":"QuatToEulerAngles.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatToEulerAngles.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AACpD,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AAIpC,wBAAgB,iBAAiB,CAAE,CAAC,EAAE,eAAe,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAoCnF"}

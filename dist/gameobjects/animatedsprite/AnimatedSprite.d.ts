@@ -1,0 +1,47 @@
+import { Frame } from '../../textures/Frame';
+import { IAnimation } from '../../animation/IAnimation';
+import { IAnimationData } from '../../animation/IAnimationData';
+import { IAnimationFrame } from '../../animation/IAnimationFrame';
+import { IGameObject } from '../IGameObject';
+import { Sprite } from '../sprite/Sprite';
+import { Texture } from '../../textures/Texture';
+export declare class AnimatedSprite extends Sprite {
+    currentAnimation: IAnimation;
+    currentFrame: IAnimationFrame;
+    animData: IAnimationData;
+    hasStarted: boolean;
+    forward: boolean;
+    inReverse: boolean;
+    private accumulator;
+    private nextTick;
+    private delayCounter;
+    private repeatCounter;
+    private pendingRepeat;
+    private paused;
+    private wasPlaying;
+    private pendingStop;
+    private pendingStopValue;
+    constructor(x: number, y: number, texture: string | Texture | Frame, frame?: string | number | Frame);
+    private handleStart;
+    private handleRepeat;
+    private handleStop;
+    private handleComplete;
+    reverse(): this;
+    getProgress(): number;
+    stop(): this;
+    update(delta: number, now: number): void;
+    nextFrame(): this;
+    repeatAnimation(): this;
+    setCurrentFrame(animFrame: IAnimationFrame): void;
+    getNextTick(): void;
+    handleYoyoFrame(isReverse?: boolean): void;
+    prevFrame(): this;
+    complete(): void;
+    play(): this;
+    pause(atFrame: IAnimationFrame): this;
+    resume(fromFrame: IAnimationFrame): this;
+    get isPlaying(): boolean;
+    get isPlayingForward(): boolean;
+    destroy(reparentChildren?: IGameObject): void;
+}
+//# sourceMappingURL=AnimatedSprite.d.ts.map

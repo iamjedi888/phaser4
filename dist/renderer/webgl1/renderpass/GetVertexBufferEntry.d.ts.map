@@ -1,0 +1,1 @@
+{"version":3,"file":"GetVertexBufferEntry.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/GetVertexBufferEntry.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,qBAAqB,CAAC;AAGlD,OAAO,EAAE,WAAW,EAAE,MAAM,eAAe,CAAC;AAQ5C,wBAAgB,oBAAoB,CAAE,UAAU,EAAE,WAAW,EAAE,UAAU,GAAE,MAAU,GAAG,WAAW,CAiBlG"}

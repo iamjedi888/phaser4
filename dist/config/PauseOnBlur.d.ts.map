@@ -1,0 +1,1 @@
+{"version":3,"file":"PauseOnBlur.d.ts","sourceRoot":"","sources":["../../src/config/PauseOnBlur.ts"],"names":[],"mappings":"AASA,iBAAS,aAAa,IAAK,IAAI,CAgB9B;AAED,iBAAS,WAAW,CAAE,qBAAqB,GAAE,OAAc,EAAE,WAAW,GAAE,OAAc,GAAG,MAAM,IAAI,CAkEpG;AAED,iBAAS,qBAAqB,IAAK,OAAO,CAGzC;AAED,iBAAS,eAAe,IAAK,OAAO,CAGnC;AAED,OAAO,EACH,aAAa,EACb,WAAW,EACX,qBAAqB,EACrB,eAAe,EAClB,CAAC"}

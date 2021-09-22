@@ -1,0 +1,1 @@
+{"version":3,"file":"IVertexAttribPointer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/IVertexAttribPointer.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,oBAAoB;IAEjC,KAAK,EAAE,MAAM,CAAC;IACd,IAAI,EAAE,MAAM,CAAC;IACb,IAAI,EAAE,MAAM,CAAC;IACb,UAAU,EAAE,OAAO,CAAC;IACpB,MAAM,EAAE,MAAM,CAAC;IACf,MAAM,EAAE,MAAM,CAAC;CAClB"}

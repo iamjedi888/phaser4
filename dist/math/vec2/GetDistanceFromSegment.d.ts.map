@@ -1,0 +1,1 @@
+{"version":3,"file":"GetDistanceFromSegment.d.ts","sourceRoot":"","sources":["../../../src/math/vec2/GetDistanceFromSegment.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAM9B,wBAAgB,sBAAsB,CAAE,CAAC,EAAE,IAAI,EAAE,CAAC,EAAE,IAAI,EAAE,CAAC,EAAE,IAAI,GAAG,MAAM,CAkBzE"}

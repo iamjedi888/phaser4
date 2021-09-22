@@ -1,0 +1,1 @@
+{"version":3,"file":"LineToRectangle.d.ts","sourceRoot":"","sources":["../../../src/geom/intersects/LineToRectangle.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AACtC,OAAO,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AAqBrD,wBAAgB,eAAe,CAAE,IAAI,EAAE,KAAK,EAAE,IAAI,EAAE,UAAU,GAAG,OAAO,CA2DvE"}

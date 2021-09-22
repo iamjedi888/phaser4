@@ -1,0 +1,1 @@
+{"version":3,"file":"SetUniforms.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/SetUniforms.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,2BAA2B,CAAC;AACxD,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAIpC,wBAAgB,WAAW,CAAE,CAAC,SAAS,OAAO,EAAG,MAAM,EAAE,CAAC,EAAE,UAAU,EAAE,WAAW,GAAG,OAAO,CAmB5F"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"GetRectanglePoints.d.ts","sourceRoot":"","sources":["../../../src/geom/rectangle/GetRectanglePoints.ts"],"names":[],"mappings":"AAQA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAK5C,wBAAgB,kBAAkB,CAAE,SAAS,EAAE,UAAU,EAAE,IAAI,EAAE,MAAM,EAAE,QAAQ,GAAE,MAAU,EAAE,GAAG,GAAE,IAAI,EAAO,GAAG,IAAI,EAAE,CAcvH"}

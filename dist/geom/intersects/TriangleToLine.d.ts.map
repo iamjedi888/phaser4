@@ -1,0 +1,1 @@
+{"version":3,"file":"TriangleToLine.d.ts","sourceRoot":"","sources":["../../../src/geom/intersects/TriangleToLine.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAC;AACtC,OAAO,EAAE,SAAS,EAAE,MAAM,uBAAuB,CAAC;AAiBlD,wBAAgB,cAAc,CAAE,QAAQ,EAAE,SAAS,EAAE,IAAI,EAAE,KAAK,GAAG,OAAO,CAkBzE"}

@@ -1,0 +1,43 @@
+import { Color } from '../../components/color/Color';
+import { GameObject } from '../GameObject';
+import { IContainer } from './IContainer';
+import { IGameObject } from '../IGameObject';
+import { IRectangle } from '../../geom/rectangle/IRectangle';
+import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
+import { IShader } from '../../renderer/webgl1/shaders/IShader';
+import { Origin } from '../../components/transform/Origin';
+import { Position } from '../../components/transform/Position';
+import { Scale } from '../../components/transform/Scale';
+import { Size } from '../../components/transform/Size';
+import { Skew } from '../../components/transform/Skew';
+export declare class Container extends GameObject implements IContainer {
+    readonly type: string;
+    position: Position;
+    scale: Scale;
+    skew: Skew;
+    origin: Origin;
+    size: Size;
+    color: Color;
+    shader: IShader;
+    private _rotation;
+    constructor(x?: number, y?: number);
+    renderGL<T extends IRenderPass>(renderPass: T): void;
+    postRenderGL<T extends IRenderPass>(renderPass: T): void;
+    set x(value: number);
+    get x(): number;
+    set y(value: number);
+    get y(): number;
+    set rotation(value: number);
+    get rotation(): number;
+    get alpha(): number;
+    set alpha(value: number);
+    setAlpha(value: number): this;
+    setPosition(x: number, y?: number): this;
+    setScale(x: number, y?: number): this;
+    setRotation(value: number): this;
+    setSkew(x: number, y?: number): this;
+    setOrigin(x: number, y?: number): this;
+    getBounds(): IRectangle;
+    destroy(reparentChildren?: IGameObject): void;
+}
+//# sourceMappingURL=Container.d.ts.map

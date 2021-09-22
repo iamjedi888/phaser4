@@ -1,0 +1,21 @@
+export declare const CONFIG_DEFAULTS: {
+    AUTO: string;
+    BACKGROUND_COLOR: string;
+    BANNER: string;
+    BATCH_SIZE: string;
+    CANVAS_CONTEXT: string;
+    CANVAS: string;
+    DEFAULT_ORIGIN: string;
+    GLOBAL_VAR: string;
+    MAX_TEXTURES: string;
+    PARENT: string;
+    RENDERER: string;
+    SCENES: string;
+    SIZE: string;
+    WEBGL_CONTEXT: string;
+    WEBGL: string;
+    WORLD_SIZE: string;
+    WORLD_WIDTH: string;
+    WORLD_HEIGHT: string;
+};
+//# sourceMappingURL=const.d.ts.map

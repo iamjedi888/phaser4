@@ -1,0 +1,2 @@
+export declare const GORAUD_LAMBERT_FRAG = "#define SHADER_NAME GORAUD_LAMBERT_FRAG\n\nprecision highp float;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vTintColor;\n\nuniform sampler2D uTexture;\n\nvoid main (void)\n{\n    vec4 color = texture2D(uTexture, vTextureCoord);\n\n    gl_FragColor = vec4(color.rgb * vTintColor, color.a);\n}";
+//# sourceMappingURL=GORAUD_LAMBERT_FRAG.d.ts.map

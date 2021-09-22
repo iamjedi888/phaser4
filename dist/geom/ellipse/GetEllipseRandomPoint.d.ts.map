@@ -1,0 +1,1 @@
+{"version":3,"file":"GetEllipseRandomPoint.d.ts","sourceRoot":"","sources":["../../../src/geom/ellipse/GetEllipseRandomPoint.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AACtC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAK5C,wBAAgB,qBAAqB,CAAE,OAAO,EAAE,QAAQ,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAStF"}

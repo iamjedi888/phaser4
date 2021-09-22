@@ -1,0 +1,1 @@
+{"version":3,"file":"Vec3TransformMat4.d.ts","sourceRoot":"","sources":["../../../src/math/vec3/Vec3TransformMat4.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,kBAAkB,CAAC;AAC5C,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAE9B,wBAAgB,iBAAiB,CAAE,CAAC,EAAE,IAAI,EAAE,CAAC,EAAE,QAAQ,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAcrF"}

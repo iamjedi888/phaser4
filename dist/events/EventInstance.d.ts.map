@@ -1,0 +1,1 @@
+{"version":3,"file":"EventInstance.d.ts","sourceRoot":"","sources":["../../src/events/EventInstance.ts"],"names":[],"mappings":"AAAA,qBAAa,aAAa;IAEtB,QAAQ,EAAE,QAAQ,CAAC;IACnB,OAAO,EAAE,OAAO,CAAC;IACjB,IAAI,EAAE,OAAO,CAAC;gBAED,QAAQ,EAAE,QAAQ,EAAE,OAAO,EAAE,OAAO,EAAE,IAAI,GAAE,OAAe;CAM3E"}

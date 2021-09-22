@@ -1,0 +1,1 @@
+{"version":3,"file":"DrawShaderQuad.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/draw/DrawShaderQuad.ts"],"names":[],"mappings":"AAKA,OAAO,EAAE,WAAW,EAAE,MAAM,2BAA2B,CAAC;AACxD,OAAO,EAAE,OAAO,EAAE,MAAM,oBAAoB,CAAC;AAK7C,wBAAgB,cAAc,CAAE,UAAU,EAAE,WAAW,EAAE,MAAM,EAAE,OAAO,GAAG,IAAI,CAuB9E"}

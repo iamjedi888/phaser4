@@ -1,0 +1,1 @@
+{"version":3,"file":"ColorMatrixStackEntry.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/ColorMatrixStackEntry.ts"],"names":[],"mappings":"AAAA,oBAAY,qBAAqB,GAAG;IAChC,WAAW,EAAE,YAAY,CAAC;IAC1B,WAAW,EAAE,YAAY,CAAC;CAC7B,CAAC"}

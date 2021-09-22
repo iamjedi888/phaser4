@@ -1,0 +1,1 @@
+{"version":3,"file":"StaticCamera.d.ts","sourceRoot":"","sources":["../../src/camera/StaticCamera.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAG1C,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAIhD,qBAAa,YAAa,SAAQ,UAAW,YAAW,aAAa;IAEjE,QAAQ,CAAC,IAAI,EAAE,MAAM,CAAkB;gBAE1B,KAAK,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM;IAK1C,SAAS,IAAK,OAAO;CAexB"}

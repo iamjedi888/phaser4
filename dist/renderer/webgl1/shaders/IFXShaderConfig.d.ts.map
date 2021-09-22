@@ -1,0 +1,1 @@
+{"version":3,"file":"IFXShaderConfig.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/IFXShaderConfig.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAEhD,MAAM,WAAW,eAAgB,SAAQ,aAAa;IAElD,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,iBAAiB,CAAC,EAAE,MAAM,CAAC;IAC3B,SAAS,CAAC,EAAE,MAAM,CAAC;CACtB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"FramebufferStackEntry.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/FramebufferStackEntry.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,oCAAoC,CAAC;AAEhE,oBAAY,qBAAqB,GAAG;IAChC,WAAW,EAAE,gBAAgB,CAAC;IAC9B,QAAQ,CAAC,EAAE,UAAU,CAAC;CACzB,CAAC"}

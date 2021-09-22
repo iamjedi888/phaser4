@@ -1,0 +1,1 @@
+{"version":3,"file":"SetDefaultVertexBuffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/SetDefaultVertexBuffer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,0BAA0B,CAAC;AAGzD,wBAAgB,sBAAsB,CAAE,MAAM,EAAE,aAAa,GAAG,IAAI,CAOnE"}

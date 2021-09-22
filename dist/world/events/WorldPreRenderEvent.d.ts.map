@@ -1,0 +1,1 @@
+{"version":3,"file":"WorldPreRenderEvent.d.ts","sourceRoot":"","sources":["../../../src/world/events/WorldPreRenderEvent.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAE3C,eAAO,MAAM,mBAAmB,EAAE,MAAoB,CAAC;AAEvD,oBAAY,0BAA0B,GAAG,CAAC,CAAC,SAAS,UAAU,EAAG,KAAK,EAAE,CAAC,KAAK,IAAI,CAAC"}

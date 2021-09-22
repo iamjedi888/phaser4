@@ -1,0 +1,1 @@
+{"version":3,"file":"EllipseContainsPoint.d.ts","sourceRoot":"","sources":["../../../src/geom/ellipse/EllipseContainsPoint.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AACtC,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAM5C,wBAAgB,oBAAoB,CAAE,OAAO,EAAE,QAAQ,EAAE,KAAK,EAAE,IAAI,GAAG,OAAO,CAG7E"}

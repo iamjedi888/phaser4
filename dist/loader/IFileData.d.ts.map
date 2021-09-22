@@ -1,0 +1,1 @@
+{"version":3,"file":"IFileData.d.ts","sourceRoot":"","sources":["../../src/loader/IFileData.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,uBAAuB,EAAE,MAAM,qDAAqD,CAAC;AAE9F,MAAM,WAAW,SAAS;IAEtB,SAAS,CAAC,EAAE,OAAO,CAAC;IACpB,QAAQ,CAAC,EAAE,OAAO,CAAC;IACnB,WAAW,CAAC,EAAE,WAAW,CAAC;IAC1B,QAAQ,CAAC,EAAE,uBAAuB,CAAC;CACtC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"VertexSet.d.ts","sourceRoot":"","sources":["../../../src/gameobjects3d/geometry/VertexSet.ts"],"names":[],"mappings":"AAAA,oBAAY,SAAS,GAAG;IACpB,QAAQ,EAAE,MAAM,EAAE,CAAC;IACnB,OAAO,EAAE,MAAM,EAAE,CAAC;IAClB,GAAG,EAAE,MAAM,EAAE,CAAC;IACd,OAAO,CAAC,EAAE,MAAM,EAAE,CAAC;IACnB,gBAAgB,EAAE,MAAM,CAAC;CAC5B,CAAC"}

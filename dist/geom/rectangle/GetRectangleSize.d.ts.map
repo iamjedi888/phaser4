@@ -1,0 +1,1 @@
+{"version":3,"file":"GetRectangleSize.d.ts","sourceRoot":"","sources":["../../../src/geom/rectangle/GetRectangleSize.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAM5C,wBAAgB,gBAAgB,CAAE,IAAI,EAAE,UAAU,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAGhF"}

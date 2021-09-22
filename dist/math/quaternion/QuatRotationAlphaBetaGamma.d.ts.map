@@ -1,0 +1,1 @@
+{"version":3,"file":"QuatRotationAlphaBetaGamma.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatRotationAlphaBetaGamma.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,wBAAgB,0BAA0B,CAAE,KAAK,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM,EAAE,KAAK,EAAE,MAAM,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CAatI"}

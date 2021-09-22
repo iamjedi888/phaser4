@@ -1,0 +1,1 @@
+{"version":3,"file":"Vec2Lerp.d.ts","sourceRoot":"","sources":["../../../src/math/vec2/Vec2Lerp.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AACxC,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAI9B,wBAAgB,QAAQ,CAAE,CAAC,EAAE,SAAS,EAAE,CAAC,EAAE,SAAS,EAAE,CAAC,EAAE,MAAM,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAS7F"}

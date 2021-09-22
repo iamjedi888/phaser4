@@ -1,0 +1,1 @@
+{"version":3,"file":"BindFramebuffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/renderpass/BindFramebuffer.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,qBAAqB,EAAE,MAAM,yBAAyB,CAAC;AAIhE,wBAAgB,eAAe,CAAE,KAAK,GAAE,OAAc,EAAE,KAAK,CAAC,EAAE,qBAAqB,GAAG,IAAI,CA0B3F"}

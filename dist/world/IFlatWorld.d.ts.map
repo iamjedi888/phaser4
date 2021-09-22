@@ -1,0 +1,1 @@
+{"version":3,"file":"IFlatWorld.d.ts","sourceRoot":"","sources":["../../src/world/IFlatWorld.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAE,YAAY,EAAE,MAAM,wBAAwB,CAAC;AAEtD,MAAM,WAAW,UAAW,SAAQ,UAAU;IAE1C,MAAM,EAAE,YAAY,CAAC;CACxB"}

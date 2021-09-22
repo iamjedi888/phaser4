@@ -1,0 +1,1 @@
+{"version":3,"file":"SetShaderFromConfig.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl1/shaders/SetShaderFromConfig.ts"],"names":[],"mappings":"AASA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AACpC,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAMhD,wBAAgB,mBAAmB,CAAE,CAAC,SAAS,OAAO,EAAG,MAAM,EAAE,CAAC,EAAE,MAAM,EAAE,aAAa,GAAG,CAAC,CAsC5F"}

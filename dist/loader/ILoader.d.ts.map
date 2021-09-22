@@ -1,0 +1,1 @@
+{"version":3,"file":"ILoader.d.ts","sourceRoot":"","sources":["../../src/loader/ILoader.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,OAAO;IAEpB,OAAO,EAAE,MAAM,CAAC;IAChB,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IAEpB,SAAS,EAAE,OAAO,CAAC;IACnB,QAAQ,EAAE,MAAM,CAAC;CACpB"}

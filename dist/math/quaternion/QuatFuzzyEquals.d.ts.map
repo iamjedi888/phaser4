@@ -1,0 +1,1 @@
+{"version":3,"file":"QuatFuzzyEquals.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatFuzzyEquals.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AAEpD,wBAAgB,eAAe,CAAE,CAAC,EAAE,eAAe,EAAE,CAAC,EAAE,eAAe,EAAE,OAAO,GAAE,MAAe,GAAG,OAAO,CAQ1G"}

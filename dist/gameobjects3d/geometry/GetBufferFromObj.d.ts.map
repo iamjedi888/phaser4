@@ -1,0 +1,1 @@
+{"version":3,"file":"GetBufferFromObj.d.ts","sourceRoot":"","sources":["../../../src/gameobjects3d/geometry/GetBufferFromObj.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,6CAA6C,CAAC;AAI5E,oBAAY,iBAAiB,GAAG;IAC5B,IAAI,EAAE,MAAM,CAAC;IACb,MAAM,EAAE,aAAa,CAAC;CACzB,CAAC;AAEF,wBAAgB,gBAAgB,CAAE,IAAI,EAAE,MAAM,EAAE,OAAO,GAAE,OAAc,GAAG,iBAAiB,EAAE,CA0H5F"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"WorldPostRenderEvent.d.ts","sourceRoot":"","sources":["../../../src/world/events/WorldPostRenderEvent.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAC3C,OAAO,EAAE,WAAW,EAAE,MAAM,8CAA8C,CAAC;AAE3E,eAAO,MAAM,oBAAoB,EAAE,MAAqB,CAAC;AAEzD,oBAAY,2BAA2B,GAAG,CAAC,UAAU,EAAE,WAAW,EAAE,KAAK,EAAE,UAAU,KAAK,IAAI,CAAC"}

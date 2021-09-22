@@ -1,0 +1,1 @@
+{"version":3,"file":"QuatSubtractScalar.d.ts","sourceRoot":"","sources":["../../../src/math/quaternion/QuatSubtractScalar.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAE1C,wBAAgB,kBAAkB,CAAE,CAAC,EAAE,UAAU,EAAE,MAAM,EAAE,MAAM,EAAE,GAAG,GAAE,UAA6B,GAAG,UAAU,CAUjH"}

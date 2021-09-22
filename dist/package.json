@@ -1,0 +1,27 @@
+{
+    "name": "@phaserjs/phaser",
+    "version": "0.2.0",
+    "description": "Phaser 4",
+    "publishConfig": {
+        "access": "public"
+    },
+    "main": "index.js",
+    "module": "index.js",
+    "jsnext:main": "index.js",
+    "browser": "umd/Phaser.js",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/phaserjs/phaser.git"
+    },
+    "keywords": [
+        "Phaser"
+    ],
+    "author": "Richard Davey <rich@photonstorm.com> (http://www.photonstorm.com)",
+    "license": "MIT",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "bugs": {
+        "url": "https://github.com/phaserjs/phaser/issues"
+    },
+    "homepage": "https://github.com/phaserjs/phaser#readme"
+}

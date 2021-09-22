@@ -1,0 +1,1 @@
+{"version":3,"file":"GetRectangleCenter.d.ts","sourceRoot":"","sources":["../../../src/geom/rectangle/GetRectangleCenter.ts"],"names":[],"mappings":"AAQA,OAAO,EAAE,UAAU,EAAE,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAE,IAAI,EAAE,MAAM,sBAAsB,CAAC;AAK5C,wBAAgB,kBAAkB,CAAE,IAAI,EAAE,UAAU,EAAE,GAAG,GAAE,IAAiB,GAAG,IAAI,CAGlF"}
