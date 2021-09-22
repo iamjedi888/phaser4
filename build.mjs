@@ -2,17 +2,10 @@ import boxen from 'boxen';
 import cp from 'child_process';
 import dirTree from 'directory-tree';
 import esbuild from 'esbuild';
+import { filterConfig } from './filterConfig.mjs';
 import fs from 'fs-extra';
 import sloc from 'sloc';
 import swc from '@swc/core';
-
-const filterConfig = {
-    extensions: /\.ts/,
-    exclude: [
-        /src\\stats/,
-        /src\/stats/
-    ]
-};
 
 const ESMInputBundle = [];
 
