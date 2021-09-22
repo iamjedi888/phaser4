@@ -13,6 +13,7 @@ import { LoadImageFile } from './LoadImageFile';
 import { LoadJSONFile } from './LoadJSONFile';
 import { LoadOBJFile } from './LoadOBJFile';
 import { LoadSpriteSheetFile } from './LoadSpriteSheetFile';
+import { LoadTextureFile } from './LoadTextureFile';
 import { LoadXMLFile } from './LoadXMLFile';
 import { OBJFile } from './OBJFile';
 import { OBJGeometryFile } from './OBJGeometryFile';
@@ -36,6 +37,7 @@ export {
     LoadJSONFile,
     LoadOBJFile,
     LoadSpriteSheetFile,
+    LoadTextureFile,
     LoadXMLFile,
     OBJFile,
     OBJGeometryFile,

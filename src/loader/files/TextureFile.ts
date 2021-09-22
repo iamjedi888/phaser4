@@ -1,20 +1,21 @@
 import { AtlasFile } from './AtlasFile';
 import { AtlasParser } from '../../textures/parsers/AtlasParser';
-import { File } from '../File';
+import { BinaryFile } from './BinaryFile';
 import { GetCompressedTextureName } from '../../renderer/webgl1/textures/GetCompressedTextureName';
-import { GetURL } from '../GetURL';
-import { IGLTextureBindingConfig } from '../../renderer/webgl1/textures/IGLTextureBindingConfig';
+import { IFile } from '../IFile';
+import { IFileData } from '../IFileData';
+import { ILoader } from '../ILoader';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
 import { KTXParser } from '../../textures/parsers/KTXParser';
 import { PVRParser } from '../../textures/parsers/PVRParser';
 import { ProcessBindingQueue } from '../../renderer/webgl1/renderpass/ProcessBindingQueue';
+import { RequestFileType } from '../RequestFileType';
 import { SupportsCompressedTexture } from '../../renderer/webgl1/textures/SupportsCompressedTexture';
 import { Texture } from '../../textures/Texture';
 import { TextureBaseFormat } from '../../renderer/webgl1/textures/ICompressedTextures';
 import { TextureContainer } from '../../renderer/webgl1/textures/ICompressedTextures';
 import { TextureManagerInstance } from '../../textures/TextureManagerInstance';
-import { XHRLoader } from '../XHRLoader';
 
 /*
     //  key = Compression Format (ETC, ASTC, etc) that the browser must support
@@ -60,8 +61,13 @@ export interface ITextureFileFormat
     IMG?: ITextureFileEntry | string
 }
 
-export function TextureFile (key: string, urls: ITextureFileFormat, glConfig: IGLTextureBindingConfig = {}): File
+export function TextureFile (key: string, urls: ITextureFileFormat, fileData: IFileData = {}): RequestFileType
 {
+    if (!fileData.glConfig)
+    {
+        fileData.glConfig = {};
+    }
+
     const entry: ITextureFileEntry = {
         format: null,
         type: null,
@@ -101,100 +107,74 @@ export function TextureFile (key: string, urls: ITextureFileFormat, glConfig: IG
     {
         if (entry.atlasURL)
         {
-            return AtlasFile(key, entry.textureURL, entry.atlasURL, glConfig);
+            return AtlasFile(key, entry.textureURL, entry.atlasURL, fileData);
         }
         else
         {
-            return ImageFile(key, entry.textureURL, glConfig);
+            return ImageFile(key, entry.textureURL, fileData);
         }
     }
 
-    const file = new File(key, entry.textureURL);
-
-    file.load = (): Promise<File> =>
+    return async (loader?: ILoader): Promise<IFile> =>
     {
-        file.url = GetURL(file.key, file.url, '.png', file.loader);
-
-        file.responseType = 'arraybuffer';
-
-        if (file.loader)
+        try
         {
-            file.crossOrigin = file.loader.crossOrigin;
-        }
+            const loadImage = BinaryFile(key, entry.textureURL, Object.assign({}, fileData, { skipCache: true }));
 
-        if (!entry.type)
-        {
-            entry.type = (file.url.endsWith('.ktx')) ? 'KTX' : 'PVR';
-        }
+            const image = await loadImage(loader);
 
-        return new Promise((resolve, reject) =>
-        {
-            const textureManager = TextureManagerInstance.get();
+            let json;
 
-            if (textureManager.has(file.key))
+            if (entry.atlasURL)
             {
-                resolve(file);
+                const loadJSON = JSONFile(key, entry.atlasURL, Object.assign({}, fileData, { skipCache: true }));
+
+                json = await loadJSON(loader);
+            }
+
+            if (!entry.type)
+            {
+                entry.type = (image.url.endsWith('.ktx')) ? 'KTX' : 'PVR';
+            }
+
+            let textureData;
+
+            if (entry.type === 'PVR')
+            {
+                textureData = PVRParser(image.data as ArrayBuffer);
+            }
+            else if (entry.type === 'KTX')
+            {
+                textureData = KTXParser(image.data as ArrayBuffer);
+            }
+
+            if (textureData && SupportsCompressedTexture(entry.format, textureData.internalFormat))
+            {
+                textureData.format = GetCompressedTextureName(entry.format, textureData.internalFormat);
+
+                const texture = new Texture(null, textureData.width, textureData.height, Object.assign(fileData.glConfig, textureData));
+
+                const textureManager = TextureManagerInstance.get();
+
+                textureManager.add(key, texture);
+
+                ProcessBindingQueue();
+
+                if (json && json.data)
+                {
+                    AtlasParser(texture, json.data);
+                }
+
+                return Promise.resolve(image);
             }
             else
             {
-                XHRLoader(file).then(async file =>
-                {
-                    if (file.hasLoaded)
-                    {
-                        let textureData;
-
-                        if (entry.type === 'PVR')
-                        {
-                            textureData = PVRParser(file.data);
-                        }
-                        else if (entry.type === 'KTX')
-                        {
-                            textureData = KTXParser(file.data);
-                        }
-
-                        if (textureData && SupportsCompressedTexture(entry.format, textureData.internalFormat))
-                        {
-                            textureData.format = GetCompressedTextureName(entry.format, textureData.internalFormat);
-
-                            const texture = new Texture(null, textureData.width, textureData.height, Object.assign(glConfig, textureData));
-
-                            textureManager.add(file.key, texture);
-
-                            ProcessBindingQueue();
-
-                            if (entry.atlasURL)
-                            {
-                                const json = JSONFile(key, entry.atlasURL);
-
-                                json.url = GetURL(json.key, json.url, '.json', file.loader);
-                                json.skipCache = true;
-
-                                await json.load();
-
-                                if (json.data)
-                                {
-                                    AtlasParser(texture, json.data);
-
-                                    resolve(file);
-                                }
-                            }
-                            else
-                            {
-                                resolve(file);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        reject(file);
-                    }
-                }).catch(file =>
-                {
-                    reject(file);
-                });
+                return Promise.reject();
             }
-        });
+        }
+        catch (error)
+        {
+            return Promise.reject();
+        }
     };
-
-    return file;
 }
