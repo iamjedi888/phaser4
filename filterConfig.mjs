@@ -27,9 +27,6 @@ export const filterConfig = {
         /src\/world3d/,
         /src\\world3d/,
 
-        /src\/input\/mouse/,
-        /src\\input\\mouse/,
-
         /src\/motion/,
         /src\\motion/,
 
