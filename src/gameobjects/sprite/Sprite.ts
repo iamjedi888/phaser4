@@ -11,9 +11,9 @@ import { ISprite } from './ISprite';
 import { ITexture } from '../../textures/ITexture';
 import { PopColorMatrix } from '../../renderer/webgl1/renderpass/PopColorMatrix';
 import { SetColorMatrix } from '../../renderer/webgl1/renderpass/SetColorMatrix';
-import { SetFrame } from './SetFrame';
+import { SetFrame } from '../../textures/SetFrame';
 import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
-import { SetTexture } from './SetTexture';
+import { SetTexture } from '../../textures/SetTexture';
 import { Texture } from '../../textures/Texture';
 import { WillRender } from '../../components/permissions/WillRender';
 
@@ -34,14 +34,14 @@ export class Sprite extends Container implements ISprite
         this.setTexture(texture, frame);
     }
 
-    setTexture (key: string | ITexture | IFrame, frame?: string | number | IFrame): this
+    setTexture <T extends ITexture, F extends IFrame> (key: string | T | F, frame?: string | number | F): this
     {
         SetTexture(key, frame, this);
 
         return this;
     }
 
-    setFrame (key?: string | number | IFrame): this
+    setFrame <F extends IFrame> (key?: string | number | F): this
     {
         SetFrame(this.texture, key, this);
 
