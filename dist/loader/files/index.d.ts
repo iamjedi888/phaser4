@@ -4,7 +4,6 @@ import { BitmapTextFile } from './BitmapTextFile';
 import { CSVFile } from './CSVFile';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
-import { JSONGeometryFile } from './JSONGeometryFile';
 import { LoadAtlasFile } from './LoadAtlasFile';
 import { LoadBinaryFile } from './LoadBinaryFile';
 import { LoadBitmapTextFile } from './LoadBitmapTextFile';
@@ -16,9 +15,8 @@ import { LoadSpriteSheetFile } from './LoadSpriteSheetFile';
 import { LoadTextureFile } from './LoadTextureFile';
 import { LoadXMLFile } from './LoadXMLFile';
 import { OBJFile } from './OBJFile';
-import { OBJGeometryFile } from './OBJGeometryFile';
 import { SpriteSheetFile } from './SpriteSheetFile';
 import { TextureFile } from './TextureFile';
 import { XMLFile } from './XMLFile';
-export { AtlasFile, BinaryFile, BitmapTextFile, CSVFile, ImageFile, JSONFile, JSONGeometryFile, LoadAtlasFile, LoadBinaryFile, LoadBitmapTextFile, LoadCSVFile, LoadImageFile, LoadJSONFile, LoadOBJFile, LoadSpriteSheetFile, LoadTextureFile, LoadXMLFile, OBJFile, OBJGeometryFile, SpriteSheetFile, TextureFile, XMLFile };
+export { AtlasFile, BinaryFile, BitmapTextFile, CSVFile, ImageFile, JSONFile, LoadAtlasFile, LoadBinaryFile, LoadBitmapTextFile, LoadCSVFile, LoadImageFile, LoadJSONFile, LoadOBJFile, LoadSpriteSheetFile, LoadTextureFile, LoadXMLFile, OBJFile, SpriteSheetFile, TextureFile, XMLFile };
 //# sourceMappingURL=index.d.ts.map
