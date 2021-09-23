@@ -9,6 +9,7 @@
     "module": "index.js",
     "jsnext:main": "index.js",
     "browser": "umd/Phaser.js",
+    "sideEffects": false,
     "types": "index.d.ts",
     "repository": {
         "type": "git",
