@@ -4,7 +4,7 @@ import { BitmapTextFile } from './BitmapTextFile';
 import { CSVFile } from './CSVFile';
 import { ImageFile } from './ImageFile';
 import { JSONFile } from './JSONFile';
-import { JSONGeometryFile } from './JSONGeometryFile';
+// import { JSONGeometryFile } from './JSONGeometryFile';
 import { LoadAtlasFile } from './LoadAtlasFile';
 import { LoadBinaryFile } from './LoadBinaryFile';
 import { LoadBitmapTextFile } from './LoadBitmapTextFile';
@@ -16,7 +16,7 @@ import { LoadSpriteSheetFile } from './LoadSpriteSheetFile';
 import { LoadTextureFile } from './LoadTextureFile';
 import { LoadXMLFile } from './LoadXMLFile';
 import { OBJFile } from './OBJFile';
-import { OBJGeometryFile } from './OBJGeometryFile';
+// import { OBJGeometryFile } from './OBJGeometryFile';
 import { SpriteSheetFile } from './SpriteSheetFile';
 import { TextureFile } from './TextureFile';
 import { XMLFile } from './XMLFile';
@@ -28,7 +28,7 @@ export {
     CSVFile,
     ImageFile,
     JSONFile,
-    JSONGeometryFile,
+    // JSONGeometryFile,
     LoadAtlasFile,
     LoadBinaryFile,
     LoadBitmapTextFile,
@@ -40,7 +40,7 @@ export {
     LoadTextureFile,
     LoadXMLFile,
     OBJFile,
-    OBJGeometryFile,
+    // OBJGeometryFile,
     SpriteSheetFile,
     TextureFile,
     XMLFile

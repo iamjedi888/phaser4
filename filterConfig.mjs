@@ -3,6 +3,12 @@ export const filterConfig = {
     exclude: [
         /wip/,
 
+        /src\\loader\\files\\JSONGeometryFile.ts/,
+        /src\/loader\/files\/JSONGeometryFile.ts/,
+
+        /src\\loader\\files\\OBJGeometryFile.ts/,
+        /src\/loader\/files\/OBJGeometryFile.ts/,
+
         /src\/camera3d/,
         /src\\camera3d/,
 
