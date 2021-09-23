@@ -1,5 +1,8 @@
+import { Query, defineComponent, defineQuery, removeQuery } from 'bitecs';
+
 import { BindingQueue } from '../renderer/BindingQueue';
 import { Frame } from './Frame';
+import { GameObjectWorld } from '../GameObjectWorld';
 import { IGLTextureBinding } from '../renderer/webgl1/textures/IGLTextureBinding';
 import { IGLTextureBindingConfig } from '../renderer/webgl1/textures/IGLTextureBindingConfig';
 import { ITexture } from './ITexture';
@@ -7,6 +10,8 @@ import { SetFrameSize } from './SetFrameSize';
 
 export class Texture implements ITexture
 {
+    tag = defineComponent();
+
     //  Unique identifier of this Texture, if stored in the Texture Manager
     key: string = '';
 
@@ -24,6 +29,8 @@ export class Texture implements ITexture
     frames: Map<string | number, Frame>;
 
     data: unknown;
+
+    inUseQuery: Query;
 
     constructor (image?: TexImageSource, width?: number, height?: number, glConfig?: IGLTextureBindingConfig)
     {
@@ -43,6 +50,8 @@ export class Texture implements ITexture
         this.data = {};
 
         this.addFrame('__BASE', 0, 0, width, height);
+
+        this.inUseQuery = defineQuery([ this.tag ]);
 
         BindingQueue.add(this, glConfig);
     }
@@ -118,6 +127,8 @@ export class Texture implements ITexture
         }
 
         this.frames.clear();
+
+        removeQuery(GameObjectWorld, this.inUseQuery);
 
         this.binding = null;
         this.data = null;
