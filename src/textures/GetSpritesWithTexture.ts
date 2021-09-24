@@ -7,7 +7,7 @@ import { ReturnTexture } from './ReturnTexture';
 
 export function GetSpritesWithTexture <T extends ITexture, F extends IFrame, S extends ISprite> (texture: string | T | F, frame?: string | number | F): S[]
 {
-    const { texture: srcTexture } = ReturnTexture(texture, frame);
+    const { texture: srcTexture, frame: srcFrame } = ReturnTexture(texture, frame);
 
     let children;
 
@@ -16,6 +16,11 @@ export function GetSpritesWithTexture <T extends ITexture, F extends IFrame, S e
         const eids = srcTexture.inUseQuery(GameObjectWorld);
 
         children = eids.map(id => GameObjectCache.get(id) as S);
+
+        if (frame && srcFrame)
+        {
+            children = children.filter(child => child.frame === srcFrame);
+        }
     }
 
     return children;
