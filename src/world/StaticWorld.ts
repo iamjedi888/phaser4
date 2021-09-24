@@ -8,6 +8,7 @@ import { PreRenderWorld } from './PreRenderWorld';
 import { RenderGLWorld } from './RenderGLWorld';
 import { RendererInstance } from '../renderer/RendererInstance';
 import { StaticCamera } from '../camera/StaticCamera';
+import { UpdateWorld } from './UpdateWorld';
 
 //  A Static World is designed specifically to have a bounds of a fixed size
 //  and a camera that doesn't move at all (no moving or scaling)
@@ -26,6 +27,15 @@ export class StaticWorld extends BaseWorld implements IStaticWorld
         const renderer = RendererInstance.get();
 
         this.camera = new StaticCamera(renderer.width, renderer.height);
+    }
+
+    //  Called after Scene.update.
+    //  Invokes 'update' on all children of the Scene.
+    update (delta: number, time: number): void
+    {
+        this.camera.preRender();
+
+        UpdateWorld(this, delta, time);
     }
 
     preRender (gameFrame: number): boolean

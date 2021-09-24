@@ -7,6 +7,7 @@ import { IWorld } from './IWorld';
 import { PreRenderWorld } from './PreRenderWorld';
 import { RenderGLWorld } from './RenderGLWorld';
 import { RendererInstance } from '../renderer/RendererInstance';
+import { UpdateWorld } from './UpdateWorld';
 import { WorldCamera } from '../camera/WorldCamera';
 
 export class World extends BaseWorld implements IWorld
@@ -22,6 +23,15 @@ export class World extends BaseWorld implements IWorld
         const renderer = RendererInstance.get();
 
         this.camera = new WorldCamera(renderer.width, renderer.height);
+    }
+
+    //  Called after Scene.update.
+    //  Invokes 'update' on all children of the Scene.
+    update (delta: number, time: number): void
+    {
+        this.camera.preRender();
+
+        UpdateWorld(this, delta, time);
     }
 
     preRender (gameFrame: number): boolean
