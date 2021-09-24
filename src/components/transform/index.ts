@@ -13,6 +13,7 @@ import { GetWorldTransform } from './GetWorldTransform';
 import { GetX } from './GetX';
 import { GetY } from './GetY';
 import { GlobalToLocal } from './GlobalToLocal';
+import { IsFixedTransform } from './IsFixedTransform';
 import { IsInView } from './IsInView';
 import { IsRootTransform } from './IsRootTransform';
 import { LocalToGlobal } from './LocalToGlobal';
@@ -22,6 +23,7 @@ import { Position } from './Position';
 import { Scale } from './Scale';
 import { SetBounds } from './SetBounds';
 import { SetExtent } from './SetExtent';
+import { SetFixedTransform } from './SetFixedTransform';
 import { SetInView } from './SetInView';
 import { SetInViewFromBounds } from './SetInViewFromBounds';
 import { SetRootTransform } from './SetRootTransform';
@@ -49,6 +51,7 @@ export {
     GetX,
     GetY,
     GlobalToLocal,
+    IsFixedTransform,
     IsInView,
     IsRootTransform,
     LocalToGlobal,
@@ -58,6 +61,7 @@ export {
     Scale,
     SetBounds,
     SetExtent,
+    SetFixedTransform,
     SetInView,
     SetInViewFromBounds,
     SetRootTransform,

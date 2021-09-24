@@ -35,9 +35,10 @@ export const TRANSFORM = {
     FRAME_WIDTH: 31,
     FRAME_HEIGHT: 32,
     IN_VIEW: 33,
-    UPDATED: 34
+    UPDATED: 34,
+    FIXED: 35
 };
 
 export const Transform2DComponent = defineComponent({
-    data: [ Types.f32, 35 ]
+    data: [ Types.f32, 36 ]
 });
