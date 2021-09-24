@@ -81,6 +81,18 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
         axisAligned = false;
     }
 
+    ClearDirtyTransform(id);
+
+    if (WillTransformChildren(id))
+    {
+        SetDirtyWorldTransform(id);
+    }
+
+    if (data[TRANSFORM.FIXED])
+    {
+        return;
+    }
+
     //  Update Quad and InView:
 
     const x = data[TRANSFORM.FRAME_X1];
@@ -145,12 +157,5 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
     {
         //  Don't need to do this if the entity isn't in the camera view
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
-    }
-
-    ClearDirtyTransform(id);
-
-    if (WillTransformChildren(id))
-    {
-        SetDirtyWorldTransform(id);
     }
 }
