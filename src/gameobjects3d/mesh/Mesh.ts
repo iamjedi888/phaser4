@@ -5,9 +5,9 @@ import { Geometry } from '../geometry/Geometry';
 import { IGameObject3D } from '../IGameObject3D';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { Material } from '../material/Material';
-import { SetTexture as RequestTexture } from '../../renderer/webgl1/renderpass/SetTexture';
 import { SetFrame } from './SetFrame';
 import { SetTexture } from './SetTexture';
+import { SetWebGLTexture } from '../../renderer/webgl1/renderpass/SetWebGLTexture';
 import { Texture } from '../../textures/Texture';
 
 export class Mesh extends GameObject3D
@@ -61,7 +61,7 @@ export class Mesh extends GameObject3D
 
         if (this.hasTexture)
         {
-            const textureIndex = RequestTexture(renderPass, this.texture);
+            const textureIndex = SetWebGLTexture(renderPass, this.texture);
 
             shader.setUniform('uTexture', textureIndex);
         }

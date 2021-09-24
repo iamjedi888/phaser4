@@ -3,7 +3,7 @@ import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IFrame } from '../../../textures/IFrame';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
-import { SetTexture } from '../renderpass/SetTexture';
+import { SetWebGLTexture } from '../renderpass/SetWebGLTexture';
 
 export function DrawImage <T extends ITexture> (renderPass: IRenderPass, texture: T, x: number, y: number, alpha: number = 1, scaleX: number = 1, scaleY: number = 1): void
 {
@@ -11,7 +11,7 @@ export function DrawImage <T extends ITexture> (renderPass: IRenderPass, texture
 
     const frame: IFrame = texture.firstFrame;
 
-    const textureIndex = SetTexture(texture);
+    const textureIndex = SetWebGLTexture(texture);
 
     const displayWidth = frame.width * scaleX;
     const displayHeight = frame.height * scaleY;

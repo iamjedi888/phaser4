@@ -15,12 +15,12 @@ import { BindDefaultVertexBuffer } from './BindDefaultVertexBuffer';
 import { BindDefaultViewport } from './BindDefaultViewport';
 import { BindFramebuffer } from './BindFramebuffer';
 import { BindShaderEntry } from './BindShaderEntry';
-import { BindTexture } from './BindTexture';
 import { BindVertexBuffer } from './BindVertexBuffer';
 import { BindViewport } from './BindViewport';
+import { BindWebGLTexture } from './BindWebGLTexture';
 import { BlendModeStack } from './BlendModeStack';
 import { BlendModeStackEntry } from './BlendModeStackEntry';
-import { ClearTextures } from './ClearTextures';
+import { ClearWebGLTextures } from './ClearWebGLTextures';
 import { ColorMatrixStack } from './ColorMatrixStack';
 import { ColorMatrixStackEntry } from './ColorMatrixStackEntry';
 import { CreateTempTextures } from './CreateTempTextures';
@@ -55,14 +55,14 @@ import { SetDefaultBlendMode } from './SetDefaultBlendMode';
 import { SetDefaultColorMatrix } from './SetDefaultColorMatrix';
 import { SetDefaultFramebuffer } from './SetDefaultFramebuffer';
 import { SetDefaultShader } from './SetDefaultShader';
-import { SetDefaultTextures } from './SetDefaultTextures';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
 import { SetDefaultViewport } from './SetDefaultViewport';
+import { SetDefaultWebGLTextures } from './SetDefaultWebGLTextures';
 import { SetFramebuffer } from './SetFramebuffer';
 import { SetShader } from './SetShader';
-import { SetTexture } from './SetTexture';
 import { SetVertexBuffer } from './SetVertexBuffer';
 import { SetViewport } from './SetViewport';
+import { SetWebGLTexture } from './SetWebGLTexture';
 import { SetWhiteTexture } from './SetWhiteTexture';
 import { ShaderStack } from './ShaderStack';
 import { ShaderStackEntry } from './ShaderStackEntry';
@@ -91,12 +91,12 @@ export {
     BindDefaultViewport,
     BindFramebuffer,
     BindShaderEntry,
-    BindTexture,
+    BindWebGLTexture as BindTexture,
     BindVertexBuffer,
     BindViewport,
     BlendModeStack,
     BlendModeStackEntry,
-    ClearTextures,
+    ClearWebGLTextures as ClearTextures,
     ColorMatrixStack,
     ColorMatrixStackEntry,
     CreateTempTextures,
@@ -131,12 +131,12 @@ export {
     SetDefaultColorMatrix,
     SetDefaultFramebuffer,
     SetDefaultShader,
-    SetDefaultTextures,
+    SetDefaultWebGLTextures as SetDefaultTextures,
     SetDefaultVertexBuffer,
     SetDefaultViewport,
     SetFramebuffer,
     SetShader,
-    SetTexture,
+    SetWebGLTexture as SetTexture,
     SetVertexBuffer,
     SetViewport,
     SetWhiteTexture,

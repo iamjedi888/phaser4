@@ -1,4 +1,4 @@
-import { ClearTextures } from './ClearTextures';
+import { ClearWebGLTextures } from './ClearWebGLTextures';
 import { TextureStack } from './TextureStack';
 import { gl } from '../GL';
 
@@ -11,5 +11,5 @@ export function ResetTextures (): void
         gl.bindTexture(gl.TEXTURE_2D, texture);
     });
 
-    ClearTextures();
+    ClearWebGLTextures();
 }

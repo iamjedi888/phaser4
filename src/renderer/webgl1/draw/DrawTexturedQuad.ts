@@ -1,6 +1,6 @@
 import { BatchSingleQuad } from './BatchSingleQuad';
-import { BindTexture } from '../renderpass/BindTexture';
-import { ClearTextures } from '../renderpass/ClearTextures';
+import { BindWebGLTexture } from '../renderpass/BindWebGLTexture';
+import { ClearWebGLTextures } from '../renderpass/ClearWebGLTextures';
 import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
@@ -21,9 +21,9 @@ export function DrawTexturedQuad (renderPass: IRenderPass, texture: Texture, sha
     //  Clear out anything already in the batch
     Flush(renderPass);
 
-    ClearTextures();
+    ClearWebGLTextures();
 
-    BindTexture(texture, 0);
+    BindWebGLTexture(texture, 0);
 
     SetShader(shader, 0);
 

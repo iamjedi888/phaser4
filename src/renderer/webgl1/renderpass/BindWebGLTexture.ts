@@ -2,7 +2,7 @@ import { ITexture } from '../../../textures/ITexture';
 import { gl } from '../GL';
 
 //  Directly bind a texture to an index slot
-export function BindTexture <T extends ITexture> (texture: T, index: number = 1): void
+export function BindWebGLTexture <T extends ITexture> (texture: T, index: number = 1): void
 {
     const binding = texture.binding;
 

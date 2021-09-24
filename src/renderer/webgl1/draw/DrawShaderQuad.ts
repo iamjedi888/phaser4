@@ -1,7 +1,7 @@
 import { AlphaTexture } from '../../../textures/AlphaTexture';
 import { BatchSingleQuad } from './BatchSingleQuad';
-import { BindTexture } from '../renderpass/BindTexture';
-import { ClearTextures } from '../renderpass/ClearTextures';
+import { BindWebGLTexture } from '../renderpass/BindWebGLTexture';
+import { ClearWebGLTextures } from '../renderpass/ClearWebGLTextures';
 import { Flush } from '../renderpass/Flush';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { IShader } from '../shaders/IShader';
@@ -14,11 +14,11 @@ export function DrawShaderQuad (renderPass: IRenderPass, shader: IShader): void
     //  Clear out anything already in the batch
     Flush(renderPass);
 
-    ClearTextures();
+    ClearWebGLTextures();
 
     const alpha = AlphaTexture.get();
 
-    BindTexture(alpha, 0);
+    BindWebGLTexture(alpha, 0);
 
     SetShader(shader, 0);
 

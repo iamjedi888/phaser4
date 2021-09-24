@@ -2,7 +2,7 @@ import { CreateTempTextures } from './CreateTempTextures';
 import { ResetTextures } from './ResetTextures';
 import { TextureStack } from './TextureStack';
 
-export function SetDefaultTextures (): void
+export function SetDefaultWebGLTextures (): void
 {
     if (TextureStack.textures)
     {

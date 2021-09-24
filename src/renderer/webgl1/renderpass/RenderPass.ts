@@ -15,9 +15,9 @@ import { SetDefaultBlendMode } from './SetDefaultBlendMode';
 import { SetDefaultColorMatrix } from './SetDefaultColorMatrix';
 import { SetDefaultFramebuffer } from './index';
 import { SetDefaultShader } from './SetDefaultShader';
-import { SetDefaultTextures } from './SetDefaultTextures';
 import { SetDefaultVertexBuffer } from './SetDefaultVertexBuffer';
 import { SetDefaultViewport } from './SetDefaultViewport';
+import { SetDefaultWebGLTextures } from './SetDefaultWebGLTextures';
 import { ShaderStack } from './ShaderStack';
 import { SingleTextureQuadShader } from '../shaders/SingleTextureQuadShader';
 import { StaticCamera } from '../../../camera/StaticCamera';
@@ -83,7 +83,7 @@ export class RenderPass implements IRenderPass
 
         //  Default settings
 
-        SetDefaultTextures();
+        SetDefaultWebGLTextures();
         SetDefaultFramebuffer();
         SetDefaultBlendMode(true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         SetDefaultVertexBuffer(new VertexBuffer({ batchSize: GetBatchSize() }));

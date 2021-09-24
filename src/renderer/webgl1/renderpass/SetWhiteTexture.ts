@@ -1,7 +1,7 @@
-import { SetTexture } from './SetTexture';
+import { SetWebGLTexture } from './SetWebGLTexture';
 import { WhiteTexture } from '../../../textures/WhiteTexture';
 
 export function SetWhiteTexture (): number
 {
-    return SetTexture(WhiteTexture.get());
+    return SetWebGLTexture(WhiteTexture.get());
 }

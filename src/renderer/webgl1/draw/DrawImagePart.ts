@@ -4,7 +4,7 @@ import { GetVertexBufferEntry } from '../renderpass/GetVertexBufferEntry';
 import { IFrame } from '../../../textures/IFrame';
 import { IRenderPass } from '../renderpass/IRenderPass';
 import { ITexture } from '../../../textures/ITexture';
-import { SetTexture } from '../renderpass/SetTexture';
+import { SetWebGLTexture } from '../renderpass/SetWebGLTexture';
 
 export function DrawImagePart <T extends ITexture> (renderPass: IRenderPass, texture: T, x0: number, y0: number, x1: number, y1: number, dx: number, dy: number, dw?: number, dh?: number, alpha: number = 1): void
 {
@@ -12,7 +12,7 @@ export function DrawImagePart <T extends ITexture> (renderPass: IRenderPass, tex
 
     const frame: IFrame = texture.firstFrame;
 
-    const textureIndex = SetTexture(texture);
+    const textureIndex = SetWebGLTexture(texture);
 
     const frameWidth = frame.width;
     const frameHeight = frame.height;

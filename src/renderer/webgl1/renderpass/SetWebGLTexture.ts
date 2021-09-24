@@ -1,4 +1,4 @@
-import { ClearTextures } from './ClearTextures';
+import { ClearWebGLTextures } from './ClearWebGLTextures';
 import { Flush } from './Flush';
 import { ITexture } from '../../../textures/ITexture';
 import { TextureStack } from './TextureStack';
@@ -7,7 +7,7 @@ import { gl } from '../GL';
 //  request the next available texture and bind it
 //  returns the new ID
 
-export function SetTexture <T extends ITexture> (texture: T): number
+export function SetWebGLTexture <T extends ITexture> (texture: T): number
 {
     if (!texture.binding)
     {
@@ -25,7 +25,7 @@ export function SetTexture <T extends ITexture> (texture: T): number
         {
             Flush(TextureStack.renderPass);
 
-            ClearTextures();
+            ClearWebGLTextures();
         }
 
         // Add texture to the map

@@ -1,6 +1,6 @@
 import { TextureStack } from './TextureStack';
 
-export function ClearTextures (): void
+export function ClearWebGLTextures (): void
 {
     TextureStack.textures.forEach(texture =>
     {
