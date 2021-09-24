@@ -98,6 +98,8 @@ export class BaseWorld extends GameObject implements IBaseWorld
         Emit(this, WorldEvents.WorldBeforeUpdateEvent, delta, time, this);
     }
 
+    //  Called after Scene.update.
+    //  Invokes 'update' on all children of the Scene.
     update (delta: number, time: number): void
     {
         UpdateWorld(this, delta, time);
