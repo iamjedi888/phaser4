@@ -29,11 +29,14 @@ export class Position implements IVec2
 
     set x (value: number)
     {
-        this._x = value;
+        if (value !== this._x)
+        {
+            this._x = value;
 
-        this._data[TRANSFORM.X] = value;
+            this._data[TRANSFORM.X] = value;
 
-        SetDirtyTransform(this.id);
+            SetDirtyTransform(this.id);
+        }
     }
 
     get x (): number
@@ -43,11 +46,14 @@ export class Position implements IVec2
 
     set y (value: number)
     {
-        this._y = value;
+        if (value !== this._y)
+        {
+            this._y = value;
 
-        this._data[TRANSFORM.Y] = value;
+            this._data[TRANSFORM.Y] = value;
 
-        SetDirtyTransform(this.id);
+            SetDirtyTransform(this.id);
+        }
     }
 
     get y (): number

@@ -30,14 +30,17 @@ export class Skew implements IVec2
 
     set x (value: number)
     {
-        this._x = value;
+        if (value !== this._x)
+        {
+            this._x = value;
 
-        this._data[TRANSFORM.SKEW_X] = value;
+            this._data[TRANSFORM.SKEW_X] = value;
 
-        const id = this.id;
+            const id = this.id;
 
-        UpdateAxisAligned(id);
-        SetDirtyTransform(id);
+            UpdateAxisAligned(id);
+            SetDirtyTransform(id);
+        }
     }
 
     get x (): number
@@ -47,14 +50,17 @@ export class Skew implements IVec2
 
     set y (value: number)
     {
-        this._y = value;
+        if (value !== this._x)
+        {
+            this._y = value;
 
-        this._data[TRANSFORM.SKEW_Y] = value;
+            this._data[TRANSFORM.SKEW_Y] = value;
 
-        const id = this.id;
+            const id = this.id;
 
-        UpdateAxisAligned(id);
-        SetDirtyTransform(id);
+            UpdateAxisAligned(id);
+            SetDirtyTransform(id);
+        }
     }
 
     get y (): number
