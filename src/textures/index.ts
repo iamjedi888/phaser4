@@ -12,6 +12,7 @@ import { GetFrames } from './GetFrames';
 import { GetFramesInRange } from './GetFramesInRange';
 import { GetSpritesWithTexture } from './GetSpritesWithTexture';
 import { GetTexture } from './GetTexture';
+import { GetTextureUseCount } from './GetTextureUseCount';
 import { RemoveTexture } from './RemoveTexture';
 import { RemoveTextureFromGameObject } from './RemoveTextureFromGameObject';
 import { ReturnTexture } from './ReturnTexture';
@@ -40,6 +41,7 @@ export {
     GetFramesInRange,
     GetSpritesWithTexture,
     GetTexture,
+    GetTextureUseCount,
     Palettes,
     Parsers,
     RemoveTexture,
