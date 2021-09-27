@@ -10,6 +10,8 @@ export interface IBaseCamera
 
     matrix: IMatrix4;
 
+    x?: number;
+    y?: number;
     size: Size;
 
     getBoundsX (): number;
