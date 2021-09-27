@@ -34,7 +34,7 @@ export function UpdateNode (id: number, parentID: number, checkColor: boolean, c
 
         if (HasDirtyTransform(id))
         {
-            UpdateTransforms(id, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
+            UpdateTransforms(id, cx, cy, cright, cbottom);
 
             hasUpdated = true;
 
@@ -42,7 +42,7 @@ export function UpdateNode (id: number, parentID: number, checkColor: boolean, c
         }
         else if (HasDirtyWorldTransform(parentID))
         {
-            UpdateWorldTransform(id, parentID, cx, cy, cright, cbottom, forceUpdate, parentIsDisplayList);
+            UpdateWorldTransform(id, parentID, cx, cy, cright, cbottom);
 
             hasUpdated = true;
 

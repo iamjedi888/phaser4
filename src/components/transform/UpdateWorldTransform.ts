@@ -4,7 +4,7 @@ import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateWorldTransform (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean): void
+export function UpdateWorldTransform (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
     const parentData = Transform2DComponent.data[parentID];
     const data = Transform2DComponent.data[id];
@@ -23,19 +23,19 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
     let tx = data[TRANSFORM.LOCAL_TX];
     let ty = data[TRANSFORM.LOCAL_TY];
 
-    data[TRANSFORM.WORLD_A] = a * pa + b * pc;
-    data[TRANSFORM.WORLD_B] = a * pb + b * pd;
-    data[TRANSFORM.WORLD_C] = c * pa + d * pc;
-    data[TRANSFORM.WORLD_D] = c * pb + d * pd;
-    data[TRANSFORM.WORLD_TX] = tx * pa + ty * pc + ptx;
-    data[TRANSFORM.WORLD_TY] = tx * pb + ty * pd + pty;
+    const worldA = a * pa + b * pc;
+    const worldB = a * pb + b * pd;
+    const worldC = c * pa + d * pc;
+    const worldD = c * pb + d * pd;
+    const worldTX = tx * pa + ty * pc + ptx;
+    const worldTY = tx * pb + ty * pd + pty;
 
-    a = data[TRANSFORM.WORLD_A];
-    b = data[TRANSFORM.WORLD_B];
-    c = data[TRANSFORM.WORLD_C];
-    d = data[TRANSFORM.WORLD_D];
-    tx = data[TRANSFORM.WORLD_TX];
-    ty = data[TRANSFORM.WORLD_TY];
+    data[TRANSFORM.WORLD_A] = worldA;
+    data[TRANSFORM.WORLD_B] = worldB;
+    data[TRANSFORM.WORLD_C] = worldC;
+    data[TRANSFORM.WORLD_D] = worldD;
+    data[TRANSFORM.WORLD_TX] = worldTX;
+    data[TRANSFORM.WORLD_TY] = worldTY;
 
     if (WillTransformChildren(id))
     {
@@ -46,6 +46,13 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
     {
         return;
     }
+
+    a = worldA;
+    b = worldB;
+    c = worldC;
+    d = worldD;
+    tx = worldTX;
+    ty = worldTY;
 
     //  Update Quad and InView:
 
@@ -93,10 +100,6 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
 
     data[TRANSFORM.IN_VIEW] = inView;
 
-    if (inView === 1 || forceUpdate || parentIsDisplayList)
-    {
-        //  Don't need to do this if the entity isn't in the camera view
-        SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
-    }
-
+    //  Always set quad position, so we can always extract the quad points at any point, in-view, or not
+    SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
 }
