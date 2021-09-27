@@ -37,6 +37,16 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
     tx = data[TRANSFORM.WORLD_TX];
     ty = data[TRANSFORM.WORLD_TY];
 
+    if (WillTransformChildren(id))
+    {
+        SetDirtyWorldTransform(id);
+    }
+
+    if (data[TRANSFORM.FIXED])
+    {
+        return;
+    }
+
     //  Update Quad and InView:
 
     const x = data[TRANSFORM.FRAME_X1];
@@ -89,8 +99,4 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
         SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
     }
 
-    if (WillTransformChildren(id))
-    {
-        SetDirtyWorldTransform(id);
-    }
 }
