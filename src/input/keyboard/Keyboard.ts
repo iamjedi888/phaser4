@@ -117,6 +117,8 @@ export class Keyboard extends EventEmitter
 
     destroy (): void
     {
+        this.clearKeys();
+
         window.removeEventListener('keydown', this.keydownHandler);
         window.removeEventListener('keyup', this.keyupHandler);
         window.removeEventListener('blur', this.blurHandler);
