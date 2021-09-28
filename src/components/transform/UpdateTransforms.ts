@@ -1,15 +1,31 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
-import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
-import { GetParentID } from '../hierarchy/GetParentID';
 import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
-import { SetQuadPosition } from '../vertices/SetQuadPosition';
+import { UpdateLocalTransform } from './UpdateLocalTransform';
+import { UpdateQuadBounds } from './UpdateQuadBounds';
+import { UpdateWorldTransform } from './UpdateWorldTransform';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
 export function UpdateTransforms (id: number, cx: number, cy: number, cright: number, cbottom: number): void
 {
     const data: Float32Array = Transform2DComponent.data[id];
 
+    if (UpdateLocalTransform(id))
+    {
+        UpdateWorldTransform(id);
+    }
+
+    if (WillTransformChildren(id))
+    {
+        SetDirtyWorldTransform(id);
+    }
+
+    if (!data[TRANSFORM.FIXED])
+    {
+        UpdateQuadBounds(id, cx, cy, cright, cbottom);
+    }
+
+    /*
     let tx = data[TRANSFORM.X];
     let ty = data[TRANSFORM.Y];
     const rotation = data[TRANSFORM.ROTATION];
@@ -90,16 +106,6 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
 
     ClearDirtyTransform(id);
 
-    if (WillTransformChildren(id))
-    {
-        SetDirtyWorldTransform(id);
-    }
-
-    if (data[TRANSFORM.FIXED])
-    {
-        return;
-    }
-
     //  Update Quad and InView:
 
     const x = data[TRANSFORM.FRAME_X1];
@@ -162,4 +168,5 @@ export function UpdateTransforms (id: number, cx: number, cy: number, cright: nu
 
     //  Always set quad position, so we can always extract the quad points at any point, in-view, or not
     SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    */
 }

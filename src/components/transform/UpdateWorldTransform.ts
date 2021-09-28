@@ -1,11 +1,15 @@
 import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
+import { GetParentID } from '../hierarchy/GetParentID';
 import { SetDirtyWorldTransform } from '../dirty/SetDirtyWorldTransform';
 import { SetQuadPosition } from '../vertices/SetQuadPosition';
+import { UpdateQuadBounds } from './UpdateQuadBounds';
 import { WillTransformChildren } from '../permissions/WillTransformChildren';
 
-export function UpdateWorldTransform (id: number, parentID: number, cx: number, cy: number, cright: number, cbottom: number): void
+export function UpdateWorldTransform (id: number): void
 {
+    const parentID = GetParentID(id);
+
     const parentData = Transform2DComponent.data[parentID];
     const data = Transform2DComponent.data[id];
 
@@ -16,12 +20,12 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
     const ptx = parentData[TRANSFORM.WORLD_TX];
     const pty = parentData[TRANSFORM.WORLD_TY];
 
-    let a = data[TRANSFORM.LOCAL_A];
-    let b = data[TRANSFORM.LOCAL_B];
-    let c = data[TRANSFORM.LOCAL_C];
-    let d = data[TRANSFORM.LOCAL_D];
-    let tx = data[TRANSFORM.LOCAL_TX];
-    let ty = data[TRANSFORM.LOCAL_TY];
+    const a = data[TRANSFORM.LOCAL_A];
+    const b = data[TRANSFORM.LOCAL_B];
+    const c = data[TRANSFORM.LOCAL_C];
+    const d = data[TRANSFORM.LOCAL_D];
+    const tx = data[TRANSFORM.LOCAL_TX];
+    const ty = data[TRANSFORM.LOCAL_TY];
 
     const worldA = a * pa + b * pc;
     const worldB = a * pb + b * pd;
@@ -37,10 +41,17 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
     data[TRANSFORM.WORLD_TX] = worldTX;
     data[TRANSFORM.WORLD_TY] = worldTY;
 
-    if (WillTransformChildren(id))
-    {
-        SetDirtyWorldTransform(id);
-    }
+    // if (WillTransformChildren(id))
+    // {
+    //     SetDirtyWorldTransform(id);
+    // }
+
+    // if (!data[TRANSFORM.FIXED])
+    // {
+    //     UpdateQuadBounds(id, cx, cy, cright, cbottom);
+    // }
+
+    /*
 
     if (data[TRANSFORM.FIXED])
     {
@@ -102,4 +113,5 @@ export function UpdateWorldTransform (id: number, parentID: number, cx: number, 
 
     //  Always set quad position, so we can always extract the quad points at any point, in-view, or not
     SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
+    */
 }

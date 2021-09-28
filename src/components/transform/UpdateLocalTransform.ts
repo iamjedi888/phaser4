@@ -2,7 +2,7 @@ import { TRANSFORM, Transform2DComponent } from './Transform2DComponent';
 
 import { ClearDirtyTransform } from '../dirty/ClearDirtyTransform';
 
-export function UpdateLocalTransform (id: number): void
+export function UpdateLocalTransform (id: number): boolean
 {
     const data: Float32Array = Transform2DComponent.data[id];
 
@@ -35,6 +35,8 @@ export function UpdateLocalTransform (id: number): void
     data[TRANSFORM.LOCAL_TX] = tx;
     data[TRANSFORM.LOCAL_TY] = ty;
 
+    ClearDirtyTransform(id);
+
     //  This is a root transform, so world is the same as local
     if (data[TRANSFORM.IS_ROOT])
     {
@@ -44,7 +46,9 @@ export function UpdateLocalTransform (id: number): void
         data[TRANSFORM.WORLD_D] = d;
         data[TRANSFORM.WORLD_TX] = tx;
         data[TRANSFORM.WORLD_TY] = ty;
+
+        return false;
     }
 
-    ClearDirtyTransform(id);
+    return true;
 }
