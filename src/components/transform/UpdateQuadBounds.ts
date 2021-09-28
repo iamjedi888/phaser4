@@ -34,16 +34,14 @@ export function UpdateQuadBounds (id: number, cx: number, cy: number, cright: nu
     let x3 = (right * a) + tx;
     let y3 = (y * d) + ty;
 
-    if (data[TRANSFORM.AXIS_ALIGNED] && data[TRANSFORM.IS_ROOT])
-    {
-        data[TRANSFORM.BOUNDS_X1] = x0;
-        data[TRANSFORM.BOUNDS_Y1] = y0;
-        data[TRANSFORM.BOUNDS_X2] = x2;
-        data[TRANSFORM.BOUNDS_Y2] = y2;
+    let bx = x0;
+    let by = y0;
+    let br = x2;
+    let bb = y2;
 
-        data[TRANSFORM.IN_VIEW] = Number(!(cright < x0 || cbottom < y0 || cx > x2 || cy > y2));
-    }
-    else
+    const aligned = data[TRANSFORM.AXIS_ALIGNED] && data[TRANSFORM.IS_ROOT];
+
+    if (!aligned)
     {
         x0 += (y * c);
         y0 += (x * b);
@@ -54,19 +52,19 @@ export function UpdateQuadBounds (id: number, cx: number, cy: number, cright: nu
         x3 += (y * c);
         y3 += (right * b);
 
-        const bx = Math.min(x0, x1, x2, x3);
-        const by = Math.min(y0, y1, y2, y3);
-        const br = Math.max(x0, x1, x2, x3);
-        const bb = Math.max(y0, y1, y2, y3);
-
-        data[TRANSFORM.BOUNDS_X1] = bx;
-        data[TRANSFORM.BOUNDS_Y1] = by;
-        data[TRANSFORM.BOUNDS_X2] = br;
-        data[TRANSFORM.BOUNDS_Y2] = bb;
-
-        data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
+        bx = Math.min(x0, x1, x2, x3);
+        by = Math.min(y0, y1, y2, y3);
+        br = Math.max(x0, x1, x2, x3);
+        bb = Math.max(y0, y1, y2, y3);
     }
 
-    //  Always set quad position, so we can always extract the quad points at any point, in-view, or not
+    data[TRANSFORM.BOUNDS_X1] = bx;
+    data[TRANSFORM.BOUNDS_Y1] = by;
+    data[TRANSFORM.BOUNDS_X2] = br;
+    data[TRANSFORM.BOUNDS_Y2] = bb;
+
+    data[TRANSFORM.IN_VIEW] = Number(!(cright < bx || cbottom < by || cx > br || cy > bb));
+
+    //  Always set quad position, so we can always extract the quad points at any time, in-view, or not (i.e. for input)
     SetQuadPosition(id, x0, y0, x1, y1, x2, y2, x3, y3);
 }

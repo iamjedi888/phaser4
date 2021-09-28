@@ -8,7 +8,6 @@ import { IWorldRenderData } from './IWorldRenderData';
 import { SetInViewFromBounds } from '../components/transform/SetInViewFromBounds';
 import { SetQuadColor } from '../components/vertices/SetQuadColor';
 import { UpdateTransforms } from '../components/transform/UpdateTransforms';
-import { UpdateWorldTransform } from '../components/transform/UpdateWorldTransform';
 
 export function UpdateNode (id: number, parentID: number, checkColor: boolean, checkTransform: boolean, cx: number, cy: number, cright: number, cbottom: number, forceUpdate: boolean, parentIsDisplayList: boolean, renderData?: IWorldRenderData): void
 {
@@ -34,7 +33,7 @@ export function UpdateNode (id: number, parentID: number, checkColor: boolean, c
 
         if (HasDirtyTransform(id))
         {
-            UpdateTransforms(id, cx, cy, cright, cbottom);
+            UpdateTransforms(id, parentID, false, cx, cy, cright, cbottom);
 
             hasUpdated = true;
 
@@ -42,7 +41,7 @@ export function UpdateNode (id: number, parentID: number, checkColor: boolean, c
         }
         else if (HasDirtyWorldTransform(parentID))
         {
-            UpdateWorldTransform(id, parentID, cx, cy, cright, cbottom);
+            UpdateTransforms(id, parentID, true, cx, cy, cright, cbottom);
 
             hasUpdated = true;
 
