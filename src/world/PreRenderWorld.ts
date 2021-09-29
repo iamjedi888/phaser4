@@ -47,27 +47,27 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
     let stackIndex = 1;
     let parentNode = id;
     let node = GetFirstChildID(id);
-    let isDisplayList = HasCustomDisplayList(node);
+    let parentIsDisplayList = false;
 
     stackBlock:
     {
         while (stackIndex > 0)
         {
-            UpdateNode(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList, renderData);
+            UpdateNode(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, parentIsDisplayList, renderData);
 
             //  Dive as deep as we can go, adding all parents to the stack for _this branch_
             //  If the parent isn't dirty and has no dirty children, go no further down this branch
 
-            while (ProcessNode(node, cameraUpdated, isDisplayList))
+            while (ProcessNode(node, cameraUpdated))
             {
                 stack[stackIndex++] = node;
 
                 parentNode = node;
-                isDisplayList = HasCustomDisplayList(node);
+                parentIsDisplayList = HasCustomDisplayList(node);
 
                 node = GetFirstChildID(node);
 
-                UpdateNode(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList, renderData);
+                UpdateNode(node, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, parentIsDisplayList, renderData);
             }
 
             //  We're at the bottom of the branch
@@ -80,7 +80,7 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
 
             while (next && climb)
             {
-                if (ProcessNode(next, cameraUpdated, isDisplayList))
+                if (ProcessNode(next, cameraUpdated))
                 {
                     //  The 'next' sibling has a child, so we're going deeper
                     climb = false;
@@ -88,7 +88,7 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
                 }
                 else
                 {
-                    UpdateNode(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, isDisplayList, renderData);
+                    UpdateNode(next, parentNode, checkColor, checkTransform, cx, cy, cright, cbottom, cameraUpdated, parentIsDisplayList, renderData);
 
                     next = GetNextSiblingID(next);
                 }
@@ -115,7 +115,7 @@ export function PreRenderWorld <T extends IBaseWorld> (world: T, gameFrame: numb
                 }
 
                 parentNode = stack[stackIndex - 1];
-                isDisplayList = HasCustomDisplayList(parentNode);
+                parentIsDisplayList = HasCustomDisplayList(parentNode);
             }
 
             //  'next' now contains the sibling of the stack parent, set it to 'node'
