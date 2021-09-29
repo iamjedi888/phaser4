@@ -34,11 +34,11 @@
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.5",
         "@swc/cli": "^0.1.51",
-        "@swc/core": "^1.2.91",
+        "@swc/core": "^1.2.92",
         "@types/jest": "^27.0.2",
         "@typescript-eslint/eslint-plugin": "4.32.0",
         "@typescript-eslint/parser": "4.32.0",
-        "bitecs": "^0.3.21-4b",
+        "bitecs": "^0.3.21-6",
         "boxen": "^5.1.2",
         "directory-tree": "^3.0.0",
         "esbuild": "^0.13.3",
