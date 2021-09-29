@@ -1,10 +1,11 @@
 import { HasChildren } from '../components/hierarchy/HasChildren';
+import { HasCustomDisplayList } from '../components/permissions/HasCustomDisplayList';
 import { HasDirtyDisplayList } from '../components/dirty/HasDirtyDisplayList';
 import { WillUpdateTransform } from '../components/dirty/WillUpdateTransform';
 
-export function ProcessNode (node: number, cameraUpdated: boolean, isDisplayList: boolean): boolean
+export function ProcessNode (node: number, cameraUpdated: boolean): boolean
 {
-    if (isDisplayList)
+    if (HasCustomDisplayList(node))
     {
         return HasDirtyDisplayList(node);
     }
