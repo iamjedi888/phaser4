@@ -50,7 +50,7 @@ export class Skew implements IVec2
 
     set y (value: number)
     {
-        if (value !== this._x)
+        if (value !== this._y)
         {
             this._y = value;
 
