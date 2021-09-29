@@ -1,3 +1,4 @@
+import { CanvasRoundedRect } from '../../canvas/CanvasRoundedRect';
 import { CanvasTexture } from '../../textures/types/CanvasTexture';
 import { IContainer } from '../container/IContainer';
 import { RendererInstance } from '../../renderer/RendererInstance';
@@ -202,16 +203,17 @@ export class Text extends Sprite
             ctx.strokeStyle = backgroundStyle;
 
             const cornerRadius = this.cornerRadius;
-            const halfRadius = (cornerRadius > 0) ? cornerRadius / 2 : 0;
 
             if (cornerRadius)
             {
-                ctx.lineWidth = cornerRadius;
-
-                ctx.strokeRect(halfRadius, halfRadius, displayWidth - cornerRadius, displayHeight - cornerRadius);
+                CanvasRoundedRect(ctx, 0, 0, displayWidth, displayHeight, cornerRadius);
             }
+            else
+            {
+                const halfRadius = (cornerRadius > 0) ? cornerRadius / 2 : 0;
 
-            ctx.fillRect(halfRadius, halfRadius, displayWidth - cornerRadius, displayHeight - cornerRadius);
+                ctx.fillRect(halfRadius, halfRadius, displayWidth - cornerRadius, displayHeight - cornerRadius);
+            }
 
             ctx.restore();
         }
