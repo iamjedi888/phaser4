@@ -9,14 +9,17 @@ import { IGameObject } from '../IGameObject';
 import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
 import { ITexture } from '../../textures/ITexture';
 import { ITileSprite } from './ITileSprite';
+import { IVec2 } from '../../math/vec2/IVec2';
 import { PopColorMatrix } from '../../renderer/webgl1/renderpass/PopColorMatrix';
 import { SetColorMatrix } from '../../renderer/webgl1/renderpass/SetColorMatrix';
+import { SetExtent } from '../../components/transform/SetExtent';
 import { SetFrame } from '../../textures/SetFrame';
-import { SetQuadPosition } from '../../components/vertices/SetQuadPosition';
+import { SetQuadUVs } from '../../components/vertices/SetQuadUVs';
 import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
 import { SetTexture } from '../../textures/SetTexture';
 import { Texture } from '../../textures/Texture';
 import { TileSpriteQuadShader } from '../../renderer/webgl1/shaders/TileSpriteQuadShader';
+import { Vec2 } from '../../math/vec2/Vec2';
 import { WillRender } from '../../components/permissions/WillRender';
 
 export class TileSprite extends Container implements ITileSprite
@@ -27,25 +30,32 @@ export class TileSprite extends Container implements ITileSprite
     frame: Frame;
     hasTexture: boolean = false;
 
+    tileScale: IVec2;
+    tilePosition: IVec2;
+
     constructor (x: number, y: number, texture: string | Texture | Frame = '__BLANK', frame?: string | number | Frame)
     {
         super(x, y);
 
-        this.shader = new TileSpriteQuadShader();
+        this.tileScale = new Vec2(1, 1);
+        this.tilePosition = new Vec2(0, 0);
+
+        this.shader = new TileSpriteQuadShader(this);
 
         AddQuadVertex(this.id);
 
         this.setTexture(texture, frame);
+
+        //  This needs to be the full texture size, not the frame UVs
+        SetQuadUVs(this.id, 0, 0, 1, 1);
+
+        //  This is the size we want it displayed at (move to constructor)
+        SetExtent(this.id, 0, 0, 512, 512);
     }
 
     setTexture <T extends ITexture, F extends IFrame> (key: string | T | F, frame?: string | number | F): this
     {
         SetTexture(key, frame, this);
-
-        //  Flip the quad vertices instead of the texture UVs
-        //  so the flipped UV coords don't mess-up our shaders
-
-        SetQuadPosition(this.id, 0, this.frame.height, 0, 0, this.frame.width, 0, this.frame.width, this.frame.height);
 
         return this;
     }
