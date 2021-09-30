@@ -1,5 +1,3 @@
-import * as GL_CONST from '../GL_CONST';
-
 import { ShaderAttributeEntry } from './CreateAttributes';
 
 export const DefaultQuadAttributes: Record<string, ShaderAttributeEntry> =
