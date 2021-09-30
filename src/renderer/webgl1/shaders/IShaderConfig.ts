@@ -9,7 +9,7 @@ export interface IShaderConfig
     renderToFramebuffer?: boolean;
     renderToDepthbuffer?: boolean;
     resolution?: number;
-    uniforms?: Record<string, Number | Float32List>;
+    uniforms?: Record<string, Number | Float32List | Uint32List>;
     vertexShader?: string;
     width?: number;
 }
