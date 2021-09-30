@@ -5,7 +5,7 @@ import { SetInversedQuadFromCamera } from './SetInversedQuadFromCamera';
 import { SetQuadColor } from './SetQuadColor';
 import { SetQuadPosition } from './SetQuadPosition';
 import { SetQuadTextureIndex } from './SetQuadTextureIndex';
-import { SetUV } from './SetUV';
+import { SetQuadUVs } from './SetQuadUVs';
 
 export {
     AddQuadVertex,
@@ -15,5 +15,5 @@ export {
     SetQuadColor,
     SetQuadPosition,
     SetQuadTextureIndex,
-    SetUV
+    SetQuadUVs
 };
