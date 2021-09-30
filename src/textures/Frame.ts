@@ -14,6 +14,10 @@ export class Frame implements IFrame
     width: number;
     height: number;
 
+    //  The width and height of this Frame as a fraction of the overall Texture size (in the range 0 to 1)
+    fWidth: number;
+    fHeight: number;
+
     trimmed: boolean = false;
 
     //  Original size of the image before being trimmed or added to an atlas (which can add extrude data to it).

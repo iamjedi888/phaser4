@@ -8,6 +8,8 @@ export interface IFrame
     y: number;
     width: number;
     height: number;
+    fWidth: number;
+    fHeight: number;
     trimmed: boolean;
     sourceSizeWidth: number;
     sourceSizeHeight: number;
