@@ -39,7 +39,7 @@
         "@typescript-eslint/eslint-plugin": "4.32.0",
         "@typescript-eslint/parser": "4.32.0",
         "bitecs": "^0.3.21-6",
-        "boxen": "^5.1.2",
+        "boxen": "^6.0.0",
         "directory-tree": "^3.0.0",
         "esbuild": "^0.13.3",
         "esbuild-plugin-ifdef": "^1.0.1",
