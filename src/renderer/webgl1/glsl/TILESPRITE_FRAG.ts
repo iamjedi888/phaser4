@@ -41,39 +41,21 @@ varying vec4 vTintColor;
 uniform sampler2D uTexture;
 uniform mat4 uColorMatrix;
 uniform vec4 uColorOffset;
-uniform float uTime;
 
-const float pixelSize =    4.00; // "fat pixel" size
-const float zoom      =    2.00; // max zoom factor
-const float radius    =  512.00; // planar movement radius
-const float speed     =    0.5; // speed
-
-const vec2 iResolution = vec2(800.0, 600.0);
-const vec2 uTextureResolution = vec2(512.0, 512.0);
+uniform vec2 uTextureSize;
+uniform vec2 uTexturePosition;
+uniform vec2 uOffset;
+uniform vec2 uScale;
 
 void main (void)
 {
-    // zoom & scroll
-    float time = uTime * speed;
-	float scale = pixelSize + ((cos((time + 8.0) / 3.7) + 1.0) / 2.0) * (zoom - 1.0) * pixelSize;
-    vec2 center = iResolution.xy / 2.0;
-	vec2 offset = vec2(cos(time), sin(time)) * radius;
+    //  Fixed GClements version - works for an atlas frame + offset + with working scale per axis
 
-    scale = 1.0;
-    // center.x = 400.0;
-    // center.y = 300.0;
-    // offset.x = -512.0;
-    // offset.y = -256.0;
+    vec2 uv = (vTextureCoord - 0.5) * uScale + (0.5 * uScale);
 
-    vec2 pixel = vec2((gl_FragCoord.xy + offset) - center) / scale + center;
+    vec2 pixel = uTexturePosition + uTextureSize * fract(uv + uOffset);
 
-    vec2 uv = floor(pixel) + 0.5;
-
-    uv += 1.0 - clamp((1.0 - fract(pixel)) * scale, 0.0, 1.0);
-
-    // uv.y *= -1.0;
-
-    vec4 color = texture2D(uTexture, uv / uTextureResolution.xy);
+    vec4 color = texture2D(uTexture, pixel);
 
     //  Un pre-mult alpha
     if (color.a > 0.0)
