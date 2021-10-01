@@ -9,6 +9,7 @@ import { Types, defineComponent } from 'bitecs';
  * WORLD_TRANSFORM - This own entities world transform is dirty
  * DISPLAY_LIST - If the Game Object has a custom display list (like SpatialGridLayer) this indicates if it's dirty, or not.
  * SELF - The Game Object that has this component is dirty (used by Render Layer and for your own custom objects)
+ * FRAME - The Game Object that has this component has a new texture frame set on it
  */
 
 export const DIRTY = {
@@ -19,9 +20,10 @@ export const DIRTY = {
     CHILD_CACHE: 4,
     WORLD_TRANSFORM: 5,
     DISPLAY_LIST: 6,
-    SELF: 7
+    SELF: 7,
+    FRAME: 8
 };
 
 export const DirtyComponent = defineComponent({
-    data: [ Types.ui8, 8 ]
+    data: [ Types.ui8, 9 ]
 });
