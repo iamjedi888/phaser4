@@ -29,6 +29,8 @@ void mainImage( out vec4 color, in vec2 pixel )
 }
 */
 
+//  Based on a concept by gman and GClements. Extended by R. Davey to support offsets, per axis scale, rotation, sine.
+
 export const TILESPRITE_FRAG =
 `#define SHADER_NAME TILESPRITE_FRAG
 
@@ -42,44 +44,37 @@ uniform sampler2D uTexture;
 uniform mat4 uColorMatrix;
 uniform vec4 uColorOffset;
 
+uniform float uTime;
 uniform vec2 uTileSize;
 uniform vec2 uTilePosition;
 uniform vec2 uTileOffset;
 uniform vec2 uTileScale;
 uniform vec2 uTileRotationOrigin;
 uniform float uTileAngle;
-
-uniform float uTime;
+uniform float uTileDistortion;
+uniform float uTileSway;
+uniform float uTileSpeed;
 
 void main (void)
 {
-    //  Fixed GClements version - works for an atlas frame + offset + with working scale per axis
-
     vec2 uv = (vTextureCoord - 0.5) * uTileScale + (0.5 * uTileScale);
 
-    //  Rotation
+    //  Tile Rotation
 
-    float angle = uTime * 0.25;
-    float kS = sin(angle);
-	float kC = cos(angle);
+    float s = sin(uTileAngle);
+	float c = cos(uTileAngle);
 
-    // uv -= uTileRotationOrigin;
+    uv -= uTileRotationOrigin;
 
-    // uv = vec2(kC * uv.x - kS * uv.y, kS * uv.x + kC * uv.y);
+    uv = vec2(c * uv.x - s * uv.y, s * uv.x + c * uv.y);
 
-    // uv += uTileRotationOrigin;
+    uv += uTileRotationOrigin;
 
-    //  Sine Wave
+    //  Tile Wave
 
-    float speed = 3.0;
-    float verticleDensity = 2.0;
-    float swayIntensity = 0.2;
+    // uv.x += sin(uv.y * uTileDistortion + uTime * uTileSpeed) * uTileSway;
 
-    float offsetX = sin(uv.y * verticleDensity + uTime * speed) * swayIntensity;
-
-    // uv.x += offsetX;
-
-    //  Draw
+    //  Tile Draw
 
     vec2 pixel = uTilePosition + uTileSize * fract(uv + uTileOffset);
 
