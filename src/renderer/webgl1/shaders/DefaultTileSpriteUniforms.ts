@@ -15,5 +15,8 @@ export const DefaultTileSpriteUniforms: Record<string, Number | Float32List | Ui
     uTileScale: new Float32Array(2),
     uTileOffset: new Float32Array(2),
     uTileRotationOrigin: new Float32Array(2),
-    uTileAngle: 0
+    uTileAngle: 0,
+    uTileDistortion: 0,
+    uTileSwap: 0,
+    uTime: 0
 };
