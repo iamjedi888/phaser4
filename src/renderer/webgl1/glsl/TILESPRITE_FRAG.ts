@@ -42,18 +42,46 @@ uniform sampler2D uTexture;
 uniform mat4 uColorMatrix;
 uniform vec4 uColorOffset;
 
-uniform vec2 uTextureSize;
-uniform vec2 uTexturePosition;
-uniform vec2 uOffset;
-uniform vec2 uScale;
+uniform vec2 uTileSize;
+uniform vec2 uTilePosition;
+uniform vec2 uTileOffset;
+uniform vec2 uTileScale;
+uniform vec2 uTileRotationOrigin;
+uniform float uTileAngle;
+
+uniform float uTime;
 
 void main (void)
 {
     //  Fixed GClements version - works for an atlas frame + offset + with working scale per axis
 
-    vec2 uv = (vTextureCoord - 0.5) * uScale + (0.5 * uScale);
+    vec2 uv = (vTextureCoord - 0.5) * uTileScale + (0.5 * uTileScale);
 
-    vec2 pixel = uTexturePosition + uTextureSize * fract(uv + uOffset);
+    //  Rotation
+
+    float angle = uTime * 0.25;
+    float kS = sin(angle);
+	float kC = cos(angle);
+
+    // uv -= uTileRotationOrigin;
+
+    // uv = vec2(kC * uv.x - kS * uv.y, kS * uv.x + kC * uv.y);
+
+    // uv += uTileRotationOrigin;
+
+    //  Sine Wave
+
+    float speed = 3.0;
+    float verticleDensity = 2.0;
+    float swayIntensity = 0.2;
+
+    float offsetX = sin(uv.y * verticleDensity + uTime * speed) * swayIntensity;
+
+    // uv.x += offsetX;
+
+    //  Draw
+
+    vec2 pixel = uTilePosition + uTileSize * fract(uv + uTileOffset);
 
     vec4 color = texture2D(uTexture, pixel);
 
