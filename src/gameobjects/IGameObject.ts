@@ -1,3 +1,4 @@
+import { IBaseWorld } from '../world/IBaseWorld';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IRenderPass } from '../renderer/webgl1/renderpass/IRenderPass';
@@ -37,6 +38,8 @@ export interface IGameObject
     onAddChild (childID: number): void;
     onUpdateChild (childID: number): void;
     onRemoveChild (childID: number): void;
+    onAddedToWorld <T extends IBaseWorld> (world: T): void;
+    onRemovedFromWorld <T extends IBaseWorld> (world: T): void;
 
     toString (): string;
 

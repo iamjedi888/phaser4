@@ -15,6 +15,7 @@ import { GetParentGameObject } from '../components/hierarchy/GetParentGameObject
 import { GetParentID } from '../components/hierarchy/GetParentID';
 import { GetVisible } from '../components/permissions/GetVisible';
 import { GetVisibleChildren } from '../components/permissions/GetVisibleChildren';
+import { IBaseWorld } from '../world/IBaseWorld';
 import { ICanvasRenderer } from '../renderer/canvas/ICanvasRenderer';
 import { IEventInstance } from '../events/IEventInstance';
 import { IGameObject } from './IGameObject';
@@ -180,6 +181,16 @@ export class GameObject implements IGameObject
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onRemoveChild (childID: number): void
+    {
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onAddedToWorld <T extends IBaseWorld> (world: T): void
+    {
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onRemovedFromWorld <T extends IBaseWorld> (world: T): void
     {
     }
 
