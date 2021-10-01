@@ -1,8 +1,11 @@
 import { ClearDirtyFrame } from '../../components/dirty/ClearDirtyFrame';
 import { Frame } from '../../textures/Frame';
 import { HasDirtyFrame } from '../../components/dirty/HasDirtyFrame';
+import { IBaseWorld } from '../../world/IBaseWorld';
 import { ITileSprite } from './ITileSprite';
 import { IVec2 } from '../../math/vec2/IVec2';
+import { Off } from '../../events/Off';
+import { On } from '../../events/On';
 import { SetDirtyFrame } from '../../components/dirty/SetDirtyFrame';
 import { SetDirtyTransform } from '../../components/dirty/SetDirtyTransform';
 import { SetExtentFromSize } from '../../components/transform/SetExtentFromSize';
@@ -11,6 +14,7 @@ import { Sprite } from '../sprite/Sprite';
 import { Texture } from '../../textures/Texture';
 import { TileSpriteQuadShader } from '../../renderer/webgl1/shaders/TileSpriteQuadShader';
 import { Vec2 } from '../../math/vec2/Vec2';
+import { WorldBeforeUpdateEvent } from '../../world/events/WorldBeforeUpdateEvent';
 
 export class TileSprite extends Sprite implements ITileSprite
 {
@@ -20,6 +24,11 @@ export class TileSprite extends Sprite implements ITileSprite
     tileScale: IVec2;
     tilePosition: IVec2;
     tileRotationOrigin: IVec2;
+
+    tileDistortion: number;
+    tileSway: number;
+    tileSpeed: number;
+
     frameScale: IVec2;
 
     private _width: number = 0;
@@ -34,42 +43,61 @@ export class TileSprite extends Sprite implements ITileSprite
         this.tilePosition = new Vec2(0, 0);
         this.tileRotationOrigin = new Vec2(0.5, 0.5);
 
+        this.tileDistortion = 0;
+        this.tileSway = 0;
+        this.tileSpeed = 0;
+
         this.shader = new TileSpriteQuadShader(this);
 
         this._width = width;
         this._height = height;
 
         this.frameScale = new Vec2();
+    }
 
-        this.updateTile();
+    setFrameScale (cols: number, rows: number): this
+    {
+        this.frameScale.set(cols, rows);
 
-        //  Allow them to set size based on number of frames x by y
+        return this;
+    }
+
+    setTileDistortion (distortion: number, sway: number, speed: number): this
+    {
+        this.tileDistortion = distortion;
+        this.tileSway = sway;
+        this.tileSpeed = speed;
+
+        return this;
+    }
+
+    onAddedToWorld <T extends IBaseWorld> (world: T): void
+    {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        On(world, WorldBeforeUpdateEvent, this.updateTile, this);
+    }
+
+    onRemovedFromWorld <T extends IBaseWorld> (world: T): void
+    {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        Off(world, WorldBeforeUpdateEvent, this.updateTile, this);
     }
 
     updateTile (): void
-    {
-        const w = this._width;
-        const h = this._height;
-
-        SetExtentFromSize(this, w, h);
-
-        SetQuadUVs(this.id, 0, 0, 1, 1);
-
-        this.frameScale.set(w / this.frame.width, h / this.frame.height);
-    }
-
-    //  TODO - This needs to be able to hook into a World preRender event
-    //  Or, we need to be able to call a method when the frame changes
-
-    update (): void
     {
         const id = this.id;
 
         if (HasDirtyFrame(id))
         {
-            console.log('onUpdate', this);
+            const w = this._width;
+            const h = this._height;
 
-            this.updateTile();
+            SetExtentFromSize(this, w, h);
+
+            //  Because changing the texture frame overwrites them
+            SetQuadUVs(id, 0, 0, 1, 1);
+
+            this.frameScale.set(w / this.frame.width, h / this.frame.height);
 
             ClearDirtyFrame(id);
 

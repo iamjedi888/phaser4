@@ -7,8 +7,14 @@ export interface ITileSprite extends ISprite
     tileScale: IVec2;
     tilePosition: IVec2;
     tileRotationOrigin: IVec2;
+    tileDistortion: number;
+    tileSway: number;
+    tileSpeed: number;
     frameScale: IVec2;
 
     width: number;
     height: number;
+
+    setTileDistortion (distortion: number, sway: number, speed: number): this;
+    setFrameScale (cols: number, rows: number): this;
 }
