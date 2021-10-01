@@ -2,10 +2,6 @@ export const DefaultTileSpriteUniforms: Record<string, Number | Float32List | Ui
 {
     uProjectionMatrix: new Float32Array(16),
     uCameraMatrix: new Float32Array(16),
-    uTextureSize: new Float32Array(2),
-    uTexturePosition: new Float32Array(2),
-    uOffset: new Float32Array(2),
-    uScale: new Float32Array(2),
     uTexture: 0,
     uColorMatrix: new Float32Array([
         1, 0, 0, 0,
@@ -13,5 +9,11 @@ export const DefaultTileSpriteUniforms: Record<string, Number | Float32List | Ui
         0, 0, 1, 0,
         0, 0, 0, 1
     ]),
-    uColorOffset: new Float32Array(4)
+    uColorOffset: new Float32Array(4),
+    uTileSize: new Float32Array(2),
+    uTilePosition: new Float32Array(2),
+    uTileScale: new Float32Array(2),
+    uTileOffset: new Float32Array(2),
+    uTileRotationOrigin: new Float32Array(2),
+    uTileAngle: 0
 };
