@@ -72,7 +72,7 @@ void main (void)
 
     //  Tile Wave
 
-    // uv.x += sin(uv.y * uTileDistortion + uTime * uTileSpeed) * uTileSway;
+    uv.x += sin(uv.y * uTileDistortion + uTime * uTileSpeed) * uTileSway;
 
     //  Tile Draw
 
