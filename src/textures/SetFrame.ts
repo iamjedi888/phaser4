@@ -1,5 +1,6 @@
 import { Frame } from './Frame';
 import { ISprite } from '../gameobjects/sprite/ISprite';
+import { SetDirtyFrame } from '../components/dirty/SetDirtyFrame';
 import { SetExtentFromFrame } from './SetExtentFromFrame';
 import { SetVertexUVsFromFrame } from './SetVertexUVsFromFrame';
 import { Texture } from './Texture';
@@ -29,6 +30,8 @@ export function SetFrame <T extends ISprite> (texture: Texture, key?: string | n
 
         //  This rarely changes, so we'll set it here, rather than every game step:
         SetVertexUVsFromFrame(child.id, frame);
+
+        SetDirtyFrame(child.id);
     });
 
     return children;
