@@ -1,118 +1,103 @@
-import { AddQuadVertex } from '../../components/vertices/AddQuadVertex';
-import { BatchTexturedQuadBuffer } from '../../renderer/webgl1/draw/BatchTexturedQuadBuffer';
-import { Container } from '../container/Container';
-import { Flush } from '../../renderer/webgl1/renderpass/Flush';
+import { ClearDirtyFrame } from '../../components/dirty/ClearDirtyFrame';
 import { Frame } from '../../textures/Frame';
-import { ICanvasRenderer } from '../../renderer/canvas/ICanvasRenderer';
-import { IFrame } from '../../textures/IFrame';
-import { IGameObject } from '../IGameObject';
-import { IRenderPass } from '../../renderer/webgl1/renderpass/IRenderPass';
-import { ITexture } from '../../textures/ITexture';
+import { HasDirtyFrame } from '../../components/dirty/HasDirtyFrame';
 import { ITileSprite } from './ITileSprite';
 import { IVec2 } from '../../math/vec2/IVec2';
-import { PopColorMatrix } from '../../renderer/webgl1/renderpass/PopColorMatrix';
-import { SetColorMatrix } from '../../renderer/webgl1/renderpass/SetColorMatrix';
-import { SetExtent } from '../../components/transform/SetExtent';
-import { SetFrame } from '../../textures/SetFrame';
+import { SetDirtyFrame } from '../../components/dirty/SetDirtyFrame';
+import { SetDirtyTransform } from '../../components/dirty/SetDirtyTransform';
+import { SetExtentFromSize } from '../../components/transform/SetExtentFromSize';
 import { SetQuadUVs } from '../../components/vertices/SetQuadUVs';
-import { SetShader } from '../../renderer/webgl1/renderpass/SetShader';
-import { SetTexture } from '../../textures/SetTexture';
+import { Sprite } from '../sprite/Sprite';
 import { Texture } from '../../textures/Texture';
 import { TileSpriteQuadShader } from '../../renderer/webgl1/shaders/TileSpriteQuadShader';
 import { Vec2 } from '../../math/vec2/Vec2';
-import { WillRender } from '../../components/permissions/WillRender';
 
-export class TileSprite extends Container implements ITileSprite
+export class TileSprite extends Sprite implements ITileSprite
 {
     readonly type: string = 'TileSprite';
 
-    texture: Texture;
-    frame: Frame;
-    hasTexture: boolean = false;
-
+    tileAngle: number;
     tileScale: IVec2;
     tilePosition: IVec2;
+    tileRotationOrigin: IVec2;
+    frameScale: IVec2;
 
-    constructor (x: number, y: number, texture: string | Texture | Frame = '__BLANK', frame?: string | number | Frame)
+    private _width: number = 0;
+    private _height: number = 0;
+
+    constructor (x: number, y: number, width: number, height: number, texture: string | Texture | Frame = '__BLANK', frame?: string | number | Frame)
     {
-        super(x, y);
+        super(x, y, texture, frame);
 
+        this.tileAngle = 0;
         this.tileScale = new Vec2(1, 1);
         this.tilePosition = new Vec2(0, 0);
+        this.tileRotationOrigin = new Vec2(0.5, 0.5);
 
         this.shader = new TileSpriteQuadShader(this);
 
-        AddQuadVertex(this.id);
+        this._width = width;
+        this._height = height;
 
-        this.setTexture(texture, frame);
+        this.frameScale = new Vec2();
 
-        //  This needs to be the full texture size, not the frame UVs
+        this.updateTile();
+
+        //  Allow them to set size based on number of frames x by y
+    }
+
+    updateTile (): void
+    {
+        const w = this._width;
+        const h = this._height;
+
+        SetExtentFromSize(this, w, h);
+
         SetQuadUVs(this.id, 0, 0, 1, 1);
 
-        //  This is the size we want it displayed at (move to constructor)
-        SetExtent(this.id, 0, 0, 512, 512);
+        this.frameScale.set(w / this.frame.width, h / this.frame.height);
     }
 
-    setTexture <T extends ITexture, F extends IFrame> (key: string | T | F, frame?: string | number | F): this
+    //  TODO - This needs to be able to hook into a World preRender event
+    //  Or, we need to be able to call a method when the frame changes
+
+    update (): void
     {
-        SetTexture(key, frame, this);
+        const id = this.id;
 
-        return this;
-    }
-
-    setFrame <F extends IFrame> (key?: string | number | F): this
-    {
-        SetFrame(this.texture, key, this);
-
-        return this;
-    }
-
-    isRenderable (): boolean
-    {
-        return (this.visible && this.hasTexture && WillRender(this.id) && this.alpha > 0);
-    }
-
-    renderGL <T extends IRenderPass> (renderPass: T): void
-    {
-        const color = this.color;
-
-        if (this.shader)
+        if (HasDirtyFrame(id))
         {
-            Flush(renderPass);
+            console.log('onUpdate', this);
 
-            SetShader(this.shader, 0);
-        }
+            this.updateTile();
 
-        if (color.colorMatrixEnabled)
-        {
-            SetColorMatrix(color);
-        }
+            ClearDirtyFrame(id);
 
-        this.preRenderGL(renderPass);
-
-        BatchTexturedQuadBuffer(this.texture, this.id, renderPass);
-
-        if (color.colorMatrixEnabled && !color.willColorChildren)
-        {
-            Flush(renderPass);
-
-            PopColorMatrix();
+            SetDirtyTransform(id);
         }
     }
 
-    renderCanvas <T extends ICanvasRenderer> (renderer: T): void
+    set width (value: number)
     {
-        // PreRenderVertices(this);
+        this._width = value;
 
-        // DrawImage(this.frame, this.alpha, this.worldTransform, this.transformExtent, renderer);
+        SetDirtyFrame(this.id);
     }
 
-    destroy (reparentChildren?: IGameObject): void
+    get width (): number
     {
-        super.destroy(reparentChildren);
+        return this._width;
+    }
 
-        this.texture = null;
-        this.frame = null;
-        this.hasTexture = false;
+    set height (value: number)
+    {
+        this._height = value;
+
+        SetDirtyFrame(this.id);
+    }
+
+    get height (): number
+    {
+        return this._height;
     }
 }
