@@ -16,11 +16,9 @@ vec4 getSampler (int index, vec2 uv)
 {
     for (int i = 0; i < numTextures; ++i)
     {
-        vec4 color = texture2D(uTexture[i], uv);
-
         if (i == index)
         {
-            return color * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a);
+            return texture2D(uTexture[i], uv) * vec4(vTintColor.rgb * vTintColor.a, vTintColor.a);
         }
     }
 
